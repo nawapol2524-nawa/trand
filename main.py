@@ -163,7 +163,7 @@ def calculate_indicators(df):
 
     return df
 
-def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi, adx, atr, wyckoff_valid):
+def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi, adx, atr, bb_lower, wyckoff_valid):
     learned = memory[sym]["learned_params"]
     min_vol = learned.get("min_volume_ratio", 1.30)
     min_adx = learned.get("min_adx", 14.0)
@@ -177,17 +177,30 @@ def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume
     rsi_valid = 50 <= rsi <= 75
     adx_valid = adx >= min_adx
 
-    decision = "BUY" if (is_htf_bull and is_breakout and vol_confirmed and rsi_valid and adx_valid and wyckoff_valid) else "WAIT"
-    
-    if decision == "BUY": reason = f"ยืนยันครบทุกเงื่อนไข | RSI:{rsi:.1f} ADX:{adx:.1f} Vol:{vol_ratio:.2f}x"
-    elif not is_htf_bull: reason = f"ราคาใต้ 1h EMA200"
-    elif not is_breakout: reason = f"ยังไม่ทะลุ Swing High ${prev_high:.6f}"
-    elif not wyckoff_valid: reason = f"เทียนทิ้งไส้บนยาว"
-    elif not rsi_valid: reason = f"RSI ไม่อยู่ในโซน 50-75 ({rsi:.1f})"
-    elif not adx_valid: reason = f"ADX ต่ำกว่าเกณฑ์ ({adx:.1f} < {min_adx:.1f})"
-    else: reason = f"Volume {vol_ratio:.2f}x < เกณฑ์ {min_vol:.2f}x"
+    decision = "WAIT"
+    reason = f"ยังไม่ทะลุ Swing High ${prev_high:.6f} และยังไม่แตะขอบล่าง BB"
+
+    # --- Strategy 1: Breakout ---
+    is_strat1 = is_htf_bull and is_breakout and vol_confirmed and rsi_valid and adx_valid and wyckoff_valid
+    # --- Strategy 2: Pullback Sniper ---
+    is_strat2 = is_htf_bull and (current_price <= bb_lower) and (rsi < 40)
+
+    if is_strat1:
+        decision = "BUY"
+        reason = f"Breakout! ยืนยันครบ | RSI:{rsi:.1f} ADX:{adx:.1f} Vol:{vol_ratio:.2f}x"
+    elif is_strat2:
+        decision = "BUY"
+        reason = f"Pullback Sniper! ช้อนของถูก | RSI:{rsi:.1f} แตะ BB Lower: ${bb_lower:.4f}"
+    elif not is_htf_bull: 
+        reason = f"ราคาใต้ 1h EMA200"
 
     return {
+        "decision": decision,
+        "suggested_tp_price": current_price + (2.5 * atr),
+        "suggested_sl_price": current_price - (1.5 * atr),
+        "reason": reason,
+        "rsi": rsi, "adx": adx
+    }
         "decision": decision,
         "suggested_tp_price": current_price + (2.5 * atr),
         "suggested_sl_price": current_price - (1.5 * atr),
@@ -265,9 +278,20 @@ def process_symbol(sym):
         df_1h = pd.DataFrame(bars_1h, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
         df_1h['ema200'] = df_1h['close'].ewm(span=200, adjust=False).mean()
         ema_200_1h = float(df_1h['ema200'].iloc[-1])
+        
+        rsi_14 = float(current_row['rsi'])
+        adx_14 = float(current_row['adx'])
+        atr_14 = float(current_row['atr'])
+        bb_lower = float(current_row['bb_lower'])
+
+        wyckoff_valid = True
+        candle_body = abs(float(current_row['close']) - float(current_row['open']))
+        upper_wick = float(current_row['high']) - max(float(current_row['close']), float(current_row['open']))
+        if upper_wick > candle_body * 1.5:
+            wyckoff_valid = False
 
         # 2. ประเมิน
-        eval_result = ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi_14, adx_14, atr_14, wyckoff_valid)
+        eval_result = ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi_14, adx_14, atr_14, bb_lower, wyckoff_valid)
         
         s = state[sym]
         is_cooling_down = s['cooldown_until'] and datetime.utcnow() < s['cooldown_until']
