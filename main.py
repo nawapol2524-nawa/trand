@@ -120,7 +120,9 @@ def calculate_indicators(df):
 def ag_evaluate_market(current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi, adx, atr, wyckoff_valid):
     learned = memory["learned_params"]
     min_vol = learned.get("min_volume_ratio", 1.30)
-    min_adx = learned.get("min_adx", 22.0)
+    min_adx = learned.get("min_adx", 18.0)
+    # บังคับเพดาน ADX ไม่ให้ตั้งกำแพงสูงเกิน 20.0 เพื่อให้มีโอกาสเข้าเทรด
+    min_adx = min(min_adx, 20.0)
     vol_ratio = (current_volume / avg_volume) if avg_volume > 0 else 1.0
 
     is_htf_bull = current_price > ema_200_1h
@@ -316,11 +318,14 @@ if __name__ == '__main__':
             elif in_position:
                 pnl_percent = (current_price - entry_price) / entry_price
 
-                # กลไก Breakeven: กำไรแตะ +1.5% เลื่อน SL บังทุน
-                if pnl_percent >= 0.015 and not is_breakeven_set:
-                    stop_loss_target = entry_price * 1.001
-                    is_breakeven_set = True
-                    log_trade(f"🛡️ [BREAKEVEN] กำไรแตะ +1.5% ขยับ SL บังหน้าทุนที่ ${stop_loss_target:.4f}")
+                # กลไก Trailing Stop & Breakeven: กำไรแตะ +1.5% เลื่อน SL ตามราคา
+                if pnl_percent >= 0.015:
+                    # คำนวณ Trailing SL ให้ห่างจากราคาปัจจุบัน 1%
+                    trailing_sl = current_price * 0.99
+                    if trailing_sl > stop_loss_target:
+                        stop_loss_target = trailing_sl
+                        is_breakeven_set = True
+                        log_trade(f"🛡️ [TRAILING STOP] ขยับ SL ตามกำไรไปที่ ${stop_loss_target:.4f}")
 
                 # ปิดทำกำไร (Take Profit)
                 if current_price >= take_profit_target:
