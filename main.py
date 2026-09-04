@@ -126,14 +126,16 @@ def calculate_indicators(df):
 def ag_evaluate_market(current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi, adx, atr, wyckoff_valid):
     learned = memory["learned_params"]
     min_vol = learned.get("min_volume_ratio", 1.30)
+    # [AG Learning Adjust] ยอมรับสภาวะ Sideway มากขึ้น ลด ADX ลงมา
     min_adx = learned.get("min_adx", 18.0)
-    min_adx = min(min_adx, 20.0) # บังคับเพดาน
+    min_adx = min(min_adx, 14.0) # ลดกำแพง ADX ให้เทรดง่ายขึ้น
     vol_ratio = (current_volume / avg_volume) if avg_volume > 0 else 1.0
 
     is_htf_bull = current_price > ema_200_1h
     is_breakout = current_price > prev_high
     vol_confirmed = vol_ratio >= min_vol
-    rsi_valid = 52 <= rsi <= 70
+    # [AG Learning Adjust] ขยายกรอบโมเมนตัม
+    rsi_valid = 50 <= rsi <= 75
     adx_valid = adx >= min_adx
 
     score = learned.get("base_confidence_weight", 50)
@@ -266,8 +268,9 @@ if __name__ == '__main__':
             adx_14 = float(current_row['adx'])
             atr_14 = float(current_row['atr'])
             
-            prev_high = float(df_15m['high'].iloc[-21:-1].max())
-            avg_volume = float(df_15m['volume'].iloc[-21:-1].mean())
+            # [AG Learning Adjust] ลดการมองย้อนหลังเหลือ 10 แท่งเพื่อให้จับรอบสั้นขึ้น
+            prev_high = float(df_15m['high'].iloc[-11:-1].max())
+            avg_volume = float(df_15m['volume'].iloc[-11:-1].mean())
             current_volume = float(current_row['volume'])
 
             bars_1h = exchange.fetch_ohlcv(SYMBOL, timeframe=HTF_TIMEFRAME, limit=210)

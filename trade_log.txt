@@ -1,2 +1,3 @@
 [2026-09-04 13:13:37] 🚀 เริ่มรันระบบ AG 2.0 Autonomous Quant Brain (SOL/USDT) บนเซิร์ฟเวอร์เรียบร้อย
 [2026-09-04 13:18:20] 🚀 เริ่มรันระบบ AG 2.0 Multi-Factor Quant Shield (SOL/USDT)
+[2026-09-04 15:05:01] 🚀 เริ่มรันระบบ AG 2.0 บน Binance Testnet (SOL/USDT)
