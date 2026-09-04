@@ -190,20 +190,21 @@ def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume
         "rsi": rsi, "adx": adx
     }
 
-def sync_memory_to_github():
+def sync_data_to_github():
     try:
         subprocess.run(["git", "config", "user.name", "Wispbyte-Bot"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["git", "config", "user.email", "bot@wispbyte.com"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         
-        subprocess.run(["git", "add", MEMORY_FILE], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        # เพิ่มการอัปโหลด LOG_FILE ไปพร้อมกับ MEMORY_FILE
+        subprocess.run(["git", "add", MEMORY_FILE, LOG_FILE], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
-        if MEMORY_FILE in status.stdout:
-            subprocess.run(["git", "commit", "-m", "Auto-Sync Memory [bot]"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if MEMORY_FILE in status.stdout or LOG_FILE in status.stdout:
+            subprocess.run(["git", "commit", "-m", "Auto-Sync Data [bot]"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             subprocess.run(["git", "pull", "--rebase"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             subprocess.run(["git", "push"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            log_trade("☁️ [AUTO-SYNC] อัปโหลดความจำบอทขึ้น GitHub สำเร็จ!")
+            log_trade("☁️ [AUTO-SYNC] อัปโหลดความจำและ Log ขึ้น GitHub สำเร็จ!")
     except Exception as e:
-        log_trade(f"⚠️ [AUTO-SYNC ERROR] ไม่สามารถอัปโหลดความจำได้: {e}")
+        log_trade(f"⚠️ [AUTO-SYNC ERROR] ไม่สามารถอัปโหลดข้อมูลได้: {e}")
 
 def ag_learn_from_trade(sym, trade_type, pnl_pct):
     learned = memory[sym]["learned_params"]
@@ -228,7 +229,7 @@ def ag_learn_from_trade(sym, trade_type, pnl_pct):
         "lesson": lesson
     })
     save_memory(memory)
-    sync_memory_to_github()
+    sync_data_to_github()
     return lesson
 
 def process_symbol(sym):

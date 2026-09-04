@@ -6,3 +6,7 @@
 [2026-09-04 15:59:15] 🟢 [TESTNET BUY SUCCESS] ซื้อ 0.14 SOL @ $104.3400 | TP: $105.1925 | SL: $103.8125
 [2026-09-04 16:01:01] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN บน Binance Testnet
 [2026-09-04 16:01:01] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, PEPE/USDT, GALA/USDT, VET/USDT, PAXG/USDT
+[2026-09-04 16:06:02] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN บน Binance Testnet
+[2026-09-04 16:06:02] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, PEPE/USDT, GALA/USDT, VET/USDT, PAXG/USDT
+[2026-09-04 16:16:27] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN บน Binance Testnet
+[2026-09-04 16:16:27] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, PEPE/USDT, GALA/USDT, VET/USDT, PAXG/USDT
