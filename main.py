@@ -1,6 +1,8 @@
 import os
+import sys
 import time
 import json
+import subprocess
 import ccxt
 import pandas as pd
 from datetime import datetime, timedelta
@@ -83,6 +85,25 @@ def save_memory(mem):
         pass
 
 memory = load_memory()
+
+last_update_check = 0
+def check_for_updates():
+    global last_update_check
+    now = time.time()
+    if now - last_update_check < 300: # เช็คทุกๆ 5 นาที ลดการใช้งานเครือข่าย
+        return
+    last_update_check = now
+    
+    try:
+        subprocess.run(["git", "fetch"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        status = subprocess.run(["git", "status", "-uno"], capture_output=True, text=True)
+        if "Your branch is behind" in status.stdout:
+            log_trade("🔄 [AUTO-PATCH] พบอัปเดตใหม่บน GitHub! กำลังดาวน์โหลดและรีสตาร์ทตัวเอง...")
+            subprocess.run(["git", "pull"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            time.sleep(2) # รอไฟล์บันทึกเสร็จ
+            os.execv(sys.executable, [sys.executable] + sys.argv)
+    except Exception:
+        pass # ถ้ามีปัญหาเครือข่าย ปล่อยผ่านไปไม่ให้บอทหยุดทำงาน
 
 def get_thai_time():
     return (datetime.utcnow() + timedelta(hours=7)).strftime('%Y-%m-%d %H:%M:%S')
@@ -251,6 +272,8 @@ if __name__ == '__main__':
 
     while True:
         try:
+            check_for_updates()
+            
             bars_15m = exchange.fetch_ohlcv(SYMBOL, timeframe=TIMEFRAME, limit=100)
             df_15m = pd.DataFrame(bars_15m, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
             df_15m = calculate_indicators(df_15m)
