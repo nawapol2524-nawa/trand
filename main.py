@@ -341,10 +341,13 @@ def process_symbol(sym):
                     s['be_set'] = True
                     log_trade(f"🛡️ [TRAILING STOP {sym}] ขยับ SL ตามกำไรไปที่ ${s['sl']:.6f}")
 
-            # Take Profit
             if current_price >= s['tp']:
                 try:
-                    order = exchange.create_market_sell_order(sym, s['position_size'])
+                    base_coin = sym.split('/')[0]
+                    free_bal = exchange.fetch_free_balance().get(base_coin, 0)
+                    sell_size = min(s['position_size'], free_bal) if free_bal > 0 else s['position_size']
+                    
+                    order = exchange.create_market_sell_order(sym, sell_size)
                     avg_price = order.get('average')
                     if avg_price is None: avg_price = order.get('price')
                     if avg_price is None: avg_price = current_price
@@ -361,10 +364,13 @@ def process_symbol(sym):
                 except Exception as e:
                     log_trade(f"❌ [TP ERROR {sym}] {e}")
 
-            # Stop Loss
             elif current_price <= s['sl']:
                 try:
-                    order = exchange.create_market_sell_order(sym, s['position_size'])
+                    base_coin = sym.split('/')[0]
+                    free_bal = exchange.fetch_free_balance().get(base_coin, 0)
+                    sell_size = min(s['position_size'], free_bal) if free_bal > 0 else s['position_size']
+                    
+                    order = exchange.create_market_sell_order(sym, sell_size)
                     avg_price = order.get('average')
                     if avg_price is None: avg_price = order.get('price')
                     if avg_price is None: avg_price = current_price
