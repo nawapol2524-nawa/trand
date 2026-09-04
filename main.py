@@ -201,12 +201,6 @@ def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume
         "reason": reason,
         "rsi": rsi, "adx": adx
     }
-        "decision": decision,
-        "suggested_tp_price": current_price + (2.5 * atr),
-        "suggested_sl_price": current_price - (1.5 * atr),
-        "reason": reason,
-        "rsi": rsi, "adx": adx
-    }
 
 def sync_data_to_github():
     try:
