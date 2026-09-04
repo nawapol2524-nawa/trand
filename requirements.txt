@@ -1,3 +1,4 @@
 ccxt
 pandas
-requestspython-dotenv
+requests
+python-dotenv
