@@ -10,3 +10,15 @@
 [2026-09-04 16:06:02] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, PEPE/USDT, GALA/USDT, VET/USDT, PAXG/USDT
 [2026-09-04 16:16:27] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN บน Binance Testnet
 [2026-09-04 16:16:27] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, PEPE/USDT, GALA/USDT, VET/USDT, PAXG/USDT
+[2026-09-04 17:16:18] ⚠️ Error SOL/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=SOLUSDT
+[2026-09-04 17:16:20] ⚠️ Error PEPE/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=PEPEUSDT
+[2026-09-04 17:16:22] ⚠️ Error GALA/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=GALAUSDT
+[2026-09-04 17:25:02] ⚠️ Error VET/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=VETUSDT
+[2026-09-04 17:25:04] ⚠️ Error PAXG/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=PAXGUSDT
+[2026-09-04 18:51:44] ⚠️ Error GALA/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=GALAUSDT
+[2026-09-04 19:13:29] ⚠️ Error SOL/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=SOLUSDT
+[2026-09-04 19:49:04] ⚠️ Error SOL/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=SOLUSDT
+[2026-09-04 20:11:43] ⚠️ Error SOL/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=SOLUSDT
+[2026-09-04 20:50:27] ⚠️ Error SOL/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=SOLUSDT
+[2026-09-04 21:15:10] ⚠️ Error SOL/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=SOLUSDT
+[2026-09-04 21:38:17] ⚠️ Error SOL/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=SOLUSDT

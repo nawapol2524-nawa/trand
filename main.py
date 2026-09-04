@@ -156,6 +156,11 @@ def calculate_indicators(df):
     dx = 100 * abs(df['+di'] - df['-di']) / (df['+di'] + df['-di'])
     df['adx'] = dx.ewm(alpha=1/14, adjust=False).mean()
 
+    # คำนวณ Bollinger Bands สำหรับท่า Pullback
+    df['sma20'] = df['close'].rolling(window=20).mean()
+    df['std20'] = df['close'].rolling(window=20).std()
+    df['bb_lower'] = df['sma20'] - (2 * df['std20'])
+
     return df
 
 def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi, adx, atr, wyckoff_valid):
