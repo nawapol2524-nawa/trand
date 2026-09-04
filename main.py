@@ -106,15 +106,16 @@ def check_for_updates():
     last_update_check = now
     
     try:
-        subprocess.run(["git", "fetch"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(["git", "fetch", "origin", "main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         status = subprocess.run(["git", "status", "-uno"], capture_output=True, text=True)
         if "Your branch is behind" in status.stdout:
             log_trade("🔄 [AUTO-PATCH] พบอัปเดตใหม่บน GitHub! กำลังดาวน์โหลดและรีสตาร์ทตัวเอง...")
-            subprocess.run(["git", "pull"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # ใช้ reset --hard เพื่อบังคับทับโค้ดใหม่ลงไป 100% (แก้ปัญหา Conflict)
+            subprocess.run(["git", "reset", "--hard", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             time.sleep(2)
             os.execv(sys.executable, [sys.executable] + sys.argv)
-    except Exception:
-        pass
+    except Exception as e:
+        log_trade(f"⚠️ [AUTO-PATCH ERROR] อัปเดตไม่สำเร็จ: {e}")
 
 def get_thai_time():
     return (datetime.utcnow() + timedelta(hours=7)).strftime('%Y-%m-%d %H:%M:%S')
