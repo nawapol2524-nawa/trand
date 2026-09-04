@@ -316,7 +316,10 @@ def process_symbol(sym):
 
                 try:
                     order = exchange.create_market_buy_order(sym, size)
-                    s['entry_price'] = float(order.get('average', real_entry))
+                    avg_price = order.get('average')
+                    if avg_price is None: avg_price = order.get('price')
+                    if avg_price is None: avg_price = real_entry
+                    s['entry_price'] = float(avg_price)
                     s['position_size'] = size
                     s['in_position'] = True
                     s['be_set'] = False
@@ -342,7 +345,10 @@ def process_symbol(sym):
             if current_price >= s['tp']:
                 try:
                     order = exchange.create_market_sell_order(sym, s['position_size'])
-                    exit_price = float(order.get('average', current_price))
+                    avg_price = order.get('average')
+                    if avg_price is None: avg_price = order.get('price')
+                    if avg_price is None: avg_price = current_price
+                    exit_price = float(avg_price)
                     real_pnl_pct = (exit_price - s['entry_price']) / s['entry_price']
                     
                     s['in_position'] = False
@@ -359,7 +365,10 @@ def process_symbol(sym):
             elif current_price <= s['sl']:
                 try:
                     order = exchange.create_market_sell_order(sym, s['position_size'])
-                    exit_price = float(order.get('average', current_price))
+                    avg_price = order.get('average')
+                    if avg_price is None: avg_price = order.get('price')
+                    if avg_price is None: avg_price = current_price
+                    exit_price = float(avg_price)
                     real_pnl_pct = (exit_price - s['entry_price']) / s['entry_price']
                     
                     s['in_position'] = False
