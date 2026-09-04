@@ -190,6 +190,21 @@ def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume
         "rsi": rsi, "adx": adx
     }
 
+def sync_memory_to_github():
+    try:
+        subprocess.run(["git", "config", "user.name", "Wispbyte-Bot"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["git", "config", "user.email", "bot@wispbyte.com"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        
+        subprocess.run(["git", "add", MEMORY_FILE], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+        if MEMORY_FILE in status.stdout:
+            subprocess.run(["git", "commit", "-m", "Auto-Sync Memory [bot]"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.run(["git", "pull", "--rebase"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.run(["git", "push"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            log_trade("☁️ [AUTO-SYNC] อัปโหลดความจำบอทขึ้น GitHub สำเร็จ!")
+    except Exception as e:
+        log_trade(f"⚠️ [AUTO-SYNC ERROR] ไม่สามารถอัปโหลดความจำได้: {e}")
+
 def ag_learn_from_trade(sym, trade_type, pnl_pct):
     learned = memory[sym]["learned_params"]
     current_min_vol = learned.get("min_volume_ratio", 1.30)
@@ -213,6 +228,7 @@ def ag_learn_from_trade(sym, trade_type, pnl_pct):
         "lesson": lesson
     })
     save_memory(memory)
+    sync_memory_to_github()
     return lesson
 
 def process_symbol(sym):
