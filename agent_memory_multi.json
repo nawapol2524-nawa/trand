@@ -1,0 +1,59 @@
+{
+  "SOL/USDT": {
+    "total_trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "learned_params": {
+      "min_volume_ratio": 1.3,
+      "min_adx": 14.0
+    },
+    "reflections": []
+  },
+  "BTC/USDT": {
+    "total_trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "learned_params": {
+      "min_volume_ratio": 1.3,
+      "min_adx": 14.0
+    },
+    "reflections": []
+  },
+  "GALA/USDT": {
+    "total_trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "learned_params": {
+      "min_volume_ratio": 1.3,
+      "min_adx": 14.0
+    },
+    "reflections": []
+  },
+  "VET/USDT": {
+    "total_trades": 1,
+    "wins": 1,
+    "losses": 0,
+    "learned_params": {
+      "min_volume_ratio": 1.25,
+      "min_adx": 13.5
+    },
+    "reflections": [
+      {
+        "date": "2026-09-05 05:50:45",
+        "type": "WIN",
+        "pnl": "+0.60%",
+        "lesson": "Win (+0.60%): ลดเกณฑ์ Vol->1.25x, ADX->13.5"
+      }
+    ]
+  },
+  "PAXG/USDT": {
+    "total_trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "learned_params": {
+      "min_volume_ratio": 1.3,
+      "min_adx": 14.0
+    },
+    "reflections": []
+  }
+}
