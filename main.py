@@ -208,6 +208,9 @@ def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume
 
 def sync_data_to_github():
     try:
+        # ป้องกัน Git ค้างจากการรอให้คนพิมพ์รหัสผ่าน
+        os.environ["GIT_TERMINAL_PROMPT"] = "0"
+        
         subprocess.run(["git", "config", "user.name", "Wispbyte-Bot"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["git", "config", "user.email", "bot@wispbyte.com"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         
