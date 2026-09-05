@@ -211,8 +211,11 @@ def sync_data_to_github():
         subprocess.run(["git", "config", "user.name", "Wispbyte-Bot"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.run(["git", "config", "user.email", "bot@wispbyte.com"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         
-        # เพิ่มการอัปโหลด LOG_FILE ไปพร้อมกับ MEMORY_FILE
-        subprocess.run(["git", "add", MEMORY_FILE, LOG_FILE], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        files_to_add = [LOG_FILE]
+        if os.path.exists(MEMORY_FILE):
+            files_to_add.append(MEMORY_FILE)
+            
+        subprocess.run(["git", "add"] + files_to_add, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
         if MEMORY_FILE in status.stdout or LOG_FILE in status.stdout:
             subprocess.run(["git", "commit", "-m", "Auto-Sync Data [bot]"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
