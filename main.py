@@ -13,7 +13,7 @@ load_dotenv()
 # ==========================================
 # ⚙️ CONFIGURATION
 # ==========================================
-SYMBOLS = ['SOL/USDT', 'PEPE/USDT', 'GALA/USDT', 'VET/USDT', 'PAXG/USDT']
+SYMBOLS = ['SOL/USDT', 'BTC/USDT', 'GALA/USDT', 'VET/USDT', 'PAXG/USDT']
 TIMEFRAME = '15m'
 HTF_TIMEFRAME = '1h'
 TRADE_AMOUNT_USDT = 15.0 # จำนวนเงินที่ใช้ซื้อต่อ 1 ไม้ (Binance ขั้นต่ำ $10)
