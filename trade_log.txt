@@ -76,3 +76,5 @@
 [2026-09-06 03:51:27] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
 [2026-09-06 04:07:39] ⚠️ Error SOL/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=SOLUSDT
 [2026-09-06 04:51:38] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-06 05:04:03] 🟢 [BUY VET/USDT] ซื้อ 2159 @ $0.006941 | TP: $0.006971 | SL: $0.006935
+[2026-09-06 05:52:49] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
