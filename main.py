@@ -22,10 +22,13 @@ MEMORY_FILE = "agent_memory_multi.json"
 LOG_FILE = "trade_log.txt"
 
 exchange = ccxt.binance({
-    'apiKey': os.getenv('TESTNET_API_KEY'),
-    'secret': os.getenv('TESTNET_SECRET_KEY'),
+    'apiKey': os.getenv('BINANCE_API_KEY'),
+    'secret': os.getenv('BINANCE_SECRET'),
     'enableRateLimit': True,
-    'options': {'defaultType': 'spot'}
+    'timeout': 15000, # ป้องกัน Network Hang (ตัดสายถ้านานเกิน 15 วิ)
+    'options': {
+        'defaultType': 'spot'
+    }
 })
 exchange.set_sandbox_mode(True)
 
