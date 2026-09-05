@@ -216,14 +216,13 @@ def sync_data_to_github():
         status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
         if MEMORY_FILE in status.stdout or LOG_FILE in status.stdout:
             subprocess.run(["git", "commit", "-m", "Auto-Sync Data [bot]"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            subprocess.run(["git", "pull", "--rebase"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             
             pat = os.getenv('GITHUB_PAT')
-            if pat:
-                pat_url = f"https://nawapol2524-nawa:{pat}@github.com/nawapol2524-nawa/trand.git"
-                subprocess.run(["git", "push", pat_url, "main"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            else:
-                subprocess.run(["git", "push"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            pat_url = f"https://nawapol2524-nawa:{pat}@github.com/nawapol2524-nawa/trand.git" if pat else "origin"
+            
+            subprocess.run(["git", "pull", "--rebase", pat_url, "main"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.run(["git", "push", pat_url, "main"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            
             log_trade("☁️ [AUTO-SYNC] อัปโหลดความจำและ Log ขึ้น GitHub สำเร็จ!")
     except Exception as e:
         log_trade(f"⚠️ [AUTO-SYNC ERROR] ไม่สามารถอัปโหลดข้อมูลได้: {e}")
