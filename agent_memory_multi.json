@@ -46,12 +46,12 @@
     ]
   },
   "GALA/USDT": {
-    "total_trades": 1,
+    "total_trades": 2,
     "wins": 0,
-    "losses": 1,
+    "losses": 2,
     "learned_params": {
-      "min_volume_ratio": 1.4,
-      "min_adx": 15.0
+      "min_volume_ratio": 1.5,
+      "min_adx": 16.0
     },
     "reflections": [
       {
@@ -59,6 +59,12 @@
         "type": "LOSS",
         "pnl": "-0.48%",
         "lesson": "Loss (False Break): เพิ่มเกณฑ์ Vol->1.4x, ADX->15.0"
+      },
+      {
+        "date": "2026-09-06 02:45:21",
+        "type": "LOSS",
+        "pnl": "-0.53%",
+        "lesson": "Loss (False Break): เพิ่มเกณฑ์ Vol->1.5x, ADX->16.0"
       }
     ]
   },
