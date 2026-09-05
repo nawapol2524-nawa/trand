@@ -405,8 +405,16 @@ if __name__ == '__main__':
     log_trade("🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN บน Binance Testnet")
     log_trade(f"🪙 เหรียญที่เฝ้าเทรด: {', '.join(SYMBOLS)}")
 
+    last_github_sync = time.time()
     while True:
         check_for_updates()
+        
+        # อัปโหลดขึ้น GitHub ทุกๆ 1 ชั่วโมง
+        now = time.time()
+        if now - last_github_sync > 3600:
+            log_trade("🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)")
+            sync_data_to_github()
+            last_github_sync = now
         
         print("\n" + "="*50)
         print(f"🕒 สแกนตลาดเวลา: {get_thai_time()}")
