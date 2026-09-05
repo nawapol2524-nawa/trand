@@ -191,10 +191,10 @@ def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume
 
     if is_strat1:
         decision = "BUY"
-        reason = f"Breakout! ยืนยันครบ | RSI:{rsi:.1f} ADX:{adx:.1f} Vol:{vol_ratio:.2f}x"
+        reason = f"[Strategy: Breakout] ยืนยันครบ | RSI:{rsi:.1f} ADX:{adx:.1f} Vol:{vol_ratio:.2f}x"
     elif is_strat2:
         decision = "BUY"
-        reason = f"Pullback Sniper! ช้อนของถูก | RSI:{rsi:.1f} แตะ BB Lower: ${bb_lower:.4f}"
+        reason = f"[Strategy: Pullback_Sniper] ช้อนของถูก | RSI:{rsi:.1f} แตะ BB Lower: ${bb_lower:.4f}"
     elif not is_htf_bull: 
         reason = f"ราคาใต้ 1h EMA200"
 
@@ -408,7 +408,7 @@ if __name__ == '__main__':
     log_trade("🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN บน Binance Testnet")
     log_trade(f"🪙 เหรียญที่เฝ้าเทรด: {', '.join(SYMBOLS)}")
 
-    last_github_sync = time.time()
+    last_github_sync = 0 # ตั้งค่าเป็น 0 เพื่อบังคับให้อัปโหลดทันทีในรอบแรก
     while True:
         check_for_updates()
         
