@@ -74,3 +74,5 @@
 [2026-09-06 02:45:21] 🚨 [CIRCUIT BREAKER GALA/USDT] ขาดทุนติด 2 ครั้ง พัก 4 ชม.
 [2026-09-06 02:51:26] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
 [2026-09-06 03:51:27] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-06 04:07:39] ⚠️ Error SOL/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=SOLUSDT
+[2026-09-06 04:51:38] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
