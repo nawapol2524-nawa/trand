@@ -112,11 +112,18 @@ def check_for_updates():
         subprocess.run(["git", "fetch", "origin", "main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         status = subprocess.run(["git", "status", "-uno"], capture_output=True, text=True)
         if "Your branch is behind" in status.stdout:
-            log_trade("🔄 [AUTO-PATCH] พบอัปเดตใหม่บน GitHub! กำลังดาวน์โหลดและรีสตาร์ทตัวเอง...")
-            # ใช้ reset --hard เพื่อบังคับทับโค้ดใหม่ลงไป 100% (แก้ปัญหา Conflict)
+            # เช็คว่าไฟล์ที่อัปเดตคืออะไร ถ้าเป็นแค่ Log ไม่ต้องรีสตาร์ทบอท
+            diff = subprocess.run(["git", "diff", "--name-only", "HEAD", "origin/main"], capture_output=True, text=True)
+            
             subprocess.run(["git", "reset", "--hard", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            time.sleep(2)
-            os.execv(sys.executable, [sys.executable] + sys.argv)
+            
+            if "main.py" in diff.stdout or "requirements.txt" in diff.stdout:
+                log_trade("🔄 [AUTO-PATCH] พบการอัปเดตโค้ดหลัก! กำลังดาวน์โหลดและรีสตาร์ทตัวเอง...")
+                time.sleep(2)
+                os.execv(sys.executable, [sys.executable] + sys.argv)
+            else:
+                # ถ้าเป็นแค่ Log หรือไฟล์อื่น ให้แค่ซิงค์ไฟล์เฉยๆ ไม่ต้องรีสตาร์ท (ป้องกัน Infinite Loop)
+                pass
     except Exception as e:
         log_trade(f"⚠️ [AUTO-PATCH ERROR] อัปเดตไม่สำเร็จ: {e}")
 
