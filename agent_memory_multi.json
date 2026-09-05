@@ -44,12 +44,12 @@
     "reflections": []
   },
   "VET/USDT": {
-    "total_trades": 2,
+    "total_trades": 3,
     "wins": 1,
-    "losses": 1,
+    "losses": 2,
     "learned_params": {
-      "min_volume_ratio": 1.35,
-      "min_adx": 14.5
+      "min_volume_ratio": 1.45,
+      "min_adx": 15.5
     },
     "reflections": [
       {
@@ -63,6 +63,12 @@
         "type": "LOSS",
         "pnl": "-0.03%",
         "lesson": "Loss (False Break): เพิ่มเกณฑ์ Vol->1.35x, ADX->14.5"
+      },
+      {
+        "date": "2026-09-05 20:44:24",
+        "type": "LOSS",
+        "pnl": "-0.12%",
+        "lesson": "Loss (False Break): เพิ่มเกณฑ์ Vol->1.45x, ADX->15.5"
       }
     ]
   },
