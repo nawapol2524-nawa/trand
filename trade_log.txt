@@ -52,3 +52,5 @@
 [2026-09-05 17:19:31] ⚠️ Error SOL/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=SOLUSDT
 [2026-09-05 17:46:25] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
 [2026-09-05 18:47:36] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-05 19:42:47] 🟢 [BUY BTC/USDT] ซื้อ 0.0002 @ $79762.230000 | TP: $79897.192500 | SL: $79681.252500
+[2026-09-05 19:48:51] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
