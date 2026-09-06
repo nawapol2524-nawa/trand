@@ -41,12 +41,12 @@
   },
   "PAXG/USDT": {
     "in_position": false,
-    "entry_price": 0.0,
-    "position_size": 0.0,
-    "tp": 0.0,
-    "sl": 0.0,
+    "entry_price": 4424.77,
+    "position_size": 0.0014,
+    "tp": 4427.134285714285,
+    "sl": 4423.351428571429,
     "be_set": false,
-    "consecutive_losses": 0,
+    "consecutive_losses": 1,
     "cooldown_until": null
   }
 }
