@@ -116,13 +116,20 @@
     ]
   },
   "PAXG/USDT": {
-    "total_trades": 0,
+    "total_trades": 1,
     "wins": 0,
-    "losses": 0,
+    "losses": 1,
     "learned_params": {
-      "min_volume_ratio": 1.3,
-      "min_adx": 14.0
+      "min_volume_ratio": 1.4,
+      "min_adx": 15.0
     },
-    "reflections": []
+    "reflections": [
+      {
+        "date": "2026-09-06 14:28:22",
+        "type": "LOSS",
+        "pnl": "-0.04%",
+        "lesson": "Loss (False Break): เพิ่มเกณฑ์ Vol->1.4x, ADX->15.0"
+      }
+    ]
   }
 }
