@@ -20,6 +20,7 @@ TRADE_AMOUNT_USDT = 6.0 # จำนวนเงินที่ใช้ซื้
 
 MEMORY_FILE = "agent_memory_multi.json"
 LOG_FILE = "trade_log.txt"
+STATUS_FILE = "status_log.txt"
 
 exchange = ccxt.binance({
     'apiKey': os.getenv('TESTNET_API_KEY'),
@@ -129,12 +130,38 @@ def check_for_updates():
 def get_thai_time():
     return (datetime.utcnow() + timedelta(hours=7)).strftime('%Y-%m-%d %H:%M:%S')
 
+def log_status(text):
+    """บันทึกข้อความสถานะหน้าจอลง status_log.txt และแสดงบนคอนโซล เพื่อให้ Gemini Spark วิเคราะห์ได้ครบถ้วน"""
+    print(text, flush=True)
+    try:
+        with open(STATUS_FILE, "a", encoding="utf-8") as f:
+            f.write(text + "\n")
+    except Exception:
+        pass
+
+def trim_status_log_if_needed():
+    """จำกัดขนาด status_log.txt ไม่ให้เกิน ~1.5 MB (รักษา ~6,000 บรรทัดล่าสุด หรือ ~14 ชม. ย้อนหลัง) เพื่อความรวดเร็วในการ Sync"""
+    try:
+        if os.path.exists(STATUS_FILE) and os.path.getsize(STATUS_FILE) > 1_500_000:
+            with open(STATUS_FILE, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+            if len(lines) > 7000:
+                with open(STATUS_FILE, "w", encoding="utf-8") as f:
+                    f.writelines(lines[-5000:])
+    except Exception:
+        pass
+
 def log_trade(text):
     now = get_thai_time()
     log_msg = f"[{now}] {text}"
     print(log_msg, flush=True)
-    with open(LOG_FILE, "a", encoding="utf-8") as f:
-        f.write(log_msg + "\n")
+    try:
+        with open(LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(log_msg + "\n")
+        with open(STATUS_FILE, "a", encoding="utf-8") as f:
+            f.write(log_msg + "\n")
+    except Exception:
+        pass
 
 # ==========================================
 # 📊 INDICATORS & LOGIC
@@ -234,6 +261,8 @@ def sync_data_to_github():
         }
         
         files_to_sync = [LOG_FILE]
+        if os.path.exists(STATUS_FILE):
+            files_to_sync.append(STATUS_FILE)
         if os.path.exists(MEMORY_FILE):
             files_to_sync.append(MEMORY_FILE)
             
@@ -342,7 +371,7 @@ def process_symbol(sym, btc_bullish):
         else:
             status_text = f"WAITING ({eval_result['reason']})"
 
-        print(f"[{sym}] {current_price:.6f} | {status_text}", flush=True)
+        log_status(f"[{sym}] {current_price:.6f} | {status_text}")
 
         # 3. ตัดสินใจซื้อ (Single-Slot Sniper: เข้าได้เมื่อไม่มีเหรียญใดถือครองอยู่เลย)
         if not s['in_position'] and not is_cooling_down and not any_in_position:
@@ -469,8 +498,8 @@ if __name__ == '__main__':
             sync_data_to_github()
             last_github_sync = now
         
-        print("\n" + "="*50)
-        print(f"🕒 สแกนตลาดเวลา: {get_thai_time()}")
+        log_status("\n" + "="*50)
+        log_status(f"🕒 สแกนตลาดเวลา: {get_thai_time()}")
         
         # 🛡️ เช็คสถานะ 1h EMA200 ของพี่ใหญ่ BTC เพื่อเป็น Gatekeeper ให้ Altcoins
         btc_bullish = False
@@ -486,5 +515,6 @@ if __name__ == '__main__':
             process_symbol(sym, btc_bullish)
             time.sleep(2) # กันโดนแบน API Rate Limit ระหว่างดึงเหรียญ
             
-        print("="*50)
+        log_status("="*50)
+        trim_status_log_if_needed()
         time.sleep(60) # พัก 1 นาทีก่อนสแกนรอบถัดไป
