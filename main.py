@@ -115,15 +115,14 @@ def check_for_updates():
             # เช็คว่าไฟล์ที่อัปเดตคืออะไร ถ้าเป็นแค่ Log ไม่ต้องรีสตาร์ทบอท
             diff = subprocess.run(["git", "diff", "--name-only", "HEAD", "origin/main"], capture_output=True, text=True)
             
-            subprocess.run(["git", "reset", "--hard", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            
             if "main.py" in diff.stdout or "requirements.txt" in diff.stdout:
+                subprocess.run(["git", "reset", "--hard", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 log_trade("🔄 [AUTO-PATCH] พบการอัปเดตโค้ดหลัก! กำลังดาวน์โหลดและรีสตาร์ทตัวเอง...")
                 time.sleep(2)
                 os.execv(sys.executable, [sys.executable] + sys.argv)
             else:
-                # ถ้าเป็นแค่ Log หรือไฟล์อื่น ให้แค่ซิงค์ไฟล์เฉยๆ ไม่ต้องรีสตาร์ท (ป้องกัน Infinite Loop)
-                pass
+                # ถ้าเป็นแค่ Log หรือไฟล์อื่น ให้แค่ซิงค์ commit hash (ไม่อัปเดตไฟล์บนเครื่อง เพื่อป้องกัน log หาย)
+                subprocess.run(["git", "reset", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except Exception as e:
         log_trade(f"⚠️ [AUTO-PATCH ERROR] อัปเดตไม่สำเร็จ: {e}")
 
@@ -291,7 +290,6 @@ def ag_learn_from_trade(sym, trade_type, pnl_pct):
         "lesson": lesson
     })
     save_memory(memory)
-    sync_data_to_github()
     return lesson
 
 def process_symbol(sym, btc_bullish):
@@ -414,6 +412,7 @@ def process_symbol(sym, btc_bullish):
 
                     lesson = ag_learn_from_trade(sym, "WIN", real_pnl_pct * 100)
                     log_trade(f"🎯 [TP SUCCESS {sym}] ปิดกำไรที่ ${exit_price:.6f} (+{real_pnl_pct*100:.2f}%) | {lesson}")
+                    sync_data_to_github()
                 except Exception as e:
                     log_trade(f"❌ [TP ERROR {sym}] {e}")
 
@@ -445,6 +444,7 @@ def process_symbol(sym, btc_bullish):
 
                         lesson = ag_learn_from_trade(sym, "LOSS", real_pnl_pct * 100)
                         log_trade(f"🛑 [SL SUCCESS {sym}] คัทลอสที่ ${exit_price:.6f} ({real_pnl_pct*100:.2f}%) | {lesson}")
+                        sync_data_to_github()
                 except Exception as e:
                     log_trade(f"❌ [SL ERROR {sym}] {e}")
 
