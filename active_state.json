@@ -1,0 +1,52 @@
+{
+  "SOL/USDT": {
+    "in_position": false,
+    "entry_price": 0.0,
+    "position_size": 0.0,
+    "tp": 0.0,
+    "sl": 0.0,
+    "be_set": false,
+    "consecutive_losses": 0,
+    "cooldown_until": null
+  },
+  "BTC/USDT": {
+    "in_position": true,
+    "entry_price": 79482.01,
+    "position_size": 0.0001,
+    "tp": 79782.531429,
+    "sl": 79301.697143,
+    "be_set": false,
+    "consecutive_losses": 0,
+    "cooldown_until": null
+  },
+  "GALA/USDT": {
+    "in_position": false,
+    "entry_price": 0.0,
+    "position_size": 0.0,
+    "tp": 0.0,
+    "sl": 0.0,
+    "be_set": false,
+    "consecutive_losses": 0,
+    "cooldown_until": null
+  },
+  "VET/USDT": {
+    "in_position": false,
+    "entry_price": 0.0,
+    "position_size": 0.0,
+    "tp": 0.0,
+    "sl": 0.0,
+    "be_set": false,
+    "consecutive_losses": 0,
+    "cooldown_until": null
+  },
+  "PAXG/USDT": {
+    "in_position": false,
+    "entry_price": 0.0,
+    "position_size": 0.0,
+    "tp": 0.0,
+    "sl": 0.0,
+    "be_set": false,
+    "consecutive_losses": 0,
+    "cooldown_until": null
+  }
+}

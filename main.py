@@ -21,6 +21,7 @@ TRADE_AMOUNT_USDT = 6.0 # จำนวนเงินที่ใช้ซื้
 MEMORY_FILE = "agent_memory_multi.json"
 LOG_FILE = "trade_log.txt"
 STATUS_FILE = "status_log.txt"
+STATE_FILE = "active_state.json"
 
 exchange = ccxt.binance({
     'apiKey': os.getenv('TESTNET_API_KEY'),
@@ -163,6 +164,43 @@ def log_trade(text):
     except Exception:
         pass
 
+def save_state():
+    """บันทึกสถานะการถือครอง (Active Positions) และ Cooldown ลง active_state.json แบบทันที"""
+    try:
+        serializable_state = {}
+        for sym, data in state.items():
+            serializable_state[sym] = data.copy()
+            if isinstance(data.get('cooldown_until'), datetime):
+                serializable_state[sym]['cooldown_until'] = data['cooldown_until'].isoformat()
+        with open(STATE_FILE, 'w', encoding='utf-8') as f:
+            json.dump(serializable_state, f, indent=2)
+    except Exception as e:
+        log_trade(f"⚠️ [STATE SAVE ERROR] {e}")
+
+def load_state():
+    """กู้คืนสถานะการถือครองและเป้าหมาย TP/SL จาก active_state.json เมื่อเปิดเครื่องใหม่"""
+    global state
+    if os.path.exists(STATE_FILE):
+        try:
+            with open(STATE_FILE, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            for sym in SYMBOLS:
+                if sym in data:
+                    s = data[sym]
+                    if s.get('cooldown_until') and isinstance(s['cooldown_until'], str):
+                        try:
+                            s['cooldown_until'] = datetime.fromisoformat(s['cooldown_until'])
+                        except Exception:
+                            s['cooldown_until'] = None
+                    state[sym] = s
+                    if state[sym].get('in_position'):
+                        log_trade(f"🔄 [RECOVER] กู้คืนสถานะการถือครอง {sym} @ ${state[sym]['entry_price']:.6f} (TP: ${state[sym]['tp']:.6f} | SL: ${state[sym]['sl']:.6f})")
+        except Exception as e:
+            log_trade(f"⚠️ [STATE LOAD ERROR] {e}")
+
+# กู้คืนสถานะไม้ที่ถือครองค้างอยู่ทันทีที่สตาร์ทบอท
+load_state()
+
 # ==========================================
 # 📊 INDICATORS & LOGIC
 # ==========================================
@@ -265,6 +303,8 @@ def sync_data_to_github():
             files_to_sync.append(STATUS_FILE)
         if os.path.exists(MEMORY_FILE):
             files_to_sync.append(MEMORY_FILE)
+        if os.path.exists(STATE_FILE):
+            files_to_sync.append(STATE_FILE)
             
         success = True
         for filename in files_to_sync:
@@ -398,6 +438,7 @@ def process_symbol(sym, btc_bullish):
                     # คำนวณ TP / SL จากราคาที่ซื้อได้จริง ณ วินาทีนั้น (แก้บั๊กตัวเลข SL ตามคำแนะนำ Spark)
                     s['tp'] = s['entry_price'] + (2.5 * atr_14)
                     s['sl'] = s['entry_price'] - (1.5 * atr_14)
+                    save_state()
                     
                     log_trade(f"🟢 [BUY {sym}] ซื้อ {size} @ ${s['entry_price']:.6f} | TP: ${s['tp']:.6f} | SL: ${s['sl']:.6f}")
                 except Exception as e:
@@ -411,6 +452,7 @@ def process_symbol(sym, btc_bullish):
             if not s['be_set'] and pnl_percent >= 0.004:
                 s['sl'] = s['entry_price'] * 1.0005
                 s['be_set'] = True
+                save_state()
                 log_trade(f"🛡️ [AUTO-BREAKEVEN {sym}] กำไรแตะ +{pnl_percent*100:.2f}% แล้ว! ขยับ SL ล็อกต้นทุนที่ ${s['sl']:.6f}")
 
             # Trailing Stop สำหรับกำไรก้อนใหญ่ (+1.5% ขึ้นไป)
@@ -419,6 +461,7 @@ def process_symbol(sym, btc_bullish):
                 if trailing_sl > s['sl']:
                     s['sl'] = trailing_sl
                     s['be_set'] = True
+                    save_state()
                     log_trade(f"🛡️ [TRAILING STOP {sym}] ขยับ SL ตามกำไรไปที่ ${s['sl']:.6f}")
 
             if current_price >= s['tp']:
@@ -436,6 +479,7 @@ def process_symbol(sym, btc_bullish):
                     
                     s['in_position'] = False
                     s['consecutive_losses'] = 0
+                    save_state()
                     memory[sym]["total_trades"] += 1
                     memory[sym]["wins"] += 1
 
@@ -473,7 +517,8 @@ def process_symbol(sym, btc_bullish):
 
                         lesson = ag_learn_from_trade(sym, "LOSS", real_pnl_pct * 100)
                         log_trade(f"🛑 [SL SUCCESS {sym}] คัทลอสที่ ${exit_price:.6f} ({real_pnl_pct*100:.2f}%) | {lesson}")
-                        sync_data_to_github()
+                    save_state()
+                    sync_data_to_github()
                 except Exception as e:
                     log_trade(f"❌ [SL ERROR {sym}] {e}")
 
