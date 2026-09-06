@@ -35,12 +35,12 @@
     ]
   },
   "BTC/USDT": {
-    "total_trades": 3,
-    "wins": 1,
+    "total_trades": 4,
+    "wins": 2,
     "losses": 2,
     "learned_params": {
-      "min_volume_ratio": 1.45,
-      "min_adx": 15.5
+      "min_volume_ratio": 1.4,
+      "min_adx": 15.0
     },
     "reflections": [
       {
@@ -60,6 +60,12 @@
         "type": "WIN",
         "pnl": "+0.38%",
         "lesson": "Win (+0.38%): ลดเกณฑ์ Vol->1.45x, ADX->15.5"
+      },
+      {
+        "date": "2026-09-07 04:17:10",
+        "type": "WIN",
+        "pnl": "+0.51%",
+        "lesson": "Win (+0.51%): ลดเกณฑ์ Vol->1.4x, ADX->15.0"
       }
     ]
   },
