@@ -16,7 +16,7 @@ load_dotenv()
 SYMBOLS = ['SOL/USDT', 'BTC/USDT', 'GALA/USDT', 'VET/USDT', 'PAXG/USDT']
 TIMEFRAME = '15m'
 HTF_TIMEFRAME = '1h'
-TRADE_AMOUNT_USDT = 15.0 # จำนวนเงินที่ใช้ซื้อต่อ 1 ไม้ (Binance ขั้นต่ำ $10)
+TRADE_AMOUNT_USDT = 6.0 # จำนวนเงินที่ใช้ซื้อต่อ 1 ไม้ (งบเริ่มต้น ~200 บาท ผ่านเกณฑ์ Binance ขั้นต่ำ $5 พอดี)
 
 MEMORY_FILE = "agent_memory_multi.json"
 LOG_FILE = "trade_log.txt"
@@ -174,7 +174,7 @@ def calculate_indicators(df):
 
     return df
 
-def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi, adx, atr, bb_lower, wyckoff_valid):
+def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi, adx, atr, bb_lower, wyckoff_valid, btc_bullish):
     learned = memory[sym]["learned_params"]
     min_vol = learned.get("min_volume_ratio", 1.30)
     min_adx = learned.get("min_adx", 14.0)
@@ -188,13 +188,19 @@ def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume
     rsi_valid = 50 <= rsi <= 75
     adx_valid = adx >= min_adx
 
+    # 🛡️ BTC Market Gatekeeper: ถ้าไม่ใช่ BTC และพี่ใหญ่ BTC ยังไม่เป็นขาขึ้น ห้ามเหรียญเล็กยิง Breakout เด็ดขาด
+    gatekeeper_pass = True
+    if sym != "BTC/USDT" and not btc_bullish:
+        gatekeeper_pass = False
+
     decision = "WAIT"
     reason = f"ยังไม่ทะลุ Swing High ${prev_high:.6f} และยังไม่แตะขอบล่าง BB"
 
-    # --- Strategy 1: Breakout ---
-    is_strat1 = is_htf_bull and is_breakout and vol_confirmed and rsi_valid and adx_valid and wyckoff_valid
-    # --- Strategy 2: Pullback Sniper ---
-    is_strat2 = is_htf_bull and (current_price <= bb_lower) and (rsi < 40)
+    # --- Strategy 1: Breakout (ต้องผ่าน Gatekeeper BTC ด้วย) ---
+    is_strat1 = is_htf_bull and is_breakout and vol_confirmed and rsi_valid and adx_valid and wyckoff_valid and gatekeeper_pass
+
+    # --- Strategy 2: Pullback Sniper (ช้อนของถูกในตลาด Sideway เมื่อราคาแตะหรือหลุด Lower BB + RSI ต่ำ) ---
+    is_strat2 = (current_price <= bb_lower * 1.002) and (rsi <= 40)
 
     if is_strat1:
         decision = "BUY"
@@ -202,7 +208,9 @@ def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume
     elif is_strat2:
         decision = "BUY"
         reason = f"[Strategy: Pullback_Sniper] ช้อนของถูก | RSI:{rsi:.1f} แตะ BB Lower: ${bb_lower:.4f}"
-    elif not is_htf_bull: 
+    elif is_breakout and not gatekeeper_pass:
+        reason = f"ระงับ Breakout (รอพี่ใหญ่ BTC ยืนเหนือ 1h EMA200)"
+    elif not is_htf_bull and not is_strat2: 
         reason = f"ราคาใต้ 1h EMA200"
 
     return {
@@ -286,7 +294,7 @@ def ag_learn_from_trade(sym, trade_type, pnl_pct):
     sync_data_to_github()
     return lesson
 
-def process_symbol(sym):
+def process_symbol(sym, btc_bullish):
     try:
         # 1. ดึงข้อมูล
         bars_15m = exchange.fetch_ohlcv(sym, timeframe=TIMEFRAME, limit=100)
@@ -305,6 +313,7 @@ def process_symbol(sym):
         rsi_14 = float(current_row['rsi'])
         adx_14 = float(current_row['adx'])
         atr_14 = float(current_row['atr'])
+        bb_lower = float(current_row['bb_lower'])
         
         prev_high = float(df_15m['high'].iloc[-11:-1].max())
         avg_volume = float(df_15m['volume'].iloc[-11:-1].mean())
@@ -314,23 +323,15 @@ def process_symbol(sym):
         df_1h = pd.DataFrame(bars_1h, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
         df_1h['ema200'] = df_1h['close'].ewm(span=200, adjust=False).mean()
         ema_200_1h = float(df_1h['ema200'].iloc[-1])
-        
-        rsi_14 = float(current_row['rsi'])
-        adx_14 = float(current_row['adx'])
-        atr_14 = float(current_row['atr'])
-        bb_lower = float(current_row['bb_lower'])
 
-        wyckoff_valid = True
-        candle_body = abs(float(current_row['close']) - float(current_row['open']))
-        upper_wick = float(current_row['high']) - max(float(current_row['close']), float(current_row['open']))
-        if upper_wick > candle_body * 1.5:
-            wyckoff_valid = False
-
-        # 2. ประเมิน
-        eval_result = ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi_14, adx_14, atr_14, bb_lower, wyckoff_valid)
+        # 2. ประเมินตลาด
+        eval_result = ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi_14, adx_14, atr_14, bb_lower, wyckoff_valid, btc_bullish)
         
         s = state[sym]
         is_cooling_down = s['cooldown_until'] and datetime.utcnow() < s['cooldown_until']
+        
+        # ตรวจสอบว่ามีเหรียญใดกำลังถือครองอยู่หรือไม่ (Single-Slot: 1 ไม้ทั้งพอร์ตสำหรับงบ 200 บาท)
+        any_in_position = any(state[k]['in_position'] for k in SYMBOLS)
 
         status_text = ""
         if is_cooling_down:
@@ -338,13 +339,15 @@ def process_symbol(sym):
         elif s['in_position']:
             pnl = ((current_price - s['entry_price']) / s['entry_price']) * 100
             status_text = f"🟢 LIVE LONG | PnL: {pnl:+.2f}%"
+        elif any_in_position:
+            status_text = "WAITING (มีเหรียญอื่นถือครองอยู่ - โหมดสไนเปอร์ไม้เดี่ยว 200 บาท)"
         else:
             status_text = f"WAITING ({eval_result['reason']})"
 
         print(f"[{sym}] {current_price:.6f} | {status_text}", flush=True)
 
-        # 3. ตัดสินใจซื้อ
-        if not s['in_position'] and not is_cooling_down:
+        # 3. ตัดสินใจซื้อ (Single-Slot Sniper: เข้าได้เมื่อไม่มีเหรียญใดถือครองอยู่เลย)
+        if not s['in_position'] and not is_cooling_down and not any_in_position:
             if eval_result["decision"] == "BUY":
                 ticker = exchange.fetch_ticker(sym)
                 real_entry = float(ticker['last'])
@@ -364,17 +367,26 @@ def process_symbol(sym):
                     s['position_size'] = size
                     s['in_position'] = True
                     s['be_set'] = False
-                    s['tp'] = eval_result["suggested_tp_price"]
-                    s['sl'] = eval_result["suggested_sl_price"]
+                    
+                    # คำนวณ TP / SL จากราคาที่ซื้อได้จริง ณ วินาทีนั้น (แก้บั๊กตัวเลข SL ตามคำแนะนำ Spark)
+                    s['tp'] = s['entry_price'] + (2.5 * atr_14)
+                    s['sl'] = s['entry_price'] - (1.5 * atr_14)
+                    
                     log_trade(f"🟢 [BUY {sym}] ซื้อ {size} @ ${s['entry_price']:.6f} | TP: ${s['tp']:.6f} | SL: ${s['sl']:.6f}")
                 except Exception as e:
                     log_trade(f"❌ [BUY ERROR {sym}] {e}")
 
-        # 4. จัดการ Trailing Stop / TP / SL
+        # 4. จัดการ Trailing Stop / Auto-Breakeven / TP / SL
         elif s['in_position']:
             pnl_percent = (current_price - s['entry_price']) / s['entry_price']
 
-            # Trailing Stop
+            # 🛡️ Auto-Breakeven เมื่อกำไรแตะ +0.40% ขยับ SL มาล็อกต้นทุนทันที (+0.05% เผื่อค่าธรรมเนียม)
+            if not s['be_set'] and pnl_percent >= 0.004:
+                s['sl'] = s['entry_price'] * 1.0005
+                s['be_set'] = True
+                log_trade(f"🛡️ [AUTO-BREAKEVEN {sym}] กำไรแตะ +{pnl_percent*100:.2f}% แล้ว! ขยับ SL ล็อกต้นทุนที่ ${s['sl']:.6f}")
+
+            # Trailing Stop สำหรับกำไรก้อนใหญ่ (+1.5% ขึ้นไป)
             if pnl_percent >= 0.015:
                 trailing_sl = current_price * 0.99
                 if trailing_sl > s['sl']:
@@ -460,8 +472,18 @@ if __name__ == '__main__':
         print("\n" + "="*50)
         print(f"🕒 สแกนตลาดเวลา: {get_thai_time()}")
         
+        # 🛡️ เช็คสถานะ 1h EMA200 ของพี่ใหญ่ BTC เพื่อเป็น Gatekeeper ให้ Altcoins
+        btc_bullish = False
+        try:
+            btc_bars = exchange.fetch_ohlcv('BTC/USDT', timeframe=HTF_TIMEFRAME, limit=210)
+            btc_df = pd.DataFrame(btc_bars, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+            btc_df['ema200'] = btc_df['close'].ewm(span=200, adjust=False).mean()
+            btc_bullish = float(btc_df['close'].iloc[-1]) > float(btc_df['ema200'].iloc[-1])
+        except Exception as e:
+            btc_bullish = False
+            
         for sym in SYMBOLS:
-            process_symbol(sym)
+            process_symbol(sym, btc_bullish)
             time.sleep(2) # กันโดนแบน API Rate Limit ระหว่างดึงเหรียญ
             
         print("="*50)
