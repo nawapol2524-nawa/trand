@@ -87,3 +87,7 @@
 [2026-09-06 10:56:21] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
 [2026-09-06 11:25:59] ⚠️ Error SOL/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=SOLUSDT
 [2026-09-06 11:56:31] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-06 11:59:02] 🔄 [AUTO-PATCH] พบการอัปเดตโค้ดหลัก! กำลังดาวน์โหลดและรีสตาร์ทตัวเอง...
+[2026-09-06 11:59:22] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN บน Binance Testnet
+[2026-09-06 11:59:22] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, GALA/USDT, VET/USDT, PAXG/USDT
+[2026-09-06 11:59:23] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
