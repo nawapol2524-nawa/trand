@@ -1,11 +1,11 @@
 {
   "SOL/USDT": {
-    "total_trades": 3,
-    "wins": 2,
+    "total_trades": 4,
+    "wins": 3,
     "losses": 1,
     "learned_params": {
-      "min_volume_ratio": 1.3,
-      "min_adx": 14.0
+      "min_volume_ratio": 1.25,
+      "min_adx": 13.5
     },
     "reflections": [
       {
@@ -25,6 +25,12 @@
         "type": "WIN",
         "pnl": "+0.61%",
         "lesson": "Win (+0.61%): ลดเกณฑ์ Vol->1.3x, ADX->14.0"
+      },
+      {
+        "date": "2026-09-06 10:34:19",
+        "type": "WIN",
+        "pnl": "+0.90%",
+        "lesson": "Win (+0.90%): ลดเกณฑ์ Vol->1.25x, ADX->13.5"
       }
     ]
   },
