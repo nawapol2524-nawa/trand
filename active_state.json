@@ -4,8 +4,8 @@
     "entry_price": 105.12,
     "position_size": 0.06,
     "tp": 109.52535714285715,
-    "sl": 102.47678571428573,
-    "be_set": false,
+    "sl": 105.17256,
+    "be_set": true,
     "consecutive_losses": 0,
     "cooldown_until": null
   },
