@@ -1,11 +1,11 @@
 {
   "SOL/USDT": {
-    "in_position": false,
-    "entry_price": 105.12,
+    "in_position": true,
+    "entry_price": 105.42,
     "position_size": 0.06,
-    "tp": 109.52535714285715,
-    "sl": 105.6429,
-    "be_set": true,
+    "tp": 106.59321428571428,
+    "sl": 104.71607142857142,
+    "be_set": false,
     "consecutive_losses": 0,
     "cooldown_until": null
   },
