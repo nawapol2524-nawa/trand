@@ -10,13 +10,13 @@
     "cooldown_until": null
   },
   "BTC/USDT": {
-    "in_position": true,
+    "in_position": false,
     "entry_price": 79634.28,
     "position_size": 0.0001,
     "tp": 80209.15857142858,
     "sl": 79289.35285714286,
     "be_set": false,
-    "consecutive_losses": 0,
+    "consecutive_losses": 1,
     "cooldown_until": null
   },
   "GALA/USDT": {
