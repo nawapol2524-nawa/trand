@@ -228,3 +228,5 @@
 [2026-09-08 01:34:13] ⚠️ Error GALA/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=GALAUSDT
 [2026-09-08 01:57:34] 🟢 [BUY BTC/USDT] ซื้อ 0.0001 @ $79224.050000 | TP: $84558.519643 | SL: $76023.368214
 [2026-09-08 02:34:25] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-08 02:34:32] ☁️ [API-SYNC] อัปโหลดความจำและ Log ผ่าน API สำเร็จ! เสถียร 100%
+[2026-09-08 03:34:48] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
