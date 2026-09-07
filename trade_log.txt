@@ -218,3 +218,5 @@
 [2026-09-07 22:46:11] ⚠️ Error GALA/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=1h&limit=210&symbol=GALAUSDT
 [2026-09-07 23:05:54] 🛡️ [AUTO-BREAKEVEN VET/USDT] กำไรแตะ +1.30% แล้ว! ขยับ SL ล็อกต้นทุนที่ $0.007060
 [2026-09-07 23:05:55] 🎯 [TP SUCCESS VET/USDT] ปิดกำไรที่ $0.007155 (+1.40%) | Win (+1.40%): ลดเกณฑ์ Vol->1.35x, ADX->14.5
+[2026-09-07 23:06:03] ☁️ [API-SYNC] อัปโหลดความจำและ Log ผ่าน API สำเร็จ! เสถียร 100%
+[2026-09-07 23:32:57] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
