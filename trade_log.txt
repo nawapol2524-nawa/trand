@@ -213,3 +213,8 @@
 [2026-09-07 22:32:05] ☁️ [API-SYNC] อัปโหลดความจำและ Log ผ่าน API สำเร็จ! เสถียร 100%
 [2026-09-07 22:40:46] 🚨 [CIRCUIT BREAKER SOL/USDT] ขาดทุนติด 2 ครั้ง พัก 4 ชม.
 [2026-09-07 22:40:46] 🛑 [SL SUCCESS SOL/USDT] คัทลอสที่ $103.320000 (-0.70%) | Loss (False Break): เพิ่มเกณฑ์ Vol->1.35x, ADX->14.5
+[2026-09-07 22:40:54] ☁️ [API-SYNC] อัปโหลดความจำและ Log ผ่าน API สำเร็จ! เสถียร 100%
+[2026-09-07 22:41:03] 🟢 [BUY VET/USDT] ซื้อ 849 @ $0.007056 | TP: $0.007122 | SL: $0.007016
+[2026-09-07 22:46:11] ⚠️ Error GALA/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=1h&limit=210&symbol=GALAUSDT
+[2026-09-07 23:05:54] 🛡️ [AUTO-BREAKEVEN VET/USDT] กำไรแตะ +1.30% แล้ว! ขยับ SL ล็อกต้นทุนที่ $0.007060
+[2026-09-07 23:05:55] 🎯 [TP SUCCESS VET/USDT] ปิดกำไรที่ $0.007155 (+1.40%) | Win (+1.40%): ลดเกณฑ์ Vol->1.35x, ADX->14.5
