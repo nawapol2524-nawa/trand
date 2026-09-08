@@ -265,3 +265,5 @@
 [2026-09-08 19:45:30] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
 [2026-09-08 19:45:39] ☁️ [API-SYNC] อัปโหลดความจำและ Log ผ่าน API สำเร็จ! เสถียร 100%
 [2026-09-08 20:46:18] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-08 20:48:37] ⚠️ [API-SYNC ERROR] ไม่สามารถอัปโหลดข้อมูลได้: HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /repos/nawapol2524-nawa/trand/contents/agent_memory_multi.json (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.github.com', port=443) at 0x7f64b93c3d50>, 'Connection to api.github.com timed out. (connect timeout=None)'))
+[2026-09-08 21:46:33] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
