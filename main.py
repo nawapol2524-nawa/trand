@@ -13,6 +13,7 @@ load_dotenv()
 # ==========================================
 BINANCE_SCRIPT = "main_binance.py"
 FOREX_SCRIPT = "main_forex.py"
+DASHBOARD_SCRIPT = "dashboard.py"
 MT5_SCRIPT = "main_mt5.py"
 SUPERVISOR_LOG = "supervisor_log.txt"
 ENABLE_DERIV = os.getenv("ENABLE_DERIV", "true").lower() in ("true", "1", "yes")
@@ -220,6 +221,12 @@ if __name__ == '__main__':
         log_supervisor("⏸️ [MODE] รันเฉพาะ Binance Spot 100%")
 
     # 3. ลูปเฝ้าระวัง (Watchdog Loop)
+        # 2.5 เริ่มต้น Web Dashboard
+    if os.path.exists(DASHBOARD_SCRIPT):
+        start_worker("WebDashboard", DASHBOARD_SCRIPT)
+    else:
+        log_supervisor(f"❌ ไม่พบไฟล์ {DASHBOARD_SCRIPT}!")
+
     log_supervisor("👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers และตรวจจับ Auto-Patch...")
     while True:
         try:
