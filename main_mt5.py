@@ -29,12 +29,36 @@ from datetime import datetime, timedelta
 import pandas as pd
 from dotenv import load_dotenv
 
+# เพิ่ม .local เข้า sys.path อัตโนมัติสำหรับสภาพแวดล้อม Wispbyte / Linux Container
+for p in [
+    os.path.abspath(".local/lib/python3.11/site-packages"),
+    os.path.abspath(".local/lib/python3.10/site-packages"),
+    os.path.abspath(".local/lib/python3.9/site-packages"),
+    os.path.expanduser("~/.local/lib/python3.11/site-packages")
+]:
+    if os.path.exists(p) and p not in sys.path:
+        sys.path.insert(0, p)
+
 try:
     from metaapi_cloud_sdk import MetaApi
 except ImportError:
-    print("❌ [IMPORT ERROR] ไม่พบแพ็กเกจ metaapi-cloud-sdk")
-    print("👉 กรุณาติดตั้งด้วยคำสั่ง: pip install metaapi-cloud-sdk")
-    sys.exit(1)
+    print("📦 [AUTO-INSTALL] ตรวจพบ metaapi-cloud-sdk ยังไม่ติดตั้ง กำลังติดตั้งอัตโนมัติบนคอนเทนเนอร์...")
+    try:
+        import subprocess
+        pip_cmd = [sys.executable, "-m", "pip", "install", "metaapi-cloud-sdk"]
+        if os.path.exists(".local"):
+            pip_cmd = [sys.executable, "-m", "pip", "install", "-U", "--prefix", ".local", "metaapi-cloud-sdk"]
+        subprocess.run(pip_cmd, check=True)
+        for p in [os.path.abspath(".local/lib/python3.11/site-packages"), os.path.expanduser("~/.local/lib/python3.11/site-packages")]:
+            if os.path.exists(p) and p not in sys.path:
+                sys.path.insert(0, p)
+        from metaapi_cloud_sdk import MetaApi
+        print("✅ [AUTO-INSTALL] ติดตั้ง metaapi-cloud-sdk สำเร็จเรียบร้อย!")
+    except Exception as e:
+        print(f"❌ [IMPORT ERROR] ติดตั้งอัตโนมัติไม่สำเร็จ: {e}")
+        print("👉 กรุณาพิมพ์ในช่องคำสั่ง Wispbyte: pip install -U --prefix .local metaapi-cloud-sdk")
+        time.sleep(30)
+        sys.exit(1)
 
 # =============================================================================
 # ⚙️ CONFIGURATION & CONSTANTS

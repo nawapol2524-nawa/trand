@@ -51,7 +51,10 @@ def check_for_updates():
                 subprocess.run(["git", "reset", "--hard", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 if req_changed:
                     log_supervisor("📦 [AUTO-PATCH] ตรวจพบแพ็กเกจใหม่ กำลังรัน pip install -r requirements.txt...")
-                    subprocess.run([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    pip_cmd = [sys.executable, "-m", "pip", "install", "-r", "requirements.txt"]
+                    if os.path.exists(".local"):
+                        pip_cmd = [sys.executable, "-m", "pip", "install", "-U", "--prefix", ".local", "-r", "requirements.txt"]
+                    subprocess.run(pip_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 time.sleep(2)
                 os.execv(sys.executable, [sys.executable] + sys.argv)
             else:
