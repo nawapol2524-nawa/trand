@@ -14,6 +14,8 @@ load_dotenv()
 BINANCE_SCRIPT = "main_binance.py"
 MT5_SCRIPT = "main_mt5.py"
 SUPERVISOR_LOG = "supervisor_log.txt"
+ENABLE_MT5 = os.getenv("ENABLE_MT5", "false").lower() in ("true", "1", "yes")
+
 
 def get_thai_time():
     return (datetime.utcnow() + timedelta(hours=7)).strftime('%Y-%m-%d %H:%M:%S')
@@ -99,12 +101,15 @@ def sync_to_gdrive():
         # 2. ข้อมูล MT5
         dashboard.append("\n\n📈 [MT5 FOREX CENT - Exness]")
         dashboard.append("-" * 50)
-        if os.path.exists("status_log_mt5.txt"):
-            with open("status_log_mt5.txt", "r", encoding="utf-8") as f:
-                lines = f.readlines()
-                dashboard.append("".join(lines[-15:]).strip())
+        if ENABLE_MT5:
+            if os.path.exists("status_log_mt5.txt"):
+                with open("status_log_mt5.txt", "r", encoding="utf-8") as f:
+                    lines = f.readlines()
+                    dashboard.append("".join(lines[-15:]).strip())
+            else:
+                dashboard.append("ยังไม่มีข้อมูล status_log_mt5.txt")
         else:
-            dashboard.append("ยังไม่มีข้อมูล status_log_mt5.txt")
+            dashboard.append("⏸️ สแตนด์บายชั่วคราว (ระบบรันเฉพาะ Binance Spot ตามแผนฟรี 100%)")
             
         dashboard.append("\n" + "=" * 65)
         full_content = "\n".join(dashboard)
@@ -198,11 +203,14 @@ if __name__ == '__main__':
     else:
         log_supervisor(f"❌ ไม่พบไฟล์ {BINANCE_SCRIPT}!")
 
-    # 2. เริ่มต้น MT5 Engine
-    if os.path.exists(MT5_SCRIPT):
-        start_worker("MT5Engine", MT5_SCRIPT)
+    # 2. เริ่มต้น MT5 Engine (เปิดเมื่อตั้งค่า ENABLE_MT5=true ใน .env)
+    if ENABLE_MT5:
+        if os.path.exists(MT5_SCRIPT):
+            start_worker("MT5Engine", MT5_SCRIPT)
+        else:
+            log_supervisor(f"❌ ไม่พบไฟล์ {MT5_SCRIPT}!")
     else:
-        log_supervisor(f"❌ ไม่พบไฟล์ {MT5_SCRIPT}!")
+        log_supervisor("⏸️ [MODE] รันเฉพาะ Binance Spot 100% (MT5 ปิดสแตนด์บายเพื่อรอเชื่อมต่อ Free API)")
 
     # 3. ลูปเฝ้าระวัง (Watchdog Loop)
     log_supervisor("👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers และตรวจจับ Auto-Patch...")
