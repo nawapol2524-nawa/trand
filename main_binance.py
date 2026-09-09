@@ -108,6 +108,44 @@ def save_memory(mem):
     except Exception:
         pass
 
+
+# ==========================================
+# 🤖 GROQ AI SECOND OPINION ENGINE
+# ==========================================
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+
+def ask_groq_ai_sentiment(symbol, decision_reason):
+    if not GROQ_API_KEY:
+        return True
+        
+    try:
+        import requests
+        url = "https://api.groq.com/openai/v1/chat/completions"
+        headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+        
+        prompt = f"You are a crypto quant analyst. A technical BUY signal triggered for {symbol}.\n"
+        prompt += f"Reason: {decision_reason}\n"
+        prompt += "Is this trade fundamentally safe right now? Reply ONLY with 'YES' or 'NO'."
+        
+        data = {
+            "model": "openai/gpt-oss-120b",
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 10,
+            "temperature": 0.1
+        }
+        
+        res = requests.post(url, headers=headers, json=data, timeout=10)
+        if res.status_code == 200:
+            content = res.json()['choices'][0]['message']['content'].strip().upper()
+            if "NO" in content:
+                log_trade(f"🧠 [GROQ AI] ระงับออเดอร์ {symbol}! (AI ปฏิเสธ)")
+                return False
+            log_trade(f"🧠 [GROQ AI] อนุมัติออเดอร์ {symbol}! (AI คอนเฟิร์ม YES)")
+            return True
+        else:
+            return True
+    except Exception:
+        return True
 # ==========================================
 # 🔄 AUTO-PATCH SYSTEM
 # ==========================================
@@ -478,6 +516,10 @@ def process_symbol(sym, btc_bullish):
         # 3. ตัดสินใจซื้อ (Single-Slot Sniper: เข้าได้เมื่อไม่มีเหรียญใดถือครองอยู่เลย)
         if not s['in_position'] and not is_cooling_down and not any_in_position:
             if eval_result["decision"] == "BUY":
+                # ปรึกษา Groq AI
+                is_ai_approved = ask_groq_ai_sentiment(sym, eval_result["reason"])
+                if not is_ai_approved:
+                    return # ข้ามการซื้อ
                 ticker = exchange.fetch_ticker(sym)
                 real_entry = float(ticker['last'])
                 raw_size = TRADE_AMOUNT_USDT / real_entry

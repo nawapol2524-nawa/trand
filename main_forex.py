@@ -201,6 +201,44 @@ def calculate_bb_rsi(candles, period=20, std_dev=2.0, rsi_period=14):
         'rsi': rsi
     }
 
+
+# ==========================================
+# 🤖 GROQ AI SECOND OPINION ENGINE
+# ==========================================
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+
+async def ask_groq_ai_sentiment(symbol, price, rsi, pattern_name):
+    if not GROQ_API_KEY:
+        return True
+        
+    try:
+        import requests
+        url = "https://api.groq.com/openai/v1/chat/completions"
+        headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+        
+        prompt = f"You are a strict Forex quantitative analyst. A technical BUY signal was triggered for {symbol}.\n"
+        prompt += f"Price: {price:.5f}, RSI: {rsi:.1f}, Pattern: {pattern_name}, Timeframe: 15m.\n"
+        prompt += "Is this a highly probable setup? Reply ONLY with 'YES' or 'NO'."
+        
+        data = {
+            "model": "openai/gpt-oss-120b",
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 10,
+            "temperature": 0.1
+        }
+        
+        res = requests.post(url, headers=headers, json=data, timeout=10)
+        if res.status_code == 200:
+            content = res.json()['choices'][0]['message']['content'].strip().upper()
+            if "NO" in content:
+                log(f"🧠 [GROQ AI] ปฏิเสธการเข้าเทรด! (AI บอกว่าไม่ปลอดภัย)")
+                return False
+            log(f"🧠 [GROQ AI] อนุมัติการเข้าเทรด! (AI คอนเฟิร์ม YES)")
+            return True
+        else:
+            return True
+    except Exception:
+        return True
 # ==========================================
 # ☁️ STATUS DASHBOARD WRITER
 # ==========================================
