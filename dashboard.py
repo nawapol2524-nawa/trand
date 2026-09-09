@@ -4,6 +4,8 @@ import os
 import time
 import re
 import json
+import urllib.parse
+import subprocess
 
 PORT = 9848
 
@@ -70,7 +72,6 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
         <html>
         <head>
             <meta charset="utf-8">
-            <meta http-equiv="refresh" content="5">
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <title>AG 2.0 Dual-Engine Dashboard</title>
             <style>
@@ -81,14 +82,38 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
                 h2 {{ margin-top: 0; font-size: 1.2em; border-bottom: 1px dashed #30363d; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }}
                 .binance-title {{ color: #f3ba2f; }}
                 .forex-title {{ color: #ff4444; }}
+                .terminal-title {{ color: #00ff00; }}
                 .pnl-badge {{ font-size: 0.9em; padding: 5px 10px; border-radius: 5px; background: rgba(255,255,255,0.1); }}
-                pre {{ white-space: pre-wrap; word-wrap: break-word; font-size: 0.95em; margin-top: 15px; }}
+                pre {{ white-space: pre-wrap; word-wrap: break-word; font-size: 0.95em; margin-top: 15px; background: #0d1117; padding: 15px; border-radius: 5px; }}
                 .footer {{ color: #8b949e; text-align: center; font-size: 0.85em; margin-top: 30px; }}
+                input[type="text"] {{ flex: 1; padding: 12px; background: #0d1117; color: #00ff00; border: 1px solid #30363d; border-radius: 5px; font-family: monospace; font-size: 1em; outline: none; }}
+                input[type="text"]:focus {{ border-color: #58a6ff; }}
+                button {{ padding: 12px 24px; background: #238636; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; }}
+                button:hover {{ background: #2ea043; }}
             </style>
+            <script>
+                // Auto-refresh the page every 5 seconds, but stop if user is typing in the command box
+                let refreshInterval = setInterval(function() {{
+                    window.location.reload();
+                }}, 5000);
+
+                function stopRefresh() {{
+                    clearInterval(refreshInterval);
+                }}
+            </script>
         </head>
         <body>
             <div class="container">
                 <h1>🚀 AG 2.0 Live Dashboard</h1>
+                
+                <div class="box">
+                    <h2 class="terminal-title">💻 Web Terminal (สั่งงาน Wispbyte)</h2>
+                    <form method="POST" action="/run" style="display: flex; gap: 10px; margin-top: 15px;">
+                        <input type="text" name="cmd" placeholder="พิมพ์คำสั่ง Linux เช่น ls, cat, pip install... (กดแล้วจะหยุดรีเฟรชออโต้)" onfocus="stopRefresh()" autocomplete="off">
+                        <button type="submit">Run Command</button>
+                    </form>
+                    <p style="color: #8b949e; font-size: 0.8em; margin-top: 10px;">⚠️ คำเตือน: นี่คือ Terminal ของจริงที่เชื่อมกับเซิร์ฟเวอร์ โปรดระวังการสั่งคำสั่งที่อาจทำลายระบบ</p>
+                </div>
                 
                 <div class="box">
                     <h2 class="binance-title">
@@ -118,6 +143,58 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
         </html>
         """
         self.wfile.write(html.encode("utf-8"))
+
+    def do_POST(self):
+        if self.path == "/run":
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length).decode('utf-8')
+            params = urllib.parse.parse_qs(post_data)
+            cmd = params.get('cmd', [''])[0]
+            
+            output = "ไม่มีคำสั่งถูกทำงาน"
+            if cmd:
+                try:
+                    result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15)
+                    output = result.stdout
+                    if result.stderr:
+                        output += "\n[Error/Warnings]:\n" + result.stderr
+                except subprocess.TimeoutExpired:
+                    output = "⏳ หมดเวลา (Timeout 15 วินาที) คำสั่งใช้เวลานานเกินไป"
+                except Exception as e:
+                    output = f"❌ เกิดข้อผิดพลาด: {str(e)}"
+                    
+            if not output.strip():
+                output = "(คำสั่งทำงานสำเร็จ แต่ไม่มีข้อความส่งกลับมา)"
+
+            html = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <title>Terminal Output</title>
+                <style>
+                    body {{ background-color: #0d1117; color: #00ff00; font-family: 'Courier New', Courier, monospace; padding: 20px; }}
+                    h2 {{ color: #58a6ff; }}
+                    pre {{ background: #161b22; padding: 20px; border: 1px solid #30363d; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; font-size: 1.1em; }}
+                    button {{ padding: 12px 24px; background: #238636; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1em; margin-top: 20px; }}
+                    button:hover {{ background: #2ea043; }}
+                </style>
+            </head>
+            <body>
+                <h2>$ {cmd}</h2>
+                <pre>{output}</pre>
+                <button onclick="window.location.href='/'">🔙 กลับไปหน้า Dashboard</button>
+            </body>
+            </html>
+            """
+            self.send_response(200)
+            self.send_header("Content-type", "text/html; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(html.encode("utf-8"))
+        else:
+            self.send_response(404)
+            self.end_headers()
 
     def log_message(self, format, *args):
         pass
