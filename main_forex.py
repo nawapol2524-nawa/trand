@@ -140,13 +140,22 @@ def update_status_file(account_info, active_trade, indicators, market_state="�
     learned = memory.get("learned_params", {})
     rl_info = f"RSI_Oversold={learned.get('rsi_oversold', 35):.1f} | RSI_Overbought={learned.get('rsi_overbought', 65):.1f}"
 
+    curr = account_info.get("currency", "USD")
+    raw_bal = float(account_info.get("balance", 0.0))
+    if curr == "USC":
+        bal_text = f"{raw_bal:,.2f} USC (≈ ${(raw_bal/100.0):,.2f} USD / {(raw_bal/100.0)*usd_thb_rate:,.2f} บาท)"
+        standby_text = "สแตนด์บายสไนเปอร์ 0.01 Cent Lot (งบ 100 บาท ~ 280 USC)"
+    else:
+        bal_text = f"${raw_bal:,.2f} USD (≈ {raw_bal*usd_thb_rate:,.2f} บาท)"
+        standby_text = f"สแตนด์บายสไนเปอร์งบ ${STAKE_USD:.2f} ≈ {STAKE_USD*usd_thb_rate:.2f} บาท"
+
     lines = [
         "=" * 60,
         f"📊 DERIV FOREX ENGINE (100% FREE CLOUD API)",
         f"🕒 เวลาไทย: {now} | สถานะ: {market_state}",
         "=" * 60,
-        f"👤 บัญชี: {account_info.get('loginid', 'N/A')} ({account_info.get('currency', 'USD')})",
-        f"💰 ยอดเงินคงเหลือ: ${bal_usd:,.2f} USD (≈ {bal_thb:,.2f} บาท)",
+        f"👤 บัญชี: {account_info.get('loginid', 'N/A')} ({curr})",
+        f"💰 ยอดเงินคงเหลือ: {bal_text}",
         f"📈 สินทรัพย์หลัก: {PRIMARY_SYMBOL} (Timeframe: 15m)",
         f"🎯 สัญญาณปัจจุบัน: {ind_text}",
         f"🧠 AI RL Memory: {rl_info}",
@@ -163,7 +172,7 @@ def update_status_file(account_info, active_trade, indicators, market_state="�
         lines.append(f"   - ราคาเข้า: {active_trade.get('entry_price', 0):.5f}")
         lines.append(f"   - Contract ID: {active_trade.get('contract_id', 'N/A')}")
     else:
-        lines.append(f"💤 [สถานะไม้] ไม่มีไม้ออเดอร์ค้าง (สแตนด์บายสไนเปอร์งบ ${STAKE_USD:.2f} ≈ {STAKE_USD*usd_thb_rate:.2f} บาท)")
+        lines.append(f"💤 [สถานะไม้] ไม่มีไม้ออเดอร์ค้าง ({standby_text})")
 
     lines.append("=" * 60)
     full_text = "\n".join(lines)
