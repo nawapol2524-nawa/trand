@@ -274,7 +274,7 @@ def calculate_indicators(df):
     return df
 
 
-def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi, adx, atr, bb_lower, wyckoff_valid, btc_bullish, is_hammer, is_bullish_engulfing, is_morning_star):
+def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi, adx, atr, bb_lower, wyckoff_valid, btc_bullish, is_hammer, is_bullish_engulfing, is_morning_star, is_4h_bull):
     learned = memory[sym]["learned_params"]
     min_vol = learned.get("min_volume_ratio", 1.30)
     min_adx = learned.get("min_adx", 14.0)
@@ -296,7 +296,7 @@ def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume
     reason = f"ยังไม่ทะลุ Swing High ${prev_high:.6f} และยังไม่แตะขอบล่าง BB"
 
     # --- Strategy 1: Breakout (ต้องผ่าน Gatekeeper BTC ด้วย) ---
-    is_strat1 = is_htf_bull and is_breakout and vol_confirmed and rsi_valid and adx_valid and wyckoff_valid and gatekeeper_pass
+    is_strat1 = is_htf_bull and is_4h_bull and is_breakout and vol_confirmed and rsi_valid and adx_valid and wyckoff_valid and gatekeeper_pass
 
     # --- Strategy 2: Pullback Sniper (ช้อนของถูกในตลาด Sideway เมื่อราคาแตะหรือหลุด Lower BB + RSI ต่ำ) ---
     is_strat2 = (current_price <= bb_lower * 1.002) and (rsi <= 40)
@@ -317,6 +317,8 @@ def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume
         reason = f"[Strategy: Candle_Reversal] พบ {pattern_name} | RSI:{rsi:.1f}"
     elif is_breakout and not gatekeeper_pass:
         reason = f"ระงับ Breakout (รอพี่ใหญ่ BTC ยืนเหนือ 1h EMA200)"
+    elif not is_4h_bull and not is_strat2:
+        reason = f"ระงับ: ราคาใต้ 4h EMA50 (MTF)"
     elif not is_htf_bull and not is_strat2: 
         reason = f"ราคาใต้ 1h EMA200"
 
@@ -438,13 +440,19 @@ def process_symbol(sym, btc_bullish):
         df_1h = pd.DataFrame(bars_1h, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
         df_1h['ema200'] = df_1h['close'].ewm(span=200, adjust=False).mean()
         ema_200_1h = float(df_1h['ema200'].iloc[-1])
+        
+        # 4h MTF Check
+        bars_4h = exchange.fetch_ohlcv(sym, timeframe='4h', limit=100)
+        df_4h = pd.DataFrame(bars_4h, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+        df_4h['ema50'] = df_4h['close'].ewm(span=50, adjust=False).mean()
+        is_4h_bull = float(df_4h['close'].iloc[-1]) > float(df_4h['ema50'].iloc[-1])
 
         is_hammer = bool(current_row['is_hammer'])
         is_bullish_engulfing = bool(current_row['is_bullish_engulfing'])
         is_morning_star = bool(current_row['is_morning_star'])
 
         # 2. ประเมินตลาด
-        eval_result = ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi_14, adx_14, atr_14, bb_lower, wyckoff_valid, btc_bullish, is_hammer, is_bullish_engulfing, is_morning_star)
+        eval_result = ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi_14, adx_14, atr_14, bb_lower, wyckoff_valid, btc_bullish, is_hammer, is_bullish_engulfing, is_morning_star, is_4h_bull)
         
         s = state[sym]
         is_cooling_down = s['cooldown_until'] and datetime.utcnow() < s['cooldown_until']
@@ -522,8 +530,21 @@ def process_symbol(sym, btc_bullish):
                     s['be_set'] = True
                     save_state()
                     log_trade(f"🛡️ [TRAILING STOP {sym}] ขยับ SL ตามกำไรไปที่ ${s['sl']:.6f}")
-
+                    
+            # 🚀 Dynamic Trailing TP (Let Profit Run)
             if current_price >= s['tp']:
+                # ทะลุเป้า TP แล้ว ไม่ขาย! เปลี่ยนเป้า TP ให้สูงขึ้นไปเรื่อยๆ ไม่มีที่สิ้นสุด
+                # และขยับเส้น SL ขึ้นมาจี้ตูดห่าง 1.0 ATR
+                s['tp'] = current_price * 1.5 # ขยับหนีไปไกลๆ 
+                new_sl = current_price - (1.0 * atr_14)
+                if new_sl > s['sl']:
+                    s['sl'] = new_sl
+                    s['be_set'] = True
+                save_state()
+                log_trade(f"🚀 [TRAILING RUN {sym}] ทะลุเป้า TP เก่าแล้ว! ไม่ขายหมู ขยับ SL ตามมาจี้ที่ ${s['sl']:.6f}")
+
+            # ปิดเมื่อชน SL (ตอนนี้ SL เป็นทั้งจุดตัดขาดทุนและจุด Take Profit เวลาวิ่งรันเทรนด์)
+            if False: # Disable the old TP trigger
                 try:
                     base_coin = sym.split('/')[0]
                     free_bal = exchange.fetch_free_balance().get(base_coin, 0)

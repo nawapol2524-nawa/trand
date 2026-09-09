@@ -79,6 +79,58 @@ def save_memory(mem):
 memory = load_memory()
 
 # ==========================================
+# 📰 NEWS AVOIDANCE SYSTEM
+# ==========================================
+import urllib.request
+import xml.etree.ElementTree as ET
+
+last_news_check = 0
+news_events = []
+
+def fetch_high_impact_news():
+    global last_news_check, news_events
+    now = time.time()
+    if now - last_news_check < 3600:
+        return
+    last_news_check = now
+    
+    try:
+        url = "https://nfs.faireconomy.media/ff_calendar_thisweek.xml"
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=10) as response:
+            xml_data = response.read()
+            
+        root = ET.fromstring(xml_data)
+        parsed_events = []
+        
+        for event in root.findall('event'):
+            impact = event.find('impact').text
+            currency = event.find('country').text
+            if impact and impact.strip() == 'High' and currency and currency.strip() in ['USD', 'EUR']:
+                date_str = event.find('date').text.strip()
+                time_str = event.find('time').text.strip()
+                if time_str:
+                    try:
+                        dt_str = f"{date_str} {time_str}"
+                        event_dt = datetime.strptime(dt_str, '%m-%d-%Y %I:%M%p')
+                        event_utc = event_dt + timedelta(hours=4)
+                        parsed_events.append(event_utc)
+                    except Exception:
+                        pass
+        news_events = parsed_events
+    except Exception as e:
+        log(f"⚠️ ไม่สามารถอัปเดตปฏิทินข่าวได้: {e}")
+
+def is_news_freeze():
+    fetch_high_impact_news()
+    now_utc = datetime.utcnow()
+    for evt in news_events:
+        diff = (now_utc - evt).total_seconds() / 60.0
+        if -30 <= diff <= 30:
+            return True
+    return False
+
+# ==========================================
 # 📊 TECHNICAL INDICATORS
 # ==========================================
 def calculate_bb_rsi(candles, period=20, std_dev=2.0, rsi_period=14):
@@ -286,6 +338,28 @@ async def deriv_engine():
                         await asyncio.sleep(60)
                         continue
 
+                    # 1.5 ขอข้อมูลแท่งเทียน H1 (1 Hour) เพื่อดูเทรนด์ใหญ่ (MTF)
+                    h1_req = {
+                        "ticks_history": PRIMARY_SYMBOL,
+                        "adjust_start_time": 1,
+                        "count": 60,
+                        "end": "latest",
+                        "style": "candles",
+                        "granularity": 3600
+                    }
+                    await ws.send(json.dumps(h1_req))
+                    h1_res = json.loads(await ws.recv())
+                    h1_candles = h1_res.get("candles", [])
+                    
+                    is_h1_bull = False
+                    if len(h1_candles) > 50:
+                        h1_closes = [c['close'] for c in h1_candles]
+                        h1_ema50 = h1_closes[0]
+                        alpha = 2.0 / (51)
+                        for p in h1_closes[1:]:
+                            h1_ema50 = (p * alpha) + (h1_ema50 * (1 - alpha))
+                        is_h1_bull = h1_closes[-1] > h1_ema50
+
                     # 2. ขอข้อมูลแท่งเทียน M15 ของ EUR/USD
                     candle_req = {
                         "ticks_history": PRIMARY_SYMBOL,
@@ -340,17 +414,31 @@ async def deriv_engine():
                             entry = active_trade['entry_price']
                             diff_pips = (cur_price - entry) / 0.00010
                             
+                            # Trailing SL Tracking
+                            trailing_sl_pips = active_trade.get('trailing_sl_pips', 1.0 if active_trade.get('be_locked', False) else -20.0)
+                            
                             # Auto-Breakeven เมื่อกำไรแตะ +15 pips
                             if diff_pips >= 15.0 and not active_trade.get('be_locked', False):
                                 active_trade['be_locked'] = True
+                                trailing_sl_pips = 1.0
+                                active_trade['trailing_sl_pips'] = trailing_sl_pips
                                 log(f"🛡️ [AUTO-BREAKEVEN] {active_trade['symbol']} กำไรแตะ +{diff_pips:.1f} pips! ขยับ SL ล็อกต้นทุน (+1.0 pip)")
 
-                            # ตรวจสอบจุดออก: TP (+30 pips) / ชนจุดคุ้มทุน (+1 pip) / SL (-20 pips) / หมดเวลา 15 นาที
+                            # Dynamic Trailing TP (Let Profit Run) เมื่อกำไรเกิน 30 pips ไม่ยอมปิด แต่ขยับ SL ตามห่างๆ 15 pips
+                            if diff_pips >= 30.0:
+                                new_trailing_sl = diff_pips - 15.0
+                                if new_trailing_sl > trailing_sl_pips:
+                                    trailing_sl_pips = new_trailing_sl
+                                    active_trade['trailing_sl_pips'] = trailing_sl_pips
+                                    log(f"🚀 [TRAILING RUN] {active_trade['symbol']} ทะลุเป้า TP กำไร +{diff_pips:.1f} pips! ไม่ขายหมู ขยับ SL ตามมาที่ +{trailing_sl_pips:.1f} pips")
+
+                            # ตรวจสอบจุดออก: ชนเส้น Trailing SL / หมดเวลา 15 นาที (ถ้ายังไม่เข้าโหมด Trailing Run)
                             hold_sec = time.time() - active_trade.get('start_time', time.time())
-                            is_tp = diff_pips >= 30.0
-                            is_be_hit = active_trade.get('be_locked', False) and diff_pips <= 1.0
-                            is_sl = (not active_trade.get('be_locked', False)) and (diff_pips <= -20.0)
-                            is_timeout = hold_sec >= 900 # 15 นาที
+                            is_sl = diff_pips <= trailing_sl_pips
+                            is_timeout = hold_sec >= 900 and not (diff_pips >= 30.0)
+                            
+                            is_tp = False # ปิดการตั้งเป้าตายตัวไปเลย ปล่อยให้ชน Trailing SL เอา
+                            is_be_hit = is_sl and active_trade.get('be_locked', False)
 
                             if is_tp or is_be_hit or is_sl or is_timeout:
                                 profit_usc = diff_pips * 0.10
