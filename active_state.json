@@ -19,26 +19,6 @@
     "consecutive_losses": 1,
     "cooldown_until": null
   },
-  "GALA/USDT": {
-    "in_position": true,
-    "entry_price": 0.001871,
-    "position_size": 3219,
-    "tp": 0.0018867142857142858,
-    "sl": 0.0018615714285714286,
-    "be_set": false,
-    "consecutive_losses": 0,
-    "cooldown_until": null
-  },
-  "VET/USDT": {
-    "in_position": false,
-    "entry_price": 0.0,
-    "position_size": 0.0,
-    "tp": 0.0,
-    "sl": 0.0,
-    "be_set": false,
-    "consecutive_losses": 0,
-    "cooldown_until": null
-  },
   "NEAR/USDT": {
     "in_position": false,
     "entry_price": 0.0,
@@ -50,6 +30,26 @@
     "cooldown_until": null
   },
   "AVAX/USDT": {
+    "in_position": false,
+    "entry_price": 0.0,
+    "position_size": 0.0,
+    "tp": 0.0,
+    "sl": 0.0,
+    "be_set": false,
+    "consecutive_losses": 0,
+    "cooldown_until": null
+  },
+  "GALA/USDT": {
+    "in_position": false,
+    "entry_price": 0.001871,
+    "position_size": 3219,
+    "tp": 0.0018867142857142858,
+    "sl": 0.0018719354999999999,
+    "be_set": true,
+    "consecutive_losses": 0,
+    "cooldown_until": null
+  },
+  "VET/USDT": {
     "in_position": false,
     "entry_price": 0.0,
     "position_size": 0.0,
