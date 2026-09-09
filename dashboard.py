@@ -9,9 +9,19 @@ import subprocess
 
 PORT = 9848
 
+_cached_pnl = 0.0
+_last_trade_log_mtime = 0
+
 def get_binance_pnl():
-    net_usdt = 0.0
-    if os.path.exists("trade_log.txt"):
+    global _cached_pnl, _last_trade_log_mtime
+    if not os.path.exists("trade_log.txt"):
+        return 0.0
+    try:
+        mtime = os.path.getmtime("trade_log.txt")
+        if mtime == _last_trade_log_mtime:
+            return _cached_pnl
+        _last_trade_log_mtime = mtime
+        net_usdt = 0.0
         with open("trade_log.txt", "r", encoding="utf-8") as f:
             for line in f:
                 if "[TP SUCCESS" in line and "กำไรสุทธิ:" in line:
@@ -22,7 +32,10 @@ def get_binance_pnl():
                     match = re.search(r'ขาดทุนสุทธิ:\s*-\$([0-9.]+)', line)
                     if match:
                         net_usdt -= float(match.group(1))
-    return net_usdt
+        _cached_pnl = net_usdt
+        return _cached_pnl
+    except Exception:
+        return _cached_pnl
 
 def get_forex_pnl():
     if os.path.exists("agent_memory_deriv.json"):
@@ -95,7 +108,7 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
                 // Auto-refresh the page every 5 seconds, but stop if user is typing in the command box
                 let refreshInterval = setInterval(function() {{
                     window.location.reload();
-                }}, 5000);
+                }}, 25000);
 
                 function stopRefresh() {{
                     clearInterval(refreshInterval);
@@ -136,7 +149,7 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
                 </div>
                 
                 <div class="footer">
-                    <p>อัปเดตอัตโนมัติทุก 5 วินาที | ดึงข้อมูลล่าสุดเมื่อ: {time.strftime('%Y-%m-%d %H:%M:%S')}</p>
+                    <p>อัปเดตอัตโนมัติทุก 25 วินาที (โหมดประหยัด CPU) | ดึงข้อมูลล่าสุดเมื่อ: {time.strftime('%Y-%m-%d %H:%M:%S')}</p>
                 </div>
             </div>
         </body>

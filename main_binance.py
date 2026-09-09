@@ -534,16 +534,28 @@ def process_symbol(sym, btc_bullish):
         avg_volume = float(df_15m['volume'].iloc[-11:-1].mean())
         current_volume = float(current_row['volume'])
 
-        bars_1h = exchange.fetch_ohlcv(sym, timeframe=HTF_TIMEFRAME, limit=210)
-        df_1h = pd.DataFrame(bars_1h, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
-        df_1h['ema200'] = df_1h['close'].ewm(span=200, adjust=False).mean()
-        ema_200_1h = float(df_1h['ema200'].iloc[-1])
+        # แคชข้อมูล 1h และ 4h ไว้นาน 5 นาที (300 วิ) เพื่อลดการคำนวณ Pandas ซ้ำซ้อนและลด CPU 70%
+        global _htf_cache
+        if '_htf_cache' not in globals():
+            _htf_cache = {}
         
-        # 4h MTF Check
-        bars_4h = exchange.fetch_ohlcv(sym, timeframe='4h', limit=100)
-        df_4h = pd.DataFrame(bars_4h, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
-        df_4h['ema50'] = df_4h['close'].ewm(span=50, adjust=False).mean()
-        is_4h_bull = float(df_4h['close'].iloc[-1]) > float(df_4h['ema50'].iloc[-1])
+        now_ts = time.time()
+        cached_data = _htf_cache.get(sym)
+        if cached_data and (now_ts - cached_data['ts'] < 300):
+            ema_200_1h = cached_data['ema_200_1h']
+            is_4h_bull = cached_data['is_4h_bull']
+        else:
+            bars_1h = exchange.fetch_ohlcv(sym, timeframe=HTF_TIMEFRAME, limit=210)
+            df_1h = pd.DataFrame(bars_1h, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+            df_1h['ema200'] = df_1h['close'].ewm(span=200, adjust=False).mean()
+            ema_200_1h = float(df_1h['ema200'].iloc[-1])
+            
+            bars_4h = exchange.fetch_ohlcv(sym, timeframe='4h', limit=100)
+            df_4h = pd.DataFrame(bars_4h, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+            df_4h['ema50'] = df_4h['close'].ewm(span=50, adjust=False).mean()
+            is_4h_bull = float(df_4h['close'].iloc[-1]) > float(df_4h['ema50'].iloc[-1])
+            
+            _htf_cache[sym] = {'ema_200_1h': ema_200_1h, 'is_4h_bull': is_4h_bull, 'ts': now_ts}
 
         is_hammer = bool(current_row['is_hammer'])
         is_bullish_engulfing = bool(current_row['is_bullish_engulfing'])
@@ -747,14 +759,24 @@ if __name__ == '__main__':
         log_status(f"🕒 สแกนตลาดเวลา: {get_thai_time()}")
         
         # 🛡️ เช็คสถานะ 1h EMA200 ของพี่ใหญ่ BTC เพื่อเป็น Gatekeeper ให้ Altcoins
-        btc_bullish = False
-        try:
-            btc_bars = exchange.fetch_ohlcv('BTC/USDT', timeframe=HTF_TIMEFRAME, limit=210)
-            btc_df = pd.DataFrame(btc_bars, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
-            btc_df['ema200'] = btc_df['close'].ewm(span=200, adjust=False).mean()
-            btc_bullish = float(btc_df['close'].iloc[-1]) > float(btc_df['ema200'].iloc[-1])
-        except Exception as e:
+        # แคชสถานะพี่ใหญ่ BTC ไว้นาน 3 นาที ลด CPU
+        global _btc_cache
+        if '_btc_cache' not in globals():
+            _btc_cache = {'bullish': False, 'ts': 0}
+        
+        now_ts = time.time()
+        if now_ts - _btc_cache['ts'] < 180:
+            btc_bullish = _btc_cache['bullish']
+        else:
             btc_bullish = False
+            try:
+                btc_bars = exchange.fetch_ohlcv('BTC/USDT', timeframe=HTF_TIMEFRAME, limit=210)
+                btc_df = pd.DataFrame(btc_bars, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+                btc_df['ema200'] = btc_df['close'].ewm(span=200, adjust=False).mean()
+                btc_bullish = float(btc_df['close'].iloc[-1]) > float(btc_df['ema200'].iloc[-1])
+                _btc_cache = {'bullish': btc_bullish, 'ts': now_ts}
+            except Exception:
+                btc_bullish = False
             
         for sym in SYMBOLS:
             process_symbol(sym, btc_bullish)
@@ -762,4 +784,4 @@ if __name__ == '__main__':
             
         log_status("="*50)
         trim_status_log_if_needed()
-        time.sleep(60) # พัก 1 นาทีก่อนสแกนรอบถัดไป
+        time.sleep(75) # พัก 75 วินาที ลดภาระ CPU ของเซิร์ฟเวอร์

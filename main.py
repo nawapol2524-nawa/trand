@@ -242,9 +242,9 @@ if __name__ == '__main__':
             check_for_updates()
             sync_to_gdrive()
             monitor_workers()
-            time.sleep(15)
+            time.sleep(30)
         except (KeyboardInterrupt, SystemExit):
             stop_all_workers()
         except Exception as e:
             log_supervisor(f"⚠️ เกิดข้อผิดพลาดใน Supervisor Loop: {e}")
-            time.sleep(15)
+            time.sleep(30)

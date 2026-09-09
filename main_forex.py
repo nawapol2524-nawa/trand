@@ -456,27 +456,33 @@ async def deriv_engine():
                         await asyncio.sleep(60)
                         continue
 
-                    # 1.5 ขอข้อมูลแท่งเทียน H1 (1 Hour) เพื่อดูเทรนด์ใหญ่ (MTF)
-                    h1_req = {
-                        "ticks_history": PRIMARY_SYMBOL,
-                        "adjust_start_time": 1,
-                        "count": 60,
-                        "end": "latest",
-                        "style": "candles",
-                        "granularity": 3600
-                    }
-                    await ws.send(json.dumps(h1_req))
-                    h1_res = json.loads(await ws.recv())
-                    h1_candles = h1_res.get("candles", [])
-                    
-                    is_h1_bull = False
-                    if len(h1_candles) > 50:
-                        h1_closes = [c['close'] for c in h1_candles]
-                        h1_ema50 = h1_closes[0]
-                        alpha = 2.0 / (51)
-                        for p in h1_closes[1:]:
-                            h1_ema50 = (p * alpha) + (h1_ema50 * (1 - alpha))
-                        is_h1_bull = h1_closes[-1] > h1_ema50
+                    # 1.5 ขอข้อมูลแท่งเทียน H1 (แคช 5 นาที ลดการใช้ CPU & Network)
+                    now_ts = time.time()
+                    if not hasattr(deriv_engine, "_last_h1_time") or (now_ts - deriv_engine._last_h1_time > 300):
+                        try:
+                            h1_req = {
+                                "ticks_history": PRIMARY_SYMBOL,
+                                "adjust_start_time": 1,
+                                "count": 60,
+                                "end": "latest",
+                                "style": "candles",
+                                "granularity": 3600
+                            }
+                            await ws.send(json.dumps(h1_req))
+                            h1_res = json.loads(await ws.recv())
+                            h1_candles = h1_res.get("candles", [])
+                            deriv_engine._cached_h1_bull = False
+                            if len(h1_candles) > 50:
+                                h1_closes = [c['close'] for c in h1_candles]
+                                h1_ema50 = h1_closes[0]
+                                alpha = 2.0 / (51)
+                                for p in h1_closes[1:]:
+                                    h1_ema50 = (p * alpha) + (h1_ema50 * (1 - alpha))
+                                deriv_engine._cached_h1_bull = h1_closes[-1] > h1_ema50
+                            deriv_engine._last_h1_time = now_ts
+                        except Exception:
+                            pass
+                    is_h1_bull = getattr(deriv_engine, "_cached_h1_bull", False)
 
                     # 2. ขอข้อมูลแท่งเทียน M15 ของ EUR/USD
                     candle_req = {
@@ -664,7 +670,7 @@ async def deriv_engine():
                     if loop_count % 3 == 0 and indicators:
                         mode_tag = "Live" if is_live_account else "Sim Cent 100บ."
                         log(f"👀 [EUR/USD 15m] ราคา: {indicators['price']:.5f} | RSI: {indicators['rsi']:.1f} | BB-Lower: {indicators['lower_bb']:.5f} | สถานะ: {mode_tag}")
-                    await asyncio.sleep(25)
+                    await asyncio.sleep(60)
 
         except Exception as e:
             log(f"⚠️ เกิดข้อผิดพลาดใน Deriv WebSocket: {e}. รอเชื่อมต่อใหม่ใน 10 วินาที...")
