@@ -202,19 +202,27 @@ async def deriv_engine():
                 await ws.send(json.dumps(auth_req))
                 auth_res = json.loads(await ws.recv())
 
+                is_live_account = False
                 if "error" in auth_res:
-                    log(f"❌ Authorization Failed: {auth_res['error'].get('message')}")
-                    await asyncio.sleep(15)
-                    continue
-
-                auth_data = auth_res.get("authorize", {})
-                account_info = {
-                    "loginid": auth_data.get("loginid", "DEMO"),
-                    "currency": auth_data.get("currency", "USD"),
-                    "balance": float(auth_data.get("balance", 0.0)),
-                    "email": auth_data.get("email", "")
-                }
-                log(f"✅ ล็อกอิน Deriv สำเร็จ! บัญชี: {account_info['loginid']} | ยอดเงิน: ${account_info['balance']:,.2f} USD")
+                    err_msg = auth_res['error'].get('message', 'Unknown error')
+                    log(f"⚠️ การยืนยันสิทธิ์ด้วย Token ไม่สำเร็จ ({err_msg})")
+                    log("💡 สลับเข้าสู่โหมด [Live Forex AI Training Engine] (ดึงกราฟสดตลาดโลก 24 ชม. จำลองบัญชี Cent 100 บาท / 280 USC เพื่อเทรน AI)")
+                    account_info = {
+                        "loginid": "DERIV-SIM-CENT",
+                        "currency": "USC",
+                        "balance": 280.0, # จำลองบัญชี Cent งบ 100 บาท (~280 USC)
+                        "email": "local_ai_training"
+                    }
+                else:
+                    is_live_account = True
+                    auth_data = auth_res.get("authorize", {})
+                    account_info = {
+                        "loginid": auth_data.get("loginid", "DEMO"),
+                        "currency": auth_data.get("currency", "USD"),
+                        "balance": float(auth_data.get("balance", 0.0)),
+                        "email": auth_data.get("email", "")
+                    }
+                    log(f"✅ ล็อกอิน Deriv สำเร็จ! บัญชี: {account_info['loginid']} | ยอดเงิน: ${account_info['balance']:,.2f} USD")
 
                 # Main Loop สำหรับการดึงข้อมูลและเทรด
                 while True:
@@ -246,35 +254,67 @@ async def deriv_engine():
 
                     # 3. ตรวจสอบสถานะไม้ที่ถืออยู่ (ถ้ามี)
                     if active_trade:
-                        # ตรวจสอบว่าสัญญาหมดอายุหรือปิดหรือยัง
-                        poc_req = {"proposal_open_contract": 1, "contract_id": active_trade["contract_id"]}
-                        await ws.send(json.dumps(poc_req))
-                        poc_res = json.loads(await ws.recv())
-                        contract = poc_res.get("proposal_open_contract", {})
+                        if is_live_account:
+                            # ตรวจสอบว่าสัญญาหมดอายุหรือปิดหรือยังบน Deriv
+                            poc_req = {"proposal_open_contract": 1, "contract_id": active_trade["contract_id"]}
+                            await ws.send(json.dumps(poc_req))
+                            poc_res = json.loads(await ws.recv())
+                            contract = poc_res.get("proposal_open_contract", {})
 
-                        if contract.get("is_expired") or contract.get("is_sold"):
-                            profit_usd = float(contract.get("profit", 0.0))
-                            profit_thb = profit_usd * usd_thb_rate
-                            status_str = "🎉 WIN" if profit_usd >= 0 else "🛑 LOSS"
+                            if contract.get("is_expired") or contract.get("is_sold"):
+                                profit_usd = float(contract.get("profit", 0.0))
+                                profit_thb = profit_usd * usd_thb_rate
+                                status_str = "🎉 WIN" if profit_usd >= 0 else "🛑 LOSS"
 
-                            log(f"{status_str} ปิดไม้ {active_trade['symbol']} | กำไร: ${profit_usd:+,.2f} USD (≈ {profit_thb:+,.2f} บาท)")
+                                log(f"{status_str} ปิดไม้ {active_trade['symbol']} | กำไร: ${profit_usd:+,.2f} USD (≈ {profit_thb:+,.2f} บาท)")
+                                
+                                memory["total_trades"] = memory.get("total_trades", 0) + 1
+                                if profit_usd >= 0:
+                                    memory["wins"] = memory.get("wins", 0) + 1
+                                else:
+                                    memory["losses"] = memory.get("losses", 0) + 1
+                                    current_oversold = memory.get("learned_params", {}).get("rsi_oversold", 35.0)
+                                    if current_oversold > 28.0:
+                                        memory["learned_params"]["rsi_oversold"] = round(current_oversold - 0.5, 1)
+
+                                memory["net_profit_usd"] = memory.get("net_profit_usd", 0.0) + profit_usd
+                                memory["net_profit_thb"] = memory.get("net_profit_thb", 0.0) + profit_thb
+                                save_memory(memory)
+                                active_trade = None
+                        else:
+                            # โหมดจำลองบัญชี Cent (คำนวณจากราคา Real-time ของตลาดโลก)
+                            cur_price = indicators['price']
+                            entry = active_trade['entry_price']
+                            diff_pips = (cur_price - entry) / 0.00010
                             
-                            # อัปเดต Memory การเรียนรู้ (RL Dynamic Tuning)
-                            memory["total_trades"] = memory.get("total_trades", 0) + 1
-                            if profit_usd >= 0:
-                                memory["wins"] = memory.get("wins", 0) + 1
-                                # รางวัล: ตลาดเข้าตามสัญญาณดี รักษาค่าไว้
-                            else:
-                                memory["losses"] = memory.get("losses", 0) + 1
-                                # บทลงโทษ: ปรับความเข้มงวดของ RSI ให้รัดกุมขึ้น
-                                current_oversold = memory.get("learned_params", {}).get("rsi_oversold", 35.0)
-                                if current_oversold > 28.0:
-                                    memory["learned_params"]["rsi_oversold"] = round(current_oversold - 0.5, 1)
+                            # ตรวจสอบ TP (+30 pips) หรือ SL (-20 pips) หรือหมดอายุ 15 นาที
+                            hold_sec = time.time() - active_trade.get('start_time', time.time())
+                            is_tp = diff_pips >= 30.0
+                            is_sl = diff_pips <= -20.0
+                            is_timeout = hold_sec >= 900 # 15 นาที
 
-                            memory["net_profit_usd"] = memory.get("net_profit_usd", 0.0) + profit_usd
-                            memory["net_profit_thb"] = memory.get("net_profit_thb", 0.0) + profit_thb
-                            save_memory(memory)
-                            active_trade = None
+                            if is_tp or is_sl or is_timeout:
+                                # คำนวณกำไร/ขาดทุน (0.01 Cent Lot = 0.10 USC ต่อ pip)
+                                profit_usc = diff_pips * 0.10
+                                profit_thb = (profit_usc / 100.0) * usd_thb_rate
+                                status_str = "🎉 WIN" if profit_usc >= 0 else "🛑 LOSS"
+                                
+                                log(f"{status_str} [SIM CENT] ปิดไม้ {active_trade['symbol']} ({diff_pips:+.1f} pips) | กำไร: {profit_usc:+.2f} USC (≈ {profit_thb:+.2f} บาท)")
+                                account_info['balance'] = round(account_info['balance'] + profit_usc, 2)
+                                
+                                memory["total_trades"] = memory.get("total_trades", 0) + 1
+                                if profit_usc >= 0:
+                                    memory["wins"] = memory.get("wins", 0) + 1
+                                else:
+                                    memory["losses"] = memory.get("losses", 0) + 1
+                                    current_oversold = memory.get("learned_params", {}).get("rsi_oversold", 35.0)
+                                    if current_oversold > 28.0:
+                                        memory["learned_params"]["rsi_oversold"] = round(current_oversold - 0.5, 1)
+
+                                memory["net_profit_usd"] = memory.get("net_profit_usd", 0.0) + (profit_usc / 100.0)
+                                memory["net_profit_thb"] = memory.get("net_profit_thb", 0.0) + profit_thb
+                                save_memory(memory)
+                                active_trade = None
 
                     # 4. สแกนหาจังหวะเข้าเทรด Pullback Sniper
                     elif indicators:
@@ -288,35 +328,49 @@ async def deriv_engine():
                         # สัญญาณ BUY (Pullback Oversold)
                         if price <= lower_bb and rsi <= learned_oversold:
                             log(f"🎯 [ENTRY TRIGGER] พบสัญญาณ BUY {PRIMARY_SYMBOL}! (Price: {price:.5f} <= LowerBB, RSI: {rsi:.1f})")
-                            buy_req = {
-                                "buy": 1,
-                                "price": STAKE_USD,
-                                "parameters": {
-                                    "amount": STAKE_USD,
-                                    "basis": "stake",
-                                    "contract_type": "CALL",
-                                    "currency": account_info.get("currency", "USD"),
-                                    "duration": 15,
-                                    "duration_unit": "m",
-                                    "symbol": PRIMARY_SYMBOL
+                            if is_live_account:
+                                buy_req = {
+                                    "buy": 1,
+                                    "price": STAKE_USD,
+                                    "parameters": {
+                                        "amount": STAKE_USD,
+                                        "basis": "stake",
+                                        "contract_type": "CALL",
+                                        "currency": account_info.get("currency", "USD"),
+                                        "duration": 15,
+                                        "duration_unit": "m",
+                                        "symbol": PRIMARY_SYMBOL
+                                    }
                                 }
-                            }
-                            await ws.send(json.dumps(buy_req))
-                            buy_res = json.loads(await ws.recv())
+                                await ws.send(json.dumps(buy_req))
+                                buy_res = json.loads(await ws.recv())
 
-                            if "error" in buy_res:
-                                log(f"⚠️ ซื้อสัญญาไม่สำเร็จ: {buy_res['error'].get('message')}")
+                                if "error" in buy_res:
+                                    log(f"⚠️ ซื้อสัญญาไม่สำเร็จ: {buy_res['error'].get('message')}")
+                                else:
+                                    buy_data = buy_res.get("buy", {})
+                                    active_trade = {
+                                        "contract_id": buy_data.get("contract_id"),
+                                        "symbol": PRIMARY_SYMBOL,
+                                        "type": "BUY (CALL)",
+                                        "entry_price": price,
+                                        "stake": STAKE_USD,
+                                        "entry_time": get_thai_time(),
+                                        "start_time": time.time()
+                                    }
+                                    log(f"✅ เปิดไม้สำเร็จ! Contract ID: {active_trade['contract_id']} งบ: ${STAKE_USD:.2f} USD")
                             else:
-                                buy_data = buy_res.get("buy", {})
+                                # โหมดจำลองบัญชี Cent 100 บาท (0.01 Cent lot)
                                 active_trade = {
-                                    "contract_id": buy_data.get("contract_id"),
+                                    "contract_id": f"SIM-{int(time.time())}",
                                     "symbol": PRIMARY_SYMBOL,
-                                    "type": "BUY (CALL)",
+                                    "type": "BUY 0.01 Cent Lot",
                                     "entry_price": price,
-                                    "stake": STAKE_USD,
-                                    "entry_time": get_thai_time()
+                                    "stake": 0.01,
+                                    "entry_time": get_thai_time(),
+                                    "start_time": time.time()
                                 }
-                                log(f"✅ เปิดไม้สำเร็จ! Contract ID: {active_trade['contract_id']} งบ: ${STAKE_USD:.2f} USD (≈ {STAKE_USD*usd_thb_rate:.2f} บาท)")
+                                log(f"✅ [SIM CENT] เปิดไม้ 0.01 Cent Lot สำเร็จ! ราคาเข้า: {price:.5f} (งบ 100 บาท ~ 280 USC)")
 
                     # 5. อัปเดตไฟล์สถานะ
                     update_status_file(account_info, active_trade, indicators, market_state="🟢 เฝ้าระวังสไนเปอร์ 24 ชม.")

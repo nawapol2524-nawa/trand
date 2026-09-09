@@ -16,7 +16,7 @@ load_dotenv()
 SYMBOLS = ['SOL/USDT', 'BTC/USDT', 'GALA/USDT', 'VET/USDT', 'PAXG/USDT']
 TIMEFRAME = '15m'
 HTF_TIMEFRAME = '1h'
-TRADE_AMOUNT_USDT = 6.0 # จำนวนเงินที่ใช้ซื้อต่อ 1 ไม้ (งบเริ่มต้น ~200 บาท ผ่านเกณฑ์ Binance ขั้นต่ำ $5 พอดี)
+TRADE_AMOUNT_USDT = 6.5 # จำนวนเงินที่ใช้ซื้อต่อ 1 ไม้ (~220 บาท เผื่อ Buffer ตอน Stop Loss ไม่ให้หลุดต่ำกว่าเกณฑ์ขั้นต่ำ $5 ของ Binance)
 
 MEMORY_FILE = "agent_memory_multi.json"
 LOG_FILE = "trade_log.txt"
@@ -250,7 +250,6 @@ def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume
     learned = memory[sym]["learned_params"]
     min_vol = learned.get("min_volume_ratio", 1.30)
     min_adx = learned.get("min_adx", 14.0)
-    min_adx = min(min_adx, 14.0)
     
     vol_ratio = (current_volume / avg_volume) if avg_volume > 0 else 1.0
 
