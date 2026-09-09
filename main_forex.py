@@ -207,6 +207,57 @@ def calculate_bb_rsi(candles, period=20, std_dev=2.0, rsi_period=14):
 # ==========================================
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
 
+async def get_market_context_async():
+    """ดึง Fear & Greed Index + ข่าวสดจาก RSS ฟรี ไม่ต้องใช้ API Key"""
+    import requests
+    import xml.etree.ElementTree as ET
+    context = {}
+
+    # 1. Fear & Greed Index
+    try:
+        r = requests.get("https://api.alternative.me/fng/?limit=1", timeout=5)
+        if r.status_code == 200:
+            d = r.json()["data"][0]
+            context["fear_greed"] = f"{d['value']} ({d['value_classification']})"
+    except:
+        context["fear_greed"] = "N/A"
+
+    # 2. USD Index & Market Cap Change
+    try:
+        r = requests.get("https://api.coingecko.com/api/v3/global", timeout=5)
+        if r.status_code == 200:
+            d = r.json()["data"]
+            mktcap_change = d.get("market_cap_change_percentage_24h_usd", 0)
+            context["market_cap_change_24h"] = f"{mktcap_change:+.2f}%"
+    except:
+        context["market_cap_change_24h"] = "N/A"
+
+    # 3. Forex/Economic headlines
+    headlines = []
+    try:
+        r = requests.get("https://www.forexlive.com/feed/news/", timeout=5)
+        if r.status_code == 200:
+            root = ET.fromstring(r.content)
+            for item in root.findall(".//item")[:5]:
+                title = item.find("title")
+                if title is not None and title.text:
+                    headlines.append(title.text.strip())
+    except:
+        pass
+    if not headlines:
+        try:
+            r = requests.get("https://cryptopanic.com/news/rss/", timeout=5)
+            if r.status_code == 200:
+                root = ET.fromstring(r.content)
+                for item in root.findall(".//item")[:5]:
+                    title = item.find("title")
+                    if title is not None and title.text:
+                        headlines.append(title.text.strip())
+        except:
+            pass
+    context["headlines"] = headlines
+    return context
+
 async def ask_groq_ai_sentiment(symbol, price, rsi, pattern_name):
     if not GROQ_API_KEY:
         return True
@@ -215,11 +266,23 @@ async def ask_groq_ai_sentiment(symbol, price, rsi, pattern_name):
         import requests
         url = "https://api.groq.com/openai/v1/chat/completions"
         headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+
+        ctx = await get_market_context_async()
+        news_block = "\n".join([f"- {h}" for h in ctx.get("headlines", [])]) or "N/A"
         
-        prompt = f"You are a strict Forex quantitative analyst. A technical BUY signal was triggered for {symbol}.\n"
-        prompt += f"Price: {price:.5f}, RSI: {rsi:.1f}, Pattern: {pattern_name}, Timeframe: 15m.\n"
-        prompt += "Is this a highly probable setup? Reply ONLY with 'YES' or 'NO'."
-        
+        prompt = f"""You are a strict Forex quantitative analyst. A technical BUY signal was triggered for {symbol}.
+Price: {price:.5f}, RSI: {rsi:.1f}, Pattern: {pattern_name}, Timeframe: 15m.
+
+=== LIVE MARKET CONTEXT ===
+Fear & Greed Index: {ctx.get("fear_greed", "N/A")}
+Global Market Cap Change (24h): {ctx.get("market_cap_change_24h", "N/A")}
+
+=== LATEST FOREX & ECONOMIC HEADLINES ===
+{news_block}
+
+Based on the technical signal AND the live market context, is this Forex BUY setup highly probable?
+Reply ONLY with YES or NO."""
+
         data = {
             "model": "openai/gpt-oss-120b",
             "messages": [{"role": "user", "content": prompt}],
@@ -227,18 +290,19 @@ async def ask_groq_ai_sentiment(symbol, price, rsi, pattern_name):
             "temperature": 0.1
         }
         
-        res = requests.post(url, headers=headers, json=data, timeout=10)
+        res = requests.post(url, headers=headers, json=data, timeout=15)
         if res.status_code == 200:
-            content = res.json()['choices'][0]['message']['content'].strip().upper()
+            content = res.json()["choices"][0]["message"]["content"].strip().upper()
             if "NO" in content:
-                log(f"🧠 [GROQ AI] ปฏิเสธการเข้าเทรด! (AI บอกว่าไม่ปลอดภัย)")
+                log(f"🧠 [GROQ AI v3] ปฏิเสธ! (AI อ่านข่าวแล้วไม่ปลอดภัย | F&G: {ctx.get('fear_greed','N/A')})")
                 return False
-            log(f"🧠 [GROQ AI] อนุมัติการเข้าเทรด! (AI คอนเฟิร์ม YES)")
+            log(f"🧠 [GROQ AI v3] อนุมัติ! (AI อ่านข่าวแล้วคอนเฟิร์ม | F&G: {ctx.get('fear_greed','N/A')})")
             return True
         else:
             return True
     except Exception:
         return True
+
 # ==========================================
 # ☁️ STATUS DASHBOARD WRITER
 # ==========================================
