@@ -329,33 +329,49 @@ async def deriv_engine():
 
     while True:
         try:
-            async with websockets.connect(DERIV_WS_URL, ping_interval=20, ping_timeout=20) as ws:
-                log("🔌 เชื่อมต่อ WebSocket สำเร็จ! กำลังยืนยันสิทธิ์ด้วย Token...")
-                auth_req = {"authorize": DERIV_TOKEN}
-                await ws.send(json.dumps(auth_req))
-                auth_res = json.loads(await ws.recv())
+            target_ws_url = DERIV_WS_URL
+            is_live_account = False
+            account_info = {
+                "loginid": "SIM_AI_MODE",
+                "currency": "USC",
+                "balance": 280.0,
+                "email": "local_ai_training"
+            }
+            
+            # Modern PAT Flow Authentication (API 2026)
+            import requests
+            try:
+                headers = {"Authorization": f"Bearer {DERIV_TOKEN}", "Deriv-App-ID": APP_ID}
+                accounts_res = requests.get("https://api.derivws.com/trading/v1/options/accounts", headers=headers, timeout=10)
+                if accounts_res.status_code == 200:
+                    accounts = accounts_res.json().get("data", [])
+                    if accounts:
+                        active_acc = accounts[0] # Pick the first account
+                        acc_id = active_acc.get("account_id")
+                        otp_res = requests.post(f"https://api.derivws.com/trading/v1/options/accounts/{acc_id}/otp", headers=headers, timeout=10)
+                        if otp_res.status_code == 200:
+                            target_ws_url = otp_res.json().get("data", {}).get("url")
+                            is_live_account = True
+                            account_info = {
+                                "loginid": acc_id,
+                                "currency": active_acc.get("currency", "USD"),
+                                "balance": float(active_acc.get("balance", 0.0)),
+                                "email": "PAT_ACCOUNT"
+                            }
+            except Exception as e:
+                log(f"⚠️ Modern Auth Error: {e}")
 
-                is_live_account = False
-                if "error" in auth_res:
-                    err_msg = auth_res['error'].get('message', 'Unknown error')
-                    log(f"⚠️ การยืนยันสิทธิ์ด้วย Token ไม่สำเร็จ ({err_msg})")
-                    log("💡 สลับเข้าสู่โหมด [Live Forex AI Training Engine] (ดึงกราฟสดตลาดโลก 24 ชม. จำลองบัญชี Cent 100 บาท / 280 USC เพื่อเทรน AI)")
-                    account_info = {
-                        "loginid": "DERIV-SIM-CENT",
-                        "currency": "USC",
-                        "balance": 280.0, # จำลองบัญชี Cent งบ 100 บาท (~280 USC)
-                        "email": "local_ai_training"
-                    }
+            if not is_live_account:
+                log("⚠️ การยืนยันสิทธิ์ด้วย Token/PAT ไม่สำเร็จ (Fallback to Sim Mode)")
+                log("💡 สลับเข้าสู่โหมด [Live Forex AI Training Engine] (จำลองบัญชี Cent 100 บาท / 280 USC เพื่อเทรน AI)")
+                # If falling back to Sim, we use the public endpoint to get ticks without HTTP 401
+                target_ws_url = "wss://api.derivws.com/trading/v1/options/ws/public"
+
+            async with websockets.connect(target_ws_url, ping_interval=20, ping_timeout=20) as ws:
+                if is_live_account:
+                    log(f"✅ ล็อกอิน Deriv สำเร็จ! บัญชี: {account_info['loginid']} | ยอดเงิน: ${account_info['balance']:,.2f} {account_info['currency']}")
                 else:
-                    is_live_account = True
-                    auth_data = auth_res.get("authorize", {})
-                    account_info = {
-                        "loginid": auth_data.get("loginid", "DEMO"),
-                        "currency": auth_data.get("currency", "USD"),
-                        "balance": float(auth_data.get("balance", 0.0)),
-                        "email": auth_data.get("email", "")
-                    }
-                    log(f"✅ ล็อกอิน Deriv สำเร็จ! บัญชี: {account_info['loginid']} | ยอดเงิน: ${account_info['balance']:,.2f} USD")
+                    log("🔌 เชื่อมต่อ WebSocket แบบ Public สำเร็จ! (สำหรับดึงกราฟ)")
 
                 # Main Loop สำหรับการดึงข้อมูลและเทรด
                 loop_count = 0
