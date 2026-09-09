@@ -34,12 +34,20 @@ exchange = ccxt.binance({
 })
 exchange.set_sandbox_mode(True)
 
-try:
-    bal = exchange.fetch_balance()
-    start_usdt = bal['total'].get('USDT', 0.0)
-    print(f"✅ เชื่อมต่อ Testnet สำเร็จ! ยอดเงิน: {start_usdt:.2f} USDT", flush=True)
-except Exception as e:
-    print(f"❌ เชื่อมต่อ Testnet ไม่สำเร็จ: {e}", flush=True)
+# พยายามเชื่อมต่อและตรวจสอบยอดเงิน (พร้อมระบบ Retry ป้องกัน 502 Bad Gateway ชั่วคราว)
+max_retries = 10
+start_usdt = 0.0
+for attempt in range(1, max_retries + 1):
+    try:
+        bal = exchange.fetch_balance()
+        start_usdt = bal['total'].get('USDT', 0.0)
+        print(f"✅ เชื่อมต่อ Testnet สำเร็จ! ยอดเงิน: {start_usdt:.2f} USDT", flush=True)
+        break
+    except Exception as e:
+        print(f"⚠️ เชื่อมต่อ Testnet รอบที่ {attempt}/{max_retries} ไม่สำเร็จ ({e}) รอ 5 วินาที...", flush=True)
+        time.sleep(5)
+else:
+    print(f"❌ เชื่อมต่อ Testnet ล้มเหลวครบ {max_retries} ครั้ง ปิดระบบอย่างปลอดภัย", flush=True)
     exit()
 
 # ==========================================
