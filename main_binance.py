@@ -34,21 +34,22 @@ exchange = ccxt.binance({
 })
 exchange.set_sandbox_mode(True)
 
-# พยายามเชื่อมต่อและตรวจสอบยอดเงิน (พร้อมระบบ Retry ป้องกัน 502 Bad Gateway ชั่วคราว)
-max_retries = 10
+# พยายามเชื่อมต่อและตรวจสอบยอดเงิน (พร้อมระบบ Standby Retry ไม่แครช แม้ Testnet จะล่ม 502)
 start_usdt = 0.0
-for attempt in range(1, max_retries + 1):
+while True:
     try:
         bal = exchange.fetch_balance()
         start_usdt = bal['total'].get('USDT', 0.0)
-        print(f"✅ เชื่อมต่อ Testnet สำเร็จ! ยอดเงิน: {start_usdt:.2f} USDT", flush=True)
+        print(f"✅ เชื่อมต่อ Binance สำเร็จ! ยอดเงิน: {start_usdt:.2f} USDT", flush=True)
         break
     except Exception as e:
-        print(f"⚠️ เชื่อมต่อ Testnet รอบที่ {attempt}/{max_retries} ไม่สำเร็จ ({e}) รอ 5 วินาที...", flush=True)
-        time.sleep(5)
-else:
-    print(f"❌ เชื่อมต่อ Testnet ล้มเหลวครบ {max_retries} ครั้ง ปิดระบบอย่างปลอดภัย", flush=True)
-    exit()
+        print(f"⚠️ เซิร์ฟเวอร์ Binance Testnet ขัดข้องชั่วคราว ({e}) -> เข้าสู่โหมด Standby รอเชื่อมต่อใหม่ใน 30 วินาที...", flush=True)
+        try:
+            with open(STATUS_FILE, "w", encoding="utf-8") as f:
+                f.write(f"⚠️ [BINANCE SPOT - งบ ~200 บาท]\nเซิร์ฟเวอร์ Binance Testnet (testnet.binance.vision) กำลังซ่อมบำรุง/ล่ม 502 ชั่วคราว\nระบบกำลังรอเชื่อมต่อใหม่อัตโนมัติทุก 30 วินาที ({datetime.utcnow() + timedelta(hours=7)})\n")
+        except Exception:
+            pass
+        time.sleep(30)
 
 # ==========================================
 # 🧠 MEMORY & STATE MANAGEMENT
