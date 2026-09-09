@@ -2,3 +2,4 @@ ccxt
 pandas
 requests
 python-dotenv
+metaapi-cloud-sdk

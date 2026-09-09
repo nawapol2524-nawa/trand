@@ -1,0 +1,805 @@
+[INITIALIZED] AG 2.0 MT5 Cent Status Log
+
+=================================================================
+🚀 เริ่มต้นระบบบอทเทรด MetaTrader 5 Cent Account (Pullback Sniper 15m)
+🕒 เวลาเริ่มต้นระบบ: 2026-09-08 22:19:10
+💰 แผนพอร์ต: ทุน 100 บาท (~280 USC) | ขนาดไม้: 0.01 Cent Lot
+=================================================================
+
+=================================================================
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+📢 [คำแนะนำการตั้งค่า / Setup Instructions]
+ไม่พบค่า 'METAAPI_TOKEN' หรือ 'METAAPI_ACCOUNT_ID' ที่ถูกต้องในไฟล์ .env
+กรุณาเพิ่มการตั้งค่าสำหรับ MetaTrader 5 ในไฟล์ .env ดังตัวอย่างนี้:
+
+  METAAPI_TOKEN=your_token_from_metaapi
+  METAAPI_ACCOUNT_ID=your_account_id_from_metaapi
+  MT5_SYMBOL=EURUSDc    # (ระบุได้ตามต้องการ หรือปล่อยว่างเพื่อให้บอทตรวจจับ)
+  MT5_LOT_SIZE=0.01     # (ค่าเริ่มต้น 0.01 Cent Lot สำหรับทุน 100 บาท)
+
+💡 ระบบกำลังเข้าสู่โหมด Standby อย่างปลอดภัย (Safe Standby Mode)
+   และจะตรวจสอบไฟล์ .env ซ้ำอัตโนมัติทุกๆ 30 วินาที...
+=
+
+
+=================================================================
+🚀 เริ่มต้นระบบบอทเทรด MetaTrader 5 Cent Account (Pullback Sniper 15m)
+🕒 เวลาเริ่มต้นระบบ: 2026-09-09 09:21:22
+💰 แผนพอร์ต: ทุน 100 บาท (~280 USC) | ขนาดไม้: 0.01 Cent Lot
+=================================================================
+📡 กำลังเตรียมเชื่อมต่อ MetaApi Cloud SDK...
+🔍 ค้นหาบัญชี MT5 ID: c5fddb1b-f837-42fd-b30e-1329887a8493...
+⏳ บัญชี MT5 ยังไม่ได้ Deploy กำลัง Deploy API Server...
+[2026-09-09 09:21:25] ⚠️ [LOOP WARNING] เกิดข้อผิดพลาดในการทำงาน: To allow trading account deployment please top up your account. (d7edfa69f57e4b09bace43f1c7156c93). Request URL: https://mt-provisioning-api-v1.agiliumtrade.agiliumtrade.ai/users/current/accounts/c5fddb1b-f837-42fd-b30e-1329887a8493/deploy
+⏳ กำลังรีเซ็ตการเชื่อมต่อและลองใหม่อีกครั้งใน 15 วินาที...
+🔍 ค้นหาบัญชี MT5 ID: c5fddb1b-f837-42fd-b30e-1329887a8493...
+⏳ บัญชี MT5 ยังไม่ได้ Deploy กำลัง Deploy API Server...
+[2026-09-09 09:21:44] ⚠️ [LOOP WARNING] เกิดข้อผิดพลาดในการทำงาน: To allow trading account deployment please top up your account. (8e098b8076ec41b6a455ffc71890d280). Request URL: https://mt-provisioning-api-v1.agiliumtrade.agiliumtrade.ai/users/current/accounts/c5fddb1b-f837-42fd-b30e-1329887a8493/deploy
+⏳ กำลังรีเซ็ตการเชื่อมต่อและลองใหม่อีกครั้งใน 15 วินาที...
