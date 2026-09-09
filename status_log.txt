@@ -20,3 +20,97 @@
 [2026-09-09 13:54:48] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN บน Binance Testnet
 [2026-09-09 13:54:48] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
 [2026-09-09 13:54:50] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-09 13:54:57] ☁️ [API-SYNC] อัปโหลดความจำและ Log ผ่าน API สำเร็จ! เสถียร 100%
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-09 13:54:57
+🪙 [BINANCE] [SOL/USDT] 104.510000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [BTC/USDT] 79120.500000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [NEAR/USDT] 2.389000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [AVAX/USDT] 8.026000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [GALA/USDT] 0.001892 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [VET/USDT] 0.007905 | WAITING (ราคาใต้ 1h EMA200)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-09 13:56:14
+🪙 [BINANCE] [SOL/USDT] 104.510000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [BTC/USDT] 79135.830000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [NEAR/USDT] 2.391000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [AVAX/USDT] 8.025000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [GALA/USDT] 0.001892 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [VET/USDT] 0.007930 | WAITING (ราคาใต้ 1h EMA200)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-09 13:57:31
+🪙 [BINANCE] [SOL/USDT] 104.490000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [BTC/USDT] 79127.780000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [NEAR/USDT] 2.394000 | WAITING (ระงับ Breakout (รอพี่ใหญ่ BTC ยืนเหนือ 1h EMA200))
+🪙 [BINANCE] [AVAX/USDT] 8.020000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [GALA/USDT] 0.001892 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [VET/USDT] 0.007920 | WAITING (ราคาใต้ 1h EMA200)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-09 13:58:47
+🪙 [BINANCE] [SOL/USDT] 104.550000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [BTC/USDT] 79168.850000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [NEAR/USDT] 2.402000 | WAITING (ระงับ Breakout (รอพี่ใหญ่ BTC ยืนเหนือ 1h EMA200))
+🪙 [BINANCE] [AVAX/USDT] 8.025000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [GALA/USDT] 0.001890 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [VET/USDT] 0.007920 | WAITING (ราคาใต้ 1h EMA200)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-09 14:00:05
+🪙 [BINANCE] [SOL/USDT] 104.550000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [BTC/USDT] 79160.000000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [NEAR/USDT] 2.395000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [AVAX/USDT] 8.022000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [GALA/USDT] 0.001890 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [VET/USDT] 0.007922 | WAITING (ราคาใต้ 1h EMA200)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-09 14:01:22
+🪙 [BINANCE] [SOL/USDT] 104.540000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [BTC/USDT] 79164.620000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [NEAR/USDT] 2.389000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [AVAX/USDT] 8.020000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [GALA/USDT] 0.001890 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [VET/USDT] 0.007922 | WAITING (ราคาใต้ 1h EMA200)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-09 14:02:39
+🪙 [BINANCE] [SOL/USDT] 104.610000 | WAITING (ยังไม่ทะลุ Swing High $104.640000 และยังไม่แตะขอบล่าง BB)
+🪙 [BINANCE] [BTC/USDT] 79180.460000 | WAITING (ยังไม่ทะลุ Swing High $79198.690000 และยังไม่แตะขอบล่าง BB)
+🪙 [BINANCE] [NEAR/USDT] 2.389000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [AVAX/USDT] 8.026000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [GALA/USDT] 0.001890 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [VET/USDT] 0.007922 | WAITING (ราคาใต้ 1h EMA200)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-09 14:03:55
+🪙 [BINANCE] [SOL/USDT] 104.610000 | WAITING (ยังไม่ทะลุ Swing High $104.640000 และยังไม่แตะขอบล่าง BB)
+🪙 [BINANCE] [BTC/USDT] 79173.990000 | WAITING (ยังไม่ทะลุ Swing High $79198.690000 และยังไม่แตะขอบล่าง BB)
+🪙 [BINANCE] [NEAR/USDT] 2.386000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [AVAX/USDT] 8.023000 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [GALA/USDT] 0.001890 | WAITING (ราคาใต้ 1h EMA200)
+🪙 [BINANCE] [VET/USDT] 0.007915 | WAITING (ราคาใต้ 1h EMA200)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-09 14:05:12
+🪙 [BINANCE] [SOL/USDT] 104.720000 | WAITING (ยังไม่ทะลุ Swing High $104.640000 และยังไม่แตะขอบล่าง BB)
+🪙 [BINANCE] [BTC/USDT] 79211.660000 | WAITING (ยังไม่ทะลุ Swing High $79198.690000 และยังไม่แตะขอบล่าง BB)
+🪙 [BINANCE] [NEAR/USDT] 2.400000 | WAITING (ยังไม่ทะลุ Swing High $2.402000 และยังไม่แตะขอบล่าง BB)
+🪙 [BINANCE] [AVAX/USDT] 8.031000 | WAITING (ยังไม่ทะลุ Swing High $8.038000 และยังไม่แตะขอบล่าง BB)
+🪙 [BINANCE] [GALA/USDT] 0.001892 | WAITING (ยังไม่ทะลุ Swing High $0.001894 และยังไม่แตะขอบล่าง BB)
+🪙 [BINANCE] [VET/USDT] 0.007917 | WAITING (ราคาใต้ 1h EMA200)
+==================================================
+[2026-09-09 14:06:24] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN บน Binance Testnet
+[2026-09-09 14:06:24] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-09 14:06:25] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
