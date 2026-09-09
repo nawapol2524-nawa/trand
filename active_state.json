@@ -51,12 +51,12 @@
   },
   "VET/USDT": {
     "in_position": false,
-    "entry_price": 0.0,
-    "position_size": 0.0,
-    "tp": 0.0,
-    "sl": 0.0,
+    "entry_price": 0.007649,
+    "position_size": 850.0,
+    "tp": 0.007732571428571428,
+    "sl": 0.007598857142857143,
     "be_set": false,
-    "consecutive_losses": 0,
+    "consecutive_losses": 1,
     "cooldown_until": null
   }
 }
