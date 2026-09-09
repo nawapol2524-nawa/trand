@@ -49,7 +49,7 @@ def check_for_updates():
         status = subprocess.run(["git", "status", "-uno"], capture_output=True, text=True)
         if "Your branch is behind" in status.stdout:
             diff = subprocess.run(["git", "diff", "--name-only", "HEAD", "origin/main"], capture_output=True, text=True)
-            core_files = ["main.py", "main_binance.py", "main_forex.py", "requirements.txt"]
+            core_files = ["main.py", "main_binance.py", "main_forex.py", "dashboard.py", "requirements.txt"]
             if any(cf in diff.stdout for cf in core_files):
                 log_supervisor("🔄 [AUTO-PATCH] พบการอัปเดตโค้ดหลักใน GitHub! กำลังอัปเดตและรีสตาร์ทระบบ...")
                 req_changed = "requirements.txt" in diff.stdout
