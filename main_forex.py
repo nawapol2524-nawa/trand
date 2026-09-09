@@ -225,6 +225,7 @@ async def deriv_engine():
                     log(f"✅ ล็อกอิน Deriv สำเร็จ! บัญชี: {account_info['loginid']} | ยอดเงิน: ${account_info['balance']:,.2f} USD")
 
                 # Main Loop สำหรับการดึงข้อมูลและเทรด
+                loop_count = 0
                 while True:
                     # 1. ตรวจสอบวันหยุดเสาร์-อาทิตย์ สำหรับตลาด Forex
                     utcnow = datetime.utcnow()
@@ -374,6 +375,10 @@ async def deriv_engine():
 
                     # 5. อัปเดตไฟล์สถานะ
                     update_status_file(account_info, active_trade, indicators, market_state="🟢 เฝ้าระวังสไนเปอร์ 24 ชม.")
+                    loop_count += 1
+                    if loop_count % 3 == 0 and indicators:
+                        mode_tag = "Live" if is_live_account else "Sim Cent 100บ."
+                        log(f"👀 [EUR/USD 15m] ราคา: {indicators['price']:.5f} | RSI: {indicators['rsi']:.1f} | BB-Lower: {indicators['lower_bb']:.5f} | สถานะ: {mode_tag}")
                     await asyncio.sleep(25)
 
         except Exception as e:
