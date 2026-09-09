@@ -114,9 +114,34 @@ def calculate_bb_rsi(candles, period=20, std_dev=2.0, rsi_period=14):
         rs = avg_gain / avg_loss
         rsi = 100.0 - (100.0 / (1.0 + rs))
 
+    # 🕯️ Candlestick Patterns Analysis (Last 3 Candles)
+    curr = candles[-1]
+    prev = candles[-2]
+    prev2 = candles[-3]
+    
+    body = abs(curr['close'] - curr['open'])
+    candle_range = curr['high'] - curr['low']
+    lower_wick = min(curr['open'], curr['close']) - curr['low']
+    upper_wick = curr['high'] - max(curr['open'], curr['close'])
+    
+    prev_body = abs(prev['close'] - prev['open'])
+    prev2_body = abs(prev2['close'] - prev2['open'])
+
+    # 1. Hammer (Bullish Reversal)
+    is_hammer = (lower_wick >= 2 * body) and (upper_wick <= candle_range * 0.1) and (body > 0)
+    
+    # 2. Bullish Engulfing
+    is_bullish_engulfing = (prev['close'] < prev['open']) and (curr['close'] > curr['open']) and (curr['open'] <= prev['close']) and (curr['close'] >= prev['open']) and (body > prev_body)
+    
+    # 3. Morning Star
+    is_morning_star = (prev2['close'] < prev2['open']) and (prev_body < (prev2_body * 0.3)) and (curr['close'] > curr['open']) and (curr['close'] > (prev2['close'] + prev2['open']) / 2)
+
+    has_bullish_pattern = is_hammer or is_bullish_engulfing or is_morning_star
+
     return {
         'price': closes[-1],
         'sma': sma,
+        'has_bullish_pattern': has_bullish_pattern,
         'upper_bb': upper_bb,
         'lower_bb': lower_bb,
         'bb_width': bb_width,
@@ -373,9 +398,15 @@ async def deriv_engine():
                         # Squeeze Filter: งดเข้าเมื่อ BB แคบจัด (bb_width < 0.0006)
                         is_squeezed = bb_width < 0.0006
 
-                        # สัญญาณ BUY (Pullback Oversold)
-                        if price <= lower_bb and rsi <= effective_oversold and not is_squeezed:
-                            log(f"🎯 [ENTRY TRIGGER] พบสัญญาณ BUY {PRIMARY_SYMBOL}! (Price: {price:.5f} <= LowerBB, RSI: {rsi:.1f} <= {effective_oversold:.1f}, BBWidth: {bb_width:.5f})")
+                        # สัญญาณ BUY (Pullback Oversold OR Candlestick Reversal)
+                        has_pattern = indicators.get('has_bullish_pattern', False)
+                        
+                        is_pullback = price <= lower_bb and rsi <= effective_oversold and not is_squeezed
+                        is_reversal = has_pattern and (rsi <= 45) and not is_squeezed
+                        
+                        if is_pullback or is_reversal:
+                            trigger_name = "Candle_Reversal" if is_reversal and not is_pullback else "Pullback_Oversold"
+                            log(f"🎯 [ENTRY TRIGGER] พบสัญญาณ BUY {PRIMARY_SYMBOL}! [{trigger_name}] (Price: {price:.5f}, RSI: {rsi:.1f}, BBWidth: {bb_width:.5f}, Pattern: {has_pattern})")
                             if is_live_account:
                                 buy_req = {
                                     "buy": 1,

@@ -240,14 +240,41 @@ def calculate_indicators(df):
     dx = 100 * abs(df['+di'] - df['-di']) / (df['+di'] + df['-di'])
     df['adx'] = dx.ewm(alpha=1/14, adjust=False).mean()
 
+
     # คำนวณ Bollinger Bands สำหรับท่า Pullback
     df['sma20'] = df['close'].rolling(window=20).mean()
     df['std20'] = df['close'].rolling(window=20).std()
     df['bb_lower'] = df['sma20'] - (2 * df['std20'])
 
+    # 🕯️ Candlestick Patterns Analysis
+    body = abs(df['close'] - df['open'])
+    candle_range = df['high'] - df['low']
+    lower_wick = df[['open', 'close']].min(axis=1) - df['low']
+    upper_wick = df['high'] - df[['open', 'close']].max(axis=1)
+    
+    prev_open = df['open'].shift(1)
+    prev_close = df['close'].shift(1)
+    prev_body = abs(prev_close - prev_open)
+    
+    prev2_open = df['open'].shift(2)
+    prev2_close = df['close'].shift(2)
+    prev2_body = abs(prev2_close - prev2_open)
+
+    # 1. Doji
+    df['is_doji'] = body <= (candle_range * 0.1)
+    # 2. Hammer (Bullish Reversal)
+    df['is_hammer'] = (lower_wick >= 2 * body) & (upper_wick <= candle_range * 0.1) & (body > 0)
+    # 3. Shooting Star (Bearish Reversal)
+    df['is_shooting_star'] = (upper_wick >= 2 * body) & (lower_wick <= candle_range * 0.1) & (body > 0)
+    # 4. Bullish Engulfing
+    df['is_bullish_engulfing'] = (prev_close < prev_open) & (df['close'] > df['open']) & (df['open'] <= prev_close) & (df['close'] >= prev_open) & (body > prev_body)
+    # 5. Morning Star
+    df['is_morning_star'] = (prev2_close < prev2_open) & (prev_body < (prev2_body * 0.3)) & (df['close'] > df['open']) & (df['close'] > (prev2_close + prev2_open) / 2)
+
     return df
 
-def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi, adx, atr, bb_lower, wyckoff_valid, btc_bullish):
+
+def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi, adx, atr, bb_lower, wyckoff_valid, btc_bullish, is_hammer, is_bullish_engulfing, is_morning_star):
     learned = memory[sym]["learned_params"]
     min_vol = learned.get("min_volume_ratio", 1.30)
     min_adx = learned.get("min_adx", 14.0)
@@ -274,12 +301,20 @@ def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume
     # --- Strategy 2: Pullback Sniper (ช้อนของถูกในตลาด Sideway เมื่อราคาแตะหรือหลุด Lower BB + RSI ต่ำ) ---
     is_strat2 = (current_price <= bb_lower * 1.002) and (rsi <= 40)
 
+    # --- Strategy 3: Candlestick Reversal (สัญญาณกลับตัวจากแท่งเทียนที่แม่นยำ) ---
+    has_bullish_pattern = is_hammer or is_bullish_engulfing or is_morning_star
+    is_strat3 = has_bullish_pattern and (rsi <= 45) # เกิด Pattern ในโซนที่ราคาค่อนข้างต่ำ
+
     if is_strat1:
         decision = "BUY"
         reason = f"[Strategy: Breakout] ยืนยันครบ | RSI:{rsi:.1f} ADX:{adx:.1f} Vol:{vol_ratio:.2f}x"
     elif is_strat2:
         decision = "BUY"
         reason = f"[Strategy: Pullback_Sniper] ช้อนของถูก | RSI:{rsi:.1f} แตะ BB Lower: ${bb_lower:.4f}"
+    elif is_strat3:
+        decision = "BUY"
+        pattern_name = "Hammer" if is_hammer else ("Engulfing" if is_bullish_engulfing else "MorningStar")
+        reason = f"[Strategy: Candle_Reversal] พบ {pattern_name} | RSI:{rsi:.1f}"
     elif is_breakout and not gatekeeper_pass:
         reason = f"ระงับ Breakout (รอพี่ใหญ่ BTC ยืนเหนือ 1h EMA200)"
     elif not is_htf_bull and not is_strat2: 
@@ -404,8 +439,12 @@ def process_symbol(sym, btc_bullish):
         df_1h['ema200'] = df_1h['close'].ewm(span=200, adjust=False).mean()
         ema_200_1h = float(df_1h['ema200'].iloc[-1])
 
+        is_hammer = bool(current_row['is_hammer'])
+        is_bullish_engulfing = bool(current_row['is_bullish_engulfing'])
+        is_morning_star = bool(current_row['is_morning_star'])
+
         # 2. ประเมินตลาด
-        eval_result = ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi_14, adx_14, atr_14, bb_lower, wyckoff_valid, btc_bullish)
+        eval_result = ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi_14, adx_14, atr_14, bb_lower, wyckoff_valid, btc_bullish, is_hammer, is_bullish_engulfing, is_morning_star)
         
         s = state[sym]
         is_cooling_down = s['cooldown_until'] and datetime.utcnow() < s['cooldown_until']
