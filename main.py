@@ -37,6 +37,14 @@ def log_supervisor(text):
 # 🔄 AUTO-PATCH SYSTEM (GIT SYNC)
 # ==========================================
 last_update_check = 0
+
+# บังคับอัปเดตไฟล์ทุกครั้งที่รัน (แก้ปัญหา git reset ค้าง)
+try:
+    subprocess.run(["git", "fetch", "origin", "main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    subprocess.run(["git", "reset", "--hard", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+except:
+    pass
+
 def check_for_updates():
     global last_update_check
     now = time.time()
