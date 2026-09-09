@@ -112,7 +112,7 @@ def save_memory(mem):
 # ==========================================
 # 🤖 GROQ AI SECOND OPINION ENGINE
 # ==========================================
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
 
 def ask_groq_ai_sentiment(symbol, decision_reason):
     if not GROQ_API_KEY:

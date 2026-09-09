@@ -205,7 +205,7 @@ def calculate_bb_rsi(candles, period=20, std_dev=2.0, rsi_period=14):
 # ==========================================
 # 🤖 GROQ AI SECOND OPINION ENGINE
 # ==========================================
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
 
 async def ask_groq_ai_sentiment(symbol, price, rsi, pattern_name):
     if not GROQ_API_KEY:
