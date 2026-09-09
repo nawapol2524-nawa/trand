@@ -3745,3 +3745,11 @@
 [2026-09-09 22:28:40] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN บน Binance Testnet
 [2026-09-09 22:28:40] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
 [2026-09-09 22:28:42] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-09 22:28:48] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN บน Binance Testnet
+[2026-09-09 22:28:48] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-09 22:28:50] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-09 22:28:53] ☁️ [API-SYNC] อัปโหลดความจำและ Log ผ่าน API สำเร็จ! เสถียร 100%
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-09 22:28:53
+🪙 [BINANCE] [SOL/USDT] 102.580000 | WAITING ([Strategy: Pullback_Sniper] ช้อนของถูก | RSI:27.3 แตะ BB Lower: $102.7611)
