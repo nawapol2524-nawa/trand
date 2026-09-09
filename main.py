@@ -12,8 +12,10 @@ load_dotenv()
 # ⚙️ SUPERVISOR CONFIGURATION
 # ==========================================
 BINANCE_SCRIPT = "main_binance.py"
+FOREX_SCRIPT = "main_forex.py"
 MT5_SCRIPT = "main_mt5.py"
 SUPERVISOR_LOG = "supervisor_log.txt"
+ENABLE_DERIV = os.getenv("ENABLE_DERIV", "true").lower() in ("true", "1", "yes")
 ENABLE_MT5 = os.getenv("ENABLE_MT5", "false").lower() in ("true", "1", "yes")
 
 
@@ -46,7 +48,7 @@ def check_for_updates():
         status = subprocess.run(["git", "status", "-uno"], capture_output=True, text=True)
         if "Your branch is behind" in status.stdout:
             diff = subprocess.run(["git", "diff", "--name-only", "HEAD", "origin/main"], capture_output=True, text=True)
-            core_files = ["main.py", "main_binance.py", "main_mt5.py", "requirements.txt"]
+            core_files = ["main.py", "main_binance.py", "main_forex.py", "requirements.txt"]
             if any(cf in diff.stdout for cf in core_files):
                 log_supervisor("🔄 [AUTO-PATCH] พบการอัปเดตโค้ดหลักใน GitHub! กำลังอัปเดตและรีสตาร์ทระบบ...")
                 req_changed = "requirements.txt" in diff.stdout
@@ -84,7 +86,7 @@ def sync_to_gdrive():
         thai_now = get_thai_time()
         dashboard = []
         dashboard.append("=" * 65)
-        dashboard.append("🏛️ AG 2.0 DUAL-ENGINE LIVE MONITOR (BINANCE + MT5)")
+        dashboard.append("🏛️ AG 2.0 DUAL-ENGINE LIVE MONITOR (BINANCE + DERIV FOREX)")
         dashboard.append(f"🕒 อัปเดตล่าสุด: {thai_now} (เวลาไทย)")
         dashboard.append("=" * 65)
         
@@ -98,18 +100,18 @@ def sync_to_gdrive():
         else:
             dashboard.append("ยังไม่มีข้อมูล status_log.txt")
             
-        # 2. ข้อมูล MT5
-        dashboard.append("\n\n📈 [MT5 FOREX CENT - Exness]")
+        # 2. ข้อมูล Deriv Forex (100% Free Cloud API)
+        dashboard.append("\n\n📈 [DERIV FOREX & CFD - 24/7 Cloud]")
         dashboard.append("-" * 50)
-        if ENABLE_MT5:
-            if os.path.exists("status_log_mt5.txt"):
-                with open("status_log_mt5.txt", "r", encoding="utf-8") as f:
+        if ENABLE_DERIV:
+            if os.path.exists("status_log_deriv.txt"):
+                with open("status_log_deriv.txt", "r", encoding="utf-8") as f:
                     lines = f.readlines()
                     dashboard.append("".join(lines[-15:]).strip())
             else:
-                dashboard.append("ยังไม่มีข้อมูล status_log_mt5.txt")
+                dashboard.append("รอ Deriv Engine โหลดข้อมูลสถานะ...")
         else:
-            dashboard.append("⏸️ สแตนด์บายชั่วคราว (ระบบรันเฉพาะ Binance Spot ตามแผนฟรี 100%)")
+            dashboard.append("⏸️ สแตนด์บายชั่วคราว (ENABLE_DERIV=false)")
             
         dashboard.append("\n" + "=" * 65)
         full_content = "\n".join(dashboard)
@@ -203,14 +205,19 @@ if __name__ == '__main__':
     else:
         log_supervisor(f"❌ ไม่พบไฟล์ {BINANCE_SCRIPT}!")
 
-    # 2. เริ่มต้น MT5 Engine (เปิดเมื่อตั้งค่า ENABLE_MT5=true ใน .env)
-    if ENABLE_MT5:
+    # 2. เริ่มต้น Deriv Forex Engine (100% Free Cloud API)
+    if ENABLE_DERIV:
+        if os.path.exists(FOREX_SCRIPT):
+            start_worker("DerivForexEngine", FOREX_SCRIPT)
+        else:
+            log_supervisor(f"❌ ไม่พบไฟล์ {FOREX_SCRIPT}!")
+    elif ENABLE_MT5:
         if os.path.exists(MT5_SCRIPT):
             start_worker("MT5Engine", MT5_SCRIPT)
         else:
             log_supervisor(f"❌ ไม่พบไฟล์ {MT5_SCRIPT}!")
     else:
-        log_supervisor("⏸️ [MODE] รันเฉพาะ Binance Spot 100% (MT5 ปิดสแตนด์บายเพื่อรอเชื่อมต่อ Free API)")
+        log_supervisor("⏸️ [MODE] รันเฉพาะ Binance Spot 100%")
 
     # 3. ลูปเฝ้าระวัง (Watchdog Loop)
     log_supervisor("👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers และตรวจจับ Auto-Patch...")
