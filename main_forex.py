@@ -11,8 +11,8 @@ load_dotenv()
 # ==========================================
 # ⚙️ CONFIGURATION & CONSTANTS
 # ==========================================
-DERIV_TOKEN = os.getenv("DERIV_API_TOKEN")
-APP_ID = os.getenv("DERIV_APP_ID", "1089") # Official default testing app_id
+DERIV_TOKEN = os.getenv("DERIV_API_TOKEN", "").strip()
+APP_ID = os.getenv("DERIV_APP_ID", "34lQGsI4JVHDtfZhaHAqk") # User's Registered App ID
 DERIV_WS_URL = f"wss://ws.derivws.com/websockets/v3?app_id={APP_ID}"
 
 SYMBOLS = ["frxEURUSD", "frxGBPUSD", "frxUSDJPY"]
