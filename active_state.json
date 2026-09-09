@@ -1,23 +1,23 @@
 {
   "SOL/USDT": {
     "in_position": false,
-    "entry_price": 104.05,
+    "entry_price": 105.42,
     "position_size": 0.06,
-    "tp": 105.04464285714285,
-    "sl": 103.45321428571428,
-    "be_set": false,
-    "consecutive_losses": 2,
-    "cooldown_until": "2026-09-07T19:40:46.974967"
+    "tp": 106.59321428571428,
+    "sl": 105.47270999999999,
+    "be_set": true,
+    "consecutive_losses": 0,
+    "cooldown_until": null
   },
   "BTC/USDT": {
-    "in_position": true,
-    "entry_price": 79224.05,
+    "in_position": false,
+    "entry_price": 79634.28,
     "position_size": 0.0001,
-    "tp": 84558.51964285714,
-    "sl": 76023.36821428571,
+    "tp": 80209.15857142858,
+    "sl": 79289.35285714286,
     "be_set": false,
-    "consecutive_losses": 2,
-    "cooldown_until": "2026-09-07T18:42:11.188802"
+    "consecutive_losses": 1,
+    "cooldown_until": null
   },
   "GALA/USDT": {
     "in_position": false,
@@ -31,11 +31,11 @@
   },
   "VET/USDT": {
     "in_position": false,
-    "entry_price": 0.007056,
-    "position_size": 849,
-    "tp": 0.007122071428571428,
-    "sl": 0.007059528,
-    "be_set": true,
+    "entry_price": 0.0,
+    "position_size": 0.0,
+    "tp": 0.0,
+    "sl": 0.0,
+    "be_set": false,
     "consecutive_losses": 0,
     "cooldown_until": null
   },
