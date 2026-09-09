@@ -116,12 +116,12 @@
     ]
   },
   "GALA/USDT": {
-    "total_trades": 3,
-    "wins": 1,
+    "total_trades": 4,
+    "wins": 2,
     "losses": 2,
     "learned_params": {
-      "min_volume_ratio": 1.15,
-      "min_adx": 12.0
+      "min_volume_ratio": 1.1,
+      "min_adx": 11.5
     },
     "reflections": [
       {
@@ -141,6 +141,12 @@
         "type": "WIN",
         "pnl": "+0.76%",
         "lesson": "Win (+0.76%): ลดเกณฑ์ Vol->1.45x, ADX->15.5"
+      },
+      {
+        "date": "2026-09-09 13:44:18",
+        "type": "WIN",
+        "pnl": "+1.12%",
+        "lesson": "Win (+1.12%): ลดเกณฑ์ Vol->1.1x, ADX->11.5"
       }
     ]
   },
