@@ -630,7 +630,7 @@ async def deriv_engine():
                                         "currency": account_info.get("currency", "USD"),
                                         "duration": 15,
                                         "duration_unit": "m",
-                                        "symbol": PRIMARY_SYMBOL
+                                        "underlying_symbol": PRIMARY_SYMBOL
                                     }
                                 }
                                 await ws.send(json.dumps(buy_req))
