@@ -39,14 +39,24 @@
     "consecutive_losses": 0,
     "cooldown_until": null
   },
-  "PAXG/USDT": {
+  "NEAR/USDT": {
     "in_position": false,
-    "entry_price": 4419.24,
-    "position_size": 0.0014,
-    "tp": 4424.654285714286,
-    "sl": 4415.9914285714285,
+    "entry_price": 0.0,
+    "position_size": 0.0,
+    "tp": 0.0,
+    "sl": 0.0,
     "be_set": false,
-    "consecutive_losses": 2,
-    "cooldown_until": "2026-09-07T02:03:04.844005"
+    "consecutive_losses": 0,
+    "cooldown_until": null
+  },
+  "AVAX/USDT": {
+    "in_position": false,
+    "entry_price": 0.0,
+    "position_size": 0.0,
+    "tp": 0.0,
+    "sl": 0.0,
+    "be_set": false,
+    "consecutive_losses": 0,
+    "cooldown_until": null
   }
 }

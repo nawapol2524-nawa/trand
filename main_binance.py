@@ -13,7 +13,7 @@ load_dotenv()
 # ==========================================
 # ⚙️ CONFIGURATION
 # ==========================================
-SYMBOLS = ['SOL/USDT', 'BTC/USDT', 'GALA/USDT', 'VET/USDT', 'PAXG/USDT']
+SYMBOLS = ['SOL/USDT', 'BTC/USDT', 'NEAR/USDT', 'AVAX/USDT', 'GALA/USDT', 'VET/USDT']
 TIMEFRAME = '15m'
 HTF_TIMEFRAME = '1h'
 TRADE_AMOUNT_USDT = 6.5 # จำนวนเงินที่ใช้ซื้อต่อ 1 ไม้ (~220 บาท เผื่อ Buffer ตอน Stop Loss ไม่ให้หลุดต่ำกว่าเกณฑ์ขั้นต่ำ $5 ของ Binance)
@@ -382,8 +382,13 @@ def process_symbol(sym, btc_bullish):
         current_low = float(current_row['low'])
         
         wyckoff_valid = False
-        if (current_high - current_low) > 0:
-            wyckoff_valid = ((current_price - current_low) / (current_high - current_low)) >= 0.70
+        candle_range = current_high - current_low
+        if candle_range > 0:
+            clv = (current_price - current_low) / candle_range
+            current_open = float(current_row['open'])
+            uwr = (current_high - max(current_open, current_price)) / candle_range
+            # Close Location Value >= 0.65 และ Upper Wick Rejection <= 0.35 กรองไส้บนยาว (False Breakout)
+            wyckoff_valid = (clv >= 0.65) and (uwr <= 0.35)
             
         rsi_14 = float(current_row['rsi'])
         adx_14 = float(current_row['adx'])
@@ -430,10 +435,13 @@ def process_symbol(sym, btc_bullish):
                 real_entry = float(ticker['last'])
                 raw_size = TRADE_AMOUNT_USDT / real_entry
                 
-                if real_entry < 0.1: size = round(raw_size)
-                elif real_entry < 10: size = round(raw_size, 1)
-                elif real_entry < 1000: size = round(raw_size, 2)
-                else: size = round(raw_size, 4)
+                try:
+                    size = float(exchange.amount_to_precision(sym, raw_size))
+                except Exception:
+                    if real_entry < 0.1: size = round(raw_size)
+                    elif real_entry < 10: size = round(raw_size, 1)
+                    elif real_entry < 1000: size = round(raw_size, 2)
+                    else: size = round(raw_size, 4)
 
                 try:
                     order = exchange.create_market_buy_order(sym, size)
@@ -481,6 +489,10 @@ def process_symbol(sym, btc_bullish):
                     base_coin = sym.split('/')[0]
                     free_bal = exchange.fetch_free_balance().get(base_coin, 0)
                     sell_size = min(s['position_size'], free_bal) if free_bal > 0 else s['position_size']
+                    try:
+                        sell_size = float(exchange.amount_to_precision(sym, sell_size))
+                    except Exception:
+                        pass
                     
                     order = exchange.create_market_sell_order(sym, sell_size)
                     avg_price = order.get('average')
@@ -511,6 +523,10 @@ def process_symbol(sym, btc_bullish):
                     base_coin = sym.split('/')[0]
                     free_bal = exchange.fetch_free_balance().get(base_coin, 0)
                     sell_size = min(s['position_size'], free_bal) if free_bal > 0 else s['position_size']
+                    try:
+                        sell_size = float(exchange.amount_to_precision(sym, sell_size))
+                    except Exception:
+                        pass
                     
                     order = exchange.create_market_sell_order(sym, sell_size)
                     avg_price = order.get('average')

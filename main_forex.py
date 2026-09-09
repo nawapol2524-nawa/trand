@@ -82,9 +82,9 @@ memory = load_memory()
 # 📊 TECHNICAL INDICATORS
 # ==========================================
 def calculate_bb_rsi(candles, period=20, std_dev=2.0, rsi_period=14):
-    """คำนวณ Bollinger Bands และ RSI จากแท่งเทียนแบบไม่พึ่งพา pandas-ta"""
+    """คำนวณ Bollinger Bands, BandWidth, EMA50 และ RSI จากแท่งเทียนแบบไม่พึ่งพา pandas-ta"""
     closes = [c['close'] for c in candles]
-    if len(closes) < max(period, rsi_period) + 2:
+    if len(closes) < max(period, rsi_period, 50) + 2:
         return None
 
     # Bollinger Bands
@@ -94,6 +94,13 @@ def calculate_bb_rsi(candles, period=20, std_dev=2.0, rsi_period=14):
     std = variance ** 0.5
     upper_bb = sma + (std * std_dev)
     lower_bb = sma - (std * std_dev)
+    bb_width = (upper_bb - lower_bb) / sma if sma > 0 else 0.0
+
+    # EMA 50 (Trend Filter)
+    alpha = 2.0 / (50 + 1)
+    ema50 = closes[0]
+    for p in closes[1:]:
+        ema50 = (p * alpha) + (ema50 * (1 - alpha))
 
     # RSI (14)
     deltas = [closes[i] - closes[i - 1] for i in range(1, len(closes))]
@@ -112,6 +119,8 @@ def calculate_bb_rsi(candles, period=20, std_dev=2.0, rsi_period=14):
         'sma': sma,
         'upper_bb': upper_bb,
         'lower_bb': lower_bb,
+        'bb_width': bb_width,
+        'ema50': ema50,
         'rsi': rsi
     }
 
@@ -236,10 +245,19 @@ async def deriv_engine():
                 # Main Loop สำหรับการดึงข้อมูลและเทรด
                 loop_count = 0
                 while True:
-                    # 1. ตรวจสอบวันหยุดเสาร์-อาทิตย์ สำหรับตลาด Forex
+                    # 1. ตรวจสอบวันหยุดเสาร์-อาทิตย์ และช่วง Rollover Spread Blackout
                     utcnow = datetime.utcnow()
-                    if utcnow.weekday() == 5 or (utcnow.weekday() == 6 and utcnow.hour < 21):
+                    thai_dt = utcnow + timedelta(hours=7)
+                    thai_minute = thai_dt.hour * 60 + thai_dt.minute
+                    is_weekend = utcnow.weekday() == 5 or (utcnow.weekday() == 6 and utcnow.hour < 21)
+                    is_rollover = (3 * 60 + 45) <= thai_minute <= (6 * 60 + 15)
+
+                    if is_weekend:
                         update_status_file(account_info, active_trade, None, market_state="⏸️ ตลาด Forex ปิดสุดสัปดาห์ (Standby)")
+                        await asyncio.sleep(60)
+                        continue
+                    elif is_rollover:
+                        update_status_file(account_info, active_trade, None, market_state="⏸️ Rollover Spread Freeze (03:45-06:15 น. เลี่ยงสเปรดถ่าง)")
                         await asyncio.sleep(60)
                         continue
 
@@ -297,17 +315,27 @@ async def deriv_engine():
                             entry = active_trade['entry_price']
                             diff_pips = (cur_price - entry) / 0.00010
                             
-                            # ตรวจสอบ TP (+30 pips) หรือ SL (-20 pips) หรือหมดอายุ 15 นาที
+                            # Auto-Breakeven เมื่อกำไรแตะ +15 pips
+                            if diff_pips >= 15.0 and not active_trade.get('be_locked', False):
+                                active_trade['be_locked'] = True
+                                log(f"🛡️ [AUTO-BREAKEVEN] {active_trade['symbol']} กำไรแตะ +{diff_pips:.1f} pips! ขยับ SL ล็อกต้นทุน (+1.0 pip)")
+
+                            # ตรวจสอบจุดออก: TP (+30 pips) / ชนจุดคุ้มทุน (+1 pip) / SL (-20 pips) / หมดเวลา 15 นาที
                             hold_sec = time.time() - active_trade.get('start_time', time.time())
                             is_tp = diff_pips >= 30.0
-                            is_sl = diff_pips <= -20.0
+                            is_be_hit = active_trade.get('be_locked', False) and diff_pips <= 1.0
+                            is_sl = (not active_trade.get('be_locked', False)) and (diff_pips <= -20.0)
                             is_timeout = hold_sec >= 900 # 15 นาที
 
-                            if is_tp or is_sl or is_timeout:
-                                # คำนวณกำไร/ขาดทุน (0.01 Cent Lot = 0.10 USC ต่อ pip)
+                            if is_tp or is_be_hit or is_sl or is_timeout:
                                 profit_usc = diff_pips * 0.10
                                 profit_thb = (profit_usc / 100.0) * usd_thb_rate
-                                status_str = "🎉 WIN" if profit_usc >= 0 else "🛑 LOSS"
+                                if is_be_hit:
+                                    status_str = "🛡️ SL-BREAKEVEN"
+                                elif profit_usc >= 0:
+                                    status_str = "🎉 WIN"
+                                else:
+                                    status_str = "🛑 LOSS"
                                 
                                 log(f"{status_str} [SIM CENT] ปิดไม้ {active_trade['symbol']} ({diff_pips:+.1f} pips) | กำไร: {profit_usc:+.2f} USC (≈ {profit_thb:+.2f} บาท)")
                                 account_info['balance'] = round(account_info['balance'] + profit_usc, 2)
@@ -332,12 +360,22 @@ async def deriv_engine():
                         rsi = indicators['rsi']
                         lower_bb = indicators['lower_bb']
                         upper_bb = indicators['upper_bb']
+                        bb_width = indicators.get('bb_width', 0.001)
+                        ema50 = indicators.get('ema50', price)
                         learned_oversold = memory.get("learned_params", {}).get("rsi_oversold", 35.0)
-                        learned_overbought = memory.get("learned_params", {}).get("rsi_overbought", 65.0)
+
+                        # Dynamic Adaptive RSI: ถ้ากราฟเป็นขาลงแรง (ราคา < EMA50) ปรับเกณฑ์ Oversold ลงเหลือ 25 ป้องกันช้อนมีดบิน
+                        if price < ema50 * 0.9990:
+                            effective_oversold = min(learned_oversold, 25.0)
+                        else:
+                            effective_oversold = learned_oversold
+
+                        # Squeeze Filter: งดเข้าเมื่อ BB แคบจัด (bb_width < 0.0006)
+                        is_squeezed = bb_width < 0.0006
 
                         # สัญญาณ BUY (Pullback Oversold)
-                        if price <= lower_bb and rsi <= learned_oversold:
-                            log(f"🎯 [ENTRY TRIGGER] พบสัญญาณ BUY {PRIMARY_SYMBOL}! (Price: {price:.5f} <= LowerBB, RSI: {rsi:.1f})")
+                        if price <= lower_bb and rsi <= effective_oversold and not is_squeezed:
+                            log(f"🎯 [ENTRY TRIGGER] พบสัญญาณ BUY {PRIMARY_SYMBOL}! (Price: {price:.5f} <= LowerBB, RSI: {rsi:.1f} <= {effective_oversold:.1f}, BBWidth: {bb_width:.5f})")
                             if is_live_account:
                                 buy_req = {
                                     "buy": 1,
@@ -378,7 +416,8 @@ async def deriv_engine():
                                     "entry_price": price,
                                     "stake": 0.01,
                                     "entry_time": get_thai_time(),
-                                    "start_time": time.time()
+                                    "start_time": time.time(),
+                                    "be_locked": False
                                 }
                                 log(f"✅ [SIM CENT] เปิดไม้ 0.01 Cent Lot สำเร็จ! ราคาเข้า: {price:.5f} (งบ 100 บาท ~ 280 USC)")
 
