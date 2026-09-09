@@ -248,3 +248,8 @@
 [2026-09-09 19:32:06] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN บน Binance Testnet
 [2026-09-09 19:32:06] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
 [2026-09-09 19:32:07] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-09 19:32:15] ☁️ [API-SYNC] อัปโหลดความจำและ Log ผ่าน API สำเร็จ! เสถียร 100%
+[2026-09-09 19:33:46] 🔄 [RECOVER] กู้คืนสถานะการถือครอง SOL/USDT @ $103.650000 (TP: $156.660000 | SL: $104.081429)
+[2026-09-09 19:33:46] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN บน Binance Testnet
+[2026-09-09 19:33:46] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-09 19:33:47] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
