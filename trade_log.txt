@@ -191,3 +191,7 @@
 [2026-09-09 09:44:00] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN บน Binance Testnet
 [2026-09-09 09:44:00] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, GALA/USDT, VET/USDT, PAXG/USDT
 [2026-09-09 09:44:00] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-09 13:43:55] 🔄 [RECOVER] กู้คืนสถานะการถือครอง GALA/USDT @ $0.001871 (TP: $0.001887 | SL: $0.001862)
+[2026-09-09 13:43:55] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN บน Binance Testnet
+[2026-09-09 13:43:55] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-09 13:43:57] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
