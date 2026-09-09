@@ -1,11 +1,11 @@
 {
   "SOL/USDT": {
-    "total_trades": 10,
-    "wins": 5,
-    "losses": 3,
+    "total_trades": 6,
+    "wins": 4,
+    "losses": 1,
     "learned_params": {
-      "min_volume_ratio": 1.35,
-      "min_adx": 14.5
+      "min_volume_ratio": 1.2,
+      "min_adx": 13.0
     },
     "reflections": [
       {
@@ -37,34 +37,16 @@
         "type": "WIN",
         "pnl": "+1.26%",
         "lesson": "Win (+1.26%): ลดเกณฑ์ Vol->1.2x, ADX->13.0"
-      },
-      {
-        "date": "2026-09-07 19:31:01",
-        "type": "WIN",
-        "pnl": "+0.94%",
-        "lesson": "Win (+0.94%): ลดเกณฑ์ Vol->1.15x, ADX->12.5"
-      },
-      {
-        "date": "2026-09-07 20:34:02",
-        "type": "LOSS",
-        "pnl": "-0.49%",
-        "lesson": "Loss (False Break): เพิ่มเกณฑ์ Vol->1.25x, ADX->13.5"
-      },
-      {
-        "date": "2026-09-07 22:40:46",
-        "type": "LOSS",
-        "pnl": "-0.70%",
-        "lesson": "Loss (False Break): เพิ่มเกณฑ์ Vol->1.35x, ADX->14.5"
       }
     ]
   },
   "BTC/USDT": {
-    "total_trades": 6,
+    "total_trades": 5,
     "wins": 2,
-    "losses": 4,
+    "losses": 3,
     "learned_params": {
-      "min_volume_ratio": 1.6,
-      "min_adx": 17.0
+      "min_volume_ratio": 1.5,
+      "min_adx": 16.0
     },
     "reflections": [
       {
@@ -96,12 +78,6 @@
         "type": "LOSS",
         "pnl": "-0.47%",
         "lesson": "Loss (False Break): เพิ่มเกณฑ์ Vol->1.5x, ADX->16.0"
-      },
-      {
-        "date": "2026-09-07 21:42:11",
-        "type": "LOSS",
-        "pnl": "-0.28%",
-        "lesson": "Loss (False Break): เพิ่มเกณฑ์ Vol->1.6x, ADX->17.0"
       }
     ]
   },
@@ -135,12 +111,12 @@
     ]
   },
   "VET/USDT": {
-    "total_trades": 5,
-    "wins": 3,
+    "total_trades": 4,
+    "wins": 2,
     "losses": 2,
     "learned_params": {
-      "min_volume_ratio": 1.35,
-      "min_adx": 14.5
+      "min_volume_ratio": 1.4,
+      "min_adx": 15.0
     },
     "reflections": [
       {
@@ -166,12 +142,6 @@
         "type": "WIN",
         "pnl": "+0.35%",
         "lesson": "Win (+0.35%): ลดเกณฑ์ Vol->1.4x, ADX->15.0"
-      },
-      {
-        "date": "2026-09-07 23:05:55",
-        "type": "WIN",
-        "pnl": "+1.40%",
-        "lesson": "Win (+1.40%): ลดเกณฑ์ Vol->1.35x, ADX->14.5"
       }
     ]
   },
