@@ -69,7 +69,8 @@ def check_for_updates():
                         pip_cmd = [sys.executable, "-m", "pip", "install", "-U", "--prefix", ".local", "-r", "requirements.txt"]
                     subprocess.run(pip_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 time.sleep(2)
-                os.execv(sys.executable, [sys.executable] + sys.argv)
+                # หยุด worker เก่าทั้งหมด และปล่อยให้ Pterodactyl รีสตาร์ทคอนเทนเนอร์ใหม่แทน
+                stop_all_workers()
             else:
                 subprocess.run(["git", "reset", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except Exception as e:
