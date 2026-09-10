@@ -1,167 +1,8 @@
 ══════════════════════════════════════════════════════════════════════
 🏛️ AG 2.0 DUAL-ENGINE LIVE QUANT TERMINAL LOG (ALL CONSOLE OUTPUT)
-🕒 อัปเดตล่าสุด: 2026-09-10 19:21:22 (เวลาไทย - ซิงค์ทุก 1 นาที)
+🕒 อัปเดตล่าสุด: 2026-09-10 19:32:16 (เวลาไทย - ซิงค์ทุก 1 นาที)
 ══════════════════════════════════════════════════════════════════════
 
-[2026-09-10 18:56:51] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 18:56:51] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 18:56:52] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
-║  🕒 เวลาไทย: 2026-09-10 18:57:36 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
-╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
-║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
-╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
-║ SOL/USDT    ║      $100.98 ║ 41.9 ║ 25.9 ║  1.20x ║ ⚪ FLAT          ║ Standby    ║
-║ BTC/USDT    ║   $77,838.00 ║ 37.8 ║ 58.2 ║  0.54x ║ 🔴 -0.06%        ║ Holding    ║
-║ NEAR/USDT   ║        $2.41 ║ 42.3 ║ 26.7 ║  2.49x ║ ⚪ FLAT          ║ Standby    ║
-║ AVAX/USDT   ║        $7.73 ║ 41.5 ║ 15.2 ║  1.04x ║ ⚪ FLAT          ║ Standby    ║
-║ GALA/USDT   ║    $0.001740 ║ 48.7 ║ 19.5 ║  2.39x ║ ⚪ FLAT          ║ Standby    ║
-║ VET/USDT    ║    $0.007881 ║ 50.3 ║ 18.3 ║  0.92x ║ ⚪ FLAT          ║ Standby    ║
-╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
-[2026-09-10 18:57:40] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
-[2026-09-10 18:57:52] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 18:57:53] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 18:57:53] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 18:58:54] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 18:58:54] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 18:58:55] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
-║  🕒 เวลาไทย: 2026-09-10 18:59:08 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
-╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
-║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
-╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
-║ SOL/USDT    ║      $101.10 ║ 44.1 ║ 26.0 ║  1.32x ║ ⚪ FLAT          ║ Standby    ║
-║ BTC/USDT    ║   $77,906.00 ║ 40.4 ║ 58.2 ║  0.57x ║ 🟢 +0.02%        ║ Holding    ║
-║ NEAR/USDT   ║        $2.41 ║ 42.7 ║ 26.7 ║  4.69x ║ ⚪ FLAT          ║ Standby    ║
-║ AVAX/USDT   ║        $7.73 ║ 42.9 ║ 15.2 ║  1.10x ║ ⚪ FLAT          ║ Standby    ║
-║ GALA/USDT   ║    $0.001740 ║ 48.7 ║ 19.5 ║  2.39x ║ ⚪ FLAT          ║ Standby    ║
-║ VET/USDT    ║    $0.007879 ║ 50.2 ║ 18.3 ║  0.97x ║ ⚪ FLAT          ║ Standby    ║
-╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
-[2026-09-10 18:59:12] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
-[2026-09-10 18:59:55] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 18:59:56] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 18:59:56] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:00:08] [SUPERVISOR] ⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: HTTPSConnectionPool(host='script.google.com', port=443): Read timed out. (read timeout=15)
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
-║  🕒 เวลาไทย: 2026-09-10 19:00:41 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
-╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
-║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
-╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
-║ SOL/USDT    ║      $101.10 ║ 44.6 ║ 25.9 ║  2.33x ║ ⚪ FLAT          ║ Standby    ║
-║ BTC/USDT    ║   $77,848.00 ║ 38.0 ║ 58.1 ║  0.02x ║ 🔴 -0.05%        ║ Holding    ║
-║ NEAR/USDT   ║        $2.41 ║ 42.6 ║ 26.7 ║  0.65x ║ ⚪ FLAT          ║ Standby    ║
-║ AVAX/USDT   ║        $7.73 ║ 42.8 ║ 14.8 ║  0.10x ║ ⚪ FLAT          ║ Standby    ║
-║ GALA/USDT   ║    $0.001736 ║ 46.3 ║ 18.7 ║  0.03x ║ ⚪ FLAT          ║ Standby    ║
-║ VET/USDT    ║    $0.007893 ║ 51.3 ║ 17.7 ║  0.04x ║ ⚪ FLAT          ║ Standby    ║
-╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
-[2026-09-10 19:00:57] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:00:58] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:00:58] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:01:20] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
-[2026-09-10 19:01:59] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:01:59] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:02:00] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
-║  🕒 เวลาไทย: 2026-09-10 19:02:10 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
-╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
-║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
-╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
-║ SOL/USDT    ║      $101.11 ║ 44.8 ║ 25.9 ║  2.37x ║ ⚪ FLAT          ║ Standby    ║
-║ BTC/USDT    ║   $77,834.53 ║ 37.5 ║ 58.1 ║  0.08x ║ 🔴 -0.07%        ║ Holding    ║
-║ NEAR/USDT   ║        $2.41 ║ 42.2 ║ 26.7 ║  0.96x ║ ⚪ FLAT          ║ Standby    ║
-║ AVAX/USDT   ║        $7.74 ║ 43.8 ║ 14.8 ║  0.10x ║ ⚪ FLAT          ║ Standby    ║
-║ GALA/USDT   ║    $0.001736 ║ 46.3 ║ 18.7 ║  0.03x ║ ⚪ FLAT          ║ Standby    ║
-║ VET/USDT    ║    $0.007904 ║ 52.2 ║ 17.7 ║  0.34x ║ ⚪ FLAT          ║ Standby    ║
-╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
-[2026-09-10 19:02:52] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
-[2026-09-10 19:03:00] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:03:01] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:03:01] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
-║  🕒 เวลาไทย: 2026-09-10 19:03:41 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
-╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
-║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
-╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
-║ SOL/USDT    ║      $101.19 ║ 46.7 ║ 25.9 ║  2.48x ║ ⚪ FLAT          ║ Standby    ║
-║ BTC/USDT    ║   $77,838.84 ║ 37.7 ║ 58.1 ║  0.11x ║ 🔴 -0.06%        ║ Holding    ║
-║ NEAR/USDT   ║        $2.41 ║ 41.9 ║ 26.7 ║  0.98x ║ ⚪ FLAT          ║ Standby    ║
-║ AVAX/USDT   ║        $7.74 ║ 44.1 ║ 14.8 ║  1.05x ║ ⚪ FLAT          ║ Standby    ║
-║ GALA/USDT   ║    $0.001736 ║ 46.3 ║ 18.7 ║  0.03x ║ ⚪ FLAT          ║ Standby    ║
-║ VET/USDT    ║    $0.007849 ║ 47.8 ║ 17.4 ║  0.46x ║ ⚪ FLAT          ║ Standby    ║
-╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
-[2026-09-10 19:03:51] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
-[2026-09-10 19:04:02] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:04:02] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:04:03] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:05:01] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
-[2026-09-10 19:05:03] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:05:04] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:05:04] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
-║  🕒 เวลาไทย: 2026-09-10 19:05:14 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
-╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
-║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
-╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
-║ SOL/USDT    ║      $101.07 ║ 43.8 ║ 25.9 ║  2.60x ║ ⚪ FLAT          ║ Standby    ║
-║ BTC/USDT    ║   $77,780.00 ║ 35.5 ║ 58.2 ║  0.19x ║ 🔴 -0.14%        ║ Holding    ║
-║ NEAR/USDT   ║        $2.41 ║ 41.9 ║ 26.7 ║  0.98x ║ ⚪ FLAT          ║ Standby    ║
-║ AVAX/USDT   ║        $7.73 ║ 42.1 ║ 14.8 ║  1.69x ║ ⚪ FLAT          ║ Standby    ║
-║ GALA/USDT   ║    $0.001736 ║ 46.3 ║ 18.7 ║  0.03x ║ ⚪ FLAT          ║ Standby    ║
-║ VET/USDT    ║    $0.007849 ║ 47.8 ║ 17.4 ║  0.46x ║ ⚪ FLAT          ║ Standby    ║
-╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
-[2026-09-10 19:06:05] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:06:05] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:06:06] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:06:10] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
-║  🕒 เวลาไทย: 2026-09-10 19:06:48 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
-╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
-║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
-╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
-║ SOL/USDT    ║      $101.09 ║ 44.3 ║ 25.9 ║  2.66x ║ ⚪ FLAT          ║ Standby    ║
-║ BTC/USDT    ║   $77,796.01 ║ 36.1 ║ 58.2 ║  0.20x ║ 🔴 -0.12%        ║ Holding    ║
-║ NEAR/USDT   ║        $2.40 ║ 40.9 ║ 26.8 ║  0.98x ║ ⚪ FLAT          ║ Standby    ║
-║ AVAX/USDT   ║        $7.74 ║ 43.6 ║ 14.8 ║  1.74x ║ ⚪ FLAT          ║ Standby    ║
-║ GALA/USDT   ║    $0.001736 ║ 46.3 ║ 18.7 ║  0.03x ║ ⚪ FLAT          ║ Standby    ║
-║ VET/USDT    ║    $0.007849 ║ 47.8 ║ 17.4 ║  0.46x ║ ⚪ FLAT          ║ Standby    ║
-╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
-[2026-09-10 19:07:06] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:07:07] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:07:07] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:07:30] [SUPERVISOR] ⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: HTTPSConnectionPool(host='script.googleusercontent.com', port=443): Read timed out. (read timeout=15)
-[2026-09-10 19:08:08] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:08:09] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:08:09] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
-║  🕒 เวลาไทย: 2026-09-10 19:08:17 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
-╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
-║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
-╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
-║ SOL/USDT    ║      $101.02 ║ 42.6 ║ 25.9 ║  2.74x ║ ⚪ FLAT          ║ Standby    ║
-║ BTC/USDT    ║   $77,739.52 ║ 34.2 ║ 58.3 ║  0.24x ║ 🔴 -0.19%        ║ Holding    ║
-║ NEAR/USDT   ║        $2.40 ║ 40.7 ║ 26.9 ║  0.99x ║ ⚪ FLAT          ║ Standby    ║
-║ AVAX/USDT   ║        $7.73 ║ 42.3 ║ 14.8 ║  1.79x ║ ⚪ FLAT          ║ Standby    ║
-║ GALA/USDT   ║    $0.001731 ║ 43.5 ║ 19.1 ║  0.04x ║ ⚪ FLAT          ║ Standby    ║
-║ VET/USDT    ║    $0.007885 ║ 50.7 ║ 17.4 ║  1.10x ║ ⚪ FLAT          ║ Standby    ║
-╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
-[2026-09-10 19:08:43] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
-[2026-09-10 19:09:10] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:09:10] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-[2026-09-10 19:09:11] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
-║  🕒 เวลาไทย: 2026-09-10 19:09:47 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
-╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
-║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
-╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
 ║ SOL/USDT    ║      $101.01 ║ 42.4 ║ 25.9 ║  2.81x ║ ⚪ FLAT          ║ Standby    ║
 ║ BTC/USDT    ║   $77,736.68 ║ 34.1 ║ 58.3 ║  0.30x ║ 🔴 -0.19%        ║ Holding    ║
 ║ NEAR/USDT   ║        $2.40 ║ 40.9 ║ 26.9 ║  1.25x ║ ⚪ FLAT          ║ Standby    ║
@@ -303,6 +144,10 @@
 ║ GALA/USDT   ║    $0.001727 ║ 41.5 ║ 19.4 ║  0.03x ║ ⚪ FLAT          ║ Standby    ║
 ║ VET/USDT    ║    $0.007888 ║ 51.1 ║ 16.2 ║  3.05x ║ ⚪ FLAT          ║ Standby    ║
 ╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 19:21:28] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:21:29] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:21:29] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:21:31] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
 [2026-09-10 19:21:49] 🚨 [CIRCUIT BREAKER BTC/USDT] ขาดทุนติด 2 ครั้ง พัก 4 ชม.
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║ 🛑 STOP LOSS CUT - BTC/USDT
@@ -311,4 +156,158 @@
 ║  • Net Return            : -0.27%
 ║  • Net Loss              : -$0.0170 USDT (-0.58 บาท)
 ║  • AI Reflection         : Loss (False Break): เพิ่มเกณฑ์ Vol->1.25x, ADX->13.0
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 19:22:09 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $101.11 ║ 45.0 ║ 26.3 ║  1.22x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,676.01 ║ 32.1 ║ 58.5 ║  0.59x ║ 🔴 -0.27%        ║ Holding    ║
+║ NEAR/USDT   ║        $2.40 ║ 40.6 ║ 27.1 ║  1.48x ║ ⚪ FLAT          ║ Scanning   ║
+║ AVAX/USDT   ║        $7.73 ║ 42.7 ║ 14.5 ║  1.46x ║ ⚪ FLAT          ║ Scanning   ║
+║ GALA/USDT   ║    $0.001727 ║ 41.5 ║ 19.4 ║  0.03x ║ ⚪ FLAT          ║ Scanning   ║
+║ VET/USDT    ║    $0.007930 ║ 54.3 ║ 16.8 ║  3.29x ║ ⚪ FLAT          ║ Scanning   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 19:22:30] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:22:31] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:22:31] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:22:51] [SUPERVISOR] ⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: HTTPSConnectionPool(host='script.googleusercontent.com', port=443): Read timed out. (read timeout=15)
+[2026-09-10 19:23:32] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🟢 BUY ORDER EXECUTED - NEAR/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exchange / Mode       : Binance Testnet (Sandbox Demo)
+║  • Symbol                : NEAR/USDT
+║  • Entry Price           : $2.409000
+║  • Size                  : 2.6 (~$6.26 USDT / 213.0 บาท)
+║  • Take Profit (TP)      : $2.446679 (+2.5 ATR)
+║  • Stop Loss (SL)        : $2.386393 (-1.5 ATR)
+║  • Strategy Reason       : [Candle_Reversal] พบ Engulfing | RSI:42.0
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 19:23:32] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:23:33] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 19:23:41 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $101.11 ║ 45.0 ║ 26.3 ║  1.27x ║ ⚪ FLAT          ║ Scanning   ║
+║ BTC/USDT    ║   $77,714.00 ║ 33.3 ║ 58.5 ║  0.90x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.41 ║ 42.0 ║ 27.1 ║  1.48x ║ 🟢 LONG (+0.00%) ║ Holding    ║
+║ AVAX/USDT   ║        $7.73 ║ 42.4 ║ 14.5 ║  1.53x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001727 ║ 41.5 ║ 19.4 ║  0.03x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007924 ║ 53.9 ║ 16.8 ║  3.33x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 19:24:06] [SUPERVISOR] ⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: HTTPSConnectionPool(host='script.google.com', port=443): Read timed out. (read timeout=15)
+[2026-09-10 19:24:33] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:24:34] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:24:34] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 19:25:16 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $101.09 ║ 44.5 ║ 26.3 ║  1.31x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,740.74 ║ 34.2 ║ 58.5 ║  0.92x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.41 ║ 42.3 ║ 27.1 ║  1.49x ║ 🟢 +0.00%        ║ Holding    ║
+║ AVAX/USDT   ║        $7.72 ║ 40.3 ║ 14.7 ║  1.62x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001727 ║ 41.5 ║ 19.4 ║  0.03x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007951 ║ 55.8 ║ 17.1 ║  3.36x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 19:25:23] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 19:25:35] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:25:35] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:25:36] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:26:36] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:26:37] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:26:37] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 19:26:46 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $101.08 ║ 44.2 ║ 26.3 ║  1.34x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,748.00 ║ 34.4 ║ 58.5 ║  0.94x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.41 ║ 42.0 ║ 27.1 ║  1.53x ║ 🔴 -0.04%        ║ Holding    ║
+║ AVAX/USDT   ║        $7.72 ║ 40.9 ║ 14.7 ║  1.63x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001727 ║ 41.5 ║ 19.4 ║  0.03x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007934 ║ 54.6 ║ 17.1 ║  3.79x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 19:27:33] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 19:27:38] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:27:38] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:27:39] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 19:28:16 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $101.10 ║ 44.8 ║ 26.3 ║  1.37x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,720.01 ║ 33.5 ║ 58.5 ║  0.98x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.41 ║ 42.0 ║ 27.1 ║  1.64x ║ 🔴 -0.04%        ║ Holding    ║
+║ AVAX/USDT   ║        $7.72 ║ 41.4 ║ 14.7 ║  1.68x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001727 ║ 41.5 ║ 19.4 ║  0.03x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007929 ║ 54.2 ║ 17.1 ║  6.34x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 19:28:39] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:28:40] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:28:40] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:28:46] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 19:29:41] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:29:41] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:29:42] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 19:29:47 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $101.14 ║ 45.8 ║ 26.3 ║  1.46x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,751.22 ║ 34.5 ║ 58.5 ║  1.01x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.41 ║ 42.0 ║ 27.1 ║  1.64x ║ 🔴 -0.04%        ║ Holding    ║
+║ AVAX/USDT   ║        $7.72 ║ 40.7 ║ 14.7 ║  1.77x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001727 ║ 41.5 ║ 19.4 ║  0.03x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007929 ║ 54.2 ║ 17.1 ║  6.34x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 19:30:02] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 19:30:43] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:30:43] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:30:44] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛡️ AUTO-BREAKEVEN ACTIVATED - NEAR/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Current Price         : $2.420000
+║  • Profit Reached        : +0.46% (Threshold: +0.40%)
+║  • New Stop Loss         : $2.410204 (Locked +0.05% with Fee Buffer)
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 19:31:21 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $101.03 ║ 43.1 ║ 26.5 ║  0.08x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,691.28 ║ 32.2 ║ 59.0 ║  0.17x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.42 ║ 46.2 ║ 26.6 ║  0.01x ║ 🟢 +0.46%        ║ Holding    ║
+║ AVAX/USDT   ║        $7.70 ║ 37.7 ║ 15.8 ║  0.10x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001725 ║ 40.3 ║ 19.5 ║  0.95x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007920 ║ 53.4 ║ 16.9 ║  0.24x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 19:31:35] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 19:31:44] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:31:45] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 19:31:45] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛡️ SL-BREAKEVEN CLOSED - NEAR/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exit Price            : $2.417000
+║  • Net Return            : +0.33%
+║  • Net Profit            : +0.0208 USDT (+0.71 บาท)
+║  • Status                : 🔒 ล็อกทุนสำเร็จ ไม่ขาดทุน
 ╚══════════════════════════════════════════════════════════════════════════════╝
