@@ -41,10 +41,10 @@
   },
   "GALA/USDT": {
     "in_position": false,
-    "entry_price": 0.001871,
-    "position_size": 3219,
-    "tp": 0.0018867142857142858,
-    "sl": 0.0018719354999999999,
+    "entry_price": 0.001694,
+    "position_size": 3839.0,
+    "tp": 0.0017191785714285714,
+    "sl": 0.001694847,
     "be_set": true,
     "consecutive_losses": 0,
     "cooldown_until": null
