@@ -728,3 +728,6 @@
 [2026-09-11 02:31:32] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
 [2026-09-11 03:02:09] ⚠️ Error SOL/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=SOLUSDT
 [2026-09-11 03:32:22] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-11 04:33:05] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-11 04:58:05] ⚠️ Error VET/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=VETUSDT
+[2026-09-11 05:34:09] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
