@@ -1,8 +1,1007 @@
 ══════════════════════════════════════════════════════════════════════
-🏛️ AG 2.0 DUAL-ENGINE LIVE QUANT TERMINAL LOG (ALL CONSOLE OUTPUT)
-🕒 อัปเดตล่าสุด: 2026-09-10 21:17:57 (เวลาไทย - ซิงค์ทุก 1 นาที)
+🏛️ AG 2.0 DUAL-ENGINE LIVE QUANT TERMINAL LOG (CONSOLE + TRADE HISTORY)
+🕒 อัปเดตล่าสุด: 2026-09-10 21:39:08 (เวลาไทย - ซิงค์ทุก 1 นาที)
 ══════════════════════════════════════════════════════════════════════
 
+📋 ประวัติการเทรดล่าสุด (TRADE HISTORY SUMMARY - ทั้งวัน):
+──────────────────────────────────────────────────────────────────────
+[2026-09-10 12:21:59] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-10 12:22:11] ☁️ [API-SYNC] อัปโหลดความจำและ Log ผ่าน API สำเร็จ! เสถียร 100%
+[2026-09-10 12:58:54] 🛡️ [AUTO-BREAKEVEN BTC/USDT] กำไรแตะ +0.41% แล้ว! ขยับ SL ล็อกต้นทุนที่ $78277.449165
+[2026-09-10 13:17:12] 🛡️ [SL-BREAKEVEN BTC/USDT] ปิดเสมอตัวที่ $78264.000000 | ทุน: $6.26 ➡️ ได้รับ: $6.26 USDT | ผลตอบแทน: +0.0021 USDT (+0.07 บาท / +0.03%)
+[2026-09-10 13:17:20] ☁️ [API-SYNC] อัปโหลดความจำและ Log ผ่าน API สำเร็จ! เสถียร 100%
+[2026-09-10 13:18:53] 🟢 [BUY BTC/USDT] ซื้อ 8e-05 @ $78154.010000 | ทุนที่ลง: $6.25 USDT (~212.6 บาท) | TP: $79026.529643 | SL: $77630.498214
+[2026-09-10 13:23:20] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-10 13:23:28] ☁️ [API-SYNC] อัปโหลดความจำและ Log ผ่าน API สำเร็จ! เสถียร 100%
+[2026-09-10 13:50:58] 🛡️ [AUTO-BREAKEVEN BTC/USDT] กำไรแตะ +0.46% แล้ว! ขยับ SL ล็อกต้นทุนที่ $78193.087005
+[2026-09-10 14:06:12] 🛡️ [SL-BREAKEVEN BTC/USDT] ปิดเสมอตัวที่ $78174.610000 | ทุน: $6.25 ➡️ ได้รับ: $6.25 USDT | ผลตอบแทน: +0.0016 USDT (+0.06 บาท / +0.03%)
+[2026-09-10 14:06:21] ☁️ [API-SYNC] อัปโหลดความจำและ Log ผ่าน API สำเร็จ! เสถียร 100%
+[2026-09-10 14:23:07] 🟢 [BUY NEAR/USDT] ซื้อ 2.6 @ $2.445000 | ทุนที่ลง: $6.36 USDT (~216.1 บาท) | TP: $2.501071 | SL: $2.411357
+[2026-09-10 14:24:33] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-10 14:24:41] ☁️ [API-SYNC] อัปโหลดความจำและ Log ผ่าน API สำเร็จ! เสถียร 100%
+[2026-09-10 14:43:07] 🛑 [SL SUCCESS NEAR/USDT] คัทลอสที่ $2.397000 | ทุน: $6.36 ➡️ เหลือ: $6.23 USDT | ขาดทุนสุทธิ: -$0.1248 USDT (-4.24 บาท / -1.96%) | Loss (False Break): เพิ่มเกณฑ์ Vol->1.25x, ADX->13.0
+[2026-09-10 14:43:15] ☁️ [API-SYNC] อัปโหลดความจำและ Log ผ่าน API สำเร็จ! เสถียร 100%
+[2026-09-10 14:43:19] 🟢 [BUY AVAX/USDT] ซื้อ 0.84 @ $7.732000 | ทุนที่ลง: $6.49 USDT (~220.8 บาท) | TP: $7.861821 | SL: $7.654107
+[2026-09-10 15:22:49] 🛡️ [AUTO-BREAKEVEN AVAX/USDT] กำไรแตะ +0.45% แล้ว! ขยับ SL ล็อกต้นทุนที่ $7.735866
+[2026-09-10 15:25:41] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔄 RECOVERED ACTIVE POSITION - AVAX/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine                : Binance Testnet Spot
+║  • Symbol                : AVAX/USDT
+║  • Entry Price           : $7.732000
+║  • Position Size         : 0.84
+║  • Take Profit (TP)      : $7.861821
+║  • Stop Loss (SL)        : $7.735866
+║  • Breakeven Locked      : True
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 16:20:00] 🔄 [RECOVER] กู้คืนสถานะการถือครอง AVAX/USDT @ $7.732000 (TP: $7.861821 | SL: $7.735866)
+[2026-09-10 16:20:05] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9986.47 USDT)
+[2026-09-10 16:20:05] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-10 16:20:06] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔄 RECOVERED ACTIVE POSITION - AVAX/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine                : Binance Testnet Spot
+║  • Symbol                : AVAX/USDT
+║  • Entry Price           : $7.732000
+║  • Position Size         : 0.84
+║  • Take Profit (TP)      : $7.861821
+║  • Stop Loss (SL)        : $7.735866
+║  • Breakeven Locked      : True
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 16:20:39] 🔄 [RECOVER] กู้คืนสถานะการถือครอง AVAX/USDT @ $7.732000 (TP: $7.861821 | SL: $7.735866)
+[2026-09-10 16:20:42] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9986.47 USDT)
+[2026-09-10 16:20:42] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-10 16:20:43] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔄 RECOVERED ACTIVE POSITION - AVAX/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine                : Binance Testnet Spot
+║  • Symbol                : AVAX/USDT
+║  • Entry Price           : $7.732000
+║  • Position Size         : 0.84
+║  • Take Profit (TP)      : $7.861821
+║  • Stop Loss (SL)        : $7.735866
+║  • Breakeven Locked      : True
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 16:26:04] 🔄 [RECOVER] กู้คืนสถานะการถือครอง AVAX/USDT @ $7.732000 (TP: $7.861821 | SL: $7.735866)
+[2026-09-10 16:26:08] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9986.47 USDT)
+[2026-09-10 16:26:08] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-10 16:26:08] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔄 RECOVERED ACTIVE POSITION - AVAX/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine                : Binance Testnet Spot
+║  • Symbol                : AVAX/USDT
+║  • Entry Price           : $7.732000
+║  • Position Size         : 0.84
+║  • Take Profit (TP)      : $7.861821
+║  • Stop Loss (SL)        : $7.735866
+║  • Breakeven Locked      : True
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 16:32:52] 🔄 [RECOVER] กู้คืนสถานะการถือครอง AVAX/USDT @ $7.732000 (TP: $7.861821 | SL: $7.735866)
+[2026-09-10 16:32:58] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9986.47 USDT)
+[2026-09-10 16:32:58] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-10 16:32:59] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔄 RECOVERED ACTIVE POSITION - AVAX/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine                : Binance Testnet Spot
+║  • Symbol                : AVAX/USDT
+║  • Entry Price           : $7.732000
+║  • Position Size         : 0.84
+║  • Take Profit (TP)      : $7.861821
+║  • Stop Loss (SL)        : $7.735866
+║  • Breakeven Locked      : True
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 16:39:04] 🔄 [RECOVER] กู้คืนสถานะการถือครอง AVAX/USDT @ $7.732000 (TP: $7.861821 | SL: $7.735866)
+[2026-09-10 16:39:10] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9986.47 USDT)
+[2026-09-10 16:39:10] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-10 16:39:11] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛡️ SL-BREAKEVEN CLOSED - AVAX/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exit Price            : $7.732000
+║  • Net Return            : +0.00%
+║  • Net Profit            : +0.0000 USDT (+0.00 บาท)
+║  • Status                : 🔒 ล็อกทุนสำเร็จ ไม่ขาดทุน
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🟢 BUY ORDER EXECUTED - SOL/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exchange / Mode       : Binance Testnet (Sandbox Demo)
+║  • Symbol                : SOL/USDT
+║  • Entry Price           : $100.860000
+║  • Size                  : 0.064 (~$6.46 USDT / 219.5 บาท)
+║  • Take Profit (TP)      : $101.635000 (+2.5 ATR)
+║  • Stop Loss (SL)        : $100.395000 (-1.5 ATR)
+║  • Strategy Reason       : [Pullback_Sniper] ช้อนถูก | RSI:36.9 แตะ BB-Lower
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛡️ AUTO-BREAKEVEN ACTIVATED - SOL/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Current Price         : $101.320000
+║  • Profit Reached        : +0.46% (Threshold: +0.40%)
+║  • New Stop Loss         : $100.910430 (Locked +0.05% with Fee Buffer)
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛡️ SL-BREAKEVEN CLOSED - SOL/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exit Price            : $100.870000
+║  • Net Return            : +0.01%
+║  • Net Profit            : +0.0006 USDT (+0.02 บาท)
+║  • Status                : 🔒 ล็อกทุนสำเร็จ ไม่ขาดทุน
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🟢 BUY ORDER EXECUTED - BTC/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exchange / Mode       : Binance Testnet (Sandbox Demo)
+║  • Symbol                : BTC/USDT
+║  • Entry Price           : $77888.010000
+║  • Size                  : 8e-05 (~$6.23 USDT / 211.9 บาท)
+║  • Take Profit (TP)      : $78192.610000 (+2.5 ATR)
+║  • Stop Loss (SL)        : $77705.250000 (-1.5 ATR)
+║  • Strategy Reason       : [Pullback_Sniper] ช้อนถูก | RSI:36.8 แตะ BB-Lower
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 17:39:21] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-10 18:40:28] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-10 19:21:49] 🚨 [CIRCUIT BREAKER BTC/USDT] ขาดทุนติด 2 ครั้ง พัก 4 ชม.
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛑 STOP LOSS CUT - BTC/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exit Price            : $77676.000000
+║  • Net Return            : -0.27%
+║  • Net Loss              : -$0.0170 USDT (-0.58 บาท)
+║  • AI Reflection         : Loss (False Break): เพิ่มเกณฑ์ Vol->1.25x, ADX->13.0
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🟢 BUY ORDER EXECUTED - NEAR/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exchange / Mode       : Binance Testnet (Sandbox Demo)
+║  • Symbol                : NEAR/USDT
+║  • Entry Price           : $2.409000
+║  • Size                  : 2.6 (~$6.26 USDT / 213.0 บาท)
+║  • Take Profit (TP)      : $2.446679 (+2.5 ATR)
+║  • Stop Loss (SL)        : $2.386393 (-1.5 ATR)
+║  • Strategy Reason       : [Candle_Reversal] พบ Engulfing | RSI:42.0
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛡️ AUTO-BREAKEVEN ACTIVATED - NEAR/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Current Price         : $2.420000
+║  • Profit Reached        : +0.46% (Threshold: +0.40%)
+║  • New Stop Loss         : $2.410204 (Locked +0.05% with Fee Buffer)
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛡️ SL-BREAKEVEN CLOSED - NEAR/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exit Price            : $2.417000
+║  • Net Return            : +0.33%
+║  • Net Profit            : +0.0208 USDT (+0.71 บาท)
+║  • Status                : 🔒 ล็อกทุนสำเร็จ ไม่ขาดทุน
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🟢 BUY ORDER EXECUTED - AVAX/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exchange / Mode       : Binance Testnet (Sandbox Demo)
+║  • Symbol                : AVAX/USDT
+║  • Entry Price           : $7.679000
+║  • Size                  : 0.84 (~$6.45 USDT / 219.3 บาท)
+║  • Take Profit (TP)      : $7.747571 (+2.5 ATR)
+║  • Stop Loss (SL)        : $7.637857 (-1.5 ATR)
+║  • Strategy Reason       : [Pullback_Sniper] ช้อนถูก | RSI:35.8 แตะ BB-Lower
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 19:41:55] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛑 STOP LOSS CUT - AVAX/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exit Price            : $7.590000
+║  • Net Return            : -1.16%
+║  • Net Loss              : -$0.0748 USDT (-2.54 บาท)
+║  • AI Reflection         : Loss (False Break): เพิ่มเกณฑ์ Vol->1.5x, ADX->14.5
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🟢 BUY ORDER EXECUTED - GALA/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exchange / Mode       : Binance Testnet (Sandbox Demo)
+║  • Symbol                : GALA/USDT
+║  • Entry Price           : $0.001694
+║  • Size                  : 3839.0 (~$6.50 USDT / 221.1 บาท)
+║  • Take Profit (TP)      : $0.001719 (+2.5 ATR)
+║  • Stop Loss (SL)        : $0.001679 (-1.5 ATR)
+║  • Strategy Reason       : [Pullback_Sniper] ช้อนถูก | RSI:28.1 แตะ BB-Lower
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛡️ AUTO-BREAKEVEN ACTIVATED - GALA/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Current Price         : $0.001703
+║  • Profit Reached        : +0.53% (Threshold: +0.40%)
+║  • New Stop Loss         : $0.001695 (Locked +0.05% with Fee Buffer)
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛡️ SL-BREAKEVEN CLOSED - GALA/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exit Price            : $0.001694
+║  • Net Return            : +0.00%
+║  • Net Profit            : +0.0000 USDT (+0.00 บาท)
+║  • Status                : 🔒 ล็อกทุนสำเร็จ ไม่ขาดทุน
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🟢 BUY ORDER EXECUTED - SOL/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exchange / Mode       : Binance Testnet (Sandbox Demo)
+║  • Symbol                : SOL/USDT
+║  • Entry Price           : $99.000000
+║  • Size                  : 0.065 (~$6.44 USDT / 218.8 บาท)
+║  • Take Profit (TP)      : $100.189286 (+2.5 ATR)
+║  • Stop Loss (SL)        : $98.286429 (-1.5 ATR)
+║  • Strategy Reason       : [Pullback_Sniper] ช้อนถูก | RSI:20.3 แตะ BB-Lower
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛡️ AUTO-BREAKEVEN ACTIVATED - SOL/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Current Price         : $99.450000
+║  • Profit Reached        : +0.45% (Threshold: +0.40%)
+║  • New Stop Loss         : $99.049500 (Locked +0.05% with Fee Buffer)
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛡️ SL-BREAKEVEN CLOSED - SOL/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exit Price            : $99.050000
+║  • Net Return            : +0.05%
+║  • Net Profit            : +0.0032 USDT (+0.11 บาท)
+║  • Status                : 🔒 ล็อกทุนสำเร็จ ไม่ขาดทุน
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🟢 BUY ORDER EXECUTED - NEAR/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exchange / Mode       : Binance Testnet (Sandbox Demo)
+║  • Symbol                : NEAR/USDT
+║  • Entry Price           : $2.391000
+║  • Size                  : 2.7 (~$6.46 USDT / 219.5 บาท)
+║  • Take Profit (TP)      : $2.435464 (+2.5 ATR)
+║  • Stop Loss (SL)        : $2.364321 (-1.5 ATR)
+║  • Strategy Reason       : [Pullback_Sniper] ช้อนถูก | RSI:37.1 แตะ BB-Lower
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛡️ AUTO-BREAKEVEN ACTIVATED - NEAR/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Current Price         : $2.401000
+║  • Profit Reached        : +0.42% (Threshold: +0.40%)
+║  • New Stop Loss         : $2.392195 (Locked +0.05% with Fee Buffer)
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 20:42:29] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-10 20:50:23] 🛡️ [TRAILING STOP NEAR/USDT] ขยับ SL ตามกำไรไปที่ $2.403720
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔄 RECOVERED ACTIVE POSITION - NEAR/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine                : Binance Testnet Spot
+║  • Symbol                : NEAR/USDT
+║  • Entry Price           : $2.391000
+║  • Position Size         : 2.7
+║  • Take Profit (TP)      : $2.435464
+║  • Stop Loss (SL)        : $2.403720
+║  • Breakeven Locked      : True
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 20:52:09] 🔄 [RECOVER] กู้คืนสถานะการถือครอง NEAR/USDT @ $2.391000 (TP: $2.435464 | SL: $2.403720)
+[2026-09-10 20:52:15] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9986.44 USDT)
+[2026-09-10 20:52:15] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-10 20:52:16] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-10 20:52:33] 🛡️ [TRAILING STOP NEAR/USDT] ขยับ SL ตามกำไรไปที่ $2.404710
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🚀 DYNAMIC TRAILING RUN - NEAR/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Current Price         : $2.439000
+║  • Target TP Exp         : Expanded to 1.5x (Let Profit Run)
+║  • Trailing SL           : $2.419929 (Trailing 1.0 ATR Behind)
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 21:03:05] 🛡️ [TRAILING STOP NEAR/USDT] ขยับ SL ตามกำไรไปที่ $2.420550
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛡️ SL-BREAKEVEN CLOSED - NEAR/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exit Price            : $2.411000
+║  • Net Return            : +0.84%
+║  • Net Profit            : +0.0540 USDT (+1.84 บาท)
+║  • Status                : 🔒 ล็อกทุนสำเร็จ ไม่ขาดทุน
+╚══════════════════════════════════════════════════════════════════════════════╝
+══════════════════════════════════════════════════════════════════════
+
+💻 CONSOLE OUTPUT (LIVE STREAM - 1,500 บรรทัดล่าสุด):
+──────────────────────────────────────────────────────────────────────
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:22:52 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.44 ║ 30.7 ║ 36.8 ║  0.52x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $76,940.73 ║ 22.4 ║ 63.1 ║  0.56x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.40 ║ 41.4 ║ 28.0 ║  0.35x ║ 🟢 +0.42%        ║ Holding    ║
+║ AVAX/USDT   ║        $7.59 ║ 26.7 ║ 24.0 ║  0.39x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001698 ║ 31.9 ║ 25.7 ║  0.86x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007831 ║ 46.4 ║ 13.8 ║  0.29x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:23:02] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:23:03] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:23:03] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:24:04] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:24:05] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:24:05] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:24:22 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.54 ║ 32.4 ║ 36.6 ║  0.67x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $76,948.43 ║ 22.8 ║ 63.1 ║  0.68x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.40 ║ 41.8 ║ 28.0 ║  0.36x ║ 🟢 +0.46%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.59 ║ 27.0 ║ 24.0 ║  0.90x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001698 ║ 31.9 ║ 25.7 ║  0.86x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007868 ║ 49.3 ║ 13.8 ║  0.35x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:24:28] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 20:25:06] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:25:06] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:25:07] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:25:39] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:25:55 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.46 ║ 31.0 ║ 36.6 ║  0.69x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $76,893.30 ║ 20.0 ║ 63.1 ║  0.77x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.40 ║ 41.8 ║ 28.0 ║  0.36x ║ 🟢 +0.46%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.59 ║ 26.0 ║ 24.0 ║  0.94x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001698 ║ 31.9 ║ 25.7 ║  0.86x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007868 ║ 49.3 ║ 13.8 ║  0.35x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:26:07] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:26:08] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:26:08] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:26:48] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 20:27:09] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:27:09] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:27:10] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:27:30 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.46 ║ 31.0 ║ 36.6 ║  0.84x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $76,906.53 ║ 20.7 ║ 63.1 ║  0.79x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.40 ║ 41.8 ║ 28.0 ║  0.36x ║ 🟢 +0.46%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.58 ║ 25.0 ║ 24.0 ║  0.95x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001698 ║ 31.9 ║ 25.7 ║  0.86x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007868 ║ 49.3 ║ 13.8 ║  0.35x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:28:09] [SUPERVISOR] ⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: HTTPSConnectionPool(host='script.googleusercontent.com', port=443): Read timed out. (read timeout=15)
+[2026-09-10 20:28:10] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:28:11] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:28:11] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:29:00 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.48 ║ 31.4 ║ 36.6 ║  0.89x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $76,945.95 ║ 22.6 ║ 63.1 ║  0.90x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.41 ║ 43.7 ║ 28.0 ║  0.41x ║ 🟢 +0.67%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.58 ║ 24.7 ║ 24.0 ║  0.97x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001698 ║ 31.9 ║ 25.7 ║  0.86x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007880 ║ 50.3 ║ 13.8 ║  0.37x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:29:12] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:29:12] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:29:13] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:29:26] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 20:30:13] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:30:14] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:30:14] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:30:19] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:30:31 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.51 ║ 31.9 ║ 38.8 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $76,939.30 ║ 22.6 ║ 64.1 ║  0.01x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.41 ║ 45.6 ║ 28.1 ║  0.01x ║ 🟢 +0.88%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.58 ║ 24.1 ║ 26.1 ║  0.01x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001698 ║ 31.9 ║ 27.3 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007907 ║ 52.4 ║ 13.0 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:31:15] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:31:15] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:31:16] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:31:31] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:32:04 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.25 ║ 29.8 ║ 38.8 ║  0.03x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $76,800.01 ║ 20.7 ║ 64.1 ║  0.09x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.41 ║ 43.4 ║ 28.1 ║  0.01x ║ 🟢 +0.63%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.58 ║ 23.6 ║ 26.1 ║  0.02x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001700 ║ 33.4 ║ 27.1 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007890 ║ 51.0 ║ 13.0 ║  0.09x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:32:17] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:32:17] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:32:18] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:32:40] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 20:33:18] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:33:19] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:33:19] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:33:38 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.30 ║ 30.2 ║ 38.8 ║  0.05x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $76,868.00 ║ 21.6 ║ 64.1 ║  0.23x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.41 ║ 43.4 ║ 28.1 ║  0.01x ║ 🟢 +0.63%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.57 ║ 23.3 ║ 26.1 ║  0.03x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001700 ║ 33.4 ║ 27.1 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007856 ║ 48.2 ║ 13.0 ║  0.22x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:33:54] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 20:34:20] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:34:20] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:34:21] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:35:08 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.36 ║ 30.6 ║ 38.8 ║  0.11x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $76,926.32 ║ 22.4 ║ 64.1 ║  0.38x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.41 ║ 43.4 ║ 28.1 ║  0.01x ║ 🟢 +0.63%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.58 ║ 24.7 ║ 26.1 ║  0.04x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001700 ║ 33.4 ║ 27.1 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007849 ║ 47.7 ║ 13.0 ║  0.27x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:35:13] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 20:35:21] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:35:22] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:35:22] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:36:23] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:36:23] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:36:24] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:36:27] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:36:38 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.37 ║ 30.7 ║ 38.8 ║  0.13x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $76,988.01 ║ 24.7 ║ 64.0 ║  0.47x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.41 ║ 43.7 ║ 28.1 ║  0.01x ║ 🟢 +0.67%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.58 ║ 24.7 ║ 26.1 ║  0.04x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001700 ║ 33.4 ║ 27.1 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007849 ║ 47.7 ║ 13.0 ║  0.27x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:37:24] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:37:25] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:37:25] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:37:36] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:38:09 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.46 ║ 31.5 ║ 38.5 ║  0.16x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $76,968.48 ║ 23.7 ║ 63.3 ║  0.73x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.42 ║ 49.7 ║ 27.4 ║  0.06x ║ 🟢 +1.38%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.59 ║ 27.6 ║ 25.5 ║  0.10x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001709 ║ 39.5 ║ 26.1 ║  0.02x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007874 ║ 49.6 ║ 13.0 ║  0.29x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:38:26] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:38:26] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:38:27] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:38:55] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 20:39:28] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:39:28] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:39:29] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:39:44 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.42 ║ 31.1 ║ 38.5 ║  0.19x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $76,975.34 ║ 24.1 ║ 63.3 ║  0.77x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.42 ║ 49.7 ║ 27.4 ║  0.06x ║ 🟢 +1.38%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.60 ║ 29.1 ║ 25.5 ║  0.11x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001709 ║ 39.5 ║ 26.1 ║  0.02x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007905 ║ 52.3 ║ 13.0 ║  0.38x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:40:13] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 20:40:29] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:40:30] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:40:30] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:41:14 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.53 ║ 32.3 ║ 38.5 ║  0.28x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,011.84 ║ 25.9 ║ 63.3 ║  0.83x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.42 ║ 49.7 ║ 27.4 ║  0.06x ║ 🟢 +1.38%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.61 ║ 31.3 ║ 25.5 ║  0.12x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001709 ║ 39.5 ║ 26.1 ║  0.02x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007902 ║ 52.0 ║ 13.5 ║  0.44x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:41:23] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 20:41:31] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:41:31] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:41:32] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:42:29] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-10 20:42:32] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:42:33] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:42:33] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:42:43] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:42:54 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.59 ║ 33.4 ║ 38.4 ║  0.31x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,028.01 ║ 26.6 ║ 63.3 ║  0.88x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.42 ║ 49.7 ║ 27.4 ║  0.06x ║ 🟢 +1.38%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.62 ║ 35.2 ║ 24.9 ║  0.15x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001712 ║ 41.3 ║ 25.8 ║  0.02x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007898 ║ 51.7 ║ 13.5 ║  0.45x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:43:34] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:43:34] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:43:35] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:43:35] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:44:27 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.59 ║ 33.4 ║ 38.4 ║  0.33x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $76,984.01 ║ 24.5 ║ 63.3 ║  0.93x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.42 ║ 49.4 ║ 27.4 ║  0.06x ║ 🟢 +1.34%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.62 ║ 34.6 ║ 24.9 ║  0.16x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001712 ║ 41.3 ║ 25.8 ║  0.02x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007898 ║ 51.7 ║ 13.5 ║  0.45x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:44:35] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:44:36] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:44:36] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:44:44] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 20:45:37] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:45:37] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:45:38] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:45:55] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:46:01 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.48 ║ 32.1 ║ 40.0 ║  0.01x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $76,936.42 ║ 22.7 ║ 63.5 ║  0.16x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.42 ║ 49.4 ║ 26.8 ║  0.00x ║ 🟢 +1.34%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.61 ║ 32.7 ║ 25.7 ║  0.01x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001712 ║ 41.3 ║ 25.9 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007925 ║ 54.0 ║ 13.1 ║  0.09x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:46:39] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:46:39] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:46:40] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:47:05] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:47:31 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.68 ║ 35.1 ║ 39.9 ║  0.06x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,062.01 ║ 28.7 ║ 60.7 ║  0.39x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.42 ║ 48.7 ║ 26.8 ║  0.01x ║ 🟢 +1.25%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.63 ║ 36.3 ║ 25.6 ║  0.04x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001712 ║ 41.3 ║ 25.9 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007976 ║ 57.8 ║ 13.6 ║  0.23x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:47:40] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:47:41] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:47:41] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:48:14] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 20:48:42] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:48:42] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:48:43] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:49:00 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.64 ║ 34.4 ║ 39.5 ║  0.10x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,008.01 ║ 26.1 ║ 60.7 ║  0.43x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.42 ║ 49.8 ║ 26.8 ║  0.02x ║ 🟢 +1.38%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.62 ║ 34.8 ║ 25.5 ║  0.05x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001712 ║ 41.3 ║ 25.9 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007988 ║ 58.6 ║ 14.0 ║  0.28x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:49:25] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 20:49:43] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:49:44] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:49:44] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:50:23] 🛡️ [TRAILING STOP NEAR/USDT] ขยับ SL ตามกำไรไปที่ $2.403720
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:50:33 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.73 ║ 36.0 ║ 39.5 ║  0.14x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,066.76 ║ 29.0 ║ 60.7 ║  0.61x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.43 ║ 51.1 ║ 26.6 ║  0.02x ║ 🟢 +1.55%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.63 ║ 36.1 ║ 25.5 ║  0.06x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001712 ║ 41.3 ║ 25.9 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007982 ║ 58.2 ║ 14.0 ║  0.29x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:50:45] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxEURUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:50:45] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxGBPUSD ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:50:46] [DERIV-FOREX] ⚠️ ดึงข้อมูลแท่งเทียน frxUSDJPY ไม่สำเร็จ: sent 1011 (internal error) keepalive ping timeout; no close frame received
+[2026-09-10 20:50:54] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+
+[2026-09-10 20:51:20] [WEB-TERMINAL-RESTART] $ restart
+🔄 [COMMAND RESTART ACCEPTED]
+ได้รับคำสั่งรีสตาร์ทระบบเรียบร้อยแล้ว!
+[GIT] Updating bc8a177..8b49fc1
+Fast-forward
+ main_forex.py | 28 +++++++++++++++++++++-------
+ 1 file changed, 21 insertions(+), 7 deletions(-)
+⏳ กำลังส่งสัญญาณให้ Supervisor ปิด Workers และ Re-execute main.py ตัวใหม่ทันที...
+📡 หน้าจอ Console จะกลับมาสตรีมสดอัตโนมัติใน 3-5 วินาที ไร้การหลุดจากคอนเทนเนอร์
+
+[2026-09-10 20:51:20] [SUPERVISOR] 🔄 [COMMAND RESTART] ตรวจพบคำสั่ง Restart จาก Web Terminal!
+[2026-09-10 20:51:20] [SUPERVISOR] 🛑 กำลังปิด Workers ทั้งหมดอย่างปลอดภัยเพื่อเตรียม Restart ระบบ...
+[2026-09-10 20:51:21] [SUPERVISOR] ✅ BinanceEngine ปิดเรียบร้อย
+[2026-09-10 20:51:21] [SUPERVISOR] ✅ DerivForexEngine ปิดเรียบร้อย
+[2026-09-10 20:51:21] [SUPERVISOR] ✅ WebDashboard ปิดเรียบร้อย
+[2026-09-10 20:51:21] [SUPERVISOR] 🚀 กำลัง Re-executing main.py เพื่อเริ่มระบบใหม่อย่างสมบูรณ์...
+[2026-09-10 20:51:29] [SUPERVISOR] ╔══════════════════════════════════════════════════════════════════════════════════╗
+[2026-09-10 20:51:29] [SUPERVISOR] ║  🏛️ AG 2.0 QUANT TERMINAL | DUAL-ENGINE SUPERVISOR (QUANT SHIELD)                 ║
+[2026-09-10 20:51:29] [SUPERVISOR] ║  ⚡ Binance Engine : Spot Sandbox Testnet (100% Demo / Training)                 ║
+[2026-09-10 20:51:29] [SUPERVISOR] ║  ⚡ Deriv Engine   : Forex Demo Account (DOT94482469 - 100% No Real Money)       ║
+[2026-09-10 20:51:29] [SUPERVISOR] ║  📡 Console Logger : Streamed to console_log.txt & synced as status_log.txt      ║
+[2026-09-10 20:51:29] [SUPERVISOR] ║  🔔 LINE Notify    : Active for BUY, TP, SL, Breakeven & Trailing Run             ║
+[2026-09-10 20:51:29] [SUPERVISOR] ╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 20:51:29] [SUPERVISOR] 📂 ไดเรกทอรีทำงาน: /home/container
+[2026-09-10 20:51:29] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: BinanceEngine (main_binance.py)...
+[2026-09-10 20:51:29] [SUPERVISOR] ✅ BinanceEngine ทำงานสำเร็จ (PID: 737)
+[2026-09-10 20:51:29] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: DerivForexEngine (main_forex.py)...
+[2026-09-10 20:51:29] [SUPERVISOR] ✅ DerivForexEngine ทำงานสำเร็จ (PID: 739)
+[2026-09-10 20:51:29] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: WebDashboard (dashboard.py)...
+[2026-09-10 20:51:29] [SUPERVISOR] ✅ WebDashboard ทำงานสำเร็จ (PID: 741)
+[2026-09-10 20:51:29] [SUPERVISOR] 👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers และตรวจจับ Auto-Patch...
+🚀 เริ่มต้นระบบ AG 2.0 Live Quant Terminal Server ที่พอร์ต 9848...
+🌐 ใช้งานผ่าน URL: http://0.0.0.0:9848
+[2026-09-10 20:51:54] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+🧠 [MEMORY] โหลด agent_memory_deriv.json สำเร็จ (เทรดรวม: 10 ไม้)
+=================================================================
+🏛️ DERIV FOREX QUANT ENGINE STARTING (DEMO: DOT94482469)
+=================================================================
+[2026-09-10 20:51:58] [DERIV-FOREX] 🚀 กำลังตรวจสอบและเชื่อมต่อ Deriv Engine...
+📂 [STATE] โหลด active_state_deriv.json สำเร็จ (ไม่มีไม้ค้าง - สแตนด์บายพร้อมเทรด)
+[2026-09-10 20:52:02] [DERIV-FOREX] ✅ ยืนยันสิทธิ์บัญชี Demo DOT94482469 สำเร็จ! ยอดเงิน: $10,004.75 USD
+[2026-09-10 20:52:04] [DERIV-FOREX] 🔌 เชื่อมต่อ Deriv WebSocket สำเร็จ! (บัญชี: DOT94482469)
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 20:52:07 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16163 ║ 41.0 ║  0.00410 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35172 ║ 36.4 ║  0.00507 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.01600 ║ 55.8 ║  0.00638 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+🧠 [MEMORY] กู้คืน agent_memory_multi.json สำเร็จ (เทรดรวม: 32 ไม้ | ชนะ 15 | แพ้ 14)
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔄 RECOVERED ACTIVE POSITION - NEAR/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine                : Binance Testnet Spot
+║  • Symbol                : NEAR/USDT
+║  • Entry Price           : $2.391000
+║  • Position Size         : 2.7
+║  • Take Profit (TP)      : $2.435464
+║  • Stop Loss (SL)        : $2.403720
+║  • Breakeven Locked      : True
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 20:52:09] 🔄 [RECOVER] กู้คืนสถานะการถือครอง NEAR/USDT @ $2.391000 (TP: $2.435464 | SL: $2.403720)
+✅ เชื่อมต่อ Binance Testnet (Sandbox) สำเร็จ! ยอดเงิน: 9986.44 USDT
+[2026-09-10 20:52:15] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9986.44 USDT)
+[2026-09-10 20:52:15] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-10 20:52:16] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-10 20:52:33] 🛡️ [TRAILING STOP NEAR/USDT] ขยับ SL ตามกำไรไปที่ $2.404710
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:52:44 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.46 ║ 31.9 ║ 39.5 ║  0.20x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $76,995.12 ║ 25.4 ║ 60.7 ║  0.65x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.43 ║ 51.4 ║ 26.5 ║  0.02x ║ 🟢 +1.59%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.62 ║ 34.1 ║ 25.5 ║  0.08x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001712 ║ 41.3 ║ 25.9 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007991 ║ 58.8 ║ 14.0 ║  0.36x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:53:03] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 20:53:10 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16177 ║ 42.0 ║  0.00409 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35184 ║ 37.3 ║  0.00506 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.07800 ║ 58.8 ║  0.00638 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🚀 DYNAMIC TRAILING RUN - NEAR/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Current Price         : $2.439000
+║  • Target TP Exp         : Expanded to 1.5x (Let Profit Run)
+║  • Trailing SL           : $2.419929 (Trailing 1.0 ATR Behind)
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 20:54:10] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 20:54:13 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16151 ║ 40.3 ║  0.00411 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35156 ║ 35.3 ║  0.00509 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.10600 ║ 60.2 ║  0.00638 ║ Hammer     ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:54:14 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.78 ║ 36.9 ║ 39.5 ║  0.21x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,190.24 ║ 34.3 ║ 60.7 ║  0.76x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.44 ║ 54.4 ║ 26.0 ║  0.06x ║ 🟢 +2.01%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.63 ║ 37.6 ║ 25.4 ║  0.09x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001712 ║ 41.3 ║ 25.9 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007990 ║ 58.7 ║ 14.0 ║  0.37x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 20:55:16 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16136 ║ 39.5 ║  0.00413 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35154 ║ 35.2 ║  0.00509 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.10100 ║ 59.9 ║  0.00638 ║ Hammer     ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 20:55:19] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:55:43 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.75 ║ 36.4 ║ 39.3 ║  0.23x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,175.24 ║ 33.7 ║ 60.7 ║  0.80x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.43 ║ 50.4 ║ 26.0 ║  0.10x ║ 🟢 +1.46%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.62 ║ 35.4 ║ 25.4 ║  0.10x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001716 ║ 43.7 ║ 25.6 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007996 ║ 59.1 ║ 14.0 ║  0.39x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 20:56:19 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16132 ║ 39.3 ║  0.00413 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35162 ║ 35.7 ║  0.00508 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.09500 ║ 59.6 ║  0.00638 ║ Hammer     ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 20:56:33] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:57:12 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.73 ║ 36.0 ║ 39.3 ║  0.63x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,170.29 ║ 33.5 ║ 60.7 ║  1.00x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.42 ║ 50.1 ║ 26.0 ║  0.10x ║ 🟢 +1.42%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.63 ║ 36.3 ║ 25.4 ║  0.11x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001716 ║ 43.7 ║ 25.6 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.008058 ║ 62.7 ║ 14.6 ║  0.55x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 20:57:22 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16118 ║ 38.7 ║  0.00415 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35142 ║ 34.7 ║  0.00511 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.13600 ║ 61.9 ║  0.00639 ║ Hammer     ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 20:57:44] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 20:58:25 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16119 ║ 38.7 ║  0.00415 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35159 ║ 35.5 ║  0.00509 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.09900 ║ 59.8 ║  0.00638 ║ Hammer     ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 20:58:46 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.81 ║ 37.4 ║ 39.3 ║  0.66x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,206.28 ║ 35.0 ║ 60.7 ║  1.16x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.42 ║ 49.4 ║ 26.0 ║  0.12x ║ 🟢 +1.34%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.63 ║ 36.3 ║ 25.4 ║  0.13x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001716 ║ 43.7 ║ 25.6 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.008057 ║ 62.6 ║ 14.6 ║  1.49x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 20:58:59] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 20:59:28 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16127 ║ 39.1 ║  0.00414 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35173 ║ 36.5 ║  0.00507 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.04700 ║ 57.2 ║  0.00638 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 21:00:15] [SUPERVISOR] ⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: HTTPSConnectionPool(host='script.google.com', port=443): Read timed out. (read timeout=15)
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 21:00:16 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.75 ║ 36.4 ║ 39.3 ║  0.68x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,177.38 ║ 33.8 ║ 60.7 ║  1.22x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.43 ║ 52.5 ║ 24.7 ║  0.00x ║ 🟢 +1.76%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.62 ║ 35.1 ║ 25.9 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001716 ║ 43.6 ║ 25.3 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.008061 ║ 62.8 ║ 15.8 ║  0.01x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:00:31 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16138 ║ 43.7 ║  0.00391 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35177 ║ 38.7 ║  0.00478 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.03100 ║ 44.6 ║  0.00582 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:01:34 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16133 ║ 43.3 ║  0.00392 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35147 ║ 36.8 ║  0.00481 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.03200 ║ 44.7 ║  0.00582 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 21:01:40] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 21:01:45 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.91 ║ 39.2 ║ 39.9 ║  0.02x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,270.82 ║ 37.6 ║ 58.3 ║  0.21x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.44 ║ 54.4 ║ 24.7 ║  0.03x ║ 🟢 +2.01%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.63 ║ 35.8 ║ 25.9 ║  0.03x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001716 ║ 43.6 ║ 25.3 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.008003 ║ 58.0 ║ 15.8 ║  0.06x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:02:37 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16172 ║ 46.0 ║  0.00389 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35184 ║ 39.1 ║  0.00478 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.98100 ║ 42.4 ║  0.00584 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 21:02:38] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 21:03:05] 🛡️ [TRAILING STOP NEAR/USDT] ขยับ SL ตามกำไรไปที่ $2.420550
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 21:03:15 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $100.04 ║ 41.4 ║ 39.5 ║  0.05x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,284.27 ║ 38.1 ║ 58.3 ║  0.25x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.44 ║ 56.1 ║ 24.4 ║  0.03x ║ 🟢 +2.26%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.64 ║ 37.8 ║ 25.7 ║  0.06x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001716 ║ 43.6 ║ 25.3 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.008001 ║ 57.8 ║ 15.8 ║  0.06x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:03:40 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16173 ║ 46.1 ║  0.00389 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35195 ║ 39.9 ║  0.00477 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.99800 ║ 43.1 ║  0.00584 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
 ║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 [2026-09-10 21:03:45] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
@@ -311,3 +1310,505 @@
 ║  • Net Profit            : +0.0540 USDT (+1.84 บาท)
 ║  • Status                : 🔒 ล็อกทุนสำเร็จ ไม่ขาดทุน
 ╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 21:18:20] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:18:24 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16169 ║ 43.6 ║  0.00366 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35143 ║ 35.4 ║  0.00460 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.96900 ║ 45.0 ║  0.00555 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 21:18:35 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.38 ║ 32.7 ║ 39.8 ║  0.09x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $76,949.22 ║ 29.1 ║ 53.4 ║  0.07x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.42 ║ 46.6 ║ 23.3 ║  0.12x ║ 🟢 +1.00%        ║ BE-Locked  ║
+║ AVAX/USDT   ║        $7.56 ║ 28.3 ║ 26.7 ║  0.02x ║ ⚪ FLAT          ║ Scanning   ║
+║ GALA/USDT   ║    $0.001699 ║ 36.7 ║ 26.4 ║  0.07x ║ ⚪ FLAT          ║ Scanning   ║
+║ VET/USDT    ║    $0.007981 ║ 56.2 ║ 15.4 ║  0.22x ║ ⚪ FLAT          ║ Scanning   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 21:19:08] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:19:27 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16171 ║ 43.7 ║  0.00366 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35152 ║ 35.7 ║  0.00459 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.95100 ║ 44.1 ║  0.00556 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🟢 BUY ORDER EXECUTED - SOL/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exchange / Mode       : Binance Testnet (Sandbox Demo)
+║  • Symbol                : SOL/USDT
+║  • Entry Price           : $99.450000
+║  • Size                  : 0.065 (~$6.46 USDT / 219.8 บาท)
+║  • Take Profit (TP)      : $100.746429 (+2.5 ATR)
+║  • Stop Loss (SL)        : $98.672143 (-1.5 ATR)
+║  • Strategy Reason       : [Candle_Reversal] พบ Hammer | RSI:33.4
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 21:20:05 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.45 ║ 33.4 ║ 39.8 ║  0.18x ║ 🟢 LONG (+0.00%) ║ Holding    ║
+║ BTC/USDT    ║   $77,012.00 ║ 30.3 ║ 53.4 ║  0.13x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.41 ║ 45.6 ║ 23.5 ║  0.19x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.58 ║ 30.5 ║ 26.7 ║  0.05x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001699 ║ 36.7 ║ 26.4 ║  0.07x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007981 ║ 56.2 ║ 15.4 ║  0.22x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 21:20:28] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:20:30 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16194 ║ 44.9 ║  0.00365 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35191 ║ 38.5 ║  0.00456 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.94100 ║ 43.6 ║  0.00557 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 21:21:18] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:21:33 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16176 ║ 43.9 ║  0.00366 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35168 ║ 36.9 ║  0.00458 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.95900 ║ 44.5 ║  0.00556 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 21:21:34 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.58 ║ 35.6 ║ 39.8 ║  0.22x ║ 🟢 +0.13%        ║ Holding    ║
+║ BTC/USDT    ║   $77,032.08 ║ 30.7 ║ 53.4 ║  0.16x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.42 ║ 48.9 ║ 23.5 ║  0.19x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.58 ║ 30.6 ║ 26.7 ║  0.09x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001699 ║ 36.7 ║ 26.4 ║  0.07x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007975 ║ 55.7 ║ 15.4 ║  0.31x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:22:36 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16187 ║ 44.5 ║  0.00365 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35181 ║ 37.8 ║  0.00457 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.96000 ║ 44.6 ║  0.00556 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 21:22:44] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 21:23:09 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.69 ║ 37.6 ║ 39.8 ║  0.27x ║ 🟢 +0.24%        ║ Holding    ║
+║ BTC/USDT    ║   $77,176.01 ║ 35.9 ║ 53.4 ║  0.18x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.43 ║ 52.4 ║ 23.5 ║  0.19x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.60 ║ 32.2 ║ 26.7 ║  0.11x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001699 ║ 36.7 ║ 26.4 ║  0.07x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007975 ║ 55.7 ║ 15.4 ║  0.31x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:23:39 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16178 ║ 44.0 ║  0.00365 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35171 ║ 37.1 ║  0.00458 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.97800 ║ 45.5 ║  0.00555 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 21:23:44] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 21:24:38 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║       $99.84 ║ 40.1 ║ 39.8 ║  0.75x ║ 🟢 +0.39%        ║ Holding    ║
+║ BTC/USDT    ║   $77,140.01 ║ 34.4 ║ 53.4 ║  0.27x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.43 ║ 52.1 ║ 23.5 ║  0.20x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.60 ║ 32.0 ║ 26.7 ║  0.14x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001699 ║ 36.7 ║ 26.4 ║  0.07x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007975 ║ 55.7 ║ 15.4 ║  0.31x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:24:42 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16218 ║ 46.5 ║  0.00366 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35197 ║ 38.9 ║  0.00456 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.89200 ║ 41.0 ║  0.00562 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 21:25:04] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:25:48 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16196 ║ 45.0 ║  0.00365 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35190 ║ 38.4 ║  0.00456 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.95600 ║ 44.4 ║  0.00556 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛡️ AUTO-BREAKEVEN ACTIVATED - SOL/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Current Price         : $100.130000
+║  • Profit Reached        : +0.68% (Threshold: +0.40%)
+║  • New Stop Loss         : $99.499725 (Locked +0.05% with Fee Buffer)
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 21:26:08 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $100.13 ║ 44.4 ║ 39.8 ║  0.85x ║ 🟢 +0.68%        ║ Holding    ║
+║ BTC/USDT    ║   $77,360.01 ║ 42.5 ║ 53.4 ║  0.31x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.44 ║ 53.1 ║ 23.5 ║  0.24x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.62 ║ 35.7 ║ 26.7 ║  0.17x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001713 ║ 43.5 ║ 26.4 ║  0.08x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007987 ║ 56.7 ║ 15.4 ║  0.32x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 21:26:20] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:26:51 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16185 ║ 44.4 ║  0.00365 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35166 ║ 36.7 ║  0.00458 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.01800 ║ 47.4 ║  0.00552 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 21:27:15] [SUPERVISOR] ⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: HTTPSConnectionPool(host='script.google.com', port=443): Read timed out. (read timeout=15)
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 21:27:37 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $100.06 ║ 43.4 ║ 39.8 ║  0.97x ║ 🟢 +0.61%        ║ BE-Locked  ║
+║ BTC/USDT    ║   $77,273.37 ║ 39.6 ║ 53.4 ║  0.41x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.45 ║ 57.1 ║ 23.5 ║  0.29x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.61 ║ 33.6 ║ 26.7 ║  0.18x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001711 ║ 42.3 ║ 26.4 ║  0.08x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.008001 ║ 57.6 ║ 15.4 ║  0.36x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:27:54 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16215 ║ 46.3 ║  0.00366 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35194 ║ 38.7 ║  0.00456 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.98300 ║ 45.7 ║  0.00554 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 21:28:36] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:28:58 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16241 ║ 47.9 ║  0.00367 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35198 ║ 39.0 ║  0.00456 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.95600 ║ 44.4 ║  0.00556 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 21:29:11 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $100.30 ║ 46.7 ║ 38.7 ║  1.47x ║ 🟢 +0.85%        ║ BE-Locked  ║
+║ BTC/USDT    ║   $77,372.00 ║ 42.9 ║ 53.4 ║  0.45x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.45 ║ 57.1 ║ 23.5 ║  0.29x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.61 ║ 33.8 ║ 26.7 ║  0.19x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001711 ║ 42.3 ║ 26.4 ║  0.08x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.008065 ║ 61.3 ║ 15.4 ║  0.40x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 21:29:51] [SUPERVISOR] ⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: HTTPSConnectionPool(host='script.google.com', port=443): Read timed out. (read timeout=15)
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:30:01 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16213 ║ 46.1 ║  0.00365 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35177 ║ 37.5 ║  0.00457 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.97400 ║ 41.1 ║  0.00503 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 21:30:41 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $100.09 ║ 44.1 ║ 37.9 ║  0.85x ║ 🟢 +0.64%        ║ BE-Locked  ║
+║ BTC/USDT    ║   $77,282.53 ║ 39.9 ║ 50.2 ║  0.00x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.44 ║ 53.4 ║ 22.9 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.62 ║ 37.5 ║ 27.7 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001714 ║ 43.9 ║ 27.0 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.008083 ║ 62.2 ║ 15.3 ║  0.06x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:31:04 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16207 ║ 47.7 ║  0.00350 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35176 ║ 40.6 ║  0.00440 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.00600 ║ 42.8 ║  0.00501 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 21:31:10] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:32:07 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16213 ║ 48.1 ║  0.00351 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35182 ║ 41.0 ║  0.00440 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.98300 ║ 41.5 ║  0.00503 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 21:32:11 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $100.09 ║ 44.1 ║ 37.9 ║  0.86x ║ 🟢 +0.64%        ║ BE-Locked  ║
+║ BTC/USDT    ║   $77,240.53 ║ 38.8 ║ 50.2 ║  0.02x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.44 ║ 53.4 ║ 22.9 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.61 ║ 35.5 ║ 27.7 ║  0.02x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001714 ║ 43.9 ║ 27.0 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.008180 ║ 66.8 ║ 16.5 ║  1.13x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 21:32:20] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:33:10 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16229 ║ 49.1 ║  0.00351 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35196 ║ 42.0 ║  0.00439 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.94200 ║ 39.9 ║  0.00506 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 21:33:32] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 21:33:41 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $100.13 ║ 44.6 ║ 37.9 ║  0.88x ║ 🟢 +0.68%        ║ BE-Locked  ║
+║ BTC/USDT    ║   $77,288.99 ║ 40.2 ║ 50.2 ║  0.04x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.44 ║ 53.4 ║ 22.9 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.61 ║ 35.5 ║ 27.7 ║  0.02x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001714 ║ 43.9 ║ 27.0 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.008224 ║ 68.5 ║ 16.6 ║  1.18x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:34:13 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16254 ║ 50.6 ║  0.00353 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35205 ║ 42.7 ║  0.00439 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.88800 ║ 38.0 ║  0.00513 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 21:34:42] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 21:35:16 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $100.13 ║ 44.6 ║ 37.9 ║  0.89x ║ 🟢 +0.68%        ║ BE-Locked  ║
+║ BTC/USDT    ║   $77,292.01 ║ 40.3 ║ 50.2 ║  0.10x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.44 ║ 53.4 ║ 22.9 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.62 ║ 36.8 ║ 27.7 ║  0.02x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001714 ║ 43.9 ║ 27.0 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.008284 ║ 70.6 ║ 17.0 ║  1.22x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:35:16 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16260 ║ 50.9 ║  0.00354 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35204 ║ 42.6 ║  0.00439 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.90300 ║ 38.5 ║  0.00511 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 21:35:56] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:36:19 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16258 ║ 50.8 ║  0.00354 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35203 ║ 42.5 ║  0.00439 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.93500 ║ 39.6 ║  0.00507 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 21:36:45 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $100.17 ║ 45.1 ║ 37.9 ║  0.92x ║ 🟢 +0.72%        ║ BE-Locked  ║
+║ BTC/USDT    ║   $77,306.00 ║ 40.8 ║ 50.2 ║  0.16x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.42 ║ 48.0 ║ 22.9 ║  0.02x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.62 ║ 37.4 ║ 27.7 ║  0.03x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001714 ║ 43.9 ║ 27.0 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.008310 ║ 71.4 ║ 17.4 ║  1.29x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-10 21:37:05] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:37:22 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16256 ║ 50.7 ║  0.00354 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35225 ║ 44.0 ║  0.00438 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    153.91300 ║ 38.8 ║  0.00510 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-10 21:38:15 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $100.24 ║ 45.9 ║ 37.9 ║  0.94x ║ 🟢 +0.79%        ║ BE-Locked  ║
+║ BTC/USDT    ║   $77,340.32 ║ 42.1 ║ 50.2 ║  0.32x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ NEAR/USDT   ║        $2.42 ║ 48.0 ║ 22.9 ║  0.02x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.62 ║ 36.7 ║ 27.7 ║  0.04x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001714 ║ 43.9 ║ 27.0 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.008304 ║ 71.3 ║ 17.4 ║  1.52x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 เวลาไทย: 2026-09-10 21:38:25 | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.16239 ║ 49.7 ║  0.00352 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35205 ║ 42.7 ║  0.00439 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.00100 ║ 42.5 ║  0.00501 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.75 USD (~340,162 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.75 USD (+161.5 ฿) | สถิติ AI: 10 ไม้ (ชนะ 8 | แพ้ 2 | WR: 80.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 21:38:31] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!
+[2026-09-10 21:38:52] [SUPERVISOR] 🔄 [AUTO-PATCH] พบการอัปเดตโค้ดหลักใน GitHub! กำลังอัปเดตและรีสตาร์ทระบบ...
+[2026-09-10 21:38:54] [SUPERVISOR] 🛑 กำลังปิด Workers ทั้งหมดอย่างปลอดภัยเพื่อเตรียม Restart ระบบ...
+[2026-09-10 21:38:54] [SUPERVISOR] ✅ BinanceEngine ปิดเรียบร้อย
+[2026-09-10 21:38:54] [SUPERVISOR] ✅ DerivForexEngine ปิดเรียบร้อย
+[2026-09-10 21:38:54] [SUPERVISOR] ✅ WebDashboard ปิดเรียบร้อย
+[2026-09-10 21:38:54] [SUPERVISOR] 🚀 กำลัง Re-executing main.py เพื่อเริ่มระบบใหม่อย่างสมบูรณ์...
+[2026-09-10 21:39:02] [SUPERVISOR] ╔══════════════════════════════════════════════════════════════════════════════════╗
+[2026-09-10 21:39:02] [SUPERVISOR] ║  🏛️ AG 2.0 QUANT TERMINAL | DUAL-ENGINE SUPERVISOR (QUANT SHIELD)                 ║
+[2026-09-10 21:39:02] [SUPERVISOR] ║  ⚡ Binance Engine : Spot Sandbox Testnet (100% Demo / Training)                 ║
+[2026-09-10 21:39:02] [SUPERVISOR] ║  ⚡ Deriv Engine   : Forex Demo Account (DOT94482469 - 100% No Real Money)       ║
+[2026-09-10 21:39:02] [SUPERVISOR] ║  📡 Console Logger : Streamed to console_log.txt & synced as status_log.txt      ║
+[2026-09-10 21:39:02] [SUPERVISOR] ║  🔔 LINE Notify    : Active for BUY, TP, SL, Breakeven & Trailing Run             ║
+[2026-09-10 21:39:02] [SUPERVISOR] ╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 21:39:02] [SUPERVISOR] 📂 ไดเรกทอรีทำงาน: /home/container
+[2026-09-10 21:39:02] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: BinanceEngine (main_binance.py)...
+[2026-09-10 21:39:02] [SUPERVISOR] ✅ BinanceEngine ทำงานสำเร็จ (PID: 893)
+[2026-09-10 21:39:02] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: DerivForexEngine (main_forex.py)...
+[2026-09-10 21:39:02] [SUPERVISOR] ✅ DerivForexEngine ทำงานสำเร็จ (PID: 895)
+[2026-09-10 21:39:02] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: WebDashboard (dashboard.py)...
+[2026-09-10 21:39:02] [SUPERVISOR] ✅ WebDashboard ทำงานสำเร็จ (PID: 897)
+[2026-09-10 21:39:02] [SUPERVISOR] 👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers และตรวจจับ Auto-Patch...
+[2026-09-10 21:39:54] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9986.49 USDT)
+[2026-09-10 21:39:54] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-10 21:39:54] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
