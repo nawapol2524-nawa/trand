@@ -31,13 +31,13 @@
   },
   "AVAX/USDT": {
     "in_position": false,
-    "entry_price": 7.679,
-    "position_size": 0.84,
-    "tp": 7.747571428571429,
-    "sl": 7.637857142857143,
+    "entry_price": 7.609,
+    "position_size": 1.11,
+    "tp": 7.723464285714286,
+    "sl": 7.540321428571429,
     "be_set": false,
-    "consecutive_losses": 1,
-    "cooldown_until": null
+    "consecutive_losses": 2,
+    "cooldown_until": "2026-09-10T20:18:39.614466"
   },
   "GALA/USDT": {
     "in_position": false,
