@@ -9306,3 +9306,121 @@
 🪙 [BINANCE] [SOL/USDT] 101.630000 | WAITING (มีเหรียญอื่นถือครองอยู่ - โหมดสไนเปอร์ไม้เดี่ยว 200 บาท)
 🪙 [BINANCE] [BTC/USDT] 78174.620000 | 🟢 LIVE LONG | PnL: +0.03% (+0.0016 USDT / +0.06 บ.)
 [2026-09-10 14:06:12] 🛡️ [SL-BREAKEVEN BTC/USDT] ปิดเสมอตัวที่ $78174.610000 | ทุน: $6.25 ➡️ ได้รับ: $6.25 USDT | ผลตอบแทน: +0.0016 USDT (+0.06 บาท / +0.03%)
+[2026-09-10 14:06:21] ☁️ [API-SYNC] อัปโหลดความจำและ Log ผ่าน API สำเร็จ! เสถียร 100%
+🪙 [BINANCE] [NEAR/USDT] 2.476000 | WAITING (ยังไม่ทะลุ Swing High $2.540000 และยังไม่แตะขอบล่าง BB)
+🪙 [BINANCE] [AVAX/USDT] 7.812000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [GALA/USDT] 0.001758 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [VET/USDT] 0.007981 | WAITING (ยังไม่ทะลุ Swing High $0.008050 และยังไม่แตะขอบล่าง BB)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-10 14:07:51
+🪙 [BINANCE] [SOL/USDT] 101.610000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [BTC/USDT] 78212.000000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [NEAR/USDT] 2.480000 | WAITING (ยังไม่ทะลุ Swing High $2.540000 และยังไม่แตะขอบล่าง BB)
+🪙 [BINANCE] [AVAX/USDT] 7.817000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [GALA/USDT] 0.001758 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [VET/USDT] 0.007974 | WAITING (ยังไม่ทะลุ Swing High $0.008050 และยังไม่แตะขอบล่าง BB)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-10 14:09:20
+🪙 [BINANCE] [SOL/USDT] 101.560000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [BTC/USDT] 78157.170000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [NEAR/USDT] 2.474000 | WAITING (ยังไม่ทะลุ Swing High $2.540000 และยังไม่แตะขอบล่าง BB)
+🪙 [BINANCE] [AVAX/USDT] 7.808000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [GALA/USDT] 0.001758 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [VET/USDT] 0.007961 | WAITING (ยังไม่ทะลุ Swing High $0.008050 และยังไม่แตะขอบล่าง BB)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-10 14:10:50
+🪙 [BINANCE] [SOL/USDT] 101.630000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [BTC/USDT] 78224.050000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [NEAR/USDT] 2.465000 | WAITING (ยังไม่ทะลุ Swing High $2.540000 และยังไม่แตะขอบล่าง BB)
+🪙 [BINANCE] [AVAX/USDT] 7.819000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [GALA/USDT] 0.001758 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [VET/USDT] 0.007961 | WAITING (ยังไม่ทะลุ Swing High $0.008050 และยังไม่แตะขอบล่าง BB)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-10 14:12:21
+🪙 [BINANCE] [SOL/USDT] 101.680000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [BTC/USDT] 78227.510000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [NEAR/USDT] 2.469000 | WAITING (ยังไม่ทะลุ Swing High $2.540000 และยังไม่แตะขอบล่าง BB)
+🪙 [BINANCE] [AVAX/USDT] 7.818000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [GALA/USDT] 0.001758 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [VET/USDT] 0.007963 | WAITING (ยังไม่ทะลุ Swing High $0.008050 และยังไม่แตะขอบล่าง BB)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-10 14:13:58
+🪙 [BINANCE] [SOL/USDT] 101.690000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [BTC/USDT] 78227.520000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [NEAR/USDT] 2.469000 | WAITING (ยังไม่ทะลุ Swing High $2.540000 และยังไม่แตะขอบล่าง BB)
+🪙 [BINANCE] [AVAX/USDT] 7.818000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [GALA/USDT] 0.001758 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [VET/USDT] 0.007963 | WAITING (ยังไม่ทะลุ Swing High $0.008050 และยังไม่แตะขอบล่าง BB)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-10 14:15:27
+🪙 [BINANCE] [SOL/USDT] 101.630000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [BTC/USDT] 78207.100000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [NEAR/USDT] 2.469000 | WAITING (ยังไม่ทะลุ Swing High $2.539000 และยังไม่แตะขอบล่าง BB)
+🪙 [BINANCE] [AVAX/USDT] 7.811000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [GALA/USDT] 0.001758 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [VET/USDT] 0.007952 | WAITING (ยังไม่ทะลุ Swing High $0.008050 และยังไม่แตะขอบล่าง BB)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-10 14:16:57
+🪙 [BINANCE] [SOL/USDT] 101.600000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [BTC/USDT] 78184.000000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [NEAR/USDT] 2.456000 | WAITING (ยังไม่ทะลุ Swing High $2.539000 และยังไม่แตะขอบล่าง BB)
+🪙 [BINANCE] [AVAX/USDT] 7.810000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [GALA/USDT] 0.001752 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [VET/USDT] 0.007956 | WAITING (ยังไม่ทะลุ Swing High $0.008050 และยังไม่แตะขอบล่าง BB)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-10 14:18:28
+🪙 [BINANCE] [SOL/USDT] 101.580000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [BTC/USDT] 78193.920000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [NEAR/USDT] 2.454000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [AVAX/USDT] 7.808000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [GALA/USDT] 0.001752 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [VET/USDT] 0.007955 | WAITING (ยังไม่ทะลุ Swing High $0.008050 และยังไม่แตะขอบล่าง BB)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-10 14:20:02
+🪙 [BINANCE] [SOL/USDT] 101.640000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [BTC/USDT] 78204.580000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [NEAR/USDT] 2.458000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [AVAX/USDT] 7.806000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [GALA/USDT] 0.001752 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [VET/USDT] 0.007955 | WAITING (ยังไม่ทะลุ Swing High $0.008050 และยังไม่แตะขอบล่าง BB)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-10 14:21:31
+🪙 [BINANCE] [SOL/USDT] 101.540000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [BTC/USDT] 78151.800000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [NEAR/USDT] 2.450000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [AVAX/USDT] 7.806000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [GALA/USDT] 0.001752 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [VET/USDT] 0.007982 | WAITING (ยังไม่ทะลุ Swing High $0.008050 และยังไม่แตะขอบล่าง BB)
+==================================================
+
+==================================================
+🕒 สแกนตลาดเวลา: 2026-09-10 14:23:01
+🪙 [BINANCE] [SOL/USDT] 101.480000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [BTC/USDT] 78110.440000 | WAITING (ระงับ: ราคาใต้ 4h EMA50 (MTF))
+🪙 [BINANCE] [NEAR/USDT] 2.445000 | WAITING ([Strategy: Pullback_Sniper] ช้อนของถูก | RSI:38.8 แตะ BB Lower: $2.4413)
+[2026-09-10 14:23:07] 🟢 [BUY NEAR/USDT] ซื้อ 2.6 @ $2.445000 | ทุนที่ลง: $6.36 USDT (~216.1 บาท) | TP: $2.501071 | SL: $2.411357
+🪙 [BINANCE] [AVAX/USDT] 7.795000 | WAITING (มีเหรียญอื่นถือครองอยู่ - โหมดสไนเปอร์ไม้เดี่ยว 200 บาท)
+🪙 [BINANCE] [GALA/USDT] 0.001750 | WAITING (มีเหรียญอื่นถือครองอยู่ - โหมดสไนเปอร์ไม้เดี่ยว 200 บาท)
+🪙 [BINANCE] [VET/USDT] 0.007967 | WAITING (มีเหรียญอื่นถือครองอยู่ - โหมดสไนเปอร์ไม้เดี่ยว 200 บาท)
+==================================================
+[2026-09-10 14:24:33] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
