@@ -92,8 +92,11 @@ def print_quant_table(thai_time, rows, account_info, memory):
     wins = memory.get("wins", 0)
     losses = memory.get("losses", 0)
     win_rate = (wins / total_trades * 100) if total_trades > 0 else 0.0
-    net_usd = memory.get("net_profit_usd", 0.0)
-    net_thb = memory.get("net_profit_thb", 0.0)
+    
+    # คำนวณกำไรจริงจาก Balance ของ Deriv (เทียบกับทุนตั้งต้น $10,000 Demo)
+    initial_demo_bal = 10000.0
+    account_profit_usd = round(bal - initial_demo_bal, 2)
+    account_profit_thb = round(account_profit_usd * usd_thb_rate, 1)
 
     lines = [
         "╔══════════════════════════════════════════════════════════════════════════════════╗",
@@ -108,8 +111,8 @@ def print_quant_table(thai_time, rows, account_info, memory):
             f"║ {r['symbol']:<11} ║ {r['price']:>12} ║ {r['rsi']:>4} ║ {r['bb_w']:>8} ║ {r['pattern']:<10} ║ {r['pos']:<15} ║ {r['st']:<2} ║"
         )
     lines.append("╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣")
-    lines.append(f"║ 👤 บัญชี Demo: {loginid:<22} 💰 ยอดเงิน: ${bal:>10,.2f} USD (~{bal_thb:,.0f} THB)     ║")
-    lines.append(f"║ 📊 สถิติ: {total_trades} ไม้ (ชนะ {wins} | แพ้ {losses} | WR: {win_rate:4.1f}%) | กำไรสุทธิ: ${net_usd:+,.2f} USD (~{net_thb:+,.1f} บ.)  ║")
+    lines.append(f"║ 👤 บัญชี Demo: {loginid:<14} 💰 Balance: ${bal:>10,.2f} USD (~{bal_thb:,.0f} ฿)          ║")
+    lines.append(f"║ 📈 กำไรพอร์ตรวม: ${account_profit_usd:+,.2f} USD ({account_profit_thb:+,.1f} ฿) | สถิติ AI: {total_trades} ไม้ (ชนะ {wins} | แพ้ {losses} | WR: {win_rate:4.1f}%) ║")
     lines.append("╚══════════════════════════════════════════════════════════════════════════════════╝")
     
     full_text = "\n".join(lines)
