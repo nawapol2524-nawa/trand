@@ -30,12 +30,12 @@
     "cooldown_until": null
   },
   "AVAX/USDT": {
-    "in_position": false,
-    "entry_price": 7.732,
+    "in_position": true,
+    "entry_price": 7.679,
     "position_size": 0.84,
-    "tp": 7.861821428571429,
-    "sl": 7.735866,
-    "be_set": true,
+    "tp": 7.747571428571429,
+    "sl": 7.637857142857143,
+    "be_set": false,
     "consecutive_losses": 0,
     "cooldown_until": null
   },
