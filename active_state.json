@@ -1,12 +1,12 @@
 {
   "SOL/USDT": {
     "in_position": false,
-    "entry_price": 102.64,
-    "position_size": 0.063,
-    "tp": 103.97392857142857,
-    "sl": 102.69131999999999,
+    "entry_price": 100.86,
+    "position_size": 0.064,
+    "tp": 101.635,
+    "sl": 100.91042999999999,
     "be_set": true,
-    "consecutive_losses": 1,
+    "consecutive_losses": 0,
     "cooldown_until": null
   },
   "BTC/USDT": {
