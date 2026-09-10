@@ -47,7 +47,7 @@
     ]
   },
   "BTC/USDT": {
-    "total_trades": 5,
+    "total_trades": 7,
     "wins": 2,
     "losses": 3,
     "learned_params": {
@@ -88,12 +88,12 @@
     ]
   },
   "NEAR/USDT": {
-    "total_trades": 0,
+    "total_trades": 1,
     "wins": 0,
-    "losses": 0,
+    "losses": 1,
     "learned_params": {
-      "min_volume_ratio": 1.15,
-      "min_adx": 12.0
+      "min_volume_ratio": 1.25,
+      "min_adx": 13.0
     },
     "reflections": [
       {
@@ -101,6 +101,12 @@
         "type": "INIT",
         "pnl": "+0.00%",
         "lesson": "Initialized NEAR/USDT high-momentum sniper pool"
+      },
+      {
+        "date": "2026-09-10 14:43:07",
+        "type": "LOSS",
+        "pnl": "-1.96%",
+        "lesson": "Loss (False Break): เพิ่มเกณฑ์ Vol->1.25x, ADX->13.0"
       }
     ]
   },
