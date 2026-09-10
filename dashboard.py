@@ -70,6 +70,15 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
             with open("status_log_deriv.txt", "r", encoding="utf-8") as f:
                 forex_text = "".join(f.readlines()[-15:])
                 
+        # Read Unified Live Console Log
+        console_text = "กำลังรอรวบรวม Console Log..."
+        if os.path.exists("console_log.txt"):
+            try:
+                with open("console_log.txt", "r", encoding="utf-8", errors="replace") as f:
+                    console_text = "".join(f.readlines()[-60:])
+            except Exception:
+                pass
+                
         binance_pnl_usdt = get_binance_pnl()
         binance_pnl_thb = binance_pnl_usdt * 34.0
         binance_color = "#00ff00" if binance_pnl_usdt >= 0 else "#ff4444"
@@ -119,6 +128,11 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
             <div class="container">
                 <h1>🚀 AG 2.0 Live Dashboard</h1>
                 
+                <div class="box">
+                    <h2 style="color: #58a6ff;">📺 Live Console Stream (ทุกอย่างที่ขึ้นบนหน้าจอสด)</h2>
+                    <pre style="max-height: 380px; overflow-y: auto; background: #010409; border: 1px solid #30363d; padding: 15px; border-radius: 6px; font-size: 0.9em;">{console_text}</pre>
+                </div>
+
                 <div class="box">
                     <h2 class="terminal-title">💻 Web Terminal (สั่งงาน Wispbyte)</h2>
                     <form method="POST" action="/run" style="display: flex; gap: 10px; margin-top: 15px;">

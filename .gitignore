@@ -10,3 +10,4 @@ trade_log.txt
 status_log_deriv.txt
 agent_memory*.json
 active_state.json
+console_log.txt

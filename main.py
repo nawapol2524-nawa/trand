@@ -3,6 +3,7 @@ import sys
 import time
 import subprocess
 import signal
+import threading
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
@@ -16,22 +17,49 @@ FOREX_SCRIPT = "main_forex.py"
 DASHBOARD_SCRIPT = "dashboard.py"
 MT5_SCRIPT = "main_mt5.py"
 SUPERVISOR_LOG = "supervisor_log.txt"
+CONSOLE_LOG_FILE = "console_log.txt"
+
 ENABLE_DERIV = os.getenv("ENABLE_DERIV", "true").lower() in ("true", "1", "yes")
 ENABLE_MT5 = os.getenv("ENABLE_MT5", "false").lower() in ("true", "1", "yes")
 
+_log_lock = threading.Lock()
 
 def get_thai_time():
     return (datetime.utcnow() + timedelta(hours=7)).strftime('%Y-%m-%d %H:%M:%S')
 
+def append_console_log(text):
+    """บันทึกทุกบรรทัดที่ปรากฏบนหน้าจอลงไฟล์ console_log.txt แบบ Thread-Safe"""
+    with _log_lock:
+        try:
+            with open(CONSOLE_LOG_FILE, "a", encoding="utf-8") as f:
+                f.write(text)
+        except Exception:
+            pass
+
+def trim_console_log():
+    """จำกัดขนาด console_log.txt ไม่ให้เกิน ~500KB (รักษา ~2,500 บรรทัดล่าสุด) เพื่อความเร็วและประหยัดพื้นที่"""
+    with _log_lock:
+        try:
+            if os.path.exists(CONSOLE_LOG_FILE) and os.path.getsize(CONSOLE_LOG_FILE) > 500_000:
+                with open(CONSOLE_LOG_FILE, "r", encoding="utf-8", errors="replace") as f:
+                    lines = f.readlines()
+                if len(lines) > 3000:
+                    with open(CONSOLE_LOG_FILE, "w", encoding="utf-8") as f:
+                        f.writelines(lines[-2500:])
+        except Exception:
+            pass
+
 def log_supervisor(text):
     now = get_thai_time()
-    msg = f"[{now}] [SUPERVISOR] {text}"
-    print(msg, flush=True)
+    msg = f"[{now}] [SUPERVISOR] {text}\n"
+    sys.stdout.write(msg)
+    sys.stdout.flush()
     try:
         with open(SUPERVISOR_LOG, "a", encoding="utf-8") as f:
-            f.write(msg + "\n")
+            f.write(msg)
     except Exception:
         pass
+    append_console_log(msg)
 
 # ==========================================
 # 🔄 AUTO-PATCH SYSTEM (GIT SYNC)
@@ -42,7 +70,7 @@ last_update_check = 0
 try:
     subprocess.run(["git", "fetch", "origin", "main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     subprocess.run(["git", "reset", "--hard", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-except:
+except Exception:
     pass
 
 def check_for_updates():
@@ -77,12 +105,13 @@ def check_for_updates():
         log_supervisor(f"⚠️ [AUTO-PATCH ERROR] ตรวจสอบอัปเดตไม่สำเร็จ: {e}")
 
 # ==========================================
-# 📂 GOOGLE DRIVE LIVE DASHBOARD SYNC
+# 📂 GOOGLE DRIVE LIVE DASHBOARD SYNC (CONSOLE LOG)
 # ==========================================
 GDRIVE_WEBHOOK_URL = os.getenv("GDRIVE_WEBHOOK_URL")
 last_gdrive_sync = 0
 
 def sync_to_gdrive():
+    """ส่ง Console Log สด 100% ขึ้น Google Drive ทุก 1 นาที"""
     global last_gdrive_sync
     if not GDRIVE_WEBHOOK_URL or "your_" in GDRIVE_WEBHOOK_URL:
         return
@@ -94,61 +123,89 @@ def sync_to_gdrive():
     try:
         import requests
         thai_now = get_thai_time()
-        dashboard = []
-        dashboard.append("=" * 65)
-        dashboard.append("🏛️ AG 2.0 DUAL-ENGINE LIVE MONITOR (BINANCE + DERIV FOREX)")
-        dashboard.append(f"🕒 อัปเดตล่าสุด: {thai_now} (เวลาไทย)")
-        dashboard.append("=" * 65)
         
-        # 1. ข้อมูล Binance
-        dashboard.append("\n🪙 [BINANCE SPOT - งบ ~200 บาท]")
-        dashboard.append("-" * 50)
-        if os.path.exists("status_log.txt"):
-            with open("status_log.txt", "r", encoding="utf-8") as f:
-                lines = f.readlines()
-                dashboard.append("".join(lines[-15:]).strip())
-        else:
-            dashboard.append("ยังไม่มีข้อมูล status_log.txt")
-            
-        # 2. ข้อมูล Deriv Forex (100% Free Cloud API)
-        dashboard.append("\n\n📈 [DERIV FOREX & CFD - 24/7 Cloud]")
-        dashboard.append("-" * 50)
-        if ENABLE_DERIV:
-            if os.path.exists("status_log_deriv.txt"):
-                with open("status_log_deriv.txt", "r", encoding="utf-8") as f:
-                    lines = f.readlines()
-                    dashboard.append("".join(lines[-15:]).strip())
-            else:
-                dashboard.append("รอ Deriv Engine โหลดข้อมูลสถานะ...")
-        else:
-            dashboard.append("⏸️ สแตนด์บายชั่วคราว (ENABLE_DERIV=false)")
-            
-        dashboard.append("\n" + "=" * 65)
-        full_content = "\n".join(dashboard)
+        console_content = ""
+        if os.path.exists(CONSOLE_LOG_FILE):
+            with _log_lock:
+                try:
+                    with open(CONSOLE_LOG_FILE, "r", encoding="utf-8", errors="replace") as f:
+                        lines = f.readlines()
+                    console_content = "".join(lines[-250:]) if len(lines) > 250 else "".join(lines)
+                except Exception:
+                    pass
         
+        if not console_content.strip():
+            console_content = "กำลังรอรวบรวมข้อมูล Console Log..."
+
+        full_content = (
+            f"{'=' * 65}\n"
+            f"🏛️ AG 2.0 DUAL-ENGINE LIVE CONSOLE LOG (ALL OUTPUT)\n"
+            f"🕒 อัปเดตล่าสุด: {thai_now} (เวลาไทย - ซิงค์ทุก 1 นาที)\n"
+            f"{'=' * 65}\n\n"
+            f"{console_content}"
+        )
+        
+        # 1. ส่งไฟล์ console_log.txt
         resp = requests.post(
             GDRIVE_WEBHOOK_URL,
-            json={"filename": "status_log.txt", "content": full_content},
+            json={"filename": "console_log.txt", "content": full_content},
             timeout=15
         )
-        if resp.status_code == 200 and resp.json().get("status") == "success":
-            log_supervisor("☁️ [GDRIVE-SYNC] อัปเดตสถานะสดขึ้น Google Drive สำเร็จ!")
+        # 2. ส่งทับ status_log.txt ด้วย เพื่อให้ไฟล์เดิมที่เปิดไว้ใน Google Drive อัปเดตทันที
+        try:
+            requests.post(
+                GDRIVE_WEBHOOK_URL,
+                json={"filename": "status_log.txt", "content": full_content},
+                timeout=15
+            )
+        except Exception:
+            pass
+
+        if resp.status_code == 200:
+            log_supervisor("☁️ [GDRIVE-SYNC] อัปเดต Console Log ทั้งหมดขึ้น Google Drive สำเร็จ!")
     except Exception as e:
         log_supervisor(f"⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: {e}")
 
 # ==========================================
-# 🚀 PROCESS MANAGEMENT (DUAL-ENGINE)
+# 🚀 PROCESS MANAGEMENT (DUAL-ENGINE + CONSOLE STREAM)
 # ==========================================
 processes = {}
+
+def stream_worker_output(name, proc):
+    """อ่าน output จาก process ลูกแบบเรียลไทม์: พิมพ์ออกหน้าจอ Wispbyte + บันทึกใส่ console_log.txt"""
+    try:
+        for line in iter(proc.stdout.readline, ''):
+            if not line:
+                break
+            sys.stdout.write(line)
+            sys.stdout.flush()
+            append_console_log(line)
+    except Exception:
+        pass
+    finally:
+        try:
+            proc.stdout.close()
+        except Exception:
+            pass
 
 def start_worker(name, script_path):
     log_supervisor(f"🚀 กำลังเปิดการทำงาน: {name} ({script_path})...")
     try:
-        # เปิด process ลูกโดยใช้ Python ตัวเดียวกัน
-        proc = subprocess.Popen([sys.executable, script_path])
+        # เปิด process ลูกในโหมด unbuffered (-u) พร้อมดักจับ stdout และ stderr รวมกัน
+        proc = subprocess.Popen(
+            [sys.executable, "-u", script_path],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1
+        )
+        t = threading.Thread(target=stream_worker_output, args=(name, proc), daemon=True)
+        t.start()
+
         processes[name] = {
             'proc': proc,
             'script': script_path,
+            'thread': t,
             'restarts': 0,
             'last_restart': time.time()
         }
@@ -196,8 +253,17 @@ def monitor_workers():
             item['restarts'] += 1
             item['last_restart'] = time.time()
             log_supervisor(f"🔄 กำลังรีสตาร์ท {name} (ครั้งที่ {item['restarts']})...")
-            new_proc = subprocess.Popen([sys.executable, item['script']])
+            new_proc = subprocess.Popen(
+                [sys.executable, "-u", item['script']],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1
+            )
+            t = threading.Thread(target=stream_worker_output, args=(name, new_proc), daemon=True)
+            t.start()
             processes[name]['proc'] = new_proc
+            processes[name]['thread'] = t
             log_supervisor(f"✅ {name} รีสตาร์ทสำเร็จ (New PID: {new_proc.pid})")
 
 # ==========================================
@@ -229,18 +295,19 @@ if __name__ == '__main__':
     else:
         log_supervisor("⏸️ [MODE] รันเฉพาะ Binance Spot 100%")
 
-    # 3. ลูปเฝ้าระวัง (Watchdog Loop)
-        # 2.5 เริ่มต้น Web Dashboard
+    # 3. เริ่มต้น Web Dashboard
     if os.path.exists(DASHBOARD_SCRIPT):
         start_worker("WebDashboard", DASHBOARD_SCRIPT)
     else:
         log_supervisor(f"❌ ไม่พบไฟล์ {DASHBOARD_SCRIPT}!")
 
+    # 4. ลูปเฝ้าระวัง (Watchdog Loop)
     log_supervisor("👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers และตรวจจับ Auto-Patch...")
     while True:
         try:
             check_for_updates()
             sync_to_gdrive()
+            trim_console_log()
             monitor_workers()
             time.sleep(30)
         except (KeyboardInterrupt, SystemExit):
