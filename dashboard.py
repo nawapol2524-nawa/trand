@@ -407,12 +407,12 @@ HTML_PAGE = """<!DOCTYPE html>
     <div class="command-wrapper">
         <form id="cmdForm" onsubmit="handleCommandSubmit(event)">
             <span class="prompt-symbol" id="promptText">PS &gt;</span>
-            <input type="text" id="cmdInput" placeholder="พิมพ์คำสั่ง Linux เช่น ls -la, ps aux, git status (กด Enter เพื่อรัน)..." autocomplete="off" spellcheck="false">
+            <input type="text" id="cmdInput" placeholder="พิมพ์คำสั่ง เช่น restart, help, git pull, ps aux (กด Enter เพื่อรัน)..." autocomplete="off" spellcheck="false">
             <button type="submit" class="btn btn-run" id="btnRun">Execute</button>
             <button type="button" class="btn btn-clear" onclick="clearConsole()">Clear Screen</button>
         </form>
         <div class="cmd-status" id="cmdStatus">
-            <span>พร้อมรับคำสั่ง (กดลูกศร ↑ / ↓ เพื่อดูประวัติคำสั่งที่เคยพิมพ์ได้)</span>
+            <span>พร้อมรับคำสั่ง (พิมพ์ <b>restart</b> เพื่อรีสตาร์ทบอททั้งหมด, พิมพ์ <b>help</b> เพื่อดูคำสั่งทั้งหมด)</span>
         </div>
     </div>
 
@@ -615,7 +615,69 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
                     self._send_json({"status": "error", "error": "ไม่มีคำสั่งถูกส่งมา"}, 400)
                     return
 
-                # ดำเนินการรันคำสั่งบน Linux Server
+                cmd_lower = cmd.lower().strip()
+
+                # ⚡ คำสั่งพิเศษ: Restart ระบบทั้งหมด (main.py + Binance + Deriv)
+                if cmd_lower in ("restart", "restart bot", "restart all", "/restart", "reboot"):
+                    git_msg = ""
+                    try:
+                        git_res = subprocess.run(["git", "pull", "origin", "main"], capture_output=True, text=True, timeout=10)
+                        if git_res.stdout.strip():
+                            git_msg = f"\n[GIT] {git_res.stdout.strip()}"
+                    except Exception as ge:
+                        git_msg = f"\n[GIT NOTE] {ge}"
+
+                    with open("restart.flag", "w", encoding="utf-8") as f:
+                        f.write(f"restart requested at {get_thai_time()}")
+
+                    output = (
+                        "🔄 [COMMAND RESTART ACCEPTED]\n"
+                        f"ได้รับคำสั่งรีสตาร์ทระบบเรียบร้อยแล้ว!{git_msg}\n"
+                        "⏳ กำลังส่งสัญญาณให้ Supervisor ปิด Workers และ Re-execute main.py ตัวใหม่ทันที...\n"
+                        "📡 หน้าจอ Console จะกลับมาสตรีมสดอัตโนมัติใน 3-5 วินาที ไร้การหลุดจากคอนเทนเนอร์"
+                    )
+                    append_to_console_log(f"\n[{get_thai_time()}] [WEB-TERMINAL-RESTART] $ {cmd}\n{output}\n")
+                    self._send_json({
+                        "status": "success",
+                        "cmd": cmd,
+                        "output": output,
+                        "elapsed_sec": 0.5
+                    })
+                    return
+
+                # ⚡ คำสั่งพิเศษ: รีสตาร์ทเฉพาะ Binance
+                elif cmd_lower in ("restart binance", "restart btc", "restart crypto"):
+                    subprocess.run(["pkill", "-f", "main_binance.py"])
+                    output = "🔄 กำลังสั่งรีสตาร์ทเฉพาะ Binance Spot Engine... (Supervisor จะเปิดขึ้นมาใหม่ใน 2 วินาที)"
+                    append_to_console_log(f"\n[{get_thai_time()}] [WEB-TERMINAL-RESTART] $ {cmd}\n{output}\n")
+                    self._send_json({"status": "success", "cmd": cmd, "output": output, "elapsed_sec": 0.2})
+                    return
+
+                # ⚡ คำสั่งพิเศษ: รีสตาร์ทเฉพาะ Deriv
+                elif cmd_lower in ("restart deriv", "restart forex"):
+                    subprocess.run(["pkill", "-f", "main_forex.py"])
+                    output = "🔄 กำลังสั่งรีสตาร์ทเฉพาะ Deriv Forex Engine... (Supervisor จะเปิดขึ้นมาใหม่ใน 2 วินาที)"
+                    append_to_console_log(f"\n[{get_thai_time()}] [WEB-TERMINAL-RESTART] $ {cmd}\n{output}\n")
+                    self._send_json({"status": "success", "cmd": cmd, "output": output, "elapsed_sec": 0.2})
+                    return
+
+                # ⚡ คำสั่งพิเศษ: Help เมนูแนะนำคำสั่ง
+                elif cmd_lower in ("help", "/help", "?"):
+                    help_text = (
+                        "📖 [AVAILABLE BOT COMMANDS]\n"
+                        "  • restart          : ดึงโค้ดล่าสุดจาก GitHub และรีสตาร์ทระบบทั้งหมด (main.py + Binance + Deriv)\n"
+                        "  • restart binance  : รีสตาร์ทเฉพาะ Binance Spot Engine\n"
+                        "  • restart deriv    : รีสตาร์ทเฉพาะ Deriv Forex Engine\n"
+                        "  • git pull         : ดึงโค้ดอัปเดตจาก GitHub ทันที\n"
+                        "  • git status       : เช็คสถานะไฟล์และ Git Commit ล่าสุด\n"
+                        "  • ls -la           : ดูรายชื่อไฟล์ทั้งหมดในโฟลเดอร์\n"
+                        "  • ps aux           : ดูโปรเซสและ PID ที่กำลังรันอยู่ทั้งหมดบน Linux\n"
+                        "  • (และคำสั่ง Linux ทั่วไปสามารถพิมพ์สั่งได้ตามปกติ)"
+                    )
+                    self._send_json({"status": "success", "cmd": cmd, "output": help_text, "elapsed_sec": 0.01})
+                    return
+
+                # ดำเนินการรันคำสั่งบน Linux Server ปกติ
                 start_time = time.time()
                 result = subprocess.run(
                     cmd,

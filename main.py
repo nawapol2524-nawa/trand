@@ -102,7 +102,7 @@ def check_for_updates():
                         pip_cmd = [sys.executable, "-m", "pip", "install", "-U", "--prefix", ".local", "-r", "requirements.txt"]
                     subprocess.run(pip_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 time.sleep(2)
-                stop_all_workers()
+                restart_entire_system()
             else:
                 subprocess.run(["git", "reset", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except Exception as e:
@@ -244,6 +244,25 @@ def stop_all_workers(signum=None, frame=None):
     log_supervisor("👋 ระบบ Supervisor ปิดตัวเองเรียบร้อย")
     sys.exit(0)
 
+def restart_entire_system():
+    """ปิด Workers ทั้งหมด และ Re-execute main.py ตัวใหม่ทันทีโดยไม่หลุดออกจาก Container"""
+    log_supervisor("🛑 กำลังปิด Workers ทั้งหมดอย่างปลอดภัยเพื่อเตรียม Restart ระบบ...")
+    for name, item in list(processes.items()):
+        proc = item.get('proc')
+        if proc and proc.poll() is None:
+            try:
+                proc.terminate()
+                try:
+                    proc.wait(timeout=3)
+                except subprocess.TimeoutExpired:
+                    proc.kill()
+                log_supervisor(f"✅ {name} ปิดเรียบร้อย")
+            except Exception:
+                pass
+    log_supervisor("🚀 กำลัง Re-executing main.py เพื่อเริ่มระบบใหม่อย่างสมบูรณ์...")
+    time.sleep(1)
+    os.execv(sys.executable, [sys.executable, "main.py"])
+
 signal.signal(signal.SIGINT, stop_all_workers)
 signal.signal(signal.SIGTERM, stop_all_workers)
 
@@ -329,13 +348,28 @@ if __name__ == '__main__':
     log_supervisor("👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers และตรวจจับ Auto-Patch...")
     while True:
         try:
+            # 1. ตรวจสอบว่ามีคำสั่ง Restart จาก Web Terminal หรือไม่ (ตอบสนองใน 1-2 วินาที)
+            if os.path.exists("restart.flag"):
+                log_supervisor("🔄 [COMMAND RESTART] ตรวจพบคำสั่ง Restart จาก Web Terminal!")
+                try:
+                    os.remove("restart.flag")
+                except Exception:
+                    pass
+                restart_entire_system()
+
             check_for_updates()
             sync_to_gdrive()
             trim_console_log()
             monitor_workers()
-            time.sleep(30)
+
+            # วนลูปพัก 20 วินาที โดยตรวจ restart.flag ทุกๆ 1 วินาที เพื่อให้ตอบสนองคำสั่งทันที
+            for _ in range(20):
+                if os.path.exists("restart.flag"):
+                    break
+                time.sleep(1)
+
         except (KeyboardInterrupt, SystemExit):
             stop_all_workers()
         except Exception as e:
             log_supervisor(f"⚠️ เกิดข้อผิดพลาดใน Supervisor Loop: {e}")
-            time.sleep(30)
+            time.sleep(5)
