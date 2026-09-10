@@ -141,12 +141,12 @@
     ]
   },
   "AVAX/USDT": {
-    "total_trades": 2,
+    "total_trades": 3,
     "wins": 1,
-    "losses": 1,
+    "losses": 2,
     "learned_params": {
-      "min_volume_ratio": 1.5,
-      "min_adx": 14.5
+      "min_volume_ratio": 1.6,
+      "min_adx": 15.5
     },
     "reflections": [
       {
@@ -166,6 +166,12 @@
         "type": "LOSS",
         "pnl": "-1.16%",
         "lesson": "Loss (False Break): เพิ่มเกณฑ์ Vol->1.5x, ADX->14.5"
+      },
+      {
+        "date": "2026-09-10 23:18:39",
+        "type": "LOSS",
+        "pnl": "-0.99%",
+        "lesson": "Loss (False Break): เพิ่มเกณฑ์ Vol->1.6x, ADX->15.5"
       }
     ]
   },
