@@ -726,3 +726,5 @@
 [2026-09-11 00:30:05] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
 [2026-09-11 01:31:00] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
 [2026-09-11 02:31:32] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-11 03:02:09] ⚠️ Error SOL/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=SOLUSDT
+[2026-09-11 03:32:22] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
