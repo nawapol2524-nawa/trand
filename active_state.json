@@ -10,11 +10,11 @@
     "cooldown_until": null
   },
   "BTC/USDT": {
-    "in_position": false,
-    "entry_price": 77888.01,
-    "position_size": 8e-05,
-    "tp": 78192.61,
-    "sl": 77705.25,
+    "in_position": true,
+    "entry_price": 76767.43,
+    "position_size": 0.00011,
+    "tp": 77063.27999999998,
+    "sl": 76589.92,
     "be_set": false,
     "consecutive_losses": 2,
     "cooldown_until": "2026-09-10T16:21:49.234816"
