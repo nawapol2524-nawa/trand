@@ -957,6 +957,8 @@ if __name__ == '__main__':
     start_usdt = connect_and_check_balance()
     log_trade(f"🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: ${start_usdt:.2f} USDT)")
     log_trade(f"🪙 เหรียญที่เฝ้าเทรด: {', '.join(SYMBOLS)}")
+    ai_status = "🟢 พร้อมใช้งาน (v3 News-Aware)" if GROQ_API_KEY else "⚪ ไม่ได้เปิดใช้งาน (ข้ามไปใช้ Pure Quant)"
+    log_trade(f"🧠 [GROQ AI ENGINE] สถานะ: {ai_status}")
 
     last_github_sync = 0
     while True:

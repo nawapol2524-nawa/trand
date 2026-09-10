@@ -940,5 +940,7 @@ async def deriv_engine():
 if __name__ == "__main__":
     print("=" * 65)
     print(f"🏛️ DERIV FOREX QUANT ENGINE STARTING (DEMO: {TARGET_DEMO_ACCOUNT})")
+    ai_status = "🟢 พร้อมใช้งาน (v3 News-Aware)" if GROQ_API_KEY else "⚪ ไม่ได้เปิดใช้งาน (ข้ามไปใช้ Pure Quant)"
+    print(f"🧠 GROQ AI ENGINE : {ai_status}")
     print("=" * 65)
     asyncio.run(deriv_engine())
