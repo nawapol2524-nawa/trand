@@ -511,9 +511,9 @@ async def deriv_engine():
 
             if not is_live_account:
                 log(f"💡 รันในโหมด [Demo Training Engine: {TARGET_DEMO_ACCOUNT}] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)")
-                target_ws_url = "wss://api.derivws.com/trading/v1/options/ws/public"
-
-            async with websockets.connect(target_ws_url, ping_interval=20, ping_timeout=20) as ws:
+            # ใช้ ping_interval=None เพื่อป้องกันปัญหา Deriv ปฏิเสธ RFC 6455 Ping Frame (ส่งผลให้เกิด error 1011)
+            # แล้วใช้ Deriv Application-level Ping {"ping": 1} แทน ซึ่งเสถียรที่สุด 100%
+            async with websockets.connect(target_ws_url, ping_interval=None, close_timeout=10) as ws:
                 log(f"🔌 เชื่อมต่อ Deriv WebSocket สำเร็จ! (บัญชี: {account_info['loginid']})")
 
                 while True:
@@ -557,7 +557,9 @@ async def deriv_engine():
                                     h1_ema50 = (p * alpha) + (h1_ema50 * (1 - alpha))
                                 deriv_engine._cached_h1_bull = h1_closes[-1] > h1_ema50
                             deriv_engine._last_h1_time = now_ts
-                        except Exception:
+                        except Exception as e:
+                            if "closed" in str(e).lower() or "keepalive" in str(e).lower():
+                                raise e
                             pass
 
                     # 2. สแกนและดึงข้อมูลแท่งเทียน M15 ของทุกคู่เงิน
@@ -608,6 +610,10 @@ async def deriv_engine():
                                     'st': st_str
                                 })
                         except Exception as e:
+                            err_str = str(e).lower()
+                            if "closed" in err_str or "keepalive" in err_str or "1011" in err_str:
+                                log(f"🔄 การเชื่อมต่อ WebSocket กับ Deriv ขาดหาย ({e}) -> เตรียม Reconnect ใหม่ทันที...")
+                                raise e
                             log(f"⚠️ ดึงข้อมูลแท่งเทียน {sym} ไม่สำเร็จ: {e}")
                         
                         await asyncio.sleep(0.5) # ป้องกัน Rate limit
@@ -789,11 +795,19 @@ async def deriv_engine():
                     if scan_rows:
                         print_quant_table(get_thai_time(), scan_rows, account_info, memory)
 
-                    await asyncio.sleep(60) # พัก 60 วินาทีเพื่อ Low-CPU 100%
+                    # วนพัก 60 วินาที โดยส่ง Keepalive Ping {"ping": 1} ทุกๆ 20 วินาที เพื่อรักษาการเชื่อมต่อ
+                    for _ in range(3):
+                        await asyncio.sleep(20)
+                        try:
+                            await ws.send(json.dumps({"ping": 1}))
+                            ping_raw = await asyncio.wait_for(ws.recv(), timeout=5)
+                        except Exception as pe:
+                            log(f"🔄 Deriv WebSocket ขาดการตอบสนองระหว่างพัก ({pe}) -> เตรียมเชื่อมต่อใหม่ทันที...")
+                            raise pe
 
         except Exception as e:
-            log(f"⚠️ เกิดข้อผิดพลาดใน Deriv WebSocket: {e}. รอเชื่อมต่อใหม่ใน 10 วินาที...")
-            await asyncio.sleep(10)
+            log(f"⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: {e}. กำลังเชื่อมต่อใหม่ใน 3 วินาที...")
+            await asyncio.sleep(3)
 
 if __name__ == "__main__":
     print("=" * 65)
