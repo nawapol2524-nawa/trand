@@ -405,3 +405,18 @@
 [2026-09-10 16:20:42] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9986.47 USDT)
 [2026-09-10 16:20:42] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
 [2026-09-10 16:20:43] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔄 RECOVERED ACTIVE POSITION - AVAX/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine                : Binance Testnet Spot
+║  • Symbol                : AVAX/USDT
+║  • Entry Price           : $7.732000
+║  • Position Size         : 0.84
+║  • Take Profit (TP)      : $7.861821
+║  • Stop Loss (SL)        : $7.735866
+║  • Breakeven Locked      : True
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-10 16:26:04] 🔄 [RECOVER] กู้คืนสถานะการถือครอง AVAX/USDT @ $7.732000 (TP: $7.861821 | SL: $7.735866)
+[2026-09-10 16:26:08] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9986.47 USDT)
+[2026-09-10 16:26:08] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-10 16:26:08] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
