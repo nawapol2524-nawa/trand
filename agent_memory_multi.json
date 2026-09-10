@@ -65,12 +65,12 @@
     ]
   },
   "BTC/USDT": {
-    "total_trades": 8,
+    "total_trades": 9,
     "wins": 2,
-    "losses": 4,
+    "losses": 5,
     "learned_params": {
-      "min_volume_ratio": 1.25,
-      "min_adx": 13.0
+      "min_volume_ratio": 1.35,
+      "min_adx": 14.0
     },
     "reflections": [
       {
@@ -108,6 +108,12 @@
         "type": "LOSS",
         "pnl": "-0.27%",
         "lesson": "Loss (False Break): เพิ่มเกณฑ์ Vol->1.25x, ADX->13.0"
+      },
+      {
+        "date": "2026-09-11 06:58:16",
+        "type": "LOSS",
+        "pnl": "-0.24%",
+        "lesson": "Loss (False Break): เพิ่มเกณฑ์ Vol->1.35x, ADX->14.0"
       }
     ]
   },
