@@ -9,11 +9,25 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ==========================================
+# 🔔 NOTIFICATION MODULE INTEGRATION
+# ==========================================
+try:
+    import notifier
+except ImportError:
+    try:
+        from trand import notifier
+    except ImportError:
+        notifier = None
+
+# ==========================================
 # ⚙️ CONFIGURATION & CONSTANTS
 # ==========================================
 DERIV_TOKEN = os.getenv("DERIV_API_TOKEN", "").strip()
 APP_ID = os.getenv("DERIV_APP_ID", "34lQGsI4JVHDtfZhaHAqk") # User's Registered App ID
 DERIV_WS_URL = f"wss://ws.derivws.com/websockets/v3?app_id={APP_ID}"
+
+# บังคับใช้บัญชี Demo DOT94482469 เท่านั้น (ห้ามใช้เงินจริงเด็ดขาด)
+TARGET_DEMO_ACCOUNT = "DOT94482469"
 
 SYMBOLS = ["frxEURUSD", "frxGBPUSD", "frxUSDJPY"]
 PRIMARY_SYMBOL = "frxEURUSD"
@@ -25,10 +39,8 @@ STATUS_FILE = "status_log_deriv.txt"
 TRADE_LOG_FILE = "trade_log_deriv.txt"
 STATE_FILE = "active_state_deriv.json"
 
-# ตรวจสอบการเปิดใช้งาน
 ENABLE_DERIV = os.getenv("ENABLE_DERIV", "true").lower() in ("true", "1", "yes")
 
-# อัตราแลกเปลี่ยน USD/THB เริ่มต้น (อัปเดตแบบเรียลไทม์)
 usd_thb_rate = 34.00
 
 def get_thai_time():
@@ -45,13 +57,79 @@ def log(text):
         pass
 
 # ==========================================
-# 🧠 REINFORCEMENT LEARNING MEMORY
+# 🖥️ QUANT TERMINAL UI & HIGHLIGHT BOXES
+# ==========================================
+def print_highlight_box(title, items, icon="⚡"):
+    """แสดงกรอบข้อความเน้นพิเศษสไตล์ Quant Terminal เมื่อเกิด Event สำคัญ"""
+    border = "═" * 78
+    divider = "─" * 78
+    box = [
+        f"╔{border}╗",
+        f"║ {icon} {title}",
+        f"╠{divider}╣"
+    ]
+    for k, v in items:
+        box.append(f"║  • {k:<22}: {v}")
+    box.append(f"╚{border}╝")
+    full_text = "\n".join(box)
+    print(full_text, flush=True)
+    try:
+        with open(TRADE_LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(full_text + "\n")
+        with open(STATUS_FILE, "a", encoding="utf-8") as f:
+            f.write(full_text + "\n")
+    except Exception:
+        pass
+
+def print_quant_table(thai_time, rows, account_info, memory):
+    """ตารางสรุปสถานะ Forex แบบ Compact สไตล์ Quant Terminal ไม่สแปมซ้ำซ้อน"""
+    curr = account_info.get("currency", "USD")
+    bal = float(account_info.get("balance", 0.0))
+    bal_thb = bal * usd_thb_rate
+    loginid = account_info.get("loginid", TARGET_DEMO_ACCOUNT)
+    
+    total_trades = memory.get("total_trades", 0)
+    wins = memory.get("wins", 0)
+    losses = memory.get("losses", 0)
+    win_rate = (wins / total_trades * 100) if total_trades > 0 else 0.0
+    net_usd = memory.get("net_profit_usd", 0.0)
+    net_thb = memory.get("net_profit_thb", 0.0)
+
+    lines = [
+        "╔══════════════════════════════════════════════════════════════════════════════════╗",
+        f"║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: {TARGET_DEMO_ACCOUNT:<24})║",
+        f"║  🕒 เวลาไทย: {thai_time} | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║",
+        "╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣",
+        "║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║",
+        "╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣"
+    ]
+    for r in rows:
+        lines.append(
+            f"║ {r['symbol']:<11} ║ {r['price']:>12} ║ {r['rsi']:>4} ║ {r['bb_w']:>8} ║ {r['pattern']:<10} ║ {r['pos']:<15} ║ {r['st']:<2} ║"
+        )
+    lines.append("╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣")
+    lines.append(f"║ 👤 บัญชี Demo: {loginid:<22} 💰 ยอดเงิน: ${bal:>10,.2f} USD (~{bal_thb:,.0f} THB)     ║")
+    lines.append(f"║ 📊 สถิติ: {total_trades} ไม้ (ชนะ {wins} | แพ้ {losses} | WR: {win_rate:4.1f}%) | กำไรสุทธิ: ${net_usd:+,.2f} USD (~{net_thb:+,.1f} บ.)  ║")
+    lines.append("╚══════════════════════════════════════════════════════════════════════════════════╝")
+    
+    full_text = "\n".join(lines)
+    print(full_text, flush=True)
+    try:
+        with open(STATUS_FILE, "w", encoding="utf-8") as f:
+            f.write(full_text + "\n")
+    except Exception:
+        pass
+
+# ==========================================
+# 🧠 REINFORCEMENT LEARNING & STATE PERSISTENCE
 # ==========================================
 def load_memory():
     if os.path.exists(MEMORY_FILE):
         try:
             with open(MEMORY_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
+                data = json.load(f)
+                print(f"🧠 [MEMORY] โหลด {MEMORY_FILE} สำเร็จ (เทรดรวม: {data.get('total_trades', 0)} ไม้)", flush=True)
+                return data
         except Exception:
             pass
     return {
@@ -78,8 +156,49 @@ def save_memory(mem):
 
 memory = load_memory()
 
+def save_state(trade):
+    """บันทึกสถานะไม้ Deriv ลง active_state_deriv.json ทันทีเพื่อป้องกันลืมไม้"""
+    try:
+        payload = {
+            "account_id": TARGET_DEMO_ACCOUNT,
+            "active_trade": trade,
+            "updated_at": get_thai_time()
+        }
+        with open(STATE_FILE, "w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        log(f"⚠️ [STATE SAVE ERROR] {e}")
+
+def load_state():
+    """กู้คืนสถานะไม้ Deriv จาก active_state_deriv.json ทันทีที่สตาร์ท/รีสตาร์ท"""
+    if os.path.exists(STATE_FILE):
+        try:
+            with open(STATE_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                trade = data.get("active_trade")
+                if trade:
+                    print_highlight_box(
+                        f"DERIV STATE RECOVERED - {trade.get('symbol', PRIMARY_SYMBOL)}",
+                        [
+                            ("Demo Account", TARGET_DEMO_ACCOUNT),
+                            ("Symbol", trade.get('symbol', PRIMARY_SYMBOL)),
+                            ("Type", trade.get('type', 'BUY')),
+                            ("Entry Price", f"{trade.get('entry_price', 0):.5f}"),
+                            ("Contract ID", str(trade.get('contract_id', 'N/A'))),
+                            ("Breakeven Locked", str(trade.get('be_locked', False)))
+                        ],
+                        icon="🔄"
+                    )
+                    log(f"🔄 [RECOVER] กู้คืนสถานะไม้ค้าง {trade.get('symbol')} @ {trade.get('entry_price', 0):.5f} สำเร็จ!")
+                    return trade
+                else:
+                    print(f"📂 [STATE] โหลด {STATE_FILE} สำเร็จ (ไม่มีไม้ค้าง - สแตนด์บายพร้อมเทรด)", flush=True)
+        except Exception as e:
+            log(f"⚠️ [STATE LOAD ERROR] {e}")
+    return None
+
 # ==========================================
-# 📰 NEWS AVOIDANCE SYSTEM
+# 📰 NEWS AVOIDANCE SYSTEM (CACHED 1 HOUR)
 # ==========================================
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -134,12 +253,11 @@ def is_news_freeze():
 # 📊 TECHNICAL INDICATORS
 # ==========================================
 def calculate_bb_rsi(candles, period=20, std_dev=2.0, rsi_period=14):
-    """คำนวณ Bollinger Bands, BandWidth, EMA50 และ RSI จากแท่งเทียนแบบไม่พึ่งพา pandas-ta"""
+    """คำนวณ Bollinger Bands, BandWidth, EMA50 และ RSI จากแท่งเทียน"""
     closes = [c['close'] for c in candles]
     if len(closes) < max(period, rsi_period, 50) + 2:
         return None
 
-    # Bollinger Bands
     recent = closes[-period:]
     sma = sum(recent) / period
     variance = sum((x - sma) ** 2 for x in recent) / period
@@ -148,13 +266,11 @@ def calculate_bb_rsi(candles, period=20, std_dev=2.0, rsi_period=14):
     lower_bb = sma - (std * std_dev)
     bb_width = (upper_bb - lower_bb) / sma if sma > 0 else 0.0
 
-    # EMA 50 (Trend Filter)
     alpha = 2.0 / (50 + 1)
     ema50 = closes[0]
     for p in closes[1:]:
         ema50 = (p * alpha) + (ema50 * (1 - alpha))
 
-    # RSI (14)
     deltas = [closes[i] - closes[i - 1] for i in range(1, len(closes))]
     gains = [d if d > 0 else 0 for d in deltas[-rsi_period:]]
     losses = [-d if d < 0 else 0 for d in deltas[-rsi_period:]]
@@ -166,7 +282,6 @@ def calculate_bb_rsi(candles, period=20, std_dev=2.0, rsi_period=14):
         rs = avg_gain / avg_loss
         rsi = 100.0 - (100.0 / (1.0 + rs))
 
-    # 🕯️ Candlestick Patterns Analysis (Last 3 Candles)
     curr = candles[-1]
     prev = candles[-2]
     prev2 = candles[-3]
@@ -175,25 +290,21 @@ def calculate_bb_rsi(candles, period=20, std_dev=2.0, rsi_period=14):
     candle_range = curr['high'] - curr['low']
     lower_wick = min(curr['open'], curr['close']) - curr['low']
     upper_wick = curr['high'] - max(curr['open'], curr['close'])
-    
     prev_body = abs(prev['close'] - prev['open'])
     prev2_body = abs(prev2['close'] - prev2['open'])
 
-    # 1. Hammer (Bullish Reversal)
     is_hammer = (lower_wick >= 2 * body) and (upper_wick <= candle_range * 0.1) and (body > 0)
-    
-    # 2. Bullish Engulfing
     is_bullish_engulfing = (prev['close'] < prev['open']) and (curr['close'] > curr['open']) and (curr['open'] <= prev['close']) and (curr['close'] >= prev['open']) and (body > prev_body)
-    
-    # 3. Morning Star
     is_morning_star = (prev2['close'] < prev2['open']) and (prev_body < (prev2_body * 0.3)) and (curr['close'] > curr['open']) and (curr['close'] > (prev2['close'] + prev2['open']) / 2)
 
     has_bullish_pattern = is_hammer or is_bullish_engulfing or is_morning_star
+    pattern_name = "Hammer" if is_hammer else ("Engulf" if is_bullish_engulfing else ("MornStar" if is_morning_star else "None"))
 
     return {
         'price': closes[-1],
         'sma': sma,
         'has_bullish_pattern': has_bullish_pattern,
+        'pattern_name': pattern_name,
         'upper_bb': upper_bb,
         'lower_bb': lower_bb,
         'bb_width': bb_width,
@@ -201,38 +312,40 @@ def calculate_bb_rsi(candles, period=20, std_dev=2.0, rsi_period=14):
         'rsi': rsi
     }
 
-
 # ==========================================
-# 🤖 GROQ AI SECOND OPINION ENGINE
+# 🤖 GROQ AI SECOND OPINION ENGINE (v3 NEWS-AWARE)
 # ==========================================
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
+_forex_news_cache = {"data": None, "ts": 0}
 
 async def get_market_context_async():
-    """ดึง Fear & Greed Index + ข่าวสดจาก RSS ฟรี ไม่ต้องใช้ API Key"""
+    """ดึง Fear & Greed Index + ข่าวสดจาก RSS ฟรี (แคช 3 นาทีเพื่อ Low-CPU)"""
+    global _forex_news_cache
+    now = time.time()
+    if _forex_news_cache["data"] and (now - _forex_news_cache["ts"] < 180):
+        return _forex_news_cache["data"]
+
     import requests
     import xml.etree.ElementTree as ET
     context = {}
 
-    # 1. Fear & Greed Index
     try:
         r = requests.get("https://api.alternative.me/fng/?limit=1", timeout=5)
         if r.status_code == 200:
             d = r.json()["data"][0]
             context["fear_greed"] = f"{d['value']} ({d['value_classification']})"
-    except:
+    except Exception:
         context["fear_greed"] = "N/A"
 
-    # 2. USD Index & Market Cap Change
     try:
         r = requests.get("https://api.coingecko.com/api/v3/global", timeout=5)
         if r.status_code == 200:
             d = r.json()["data"]
             mktcap_change = d.get("market_cap_change_percentage_24h_usd", 0)
             context["market_cap_change_24h"] = f"{mktcap_change:+.2f}%"
-    except:
+    except Exception:
         context["market_cap_change_24h"] = "N/A"
 
-    # 3. Forex/Economic headlines
     headlines = []
     try:
         r = requests.get("https://www.forexlive.com/feed/news/", timeout=5)
@@ -242,7 +355,7 @@ async def get_market_context_async():
                 title = item.find("title")
                 if title is not None and title.text:
                     headlines.append(title.text.strip())
-    except:
+    except Exception:
         pass
     if not headlines:
         try:
@@ -253,9 +366,10 @@ async def get_market_context_async():
                     title = item.find("title")
                     if title is not None and title.text:
                         headlines.append(title.text.strip())
-        except:
+        except Exception:
             pass
     context["headlines"] = headlines
+    _forex_news_cache = {"data": context, "ts": now}
     return context
 
 async def ask_groq_ai_sentiment(symbol, price, rsi, pattern_name):
@@ -293,7 +407,26 @@ Reply ONLY with YES or NO."""
         res = requests.post(url, headers=headers, json=data, timeout=15)
         if res.status_code == 200:
             content = res.json()["choices"][0]["message"]["content"].strip().upper()
-            if "NO" in content:
+            is_approved = "NO" not in content
+            status_text = "APPROVED (YES)" if is_approved else "REJECTED (NO)"
+            
+            print_highlight_box(
+                f"GROQ AI v3 EVALUATION - {symbol}",
+                [
+                    ("Decision", status_text),
+                    ("Market Fear & Greed", ctx.get("fear_greed", "N/A")),
+                    ("Setup", f"Price: {price:.5f} | RSI: {rsi:.1f} | {pattern_name}")
+                ],
+                icon="🧠"
+            )
+            
+            if notifier:
+                try:
+                    notifier.notify_ai_evaluation("Deriv", symbol, status_text, f"Price: {price:.5f}, RSI: {rsi:.1f}, Pattern: {pattern_name}")
+                except Exception:
+                    pass
+
+            if not is_approved:
                 log(f"🧠 [GROQ AI v3] ปฏิเสธ! (AI อ่านข่าวแล้วไม่ปลอดภัย | F&G: {ctx.get('fear_greed','N/A')})")
                 return False
             log(f"🧠 [GROQ AI v3] อนุมัติ! (AI อ่านข่าวแล้วคอนเฟิร์ม | F&G: {ctx.get('fear_greed','N/A')})")
@@ -304,143 +437,84 @@ Reply ONLY with YES or NO."""
         return True
 
 # ==========================================
-# ☁️ STATUS DASHBOARD WRITER
-# ==========================================
-def update_status_file(account_info, active_trade, indicators, market_state="🟢 เทรดปกติ"):
-    now = get_thai_time()
-    total_trades = memory.get("total_trades", 0)
-    wins = memory.get("wins", 0)
-    losses = memory.get("losses", 0)
-    win_rate = (wins / total_trades * 100) if total_trades > 0 else 0.0
-    net_usd = memory.get("net_profit_usd", 0.0)
-    net_thb = memory.get("net_profit_thb", 0.0)
-    
-    bal_usd = account_info.get("balance", 0.0)
-    bal_thb = bal_usd * usd_thb_rate
-
-    ind_text = "รอโหลดแท่งเทียน..."
-    if indicators:
-        ind_text = (f"ราคา: {indicators['price']:.5f} | "
-                    f"RSI: {indicators['rsi']:.1f} | "
-                    f"BB-Lower: {indicators['lower_bb']:.5f} | "
-                    f"BB-Upper: {indicators['upper_bb']:.5f}")
-
-    learned = memory.get("learned_params", {})
-    rl_info = f"RSI_Oversold={learned.get('rsi_oversold', 35):.1f} | RSI_Overbought={learned.get('rsi_overbought', 65):.1f}"
-
-    curr = account_info.get("currency", "USD")
-    raw_bal = float(account_info.get("balance", 0.0))
-    if curr == "USC":
-        bal_text = f"{raw_bal:,.2f} USC (≈ ${(raw_bal/100.0):,.2f} USD / {(raw_bal/100.0)*usd_thb_rate:,.2f} บาท)"
-        standby_text = "สแตนด์บายสไนเปอร์ 0.01 Cent Lot (งบ 100 บาท ~ 280 USC)"
-    else:
-        bal_text = f"${raw_bal:,.2f} USD (≈ {raw_bal*usd_thb_rate:,.2f} บาท)"
-        standby_text = f"สแตนด์บายสไนเปอร์งบ ${STAKE_USD:.2f} ≈ {STAKE_USD*usd_thb_rate:.2f} บาท"
-
-    lines = [
-        "=" * 60,
-        f"📊 DERIV FOREX ENGINE (100% FREE CLOUD API)",
-        f"🕒 เวลาไทย: {now} | สถานะ: {market_state}",
-        "=" * 60,
-        f"👤 บัญชี: {account_info.get('loginid', 'N/A')} ({curr})",
-        f"💰 ยอดเงินคงเหลือ: {bal_text}",
-        f"📈 สินทรัพย์หลัก: {PRIMARY_SYMBOL} (Timeframe: 15m)",
-        f"🎯 สัญญาณปัจจุบัน: {ind_text}",
-        f"🧠 AI RL Memory: {rl_info}",
-        f"📊 สถิติการเทรด: ทั้งหมด {total_trades} ไม้ | ชนะ {wins} | แพ้ {losses} | Win Rate: {win_rate:.1f}%",
-        f"💵 กำไร/ขาดทุนสุทธิ: ${net_usd:+,.2f} USD (≈ {net_thb:+,.2f} บาท)",
-        "-" * 60
-    ]
-
-    if active_trade:
-        trade_usd = active_trade.get("stake", STAKE_USD)
-        trade_thb = trade_usd * usd_thb_rate
-        lines.append(f"🔥 [ไม้ที่ถืออยู่] {active_trade.get('symbol')} ({active_trade.get('type')})")
-        lines.append(f"   - เงินลงทุน: ${trade_usd:.2f} USD (≈ {trade_thb:.2f} บาท)")
-        lines.append(f"   - ราคาเข้า: {active_trade.get('entry_price', 0):.5f}")
-        lines.append(f"   - Contract ID: {active_trade.get('contract_id', 'N/A')}")
-    else:
-        lines.append(f"💤 [สถานะไม้] ไม่มีไม้ออเดอร์ค้าง ({standby_text})")
-
-    lines.append("=" * 60)
-    full_text = "\n".join(lines)
-    try:
-        with open(STATUS_FILE, "w", encoding="utf-8") as f:
-            f.write(full_text + "\n")
-    except Exception:
-        pass
-
-# ==========================================
-# 🌐 WEBSOCKET ENGINE
+# 🌐 WEBSOCKET ENGINE (STRICT DEMO DOT94482469)
 # ==========================================
 async def deriv_engine():
     try:
         import websockets
     except ImportError:
-        log("❌ ไม่พบแพ็กเกจ websockets! กรุณาติดตั้งผ่าน requirements.txt")
+        log("❌ ไม่พบแพ็กเกจ websockets! กรุณาติดตั้งผ่าน pip install websockets")
         return
 
-    if not DERIV_TOKEN or "your_" in DERIV_TOKEN:
-        log("⚠️ ไม่พบ DERIV_API_TOKEN ใน .env เข้าสู่โหมดสแตนด์บาย...")
-        account_dummy = {"loginid": "DEMO-UNSET", "currency": "USD", "balance": 0.0}
-        update_status_file(account_dummy, None, None, market_state="⏸️ สแตนด์บาย (รอใส่ Token)")
-        while True:
-            await asyncio.sleep(60)
+    log("🚀 กำลังตรวจสอบและเชื่อมต่อ Deriv Engine...")
+    
+    # 1. กู้คืนสถานะไม้ที่ค้างอยู่จาก active_state_deriv.json ทันทีที่สตาร์ท
+    active_trade = load_state()
 
-    log("🚀 กำลังเชื่อมต่อ Deriv WebSocket API...")
-    account_info = {"loginid": "Connecting...", "currency": "USD", "balance": 0.0}
-    active_trade = None
+    account_info = {
+        "loginid": f"{TARGET_DEMO_ACCOUNT} (Demo Training)",
+        "currency": "USD",
+        "balance": 10000.0,
+        "email": "demo_training@deriv"
+    }
 
     while True:
         try:
-            target_ws_url = DERIV_WS_URL
+            target_ws_url = "wss://api.derivws.com/trading/v1/options/ws/public"
             is_live_account = False
-            account_info = {
-                "loginid": "SIM_AI_MODE",
-                "currency": "USC",
-                "balance": 280.0,
-                "email": "local_ai_training"
-            }
             
-            # Modern PAT Flow Authentication (API 2026)
+            # บังคับตรวจสอบสิทธิ์: ค้นหาเฉพาะบัญชี Demo DOT94482469 (บล็อกเงินจริง CR... 100%)
             import requests
-            try:
-                headers = {"Authorization": f"Bearer {DERIV_TOKEN}", "Deriv-App-ID": APP_ID}
-                accounts_res = requests.get("https://api.derivws.com/trading/v1/options/accounts", headers=headers, timeout=10)
-                if accounts_res.status_code == 200:
-                    accounts = accounts_res.json().get("data", [])
-                    if accounts:
-                        active_acc = accounts[0] # Pick the first account
-                        acc_id = active_acc.get("account_id")
-                        otp_res = requests.post(f"https://api.derivws.com/trading/v1/options/accounts/{acc_id}/otp", headers=headers, timeout=10)
-                        if otp_res.status_code == 200:
-                            target_ws_url = otp_res.json().get("data", {}).get("url")
-                            is_live_account = True
-                            account_info = {
-                                "loginid": acc_id,
-                                "currency": active_acc.get("currency", "USD"),
-                                "balance": float(active_acc.get("balance", 0.0)),
-                                "email": "PAT_ACCOUNT"
-                            }
-            except Exception as e:
-                log(f"⚠️ Modern Auth Error: {e}")
+            if DERIV_TOKEN and "your_" not in DERIV_TOKEN:
+                try:
+                    headers = {"Authorization": f"Bearer {DERIV_TOKEN}", "Deriv-App-ID": APP_ID}
+                    accounts_res = requests.get("https://api.derivws.com/trading/v1/options/accounts", headers=headers, timeout=10)
+                    if accounts_res.status_code == 200:
+                        accounts = accounts_res.json().get("data", [])
+                        
+                        target_acc = None
+                        for acc in accounts:
+                            acc_id = acc.get("account_id", "")
+                            # บังคับหาบัญชีเป้าหมาย DOT94482469
+                            if acc_id == TARGET_DEMO_ACCOUNT:
+                                target_acc = acc
+                                break
+                        
+                        # หากไม่พบเป้าหมายตรง ให้หาบัญชี Demo/Virtual อื่น (ห้ามแตะต้อง CR เงินจริง)
+                        if not target_acc:
+                            for acc in accounts:
+                                acc_id = acc.get("account_id", "")
+                                if acc_id.startswith("DOT") or acc_id.startswith("VRTC") or acc.get("is_virtual") == 1:
+                                    target_acc = acc
+                                    break
+                        
+                        if target_acc:
+                            acc_id = target_acc.get("account_id")
+                            otp_res = requests.post(f"https://api.derivws.com/trading/v1/options/accounts/{acc_id}/otp", headers=headers, timeout=10)
+                            if otp_res.status_code == 200:
+                                target_ws_url = otp_res.json().get("data", {}).get("url")
+                                is_live_account = True
+                                account_info = {
+                                    "loginid": acc_id,
+                                    "currency": target_acc.get("currency", "USD"),
+                                    "balance": float(target_acc.get("balance", 0.0)),
+                                    "email": "DEMO_ACCOUNT"
+                                }
+                                log(f"✅ ยืนยันสิทธิ์บัญชี Demo {acc_id} สำเร็จ! ยอดเงิน: ${account_info['balance']:,.2f} {account_info['currency']}")
+                        else:
+                            log(f"⚠️ [SAFETY] ไม่พบบัญชี Demo {TARGET_DEMO_ACCOUNT} หรือมีแต่บัญชีจริง (บล็อกเงินจริง 100%) -> สลับเข้าสู่ Demo Training Mode")
+                except Exception as e:
+                    log(f"⚠️ Auth Check Note: {e}")
 
             if not is_live_account:
-                log("⚠️ การยืนยันสิทธิ์ด้วย Token/PAT ไม่สำเร็จ (Fallback to Sim Mode)")
-                log("💡 สลับเข้าสู่โหมด [Live Forex AI Training Engine] (จำลองบัญชี Cent 100 บาท / 280 USC เพื่อเทรน AI)")
-                # If falling back to Sim, we use the public endpoint to get ticks without HTTP 401
+                log(f"💡 รันในโหมด [Demo Training Engine: {TARGET_DEMO_ACCOUNT}] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)")
                 target_ws_url = "wss://api.derivws.com/trading/v1/options/ws/public"
 
             async with websockets.connect(target_ws_url, ping_interval=20, ping_timeout=20) as ws:
-                if is_live_account:
-                    log(f"✅ ล็อกอิน Deriv สำเร็จ! บัญชี: {account_info['loginid']} | ยอดเงิน: ${account_info['balance']:,.2f} {account_info['currency']}")
-                else:
-                    log("🔌 เชื่อมต่อ WebSocket แบบ Public สำเร็จ! (สำหรับดึงกราฟ)")
+                log(f"🔌 เชื่อมต่อ Deriv WebSocket สำเร็จ! (บัญชี: {account_info['loginid']})")
 
-                # Main Loop สำหรับการดึงข้อมูลและเทรด
-                loop_count = 0
                 while True:
-                    # 1. ตรวจสอบวันหยุดเสาร์-อาทิตย์ และช่วง Rollover Spread Blackout
+                    # ตรวจสอบวันหยุดเสาร์-อาทิตย์ และช่วง Rollover Spread Blackout
                     utcnow = datetime.utcnow()
                     thai_dt = utcnow + timedelta(hours=7)
                     thai_minute = thai_dt.hour * 60 + thai_dt.minute
@@ -448,15 +522,15 @@ async def deriv_engine():
                     is_rollover = (3 * 60 + 45) <= thai_minute <= (6 * 60 + 15)
 
                     if is_weekend:
-                        update_status_file(account_info, active_trade, None, market_state="⏸️ ตลาด Forex ปิดสุดสัปดาห์ (Standby)")
+                        log("⏸️ ตลาด Forex ปิดสุดสัปดาห์ (Standby รอเปิดวันจันทร์)...")
                         await asyncio.sleep(60)
                         continue
                     elif is_rollover:
-                        update_status_file(account_info, active_trade, None, market_state="⏸️ Rollover Spread Freeze (03:45-06:15 น. เลี่ยงสเปรดถ่าง)")
+                        log("⏸️ Rollover Spread Freeze (03:45-06:15 น. เลี่ยงสเปรดถ่าง)...")
                         await asyncio.sleep(60)
                         continue
 
-                    # 1.5 ขอข้อมูลแท่งเทียน H1 (แคช 5 นาที ลดการใช้ CPU & Network)
+                    # 1. ขอข้อมูลแท่งเทียน H1 ของ PRIMARY_SYMBOL (แคช 5 นาทีเพื่อ Low-CPU)
                     now_ts = time.time()
                     if not hasattr(deriv_engine, "_last_h1_time") or (now_ts - deriv_engine._last_h1_time > 300):
                         try:
@@ -482,202 +556,244 @@ async def deriv_engine():
                             deriv_engine._last_h1_time = now_ts
                         except Exception:
                             pass
-                    is_h1_bull = getattr(deriv_engine, "_cached_h1_bull", False)
 
-                    # 2. ขอข้อมูลแท่งเทียน M15 ของ EUR/USD
-                    candle_req = {
-                        "ticks_history": PRIMARY_SYMBOL,
-                        "adjust_start_time": 1,
-                        "count": 100,
-                        "end": "latest",
-                        "style": "candles",
-                        "granularity": TIMEFRAME_SEC
-                    }
-                    await ws.send(json.dumps(candle_req))
-                    candle_res = json.loads(await ws.recv())
+                    # 2. สแกนและดึงข้อมูลแท่งเทียน M15 ของทุกคู่เงิน
+                    scan_rows = []
+                    primary_indicators = None
 
-                    candles = candle_res.get("candles", [])
-                    indicators = calculate_bb_rsi(
-                        candles,
-                        period=memory.get("learned_params", {}).get("bb_period", 20),
-                        std_dev=memory.get("learned_params", {}).get("bb_std", 2.0)
-                    )
-
-                    # 3. ตรวจสอบสถานะไม้ที่ถืออยู่ (ถ้ามี)
-                    if active_trade:
-                        if is_live_account:
-                            # ตรวจสอบว่าสัญญาหมดอายุหรือปิดหรือยังบน Deriv
-                            poc_req = {"proposal_open_contract": 1, "contract_id": active_trade["contract_id"]}
-                            await ws.send(json.dumps(poc_req))
-                            poc_res = json.loads(await ws.recv())
-                            contract = poc_res.get("proposal_open_contract", {})
-
-                            if contract.get("is_expired") or contract.get("is_sold"):
-                                profit_usd = float(contract.get("profit", 0.0))
-                                profit_thb = profit_usd * usd_thb_rate
-                                status_str = "🎉 WIN" if profit_usd >= 0 else "🛑 LOSS"
-
-                                log(f"{status_str} ปิดไม้ {active_trade['symbol']} | กำไร: ${profit_usd:+,.2f} USD (≈ {profit_thb:+,.2f} บาท)")
+                    for sym in SYMBOLS:
+                        try:
+                            candle_req = {
+                                "ticks_history": sym,
+                                "adjust_start_time": 1,
+                                "count": 100,
+                                "end": "latest",
+                                "style": "candles",
+                                "granularity": TIMEFRAME_SEC
+                            }
+                            await ws.send(json.dumps(candle_req))
+                            candle_res = json.loads(await ws.recv())
+                            candles = candle_res.get("candles", [])
+                            
+                            inds = calculate_bb_rsi(
+                                candles,
+                                period=memory.get("learned_params", {}).get("bb_period", 20),
+                                std_dev=memory.get("learned_params", {}).get("bb_std", 2.0)
+                            )
+                            
+                            if inds:
+                                if sym == PRIMARY_SYMBOL:
+                                    primary_indicators = inds
                                 
-                                memory["total_trades"] = memory.get("total_trades", 0) + 1
-                                if profit_usd >= 0:
-                                    memory["wins"] = memory.get("wins", 0) + 1
-                                else:
-                                    memory["losses"] = memory.get("losses", 0) + 1
-                                    current_oversold = memory.get("learned_params", {}).get("rsi_oversold", 35.0)
-                                    if current_oversold > 28.0:
-                                        memory["learned_params"]["rsi_oversold"] = round(current_oversold - 0.5, 1)
+                                # กำหนดสถานะตาราง
+                                pos_str = "⚪ FLAT"
+                                st_str = "OK"
+                                if active_trade and active_trade.get('symbol') == sym:
+                                    cur_p = inds['price']
+                                    ent = active_trade['entry_price']
+                                    pips = (cur_p - ent) / 0.00010
+                                    pos_str = f"🟢 {pips:+.1f} pips"
+                                    st_str = "BE" if active_trade.get('be_locked') else "IN"
 
-                                memory["net_profit_usd"] = memory.get("net_profit_usd", 0.0) + profit_usd
-                                memory["net_profit_thb"] = memory.get("net_profit_thb", 0.0) + profit_thb
-                                save_memory(memory)
-                                active_trade = None
-                        else:
-                            # โหมดจำลองบัญชี Cent (คำนวณจากราคา Real-time ของตลาดโลก)
-                            cur_price = indicators['price']
-                            entry = active_trade['entry_price']
-                            diff_pips = (cur_price - entry) / 0.00010
+                                scan_rows.append({
+                                    'symbol': sym,
+                                    'price': f"{inds['price']:.5f}",
+                                    'rsi': f"{inds['rsi']:.1f}",
+                                    'bb_w': f"{inds['bb_width']:.5f}",
+                                    'pattern': inds['pattern_name'],
+                                    'pos': pos_str,
+                                    'st': st_str
+                                })
+                        except Exception as e:
+                            log(f"⚠️ ดึงข้อมูลแท่งเทียน {sym} ไม่สำเร็จ: {e}")
+                        
+                        await asyncio.sleep(0.5) # ป้องกัน Rate limit
+
+                    # 3. จัดการสถานะไม้ที่ถืออยู่ (Active Position Management)
+                    if active_trade and primary_indicators:
+                        cur_price = primary_indicators['price']
+                        entry = active_trade['entry_price']
+                        diff_pips = (cur_price - entry) / 0.00010
+                        trailing_sl_pips = active_trade.get('trailing_sl_pips', 1.0 if active_trade.get('be_locked', False) else -20.0)
+
+                        # Auto-Breakeven เมื่อกำไรแตะ +15 pips
+                        if diff_pips >= 15.0 and not active_trade.get('be_locked', False):
+                            active_trade['be_locked'] = True
+                            trailing_sl_pips = 1.0
+                            active_trade['trailing_sl_pips'] = trailing_sl_pips
+                            save_state(active_trade)
                             
-                            # Trailing SL Tracking
-                            trailing_sl_pips = active_trade.get('trailing_sl_pips', 1.0 if active_trade.get('be_locked', False) else -20.0)
-                            
-                            # Auto-Breakeven เมื่อกำไรแตะ +15 pips
-                            if diff_pips >= 15.0 and not active_trade.get('be_locked', False):
-                                active_trade['be_locked'] = True
-                                trailing_sl_pips = 1.0
+                            print_highlight_box(
+                                f"AUTO-BREAKEVEN ACTIVATED - {active_trade['symbol']}",
+                                [
+                                    ("Current Price", f"{cur_price:.5f}"),
+                                    ("Profit Pips", f"+{diff_pips:.1f} pips"),
+                                    ("New Trailing SL", "+1.0 pip (ล็อกต้นทุนเรียบร้อย)")
+                                ],
+                                icon="🛡️"
+                            )
+                            if notifier:
+                                try:
+                                    notifier.notify_breakeven("Deriv", active_trade['symbol'], cur_price, entry + 0.00010, diff_pips)
+                                except Exception:
+                                    pass
+
+                        # Dynamic Trailing Run เมื่อกำไรเกิน 30 pips
+                        if diff_pips >= 30.0:
+                            new_trailing_sl = diff_pips - 15.0
+                            if new_trailing_sl > trailing_sl_pips:
+                                trailing_sl_pips = new_trailing_sl
                                 active_trade['trailing_sl_pips'] = trailing_sl_pips
-                                log(f"🛡️ [AUTO-BREAKEVEN] {active_trade['symbol']} กำไรแตะ +{diff_pips:.1f} pips! ขยับ SL ล็อกต้นทุน (+1.0 pip)")
+                                save_state(active_trade)
+                                
+                                print_highlight_box(
+                                    f"DYNAMIC TRAILING RUN - {active_trade['symbol']}",
+                                    [
+                                        ("Current Price", f"{cur_price:.5f}"),
+                                        ("Profit Pips", f"+{diff_pips:.1f} pips"),
+                                        ("Trailing SL", f"+{trailing_sl_pips:.1f} pips (Let Profit Run!)")
+                                    ],
+                                    icon="🚀"
+                                )
+                                if notifier:
+                                    try:
+                                        notifier.notify_trailing("Deriv", active_trade['symbol'], cur_price, cur_price - (15.0 * 0.00010), diff_pips)
+                                    except Exception:
+                                        pass
 
-                            # Dynamic Trailing TP (Let Profit Run) เมื่อกำไรเกิน 30 pips ไม่ยอมปิด แต่ขยับ SL ตามห่างๆ 15 pips
-                            if diff_pips >= 30.0:
-                                new_trailing_sl = diff_pips - 15.0
-                                if new_trailing_sl > trailing_sl_pips:
-                                    trailing_sl_pips = new_trailing_sl
-                                    active_trade['trailing_sl_pips'] = trailing_sl_pips
-                                    log(f"🚀 [TRAILING RUN] {active_trade['symbol']} ทะลุเป้า TP กำไร +{diff_pips:.1f} pips! ไม่ขายหมู ขยับ SL ตามมาที่ +{trailing_sl_pips:.1f} pips")
+                        # ตรวจสอบจุดปิดไม้: ชนเส้น Trailing SL หรือหมดเวลา 15 นาที
+                        hold_sec = time.time() - active_trade.get('start_time', time.time())
+                        is_sl = diff_pips <= trailing_sl_pips
+                        is_timeout = hold_sec >= 900 and not (diff_pips >= 30.0)
+                        is_be_hit = is_sl and active_trade.get('be_locked', False)
 
-                            # ตรวจสอบจุดออก: ชนเส้น Trailing SL / หมดเวลา 15 นาที (ถ้ายังไม่เข้าโหมด Trailing Run)
-                            hold_sec = time.time() - active_trade.get('start_time', time.time())
-                            is_sl = diff_pips <= trailing_sl_pips
-                            is_timeout = hold_sec >= 900 and not (diff_pips >= 30.0)
+                        if is_be_hit or is_sl or is_timeout:
+                            profit_usd = (diff_pips * 0.10) # 0.01 lot pip value ~$0.10
+                            profit_thb = profit_usd * usd_thb_rate
                             
-                            is_tp = False # ปิดการตั้งเป้าตายตัวไปเลย ปล่อยให้ชน Trailing SL เอา
-                            is_be_hit = is_sl and active_trade.get('be_locked', False)
+                            if is_be_hit:
+                                status_title = "SL-BREAKEVEN CLOSED"
+                                icon_str = "🛡️"
+                            elif profit_usd >= 0:
+                                status_title = "TAKE PROFIT (WIN)"
+                                icon_str = "🎯"
+                            else:
+                                status_title = "STOP LOSS (LOSS)"
+                                icon_str = "🛑"
 
-                            if is_tp or is_be_hit or is_sl or is_timeout:
-                                profit_usc = diff_pips * 0.10
-                                profit_thb = (profit_usc / 100.0) * usd_thb_rate
-                                if is_be_hit:
-                                    status_str = "🛡️ SL-BREAKEVEN"
-                                elif profit_usc >= 0:
-                                    status_str = "🎉 WIN"
-                                else:
-                                    status_str = "🛑 LOSS"
-                                
-                                log(f"{status_str} [SIM CENT] ปิดไม้ {active_trade['symbol']} ({diff_pips:+.1f} pips) | กำไร: {profit_usc:+.2f} USC (≈ {profit_thb:+.2f} บาท)")
-                                account_info['balance'] = round(account_info['balance'] + profit_usc, 2)
-                                
-                                memory["total_trades"] = memory.get("total_trades", 0) + 1
-                                if profit_usc >= 0:
-                                    memory["wins"] = memory.get("wins", 0) + 1
-                                else:
-                                    memory["losses"] = memory.get("losses", 0) + 1
-                                    current_oversold = memory.get("learned_params", {}).get("rsi_oversold", 35.0)
-                                    if current_oversold > 28.0:
-                                        memory["learned_params"]["rsi_oversold"] = round(current_oversold - 0.5, 1)
+                            print_highlight_box(
+                                f"{status_title} - {active_trade['symbol']}",
+                                [
+                                    ("Exit Price", f"{cur_price:.5f}"),
+                                    ("Result Pips", f"{diff_pips:+.1f} pips"),
+                                    ("Net Profit", f"${profit_usd:+,.2f} USD (≈ {profit_thb:+,.2f} THB)"),
+                                    ("Account Balance", f"${account_info['balance'] + profit_usd:,.2f} USD")
+                                ],
+                                icon=icon_str
+                            )
 
-                                memory["net_profit_usd"] = memory.get("net_profit_usd", 0.0) + (profit_usc / 100.0)
-                                memory["net_profit_thb"] = memory.get("net_profit_thb", 0.0) + profit_thb
-                                save_memory(memory)
-                                active_trade = None
+                            account_info['balance'] = round(account_info['balance'] + profit_usd, 2)
+                            memory["total_trades"] = memory.get("total_trades", 0) + 1
+                            
+                            if profit_usd >= 0:
+                                memory["wins"] = memory.get("wins", 0) + 1
+                                if notifier:
+                                    try:
+                                        notifier.notify_tp("Deriv", active_trade['symbol'], cur_price, diff_pips, profit_usd, "USD")
+                                    except Exception:
+                                        pass
+                            else:
+                                memory["losses"] = memory.get("losses", 0) + 1
+                                current_oversold = memory.get("learned_params", {}).get("rsi_oversold", 35.0)
+                                if current_oversold > 28.0:
+                                    memory["learned_params"]["rsi_oversold"] = round(current_oversold - 0.5, 1)
+                                if notifier:
+                                    try:
+                                        notifier.notify_sl("Deriv", active_trade['symbol'], cur_price, diff_pips, profit_usd, "USD", is_breakeven=is_be_hit)
+                                    except Exception:
+                                        pass
 
-                    # 4. สแกนหาจังหวะเข้าเทรด Pullback Sniper
-                    elif indicators:
-                        price = indicators['price']
-                        rsi = indicators['rsi']
-                        lower_bb = indicators['lower_bb']
-                        upper_bb = indicators['upper_bb']
-                        bb_width = indicators.get('bb_width', 0.001)
-                        ema50 = indicators.get('ema50', price)
+                            memory["net_profit_usd"] = memory.get("net_profit_usd", 0.0) + profit_usd
+                            memory["net_profit_thb"] = memory.get("net_profit_thb", 0.0) + profit_thb
+                            save_memory(memory)
+                            
+                            active_trade = None
+                            save_state(None) # ล้างสถานะไม้ในไฟล์
+
+                    # 4. สแกนหาจังหวะเปิดไม้ใหม่ (เมื่อไม่มีไม้ค้าง)
+                    elif not active_trade and primary_indicators:
+                        price = primary_indicators['price']
+                        rsi = primary_indicators['rsi']
+                        lower_bb = primary_indicators['lower_bb']
+                        bb_width = primary_indicators.get('bb_width', 0.001)
+                        ema50 = primary_indicators.get('ema50', price)
                         learned_oversold = memory.get("learned_params", {}).get("rsi_oversold", 35.0)
 
-                        # Dynamic Adaptive RSI: ถ้ากราฟเป็นขาลงแรง (ราคา < EMA50) ปรับเกณฑ์ Oversold ลงเหลือ 25 ป้องกันช้อนมีดบิน
                         if price < ema50 * 0.9990:
                             effective_oversold = min(learned_oversold, 25.0)
                         else:
                             effective_oversold = learned_oversold
 
-                        # Squeeze Filter: งดเข้าเมื่อ BB แคบจัด (bb_width < 0.0006)
                         is_squeezed = bb_width < 0.0006
-
-                        # สัญญาณ BUY (Pullback Oversold OR Candlestick Reversal)
-                        has_pattern = indicators.get('has_bullish_pattern', False)
+                        has_pattern = primary_indicators.get('has_bullish_pattern', False)
                         
                         is_pullback = price <= lower_bb and rsi <= effective_oversold and not is_squeezed
                         is_reversal = has_pattern and (rsi <= 45) and not is_squeezed
                         
-                        if is_pullback or is_reversal:
+                        if (is_pullback or is_reversal) and not is_news_freeze():
                             trigger_name = "Candle_Reversal" if is_reversal and not is_pullback else "Pullback_Oversold"
-                            log(f"🎯 [ENTRY TRIGGER] พบสัญญาณ BUY {PRIMARY_SYMBOL}! [{trigger_name}] (Price: {price:.5f}, RSI: {rsi:.1f}, BBWidth: {bb_width:.5f}, Pattern: {has_pattern})")
-                            if is_live_account:
-                                buy_req = {
-                                    "buy": 1,
-                                    "price": STAKE_USD,
-                                    "parameters": {
-                                        "amount": STAKE_USD,
-                                        "basis": "stake",
-                                        "contract_type": "CALL",
-                                        "currency": account_info.get("currency", "USD"),
-                                        "duration": 15,
-                                        "duration_unit": "m",
-                                        "underlying_symbol": PRIMARY_SYMBOL
-                                    }
-                                }
-                                await ws.send(json.dumps(buy_req))
-                                buy_res = json.loads(await ws.recv())
-
-                                if "error" in buy_res:
-                                    log(f"⚠️ ซื้อสัญญาไม่สำเร็จ: {buy_res['error'].get('message')}")
-                                else:
-                                    buy_data = buy_res.get("buy", {})
-                                    active_trade = {
-                                        "contract_id": buy_data.get("contract_id"),
-                                        "symbol": PRIMARY_SYMBOL,
-                                        "type": "BUY (CALL)",
-                                        "entry_price": price,
-                                        "stake": STAKE_USD,
-                                        "entry_time": get_thai_time(),
-                                        "start_time": time.time()
-                                    }
-                                    log(f"✅ เปิดไม้สำเร็จ! Contract ID: {active_trade['contract_id']} งบ: ${STAKE_USD:.2f} USD")
-                            else:
-                                # โหมดจำลองบัญชี Cent 100 บาท (0.01 Cent lot)
+                            
+                            # ปรึกษา Groq AI
+                            is_ai_approved = await ask_groq_ai_sentiment(PRIMARY_SYMBOL, price, rsi, trigger_name)
+                            if is_ai_approved:
                                 active_trade = {
-                                    "contract_id": f"SIM-{int(time.time())}",
+                                    "contract_id": f"DEMO-{int(time.time())}",
                                     "symbol": PRIMARY_SYMBOL,
-                                    "type": "BUY 0.01 Cent Lot",
+                                    "type": "BUY 0.01 Lot (Demo)",
                                     "entry_price": price,
-                                    "stake": 0.01,
+                                    "stake": STAKE_USD,
                                     "entry_time": get_thai_time(),
                                     "start_time": time.time(),
-                                    "be_locked": False
+                                    "be_locked": False,
+                                    "trailing_sl_pips": -20.0
                                 }
-                                log(f"✅ [SIM CENT] เปิดไม้ 0.01 Cent Lot สำเร็จ! ราคาเข้า: {price:.5f} (งบ 100 บาท ~ 280 USC)")
+                                save_state(active_trade) # บันทึกลง active_state_deriv.json ทันที
+                                
+                                print_highlight_box(
+                                    f"BUY ORDER EXECUTED - {PRIMARY_SYMBOL}",
+                                    [
+                                        ("Engine / Account", f"Deriv Forex (Demo: {TARGET_DEMO_ACCOUNT})"),
+                                        ("Symbol", PRIMARY_SYMBOL),
+                                        ("Entry Price", f"{price:.5f}"),
+                                        ("Size / Stake", f"0.01 Lot (~${STAKE_USD:.2f} USD)"),
+                                        ("Strategy Trigger", trigger_name),
+                                        ("RSI / BB-Width", f"{rsi:.1f} / {bb_width:.5f}")
+                                    ],
+                                    icon="🟢"
+                                )
+                                
+                                if notifier:
+                                    try:
+                                        notifier.notify_buy(
+                                            "Deriv", PRIMARY_SYMBOL, price, STAKE_USD,
+                                            price + 0.0030, price - 0.0020, trigger_name,
+                                            f"บัญชี Demo: {TARGET_DEMO_ACCOUNT}"
+                                        )
+                                    except Exception:
+                                        pass
 
-                    # 5. อัปเดตไฟล์สถานะ
-                    update_status_file(account_info, active_trade, indicators, market_state="🟢 เฝ้าระวังสไนเปอร์ 24 ชม.")
-                    loop_count += 1
-                    if loop_count % 3 == 0 and indicators:
-                        mode_tag = "Live" if is_live_account else "Sim Cent 100บ."
-                        log(f"👀 [EUR/USD 15m] ราคา: {indicators['price']:.5f} | RSI: {indicators['rsi']:.1f} | BB-Lower: {indicators['lower_bb']:.5f} | สถานะ: {mode_tag}")
-                    await asyncio.sleep(60)
+                    # 5. พิมพ์ตารางสถานะ Quant Terminal
+                    if scan_rows:
+                        print_quant_table(get_thai_time(), scan_rows, account_info, memory)
+
+                    await asyncio.sleep(60) # พัก 60 วินาทีเพื่อ Low-CPU 100%
 
         except Exception as e:
             log(f"⚠️ เกิดข้อผิดพลาดใน Deriv WebSocket: {e}. รอเชื่อมต่อใหม่ใน 10 วินาที...")
             await asyncio.sleep(10)
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("🏛️ DERIV FOREX ENGINE STARTING...")
-    print("=" * 60)
+    print("=" * 65)
+    print(f"🏛️ DERIV FOREX QUANT ENGINE STARTING (DEMO: {TARGET_DEMO_ACCOUNT})")
+    print("=" * 65)
     asyncio.run(deriv_engine())

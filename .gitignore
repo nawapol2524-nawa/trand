@@ -5,9 +5,15 @@ __pycache__/
 *.log
 supervisor_log.txt
 .env
+archive/
 status_log.txt
-trade_log.txt
+status_log_mt5.txt
 status_log_deriv.txt
+trade_log.txt
+trade_log_mt5.txt
 agent_memory*.json
 active_state.json
+active_state_mt5.json
+active_state_deriv.json
+trade_log_deriv.txt
 console_log.txt

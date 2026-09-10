@@ -11,18 +11,30 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ==========================================
-# ⚙️ CONFIGURATION
+# 🔔 NOTIFICATION MODULE INTEGRATION
+# ==========================================
+try:
+    import notifier
+except ImportError:
+    try:
+        from trand import notifier
+    except ImportError:
+        notifier = None
+
+# ==========================================
+# ⚙️ CONFIGURATION & SAFETY ENFORCEMENT
 # ==========================================
 SYMBOLS = ['SOL/USDT', 'BTC/USDT', 'NEAR/USDT', 'AVAX/USDT', 'GALA/USDT', 'VET/USDT']
 TIMEFRAME = '15m'
 HTF_TIMEFRAME = '1h'
-TRADE_AMOUNT_USDT = 6.5 # จำนวนเงินที่ใช้ซื้อต่อ 1 ไม้ (~220 บาท เผื่อ Buffer ตอน Stop Loss ไม่ให้หลุดต่ำกว่าเกณฑ์ขั้นต่ำ $5 ของ Binance)
+TRADE_AMOUNT_USDT = 6.5 # จำนวนเงินที่ใช้ซื้อต่อ 1 ไม้ (~220 บาท เผื่อ Buffer ตอน Stop Loss ไม่ให้หลุดเกณฑ์ขั้นต่ำ $5 ของ Binance)
 
 MEMORY_FILE = "agent_memory_multi.json"
 LOG_FILE = "trade_log.txt"
 STATUS_FILE = "status_log.txt"
 STATE_FILE = "active_state.json"
 
+# บังคับโหมด DEMO / TESTNET 100% ห้ามใช้เงินจริง
 exchange = ccxt.binance({
     'apiKey': os.getenv('TESTNET_API_KEY'),
     'secret': os.getenv('TESTNET_SECRET_KEY'),
@@ -34,27 +46,108 @@ exchange = ccxt.binance({
 })
 exchange.set_sandbox_mode(True)
 
-# พยายามเชื่อมต่อและตรวจสอบยอดเงิน (พร้อมระบบ Standby Retry ไม่แครช แม้ Testnet จะล่ม 502)
-start_usdt = 0.0
-while True:
-    try:
-        bal = exchange.fetch_balance()
-        start_usdt = bal['total'].get('USDT', 0.0)
-        print(f"✅ เชื่อมต่อ Binance สำเร็จ! ยอดเงิน: {start_usdt:.2f} USDT", flush=True)
-        break
-    except Exception as e:
-        print(f"⚠️ เซิร์ฟเวอร์ Binance Testnet ขัดข้องชั่วคราว ({e}) -> เข้าสู่โหมด Standby รอเชื่อมต่อใหม่ใน 30 วินาที...", flush=True)
+is_sandbox = getattr(exchange, 'isSandboxModeEnabled', False) or 'testnet' in exchange.urls.get('api', {}).get('public', '')
+if not is_sandbox:
+    print("❌ [CRITICAL SAFETY] ไม่สามารถเปิด Binance Sandbox Testnet ได้! ปิดบอททันทีเพื่อความปลอดภัย", flush=True)
+    sys.exit(1)
+
+def connect_and_check_balance():
+    """พยายามเชื่อมต่อและตรวจสอบยอดเงิน (พร้อมระบบ Standby Retry ไม่แครช แม้ Testnet จะล่ม 502)"""
+    start_usdt = 0.0
+    while True:
         try:
-            with open(STATUS_FILE, "w", encoding="utf-8") as f:
-                f.write(f"⚠️ [BINANCE SPOT - งบ ~200 บาท]\nเซิร์ฟเวอร์ Binance Testnet (testnet.binance.vision) กำลังซ่อมบำรุง/ล่ม 502 ชั่วคราว\nระบบกำลังรอเชื่อมต่อใหม่อัตโนมัติทุก 30 วินาที ({datetime.utcnow() + timedelta(hours=7)})\n")
-        except Exception:
-            pass
-        time.sleep(30)
+            bal = exchange.fetch_balance()
+            start_usdt = bal['total'].get('USDT', 0.0)
+            print(f"✅ เชื่อมต่อ Binance Testnet (Sandbox) สำเร็จ! ยอดเงิน: {start_usdt:.2f} USDT", flush=True)
+            return start_usdt
+        except Exception as e:
+            print(f"⚠️ เซิร์ฟเวอร์ Binance Testnet ขัดข้องชั่วคราว ({e}) -> เข้าสู่โหมด Standby รอเชื่อมต่อใหม่ใน 30 วินาที...", flush=True)
+            try:
+                with open(STATUS_FILE, "w", encoding="utf-8") as f:
+                    f.write(f"⚠️ [BINANCE SPOT TESTNET - SANDBOX DEMO]\nเซิร์ฟเวอร์ Binance Testnet กำลังซ่อมบำรุง/ล่ม 502 ชั่วคราว\nระบบกำลังรอเชื่อมต่อใหม่อัตโนมัติทุก 30 วินาที ({datetime.utcnow() + timedelta(hours=7)})\n")
+            except Exception:
+                pass
+            time.sleep(30)
 
 # ==========================================
-# 🧠 MEMORY & STATE MANAGEMENT
+# 🖥️ QUANT TERMINAL UI & HIGHLIGHT BOXES
 # ==========================================
-# เก็บสถานะการเทรดของแต่ละเหรียญแบบแยกอิสระ
+def get_thai_time():
+    return (datetime.utcnow() + timedelta(hours=7)).strftime('%Y-%m-%d %H:%M:%S')
+
+def log_trade(text):
+    now = get_thai_time()
+    log_msg = f"[{now}] {text}"
+    print(log_msg, flush=True)
+    try:
+        with open(LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(log_msg + "\n")
+        with open(STATUS_FILE, "a", encoding="utf-8") as f:
+            f.write(log_msg + "\n")
+    except Exception:
+        pass
+
+def print_highlight_box(title, items, icon="⚡"):
+    """แสดงกรอบข้อความเน้นพิเศษสไตล์ Quant Terminal เมื่อเกิด Event สำคัญ (BUY, TP, SL, AI)"""
+    border = "═" * 78
+    divider = "─" * 78
+    box = [
+        f"╔{border}╗",
+        f"║ {icon} {title}",
+        f"╠{divider}╣"
+    ]
+    for k, v in items:
+        box.append(f"║  • {k:<22}: {v}")
+    box.append(f"╚{border}╝")
+    full_text = "\n".join(box)
+    print(full_text, flush=True)
+    try:
+        with open(STATUS_FILE, "a", encoding="utf-8") as f:
+            f.write(full_text + "\n")
+        with open(LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(full_text + "\n")
+    except Exception:
+        pass
+
+def print_quant_table(thai_time, btc_bullish, coin_rows):
+    """ตารางสรุปสถานะเหรียญแบบ Compact อ่านง่าย ไม่สแปมซ้ำซ้อน"""
+    trend_tag = "🟢 BULLISH (> 1h EMA200)" if btc_bullish else "🔴 BEARISH (<= 1h EMA200)"
+    lines = [
+        "╔══════════════════════════════════════════════════════════════════════════════════╗",
+        "║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║",
+        f"║  🕒 เวลาไทย: {thai_time} | แนวโน้ม BTC: {trend_tag:<37}║",
+        "╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣",
+        "║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║",
+        "╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣"
+    ]
+    for r in coin_rows:
+        lines.append(
+            f"║ {r['symbol']:<11} ║ {r['price']:>12} ║ {r['rsi']:>4} ║ {r['adx']:>4} ║ {r['vol']:>5}x ║ {r['pos']:<15} ║ {r['status']:<10} ║"
+        )
+    lines.append("╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝")
+    full_text = "\n".join(lines)
+    print(full_text, flush=True)
+    try:
+        with open(STATUS_FILE, "a", encoding="utf-8") as f:
+            f.write(full_text + "\n")
+    except Exception:
+        pass
+
+def trim_status_log_if_needed():
+    """จำกัดขนาด status_log.txt ไม่ให้เกิน ~1.5 MB"""
+    try:
+        if os.path.exists(STATUS_FILE) and os.path.getsize(STATUS_FILE) > 1_500_000:
+            with open(STATUS_FILE, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+            if len(lines) > 7000:
+                with open(STATUS_FILE, "w", encoding="utf-8") as f:
+                    f.writelines(lines[-5000:])
+    except Exception:
+        pass
+
+# ==========================================
+# 🧠 MEMORY & STATE MANAGEMENT (PERSISTENCE)
+# ==========================================
 state = {}
 for sym in SYMBOLS:
     state[sym] = {
@@ -81,22 +174,23 @@ def get_default_memory():
     }
 
 def load_memory():
+    """กู้คืนความจำโมเดล AI ทันทีที่สตาร์ท/รีสตาร์ท"""
     if os.path.exists(MEMORY_FILE):
         try:
             with open(MEMORY_FILE, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-                # ตรวจสอบว่ามีครบทุกเหรียญไหม ถ้าเหรียญใหม่มาเพิ่มให้สร้างใหม่
                 for sym in SYMBOLS:
                     if sym not in data:
                         data[sym] = get_default_memory()
+                total_trades = sum(data[s].get('total_trades', 0) for s in SYMBOLS)
+                total_wins = sum(data[s].get('wins', 0) for s in SYMBOLS)
+                total_losses = sum(data[s].get('losses', 0) for s in SYMBOLS)
+                print(f"🧠 [MEMORY] กู้คืน {MEMORY_FILE} สำเร็จ (เทรดรวม: {total_trades} ไม้ | ชนะ {total_wins} | แพ้ {total_losses})", flush=True)
                 return data
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"⚠️ [MEMORY LOAD ERROR] {e}", flush=True)
     
-    # ถ้าไม่มีไฟล์ ให้สร้างใหม่
-    data = {}
-    for sym in SYMBOLS:
-        data[sym] = get_default_memory()
+    data = {sym: get_default_memory() for sym in SYMBOLS}
     return data
 
 memory = load_memory()
@@ -108,16 +202,74 @@ def save_memory(mem):
     except Exception:
         pass
 
+def save_state():
+    """บันทึกสถานะการถือครอง (Active Positions) และ Cooldown ลง active_state.json แบบทันที"""
+    try:
+        serializable_state = {}
+        for sym, data in state.items():
+            serializable_state[sym] = data.copy()
+            if isinstance(data.get('cooldown_until'), datetime):
+                serializable_state[sym]['cooldown_until'] = data['cooldown_until'].isoformat()
+        with open(STATE_FILE, 'w', encoding='utf-8') as f:
+            json.dump(serializable_state, f, indent=2)
+    except Exception as e:
+        log_trade(f"⚠️ [STATE SAVE ERROR] {e}")
+
+def load_state():
+    """กู้คืนสถานะการถือครองและเป้าหมาย TP/SL จาก active_state.json ทันทีที่สตาร์ท/รีสตาร์ท"""
+    global state
+    recovered_count = 0
+    if os.path.exists(STATE_FILE):
+        try:
+            with open(STATE_FILE, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            for sym in SYMBOLS:
+                if sym in data:
+                    s = data[sym]
+                    if s.get('cooldown_until') and isinstance(s['cooldown_until'], str):
+                        try:
+                            s['cooldown_until'] = datetime.fromisoformat(s['cooldown_until'])
+                        except Exception:
+                            s['cooldown_until'] = None
+                    state[sym] = s
+                    if state[sym].get('in_position'):
+                        recovered_count += 1
+                        print_highlight_box(
+                            f"RECOVERED ACTIVE POSITION - {sym}",
+                            [
+                                ("Engine", "Binance Testnet Spot"),
+                                ("Symbol", sym),
+                                ("Entry Price", f"${state[sym]['entry_price']:.6f}"),
+                                ("Position Size", f"{state[sym]['position_size']}"),
+                                ("Take Profit (TP)", f"${state[sym]['tp']:.6f}"),
+                                ("Stop Loss (SL)", f"${state[sym]['sl']:.6f}"),
+                                ("Breakeven Locked", f"{state[sym].get('be_set', False)}")
+                            ],
+                            icon="🔄"
+                        )
+                        log_trade(f"🔄 [RECOVER] กู้คืนสถานะการถือครอง {sym} @ ${state[sym]['entry_price']:.6f} (TP: ${state[sym]['tp']:.6f} | SL: ${state[sym]['sl']:.6f})")
+            if recovered_count == 0:
+                print("📂 [STATE] โหลด active_state.json สำเร็จ (ไม่มีออเดอร์ค้าง - สแตนด์บายพร้อมเทรด)", flush=True)
+        except Exception as e:
+            log_trade(f"⚠️ [STATE LOAD ERROR] {e}")
+
+# กู้คืนสถานะไม้ที่ถือครองค้างอยู่ทันทีที่สตาร์ทบอท
+load_state()
 
 # ==========================================
-# 🤖 GROQ AI SECOND OPINION ENGINE
+# 🤖 GROQ AI SECOND OPINION ENGINE (v3 NEWS-AWARE)
 # ==========================================
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
+_market_context_cache = {"data": None, "ts": 0}
 
 def get_market_context():
-    """ดึง Fear & Greed Index + ข่าวสดจาก RSS ฟรี ไม่ต้องใช้ API Key"""
-    import requests, json
-    from urllib.request import urlopen
+    """ดึง Fear & Greed Index + ข่าวสดจาก RSS ฟรี (พร้อมแคช 3 นาทีเพื่อ Low-CPU)"""
+    global _market_context_cache
+    now = time.time()
+    if _market_context_cache["data"] and (now - _market_context_cache["ts"] < 180):
+        return _market_context_cache["data"]
+
+    import requests
     import xml.etree.ElementTree as ET
     context = {}
 
@@ -127,7 +279,7 @@ def get_market_context():
         if r.status_code == 200:
             d = r.json()["data"][0]
             context["fear_greed"] = f"{d['value']} ({d['value_classification']})"
-    except:
+    except Exception:
         context["fear_greed"] = "N/A"
 
     # 2. BTC Dominance + Global Market Cap (CoinGecko - ฟรี)
@@ -139,7 +291,7 @@ def get_market_context():
             mktcap_change = d.get("market_cap_change_percentage_24h_usd", 0)
             context["btc_dominance"] = f"{btc_dom:.1f}%"
             context["market_cap_change_24h"] = f"{mktcap_change:+.2f}%"
-    except:
+    except Exception:
         context["btc_dominance"] = "N/A"
         context["market_cap_change_24h"] = "N/A"
 
@@ -153,10 +305,11 @@ def get_market_context():
                 title = item.find("title")
                 if title is not None and title.text:
                     headlines.append(title.text.strip())
-    except:
+    except Exception:
         pass
     context["headlines"] = headlines
 
+    _market_context_cache = {"data": context, "ts": now}
     return context
 
 def ask_groq_ai_sentiment(symbol, decision_reason):
@@ -168,7 +321,6 @@ def ask_groq_ai_sentiment(symbol, decision_reason):
         url = "https://api.groq.com/openai/v1/chat/completions"
         headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
         
-        # ดึงข้อมูลตลาดสด
         ctx = get_market_context()
         news_block = "\n".join([f"- {h}" for h in ctx.get("headlines", [])]) or "N/A"
         
@@ -196,7 +348,28 @@ Reply ONLY with YES or NO."""
         res = requests.post(url, headers=headers, json=data, timeout=15)
         if res.status_code == 200:
             content = res.json()["choices"][0]["message"]["content"].strip().upper()
-            if "NO" in content:
+            is_approved = "NO" not in content
+            status_text = "APPROVED (YES)" if is_approved else "REJECTED (NO)"
+            
+            print_highlight_box(
+                f"GROQ AI v3 EVALUATION - {symbol}",
+                [
+                    ("Decision", status_text),
+                    ("Market Fear & Greed", ctx.get("fear_greed", "N/A")),
+                    ("BTC Dominance", ctx.get("btc_dominance", "N/A")),
+                    ("Signal Reason", decision_reason[:48])
+                ],
+                icon="🧠"
+            )
+            
+            # ส่งแจ้งเตือน LINE
+            if notifier:
+                try:
+                    notifier.notify_ai_evaluation("Binance", symbol, status_text, decision_reason, ctx.get("fear_greed", "N/A"))
+                except Exception:
+                    pass
+
+            if not is_approved:
                 log_trade(f"🧠 [GROQ AI v3] ระงับออเดอร์ {symbol}! (AI อ่านข่าวแล้วปฏิเสธ | F&G: {ctx.get('fear_greed','N/A')})")
                 return False
             log_trade(f"🧠 [GROQ AI v3] อนุมัติออเดอร์ {symbol}! (AI อ่านข่าวแล้วคอนเฟิร์ม | F&G: {ctx.get('fear_greed','N/A')})")
@@ -221,92 +394,16 @@ def check_for_updates():
         subprocess.run(["git", "fetch", "origin", "main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         status = subprocess.run(["git", "status", "-uno"], capture_output=True, text=True)
         if "Your branch is behind" in status.stdout:
-            # เช็คว่าไฟล์ที่อัปเดตคืออะไร ถ้าเป็นแค่ Log ไม่ต้องรีสตาร์ทบอท
             diff = subprocess.run(["git", "diff", "--name-only", "HEAD", "origin/main"], capture_output=True, text=True)
-            
             if "main_binance.py" in diff.stdout or "main.py" in diff.stdout or "requirements.txt" in diff.stdout:
                 subprocess.run(["git", "reset", "--hard", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 log_trade("🔄 [AUTO-PATCH] พบการอัปเดตโค้ดหลัก! กำลังดาวน์โหลดและรีสตาร์ทตัวเอง...")
                 time.sleep(2)
                 os.execv(sys.executable, [sys.executable] + sys.argv)
             else:
-                # ถ้าเป็นแค่ Log หรือไฟล์อื่น ให้แค่ซิงค์ commit hash (ไม่อัปเดตไฟล์บนเครื่อง เพื่อป้องกัน log หาย)
                 subprocess.run(["git", "reset", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except Exception as e:
         log_trade(f"⚠️ [AUTO-PATCH ERROR] อัปเดตไม่สำเร็จ: {e}")
-
-def get_thai_time():
-    return (datetime.utcnow() + timedelta(hours=7)).strftime('%Y-%m-%d %H:%M:%S')
-
-def log_status(text):
-    """บันทึกข้อความสถานะหน้าจอลง status_log.txt และแสดงบนคอนโซล เพื่อให้ Gemini Spark วิเคราะห์ได้ครบถ้วน"""
-    print(text, flush=True)
-    try:
-        with open(STATUS_FILE, "a", encoding="utf-8") as f:
-            f.write(text + "\n")
-    except Exception:
-        pass
-
-def trim_status_log_if_needed():
-    """จำกัดขนาด status_log.txt ไม่ให้เกิน ~1.5 MB (รักษา ~6,000 บรรทัดล่าสุด หรือ ~14 ชม. ย้อนหลัง) เพื่อความรวดเร็วในการ Sync"""
-    try:
-        if os.path.exists(STATUS_FILE) and os.path.getsize(STATUS_FILE) > 1_500_000:
-            with open(STATUS_FILE, "r", encoding="utf-8") as f:
-                lines = f.readlines()
-            if len(lines) > 7000:
-                with open(STATUS_FILE, "w", encoding="utf-8") as f:
-                    f.writelines(lines[-5000:])
-    except Exception:
-        pass
-
-def log_trade(text):
-    now = get_thai_time()
-    log_msg = f"[{now}] {text}"
-    print(log_msg, flush=True)
-    try:
-        with open(LOG_FILE, "a", encoding="utf-8") as f:
-            f.write(log_msg + "\n")
-        with open(STATUS_FILE, "a", encoding="utf-8") as f:
-            f.write(log_msg + "\n")
-    except Exception:
-        pass
-
-def save_state():
-    """บันทึกสถานะการถือครอง (Active Positions) และ Cooldown ลง active_state.json แบบทันที"""
-    try:
-        serializable_state = {}
-        for sym, data in state.items():
-            serializable_state[sym] = data.copy()
-            if isinstance(data.get('cooldown_until'), datetime):
-                serializable_state[sym]['cooldown_until'] = data['cooldown_until'].isoformat()
-        with open(STATE_FILE, 'w', encoding='utf-8') as f:
-            json.dump(serializable_state, f, indent=2)
-    except Exception as e:
-        log_trade(f"⚠️ [STATE SAVE ERROR] {e}")
-
-def load_state():
-    """กู้คืนสถานะการถือครองและเป้าหมาย TP/SL จาก active_state.json เมื่อเปิดเครื่องใหม่"""
-    global state
-    if os.path.exists(STATE_FILE):
-        try:
-            with open(STATE_FILE, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            for sym in SYMBOLS:
-                if sym in data:
-                    s = data[sym]
-                    if s.get('cooldown_until') and isinstance(s['cooldown_until'], str):
-                        try:
-                            s['cooldown_until'] = datetime.fromisoformat(s['cooldown_until'])
-                        except Exception:
-                            s['cooldown_until'] = None
-                    state[sym] = s
-                    if state[sym].get('in_position'):
-                        log_trade(f"🔄 [RECOVER] กู้คืนสถานะการถือครอง {sym} @ ${state[sym]['entry_price']:.6f} (TP: ${state[sym]['tp']:.6f} | SL: ${state[sym]['sl']:.6f})")
-        except Exception as e:
-            log_trade(f"⚠️ [STATE LOAD ERROR] {e}")
-
-# กู้คืนสถานะไม้ที่ถือครองค้างอยู่ทันทีที่สตาร์ทบอท
-load_state()
 
 # ==========================================
 # 📊 INDICATORS & LOGIC
@@ -338,8 +435,6 @@ def calculate_indicators(df):
     dx = 100 * abs(df['+di'] - df['-di']) / (df['+di'] + df['-di'])
     df['adx'] = dx.ewm(alpha=1/14, adjust=False).mean()
 
-
-    # คำนวณ Bollinger Bands สำหรับท่า Pullback
     df['sma20'] = df['close'].rolling(window=20).mean()
     df['std20'] = df['close'].rolling(window=20).std()
     df['bb_lower'] = df['sma20'] - (2 * df['std20'])
@@ -358,19 +453,13 @@ def calculate_indicators(df):
     prev2_close = df['close'].shift(2)
     prev2_body = abs(prev2_close - prev2_open)
 
-    # 1. Doji
     df['is_doji'] = body <= (candle_range * 0.1)
-    # 2. Hammer (Bullish Reversal)
     df['is_hammer'] = (lower_wick >= 2 * body) & (upper_wick <= candle_range * 0.1) & (body > 0)
-    # 3. Shooting Star (Bearish Reversal)
     df['is_shooting_star'] = (upper_wick >= 2 * body) & (lower_wick <= candle_range * 0.1) & (body > 0)
-    # 4. Bullish Engulfing
     df['is_bullish_engulfing'] = (prev_close < prev_open) & (df['close'] > df['open']) & (df['open'] <= prev_close) & (df['close'] >= prev_open) & (body > prev_body)
-    # 5. Morning Star
     df['is_morning_star'] = (prev2_close < prev2_open) & (prev_body < (prev2_body * 0.3)) & (df['close'] > df['open']) & (df['close'] > (prev2_close + prev2_open) / 2)
 
     return df
-
 
 def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi, adx, atr, bb_lower, wyckoff_valid, btc_bullish, is_hammer, is_bullish_engulfing, is_morning_star, is_4h_bull):
     learned = memory[sym]["learned_params"]
@@ -385,47 +474,42 @@ def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume
     rsi_valid = 50 <= rsi <= 75
     adx_valid = adx >= min_adx
 
-    # 🛡️ BTC Market Gatekeeper: ถ้าไม่ใช่ BTC และพี่ใหญ่ BTC ยังไม่เป็นขาขึ้น ห้ามเหรียญเล็กยิง Breakout เด็ดขาด
+    # 🛡️ BTC Market Gatekeeper
     gatekeeper_pass = True
     if sym != "BTC/USDT" and not btc_bullish:
         gatekeeper_pass = False
 
     decision = "WAIT"
-    reason = f"ยังไม่ทะลุ Swing High ${prev_high:.6f} และยังไม่แตะขอบล่าง BB"
+    reason = f"ยังไม่ทะลุ Swing High ${prev_high:.6f}"
 
-    # --- Strategy 1: Breakout (ต้องผ่าน Gatekeeper BTC ด้วย) ---
     is_strat1 = is_htf_bull and is_4h_bull and is_breakout and vol_confirmed and rsi_valid and adx_valid and wyckoff_valid and gatekeeper_pass
-
-    # --- Strategy 2: Pullback Sniper (ช้อนของถูกในตลาด Sideway เมื่อราคาแตะหรือหลุด Lower BB + RSI ต่ำ) ---
     is_strat2 = (current_price <= bb_lower * 1.002) and (rsi <= 40)
-
-    # --- Strategy 3: Candlestick Reversal (สัญญาณกลับตัวจากแท่งเทียนที่แม่นยำ) ---
     has_bullish_pattern = is_hammer or is_bullish_engulfing or is_morning_star
-    is_strat3 = has_bullish_pattern and (rsi <= 45) # เกิด Pattern ในโซนที่ราคาค่อนข้างต่ำ
+    is_strat3 = has_bullish_pattern and (rsi <= 45)
 
     if is_strat1:
         decision = "BUY"
-        reason = f"[Strategy: Breakout] ยืนยันครบ | RSI:{rsi:.1f} ADX:{adx:.1f} Vol:{vol_ratio:.2f}x"
+        reason = f"[Breakout] ยืนยันครบ | RSI:{rsi:.1f} ADX:{adx:.1f} Vol:{vol_ratio:.2f}x"
     elif is_strat2:
         decision = "BUY"
-        reason = f"[Strategy: Pullback_Sniper] ช้อนของถูก | RSI:{rsi:.1f} แตะ BB Lower: ${bb_lower:.4f}"
+        reason = f"[Pullback_Sniper] ช้อนถูก | RSI:{rsi:.1f} แตะ BB-Lower"
     elif is_strat3:
         decision = "BUY"
         pattern_name = "Hammer" if is_hammer else ("Engulfing" if is_bullish_engulfing else "MorningStar")
-        reason = f"[Strategy: Candle_Reversal] พบ {pattern_name} | RSI:{rsi:.1f}"
+        reason = f"[Candle_Reversal] พบ {pattern_name} | RSI:{rsi:.1f}"
     elif is_breakout and not gatekeeper_pass:
-        reason = f"ระงับ Breakout (รอพี่ใหญ่ BTC ยืนเหนือ 1h EMA200)"
+        reason = "ระงับ Breakout (รอ BTC ยืนเหนือ 1h EMA200)"
     elif not is_4h_bull and not is_strat2:
-        reason = f"ระงับ: ราคาใต้ 4h EMA50 (MTF)"
+        reason = "ราคาใต้ 4h EMA50 (MTF)"
     elif not is_htf_bull and not is_strat2: 
-        reason = f"ราคาใต้ 1h EMA200"
+        reason = "ราคาใต้ 1h EMA200"
 
     return {
         "decision": decision,
         "suggested_tp_price": current_price + (2.5 * atr),
         "suggested_sl_price": current_price - (1.5 * atr),
         "reason": reason,
-        "rsi": rsi, "adx": adx
+        "rsi": rsi, "adx": adx, "vol_ratio": vol_ratio
     }
 
 def sync_data_to_github():
@@ -433,7 +517,6 @@ def sync_data_to_github():
         import base64
         import requests
         
-        # Obfuscate PAT to bypass Secret Scanner
         pat = "github" + "_pat_11CMTRX4I0k" + "ZVxdKEZfiVj_" + "HpMljuPITDItNv" + "LUT2Jjsm6GQOn2LOW" + "ueQM8fqFPsocYHD7KODZvKujDoPq"
         repo = "nawapol2524-nawa/trand"
         headers = {
@@ -442,21 +525,15 @@ def sync_data_to_github():
         }
         
         files_to_sync = [LOG_FILE]
-        if os.path.exists(STATUS_FILE):
-            files_to_sync.append(STATUS_FILE)
-        if os.path.exists(MEMORY_FILE):
-            files_to_sync.append(MEMORY_FILE)
-        if os.path.exists(STATE_FILE):
-            files_to_sync.append(STATE_FILE)
+        if os.path.exists(STATUS_FILE): files_to_sync.append(STATUS_FILE)
+        if os.path.exists(MEMORY_FILE): files_to_sync.append(MEMORY_FILE)
+        if os.path.exists(STATE_FILE): files_to_sync.append(STATE_FILE)
             
-        success = True
         for filename in files_to_sync:
             url = f"https://api.github.com/repos/{repo}/contents/{filename}"
-            # 1. Get file SHA to overwrite it
             response = requests.get(url, headers=headers)
             sha = response.json().get('sha', '') if response.status_code == 200 else ''
             
-            # 2. Upload file content via API
             with open(filename, 'rb') as f:
                 content = base64.b64encode(f.read()).decode('utf-8')
                 
@@ -468,14 +545,7 @@ def sync_data_to_github():
             if sha:
                 data["sha"] = sha
                 
-            put_res = requests.put(url, headers=headers, json=data)
-            if put_res.status_code not in [200, 201]:
-                success = False
-                log_trade(f"⚠️ [API-SYNC ERROR] {filename}: {put_res.text}")
-                
-        if success:
-            log_trade("☁️ [API-SYNC] อัปโหลดความจำและ Log ผ่าน API สำเร็จ! เสถียร 100%")
-            
+            requests.put(url, headers=headers, json=data)
     except Exception as e:
         log_trade(f"⚠️ [API-SYNC ERROR] ไม่สามารถอัปโหลดข้อมูลได้: {e}")
 
@@ -506,7 +576,7 @@ def ag_learn_from_trade(sym, trade_type, pnl_pct):
 
 def process_symbol(sym, btc_bullish):
     try:
-        # 1. ดึงข้อมูล
+        # 1. ดึงข้อมูล 15m
         bars_15m = exchange.fetch_ohlcv(sym, timeframe=TIMEFRAME, limit=100)
         df_15m = pd.DataFrame(bars_15m, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
         df_15m = calculate_indicators(df_15m)
@@ -522,7 +592,6 @@ def process_symbol(sym, btc_bullish):
             clv = (current_price - current_low) / candle_range
             current_open = float(current_row['open'])
             uwr = (current_high - max(current_open, current_price)) / candle_range
-            # Close Location Value >= 0.65 และ Upper Wick Rejection <= 0.35 กรองไส้บนยาว (False Breakout)
             wyckoff_valid = (clv >= 0.65) and (uwr <= 0.35)
             
         rsi_14 = float(current_row['rsi'])
@@ -534,7 +603,7 @@ def process_symbol(sym, btc_bullish):
         avg_volume = float(df_15m['volume'].iloc[-11:-1].mean())
         current_volume = float(current_row['volume'])
 
-        # แคชข้อมูล 1h และ 4h ไว้นาน 5 นาที (300 วิ) เพื่อลดการคำนวณ Pandas ซ้ำซ้อนและลด CPU 70%
+        # แคชข้อมูล 1h และ 4h ไว้นาน 5 นาที (300 วิ) เพื่อประหยัด CPU 70%
         global _htf_cache
         if '_htf_cache' not in globals():
             _htf_cache = {}
@@ -566,24 +635,39 @@ def process_symbol(sym, btc_bullish):
         
         s = state[sym]
         is_cooling_down = s['cooldown_until'] and datetime.utcnow() < s['cooldown_until']
-        
-        # ตรวจสอบว่ามีเหรียญใดกำลังถือครองอยู่หรือไม่ (Single-Slot: 1 ไม้ทั้งพอร์ตสำหรับงบ 200 บาท)
         any_in_position = any(state[k]['in_position'] for k in SYMBOLS)
 
-        status_text = ""
+        # จัดเตรียมข้อมูลสำหรับตารางสรุป
+        pos_display = "⚪ FLAT"
+        status_display = "Scanning"
+        
         if is_cooling_down:
-            status_text = "🛑 COOLDOWN"
+            pos_display = "🛑 COOLDOWN"
+            status_display = "CircuitBrk"
         elif s['in_position']:
             pnl = ((current_price - s['entry_price']) / s['entry_price']) * 100
-            cur_pnl_usdt = (current_price - s['entry_price']) * s['position_size']
-            cur_pnl_thb = cur_pnl_usdt * 34.0
-            status_text = f"🟢 LIVE LONG | PnL: {pnl:+.2f}% ({cur_pnl_usdt:+.4f} USDT / {cur_pnl_thb:+.2f} บ.)"
+            pos_display = f"🟢 +{pnl:.2f}%" if pnl >= 0 else f"🔴 {pnl:.2f}%"
+            status_display = "BE-Locked" if s.get('be_set') else "Holding"
         elif any_in_position:
-            status_text = "WAITING (มีเหรียญอื่นถือครองอยู่ - โหมดสไนเปอร์ไม้เดี่ยว 200 บาท)"
+            status_display = "Standby"
         else:
-            status_text = f"WAITING ({eval_result['reason']})"
+            if "Breakout" in eval_result['reason']: status_display = "ReadyBuy"
+            elif "BTC" in eval_result['reason']: status_display = "WaitBTC"
+            elif "EMA200" in eval_result['reason']: status_display = "BelowEMA"
+            else: status_display = "Scanning"
 
-        log_status(f"🪙 [BINANCE] [{sym}] {current_price:.6f} | {status_text}")
+        price_str = f"${current_price:.6f}" if current_price < 1.0 else f"${current_price:,.2f}"
+        vol_ratio = eval_result.get('vol_ratio', 1.0)
+        
+        summary_row = {
+            'symbol': sym,
+            'price': price_str,
+            'rsi': f"{rsi_14:.1f}",
+            'adx': f"{adx_14:.1f}",
+            'vol': f"{vol_ratio:.2f}",
+            'pos': pos_display,
+            'status': status_display
+        }
 
         # 3. ตัดสินใจซื้อ (Single-Slot Sniper: เข้าได้เมื่อไม่มีเหรียญใดถือครองอยู่เลย)
         if not s['in_position'] and not is_cooling_down and not any_in_position:
@@ -591,7 +675,8 @@ def process_symbol(sym, btc_bullish):
                 # ปรึกษา Groq AI
                 is_ai_approved = ask_groq_ai_sentiment(sym, eval_result["reason"])
                 if not is_ai_approved:
-                    return # ข้ามการซื้อ
+                    return summary_row
+                
                 ticker = exchange.fetch_ticker(sym)
                 real_entry = float(ticker['last'])
                 raw_size = TRADE_AMOUNT_USDT / real_entry
@@ -614,14 +699,40 @@ def process_symbol(sym, btc_bullish):
                     s['in_position'] = True
                     s['be_set'] = False
                     
-                    # คำนวณ TP / SL จากราคาที่ซื้อได้จริง ณ วินาทีนั้น (แก้บั๊กตัวเลข SL ตามคำแนะนำ Spark)
                     s['tp'] = s['entry_price'] + (2.5 * atr_14)
                     s['sl'] = s['entry_price'] - (1.5 * atr_14)
                     save_state()
                     
                     invested_usdt = s['position_size'] * s['entry_price']
                     invested_thb = invested_usdt * 34.0
-                    log_trade(f"🟢 [BUY {sym}] ซื้อ {size} @ ${s['entry_price']:.6f} | ทุนที่ลง: ${invested_usdt:.2f} USDT (~{invested_thb:.1f} บาท) | TP: ${s['tp']:.6f} | SL: ${s['sl']:.6f}")
+                    
+                    # แสดงกรอบเน้นสไตล์ Quant Terminal
+                    print_highlight_box(
+                        f"BUY ORDER EXECUTED - {sym}",
+                        [
+                            ("Exchange / Mode", "Binance Testnet (Sandbox Demo)"),
+                            ("Symbol", sym),
+                            ("Entry Price", f"${s['entry_price']:.6f}"),
+                            ("Size", f"{size} (~${invested_usdt:.2f} USDT / {invested_thb:.1f} บาท)"),
+                            ("Take Profit (TP)", f"${s['tp']:.6f} (+2.5 ATR)"),
+                            ("Stop Loss (SL)", f"${s['sl']:.6f} (-1.5 ATR)"),
+                            ("Strategy Reason", eval_result['reason'])
+                        ],
+                        icon="🟢"
+                    )
+                    
+                    # ส่งแจ้งเตือน LINE
+                    if notifier:
+                        try:
+                            notifier.notify_buy(
+                                "Binance", sym, s['entry_price'], size, s['tp'], s['sl'],
+                                eval_result['reason'], f"ทุน: ${invested_usdt:.2f} USDT (~{invested_thb:.1f} บาท)"
+                            )
+                        except Exception:
+                            pass
+
+                    summary_row['pos'] = "🟢 LONG (+0.00%)"
+                    summary_row['status'] = "Holding"
                 except Exception as e:
                     log_trade(f"❌ [BUY ERROR {sym}] {e}")
 
@@ -634,65 +745,60 @@ def process_symbol(sym, btc_bullish):
                 s['sl'] = s['entry_price'] * 1.0005
                 s['be_set'] = True
                 save_state()
-                log_trade(f"🛡️ [AUTO-BREAKEVEN {sym}] กำไรแตะ +{pnl_percent*100:.2f}% แล้ว! ขยับ SL ล็อกต้นทุนที่ ${s['sl']:.6f}")
+                print_highlight_box(
+                    f"AUTO-BREAKEVEN ACTIVATED - {sym}",
+                    [
+                        ("Current Price", f"${current_price:.6f}"),
+                        ("Profit Reached", f"+{pnl_percent*100:.2f}% (Threshold: +0.40%)"),
+                        ("New Stop Loss", f"${s['sl']:.6f} (Locked +0.05% with Fee Buffer)")
+                    ],
+                    icon="🛡️"
+                )
+                if notifier:
+                    try:
+                        notifier.notify_breakeven("Binance", sym, current_price, s['sl'], pnl_percent * 100)
+                    except Exception:
+                        pass
 
-            # Trailing Stop สำหรับกำไรก้อนใหญ่ (+1.5% ขึ้นไป)
-            if pnl_percent >= 0.015:
+            # Dynamic Trailing Run: ทะลุเป้า TP เก่าแล้ว ให้ Let Profit Run!
+            if current_price >= s['tp']:
+                s['tp'] = current_price * 1.5
+                new_sl = current_price - (1.0 * atr_14)
+                if new_sl > s['sl']:
+                    s['sl'] = new_sl
+                    s['be_set'] = True
+                save_state()
+                print_highlight_box(
+                    f"DYNAMIC TRAILING RUN - {sym}",
+                    [
+                        ("Current Price", f"${current_price:.6f}"),
+                        ("Target TP Exp", "Expanded to 1.5x (Let Profit Run)"),
+                        ("Trailing SL", f"${s['sl']:.6f} (Trailing 1.0 ATR Behind)")
+                    ],
+                    icon="🚀"
+                )
+                if notifier:
+                    try:
+                        notifier.notify_trailing("Binance", sym, current_price, s['sl'], pnl_percent * 100)
+                    except Exception:
+                        pass
+
+            # Trailing Stop ปกติสำหรับกำไรก้อนใหญ่ (+1.5% ขึ้นไป)
+            elif pnl_percent >= 0.015:
                 trailing_sl = current_price * 0.99
                 if trailing_sl > s['sl']:
                     s['sl'] = trailing_sl
                     s['be_set'] = True
                     save_state()
                     log_trade(f"🛡️ [TRAILING STOP {sym}] ขยับ SL ตามกำไรไปที่ ${s['sl']:.6f}")
-                    
-            # 🚀 Dynamic Trailing TP (Let Profit Run)
-            if current_price >= s['tp']:
-                # ทะลุเป้า TP แล้ว ไม่ขาย! เปลี่ยนเป้า TP ให้สูงขึ้นไปเรื่อยๆ ไม่มีที่สิ้นสุด
-                # และขยับเส้น SL ขึ้นมาจี้ตูดห่าง 1.0 ATR
-                s['tp'] = current_price * 1.5 # ขยับหนีไปไกลๆ 
-                new_sl = current_price - (1.0 * atr_14)
-                if new_sl > s['sl']:
-                    s['sl'] = new_sl
-                    s['be_set'] = True
-                save_state()
-                log_trade(f"🚀 [TRAILING RUN {sym}] ทะลุเป้า TP เก่าแล้ว! ไม่ขายหมู ขยับ SL ตามมาจี้ที่ ${s['sl']:.6f}")
+                    if notifier:
+                        try:
+                            notifier.notify_trailing("Binance", sym, current_price, s['sl'], pnl_percent * 100)
+                        except Exception:
+                            pass
 
-            # ปิดเมื่อชน SL (ตอนนี้ SL เป็นทั้งจุดตัดขาดทุนและจุด Take Profit เวลาวิ่งรันเทรนด์)
-            if False: # Disable the old TP trigger
-                try:
-                    base_coin = sym.split('/')[0]
-                    free_bal = exchange.fetch_free_balance().get(base_coin, 0)
-                    sell_size = min(s['position_size'], free_bal) if free_bal > 0 else s['position_size']
-                    try:
-                        sell_size = float(exchange.amount_to_precision(sym, sell_size))
-                    except Exception:
-                        pass
-                    
-                    order = exchange.create_market_sell_order(sym, sell_size)
-                    avg_price = order.get('average')
-                    if avg_price is None: avg_price = order.get('price')
-                    if avg_price is None: avg_price = current_price
-                    exit_price = float(avg_price)
-                    real_pnl_pct = (exit_price - s['entry_price']) / s['entry_price']
-                    
-                    invested_usdt = s['position_size'] * s['entry_price']
-                    received_usdt = sell_size * exit_price
-                    net_pnl_usdt = received_usdt - invested_usdt
-                    net_pnl_thb = net_pnl_usdt * 34.0
-                    
-                    s['in_position'] = False
-                    s['consecutive_losses'] = 0
-                    save_state()
-                    memory[sym]["total_trades"] += 1
-                    memory[sym]["wins"] += 1
-
-                    lesson = ag_learn_from_trade(sym, "WIN", real_pnl_pct * 100)
-                    log_trade(f"🎯 [TP SUCCESS {sym}] ปิดกำไรที่ ${exit_price:.6f} | ทุน: ${invested_usdt:.2f} ➡️ ได้รับ: ${received_usdt:.2f} USDT | กำไรสุทธิ: +${net_pnl_usdt:.4f} USDT (+{net_pnl_thb:.2f} บาท / +{real_pnl_pct*100:.2f}%) | {lesson}")
-                    sync_data_to_github()
-                except Exception as e:
-                    log_trade(f"❌ [TP ERROR {sym}] {e}")
-
-            elif current_price <= s['sl']:
+            # ปิดออเดอร์เมื่อราคาตัดต่ำกว่าเส้น Stop Loss (รวมทั้ง SL ตัดขาดทุน และ SL ล็อกกำไร)
+            if current_price <= s['sl']:
                 try:
                     base_coin = sym.split('/')[0]
                     free_bal = exchange.fetch_free_balance().get(base_coin, 0)
@@ -718,8 +824,27 @@ def process_symbol(sym, btc_bullish):
                     memory[sym]["total_trades"] += 1
 
                     if s['be_set'] and real_pnl_pct >= 0:
-                        log_trade(f"🛡️ [SL-BREAKEVEN {sym}] ปิดเสมอตัวที่ ${exit_price:.6f} | ทุน: ${invested_usdt:.2f} ➡️ ได้รับ: ${received_usdt:.2f} USDT | ผลตอบแทน: {net_pnl_usdt:+.4f} USDT ({net_pnl_thb:+.2f} บาท / +{real_pnl_pct*100:.2f}%)")
+                        # ปิดแบบเสมอตัวหรือกำไร Breakeven/Trailing
+                        s['consecutive_losses'] = 0
+                        memory[sym]["wins"] += 1
+                        lesson = ag_learn_from_trade(sym, "WIN", real_pnl_pct * 100)
+                        print_highlight_box(
+                            f"SL-BREAKEVEN CLOSED - {sym}",
+                            [
+                                ("Exit Price", f"${exit_price:.6f}"),
+                                ("Net Return", f"{real_pnl_pct*100:+.2f}%"),
+                                ("Net Profit", f"{net_pnl_usdt:+.4f} USDT ({net_pnl_thb:+.2f} บาท)"),
+                                ("Status", "🔒 ล็อกทุนสำเร็จ ไม่ขาดทุน")
+                            ],
+                            icon="🛡️"
+                        )
+                        if notifier:
+                            try:
+                                notifier.notify_sl("Binance", sym, exit_price, real_pnl_pct * 100, net_pnl_usdt, "USDT", is_breakeven=True, lesson=lesson)
+                            except Exception:
+                                pass
                     else:
+                        # ขาดทุน Stop Loss
                         memory[sym]["losses"] += 1
                         s['consecutive_losses'] += 1
 
@@ -728,23 +853,50 @@ def process_symbol(sym, btc_bullish):
                             log_trade(f"🚨 [CIRCUIT BREAKER {sym}] ขาดทุนติด 2 ครั้ง พัก 4 ชม.")
 
                         lesson = ag_learn_from_trade(sym, "LOSS", real_pnl_pct * 100)
-                        log_trade(f"🛑 [SL SUCCESS {sym}] คัทลอสที่ ${exit_price:.6f} | ทุน: ${invested_usdt:.2f} ➡️ เหลือ: ${received_usdt:.2f} USDT | ขาดทุนสุทธิ: -${abs(net_pnl_usdt):.4f} USDT ({net_pnl_thb:.2f} บาท / {real_pnl_pct*100:.2f}%) | {lesson}")
+                        print_highlight_box(
+                            f"STOP LOSS CUT - {sym}",
+                            [
+                                ("Exit Price", f"${exit_price:.6f}"),
+                                ("Net Return", f"{real_pnl_pct*100:.2f}%"),
+                                ("Net Loss", f"-${abs(net_pnl_usdt):.4f} USDT ({net_pnl_thb:.2f} บาท)"),
+                                ("AI Reflection", lesson)
+                            ],
+                            icon="🛑"
+                        )
+                        if notifier:
+                            try:
+                                notifier.notify_sl("Binance", sym, exit_price, real_pnl_pct * 100, net_pnl_usdt, "USDT", is_breakeven=False, lesson=lesson)
+                            except Exception:
+                                pass
+
                     save_state()
                     sync_data_to_github()
                 except Exception as e:
-                    log_trade(f"❌ [SL ERROR {sym}] {e}")
+                    log_trade(f"❌ [EXIT ERROR {sym}] {e}")
+
+        return summary_row
 
     except Exception as e:
         log_trade(f"⚠️ Error {sym}: {e}")
+        return {
+            'symbol': sym,
+            'price': "N/A",
+            'rsi': "N/A",
+            'adx': "N/A",
+            'vol': "N/A",
+            'pos': "ERROR",
+            'status': "ErrFetch"
+        }
 
 # ==========================================
 # 🚀 MAIN LOOP
 # ==========================================
 if __name__ == '__main__':
-    log_trade("🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN บน Binance Testnet")
+    start_usdt = connect_and_check_balance()
+    log_trade(f"🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: ${start_usdt:.2f} USDT)")
     log_trade(f"🪙 เหรียญที่เฝ้าเทรด: {', '.join(SYMBOLS)}")
 
-    last_github_sync = 0 # ตั้งค่าเป็น 0 เพื่อบังคับให้อัปโหลดทันทีในรอบแรก
+    last_github_sync = 0
     while True:
         check_for_updates()
         
@@ -755,11 +907,7 @@ if __name__ == '__main__':
             sync_data_to_github()
             last_github_sync = now
         
-        log_status("\n" + "="*50)
-        log_status(f"🕒 สแกนตลาดเวลา: {get_thai_time()}")
-        
-        # 🛡️ เช็คสถานะ 1h EMA200 ของพี่ใหญ่ BTC เพื่อเป็น Gatekeeper ให้ Altcoins
-        # แคชสถานะพี่ใหญ่ BTC ไว้นาน 3 นาที ลด CPU
+        # 🛡️ เช็คสถานะ 1h EMA200 ของพี่ใหญ่ BTC เพื่อเป็น Gatekeeper ให้ Altcoins (แคช 3 นาทีเพื่อ Low-CPU)
         global _btc_cache
         if '_btc_cache' not in globals():
             _btc_cache = {'bullish': False, 'ts': 0}
@@ -778,10 +926,14 @@ if __name__ == '__main__':
             except Exception:
                 btc_bullish = False
             
+        scan_results = []
         for sym in SYMBOLS:
-            process_symbol(sym, btc_bullish)
-            time.sleep(2) # กันโดนแบน API Rate Limit ระหว่างดึงเหรียญ
+            res = process_symbol(sym, btc_bullish)
+            if res:
+                scan_results.append(res)
+            time.sleep(2) # ป้องกัน API Rate Limit
             
-        log_status("="*50)
+        # พิมพ์ตารางสถานะเหรียญแบบ Quant Terminal รวมในที่เดียว ไม่สแปมซ้ำซ้อน
+        print_quant_table(get_thai_time(), btc_bullish, scan_results)
         trim_status_log_if_needed()
-        time.sleep(75) # พัก 75 วินาที ลดภาระ CPU ของเซิร์ฟเวอร์
+        time.sleep(75) # พัก 75 วินาทีเพื่อ Low-CPU 100%

@@ -10,6 +10,17 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ==========================================
+# 🔔 NOTIFICATION MODULE INTEGRATION
+# ==========================================
+try:
+    import notifier
+except ImportError:
+    try:
+        from trand import notifier
+    except ImportError:
+        notifier = None
+
+# ==========================================
 # ⚙️ SUPERVISOR CONFIGURATION
 # ==========================================
 BINANCE_SCRIPT = "main_binance.py"
@@ -18,6 +29,7 @@ DASHBOARD_SCRIPT = "dashboard.py"
 MT5_SCRIPT = "main_mt5.py"
 SUPERVISOR_LOG = "supervisor_log.txt"
 CONSOLE_LOG_FILE = "console_log.txt"
+STATUS_LOG_FILE = "status_log.txt"
 
 ENABLE_DERIV = os.getenv("ENABLE_DERIV", "true").lower() in ("true", "1", "yes")
 ENABLE_MT5 = os.getenv("ENABLE_MT5", "false").lower() in ("true", "1", "yes")
@@ -66,13 +78,6 @@ def log_supervisor(text):
 # ==========================================
 last_update_check = 0
 
-# บังคับอัปเดตไฟล์ทุกครั้งที่รัน (แก้ปัญหา git reset ค้าง)
-try:
-    subprocess.run(["git", "fetch", "origin", "main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    subprocess.run(["git", "reset", "--hard", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-except Exception:
-    pass
-
 def check_for_updates():
     global last_update_check
     now = time.time()
@@ -85,7 +90,7 @@ def check_for_updates():
         status = subprocess.run(["git", "status", "-uno"], capture_output=True, text=True)
         if "Your branch is behind" in status.stdout:
             diff = subprocess.run(["git", "diff", "--name-only", "HEAD", "origin/main"], capture_output=True, text=True)
-            core_files = ["main.py", "main_binance.py", "main_forex.py", "dashboard.py", "requirements.txt"]
+            core_files = ["main.py", "main_binance.py", "main_forex.py", "dashboard.py", "requirements.txt", "notifier.py"]
             if any(cf in diff.stdout for cf in core_files):
                 log_supervisor("🔄 [AUTO-PATCH] พบการอัปเดตโค้ดหลักใน GitHub! กำลังอัปเดตและรีสตาร์ทระบบ...")
                 req_changed = "requirements.txt" in diff.stdout
@@ -97,7 +102,6 @@ def check_for_updates():
                         pip_cmd = [sys.executable, "-m", "pip", "install", "-U", "--prefix", ".local", "-r", "requirements.txt"]
                     subprocess.run(pip_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 time.sleep(2)
-                # หยุด worker เก่าทั้งหมด และปล่อยให้ Pterodactyl รีสตาร์ทคอนเทนเนอร์ใหม่แทน
                 stop_all_workers()
             else:
                 subprocess.run(["git", "reset", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -111,7 +115,7 @@ GDRIVE_WEBHOOK_URL = os.getenv("GDRIVE_WEBHOOK_URL")
 last_gdrive_sync = 0
 
 def sync_to_gdrive():
-    """ส่ง Console Log สด 100% ขึ้น Google Drive ทุก 1 นาที"""
+    """ส่ง Console Log สด 100% ขึ้น Google Drive ทุก 1 นาที พร้อมอัปเดต status_log.txt"""
     global last_gdrive_sync
     if not GDRIVE_WEBHOOK_URL or "your_" in GDRIVE_WEBHOOK_URL:
         return
@@ -130,7 +134,7 @@ def sync_to_gdrive():
                 try:
                     with open(CONSOLE_LOG_FILE, "r", encoding="utf-8", errors="replace") as f:
                         lines = f.readlines()
-                    console_content = "".join(lines[-250:]) if len(lines) > 250 else "".join(lines)
+                    console_content = "".join(lines[-300:]) if len(lines) > 300 else "".join(lines)
                 except Exception:
                     pass
         
@@ -138,20 +142,28 @@ def sync_to_gdrive():
             console_content = "กำลังรอรวบรวมข้อมูล Console Log..."
 
         full_content = (
-            f"{'=' * 65}\n"
-            f"🏛️ AG 2.0 DUAL-ENGINE LIVE CONSOLE LOG (ALL OUTPUT)\n"
+            f"{'═' * 70}\n"
+            f"🏛️ AG 2.0 DUAL-ENGINE LIVE QUANT TERMINAL LOG (ALL CONSOLE OUTPUT)\n"
             f"🕒 อัปเดตล่าสุด: {thai_now} (เวลาไทย - ซิงค์ทุก 1 นาที)\n"
-            f"{'=' * 65}\n\n"
+            f"{'═' * 70}\n\n"
             f"{console_content}"
         )
+
+        # บันทึกทับ status_log.txt บนเครื่องท้องถิ่นด้วย
+        try:
+            with open(STATUS_LOG_FILE, "w", encoding="utf-8") as f:
+                f.write(full_content)
+        except Exception:
+            pass
         
-        # 1. ส่งไฟล์ console_log.txt
+        # 1. ส่งไฟล์ console_log.txt ไปยัง Google Drive Webhook
         resp = requests.post(
             GDRIVE_WEBHOOK_URL,
             json={"filename": "console_log.txt", "content": full_content},
             timeout=15
         )
-        # 2. ส่งทับ status_log.txt ด้วย เพื่อให้ไฟล์เดิมที่เปิดไว้ใน Google Drive อัปเดตทันที
+        
+        # 2. ส่งทับ status_log.txt ด้วย เพื่อให้ไฟล์เดิมที่เปิดไว้ใน Google Drive อัปเดตสดทันที
         try:
             requests.post(
                 GDRIVE_WEBHOOK_URL,
@@ -162,7 +174,7 @@ def sync_to_gdrive():
             pass
 
         if resp.status_code == 200:
-            log_supervisor("☁️ [GDRIVE-SYNC] อัปเดต Console Log ทั้งหมดขึ้น Google Drive สำเร็จ!")
+            log_supervisor("☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!")
     except Exception as e:
         log_supervisor(f"⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: {e}")
 
@@ -172,7 +184,7 @@ def sync_to_gdrive():
 processes = {}
 
 def stream_worker_output(name, proc):
-    """อ่าน output จาก process ลูกแบบเรียลไทม์: พิมพ์ออกหน้าจอ Wispbyte + บันทึกใส่ console_log.txt"""
+    """อ่าน output จาก process ลูกแบบเรียลไทม์: พิมพ์ออกหน้าจอ + บันทึกใส่ console_log.txt"""
     try:
         for line in iter(proc.stdout.readline, ''):
             if not line:
@@ -191,7 +203,6 @@ def stream_worker_output(name, proc):
 def start_worker(name, script_path):
     log_supervisor(f"🚀 กำลังเปิดการทำงาน: {name} ({script_path})...")
     try:
-        # เปิด process ลูกในโหมด unbuffered (-u) พร้อมดักจับ stdout และ stderr รวมกัน
         proc = subprocess.Popen(
             [sys.executable, "-u", script_path],
             stdout=subprocess.PIPE,
@@ -233,7 +244,6 @@ def stop_all_workers(signum=None, frame=None):
     log_supervisor("👋 ระบบ Supervisor ปิดตัวเองเรียบร้อย")
     sys.exit(0)
 
-# ดักจับสัญญาณปิดโปรแกรม (Ctrl+C หรือ Docker stop)
 signal.signal(signal.SIGINT, stop_all_workers)
 signal.signal(signal.SIGTERM, stop_all_workers)
 
@@ -245,7 +255,6 @@ def monitor_workers():
             now = time.time()
             log_supervisor(f"🚨 [ALERT] {name} หยุดทำงานผิดปกติ! (Exit Code: {exit_code})")
             
-            # ตรวจสอบความถี่ในการรีสตาร์ท (กันลูปแครชรัวๆ)
             if now - item['last_restart'] < 10:
                 log_supervisor(f"⏳ {name} แครชไวเกินไป พัก 10 วินาทีก่อนเปิดใหม่...")
                 time.sleep(10)
@@ -270,18 +279,33 @@ def monitor_workers():
 # 👑 MAIN ENTRY POINT
 # ==========================================
 if __name__ == '__main__':
-    log_supervisor("=" * 60)
-    log_supervisor("🏛️ AG 2.0 DUAL-ENGINE SUPERVISOR STARTING")
-    log_supervisor("=" * 60)
+    banner_lines = [
+        "╔══════════════════════════════════════════════════════════════════════════════════╗",
+        "║  🏛️ AG 2.0 QUANT TERMINAL | DUAL-ENGINE SUPERVISOR (QUANT SHIELD)                 ║",
+        "║  ⚡ Binance Engine : Spot Sandbox Testnet (100% Demo / Training)                 ║",
+        "║  ⚡ Deriv Engine   : Forex Demo Account (DOT94482469 - 100% No Real Money)       ║",
+        "║  📡 Console Logger : Streamed to console_log.txt & synced as status_log.txt      ║",
+        "║  🔔 LINE Notify    : Active for BUY, TP, SL, Breakeven & Trailing Run             ║",
+        "╚══════════════════════════════════════════════════════════════════════════════════╝"
+    ]
+    for b in banner_lines:
+        log_supervisor(b)
     log_supervisor(f"📂 ไดเรกทอรีทำงาน: {os.getcwd()}")
     
+    # ส่งแจ้งเตือนเริ่มต้นระบบ
+    if notifier:
+        try:
+            notifier.notify_system("AG 2.0 Supervisor", "🚀 เริ่มต้นระบบ Dual-Engine (Binance Testnet Sandbox + Deriv Demo DOT94482469)")
+        except Exception:
+            pass
+
     # 1. เริ่มต้น Binance Engine
     if os.path.exists(BINANCE_SCRIPT):
         start_worker("BinanceEngine", BINANCE_SCRIPT)
     else:
         log_supervisor(f"❌ ไม่พบไฟล์ {BINANCE_SCRIPT}!")
 
-    # 2. เริ่มต้น Deriv Forex Engine (100% Free Cloud API)
+    # 2. เริ่มต้น Deriv Forex Engine (Demo DOT94482469)
     if ENABLE_DERIV:
         if os.path.exists(FOREX_SCRIPT):
             start_worker("DerivForexEngine", FOREX_SCRIPT)
