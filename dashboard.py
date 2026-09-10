@@ -41,18 +41,69 @@ HTML_PAGE = """<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AG 2.0 Live Quant Terminal</title>
     <style>
+        /* Base / PowerShell Dark Theme (ขาว-ดำ / Charcoal) - ค่าเริ่มต้น */
         :root {
+            --bg-color: #0c0c0c;
+            --panel-bg: #161b22;
+            --terminal-bg: #0d1117;
+            --border-color: #30363d;
+            --text-primary: #58a6ff;
+            --text-terminal: #f0f6fc; /* ขาวสว่าง คมชัด ไม่แสบตา */
+            --prompt-symbol-color: #58a6ff;
+            --text-dim: #8b949e;
+            --accent-btn: #238636;
+            --accent-btn-hover: #2ea043;
+            --input-bg: #010409;
+            --input-text: #ffffff;
+            --danger: #f85149;
+        }
+
+        /* ธีม: PowerShell Classic (น้ำเงินเข้ม-ขาว แบบ Windows PowerShell) */
+        body.theme-powershell-blue {
+            --bg-color: #011638;
+            --panel-bg: #011e4d;
+            --terminal-bg: #012456; /* น้ำเงินเข้มเอกลักษณ์ของ PowerShell */
+            --border-color: #1a3c74;
+            --text-primary: #90caf9;
+            --text-terminal: #ffffff; /* ขาวบริสุทธิ์ */
+            --prompt-symbol-color: #e5c07b;
+            --text-dim: #90a4ae;
+            --accent-btn: #0969da;
+            --accent-btn-hover: #1f6feb;
+            --input-bg: #011a3d;
+            --input-text: #ffffff;
+        }
+
+        /* ธีม: Pure Black & White (ดำสนิท-ขาว เรียบหรู) */
+        body.theme-true-black {
+            --bg-color: #000000;
+            --panel-bg: #111111;
+            --terminal-bg: #000000;
+            --border-color: #262626;
+            --text-primary: #ffffff;
+            --text-terminal: #ffffff;
+            --prompt-symbol-color: #ffffff;
+            --text-dim: #777777;
+            --accent-btn: #2b2b2b;
+            --accent-btn-hover: #444444;
+            --input-bg: #0a0a0a;
+            --input-text: #ffffff;
+        }
+
+        /* ธีม: Matrix Green (เขียวเดิม สำหรับคนที่ชอบ) */
+        body.theme-matrix {
             --bg-color: #0d1117;
             --panel-bg: #161b22;
             --terminal-bg: #010409;
             --border-color: #30363d;
             --text-primary: #58a6ff;
             --text-terminal: #39ff14;
+            --prompt-symbol-color: #39ff14;
             --text-dim: #8b949e;
-            --accent-green: #238636;
-            --accent-green-hover: #2ea043;
-            --accent-blue: #1f6feb;
-            --danger: #f85149;
+            --accent-btn: #238636;
+            --accent-btn-hover: #2ea043;
+            --input-bg: #010409;
+            --input-text: #ffffff;
         }
 
         * {
@@ -69,6 +120,7 @@ HTML_PAGE = """<!DOCTYPE html>
             display: flex;
             flex-direction: column;
             padding: 12px;
+            transition: background-color 0.2s;
         }
 
         /* Top Header */
@@ -134,13 +186,15 @@ HTML_PAGE = """<!DOCTYPE html>
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 14px;
-            background: #090d13;
+            padding: 7px 14px;
+            background: var(--panel-bg);
             border-left: 1px solid var(--border-color);
             border-right: 1px solid var(--border-color);
-            border-bottom: 1px solid #21262d;
-            font-size: 0.8em;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.82em;
             color: var(--text-dim);
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .controls-bar label {
@@ -151,12 +205,30 @@ HTML_PAGE = """<!DOCTYPE html>
             user-select: none;
         }
 
+        .theme-selector {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .theme-selector select {
+            background: var(--input-bg);
+            color: var(--text-terminal);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 3px 8px;
+            font-size: 0.9em;
+            font-family: inherit;
+            cursor: pointer;
+            outline: none;
+        }
+
         /* Live Console Screen */
         .console-container {
             flex: 1;
             display: flex;
             flex-direction: column;
-            min-height: 480px;
+            min-height: 520px;
             background: var(--terminal-bg);
             border-left: 1px solid var(--border-color);
             border-right: 1px solid var(--border-color);
@@ -168,9 +240,9 @@ HTML_PAGE = """<!DOCTYPE html>
             padding: 16px;
             color: var(--text-terminal);
             background: var(--terminal-bg);
-            font-family: 'SF Mono', 'Cascadia Code', Menlo, Monaco, Consolas, 'Courier New', monospace;
+            font-family: 'SF Mono', 'Cascadia Code', Consolas, 'Courier New', Menlo, Monaco, monospace;
             font-size: 0.9em;
-            line-height: 1.45;
+            line-height: 1.48;
             white-space: pre-wrap;
             word-break: break-all;
             overflow-y: auto;
@@ -182,14 +254,14 @@ HTML_PAGE = """<!DOCTYPE html>
             width: 8px;
         }
         pre#consoleOutput::-webkit-scrollbar-track {
-            background: #010409;
+            background: var(--terminal-bg);
         }
         pre#consoleOutput::-webkit-scrollbar-thumb {
-            background: #30363d;
+            background: var(--border-color);
             border-radius: 4px;
         }
         pre#consoleOutput::-webkit-scrollbar-thumb:hover {
-            background: #58a6ff;
+            background: var(--text-primary);
         }
 
         /* Command Input Section */
@@ -211,18 +283,19 @@ HTML_PAGE = """<!DOCTYPE html>
         }
 
         .prompt-symbol {
-            color: var(--text-terminal);
-            font-family: monospace;
-            font-size: 1.15em;
+            color: var(--prompt-symbol-color);
+            font-family: 'SF Mono', Monaco, Consolas, monospace;
+            font-size: 1.05em;
             font-weight: bold;
             padding-left: 4px;
+            white-space: nowrap;
         }
 
         input#cmdInput {
             flex: 1;
             padding: 10px 14px;
-            background: #010409;
-            color: #ffffff;
+            background: var(--input-bg);
+            color: var(--input-text);
             border: 1px solid var(--border-color);
             border-radius: 6px;
             font-family: 'SF Mono', Monaco, Consolas, monospace;
@@ -250,12 +323,12 @@ HTML_PAGE = """<!DOCTYPE html>
         }
 
         .btn-run {
-            background: var(--accent-green);
+            background: var(--accent-btn);
             color: #ffffff;
         }
 
         .btn-run:hover {
-            background: var(--accent-green-hover);
+            opacity: 0.9;
         }
 
         .btn-clear {
@@ -296,8 +369,8 @@ HTML_PAGE = """<!DOCTYPE html>
     <header>
         <div class="header-title">
             <span>⚡ AG 2.0 QUANT TERMINAL</span>
-            <span style="color: #30363d;">|</span>
-            <span style="color: #8b949e; font-size: 0.85em;">Wispbyte Live Stream</span>
+            <span style="color: var(--border-color);">|</span>
+            <span style="color: var(--text-dim); font-size: 0.85em;">Wispbyte Live Stream</span>
         </div>
         <div class="header-status">
             <span class="badge badge-live">
@@ -309,10 +382,16 @@ HTML_PAGE = """<!DOCTYPE html>
     </header>
 
     <div class="controls-bar">
-        <div>
-            <span>📍 Auto-poll ทุก 2 วินาที (Zero Page Reload 100%)</span>
+        <div class="theme-selector">
+            <span>🎨 ธีมสี:</span>
+            <select id="themeSelect" onchange="applyTheme(this.value)">
+                <option value="powershell-dark">⚪ PowerShell Dark (ขาว-ดำ / Charcoal)</option>
+                <option value="powershell-blue">🔷 PowerShell Classic (น้ำเงินเข้ม-ขาว)</option>
+                <option value="true-black">⬛ Pure Black & White (ดำสนิท-ขาวโอโม)</option>
+                <option value="matrix">🟢 Matrix Green (เขียวเดิม)</option>
+            </select>
         </div>
-        <div style="display: flex; gap: 16px;">
+        <div style="display: flex; gap: 16px; align-items: center;">
             <label>
                 <input type="checkbox" id="chkAutoScroll" checked>
                 <span>Auto-Scroll ด้านล่างสุด</span>
@@ -327,13 +406,13 @@ HTML_PAGE = """<!DOCTYPE html>
 
     <div class="command-wrapper">
         <form id="cmdForm" onsubmit="handleCommandSubmit(event)">
-            <span class="prompt-symbol">$</span>
+            <span class="prompt-symbol" id="promptText">PS &gt;</span>
             <input type="text" id="cmdInput" placeholder="พิมพ์คำสั่ง Linux เช่น ls -la, ps aux, git status (กด Enter เพื่อรัน)..." autocomplete="off" spellcheck="false">
             <button type="submit" class="btn btn-run" id="btnRun">Execute</button>
             <button type="button" class="btn btn-clear" onclick="clearConsole()">Clear Screen</button>
         </form>
         <div class="cmd-status" id="cmdStatus">
-            <span>พร้อมรับคำสั่ง (สามารถกดลูกศร ↑ / ↓ เพื่อดูประวัติคำสั่งได้)</span>
+            <span>พร้อมรับคำสั่ง (กดลูกศร ↑ / ↓ เพื่อดูประวัติคำสั่งที่เคยพิมพ์ได้)</span>
         </div>
     </div>
 
@@ -344,17 +423,42 @@ HTML_PAGE = """<!DOCTYPE html>
         const chkAutoScroll = document.getElementById('chkAutoScroll');
         const lastSyncTimeEl = document.getElementById('lastSyncTime');
         const btnRun = document.getElementById('btnRun');
+        const themeSelect = document.getElementById('themeSelect');
+        const promptText = document.getElementById('promptText');
 
         let isFirstLoad = true;
         let isUserScrolling = false;
         let cmdHistory = [];
         let historyIndex = -1;
 
+        // จัดการเปลี่ยนและบันทึก Theme ลง LocalStorage
+        function applyTheme(theme) {
+            document.body.className = '';
+            if (theme === 'powershell-blue') {
+                document.body.classList.add('theme-powershell-blue');
+                promptText.textContent = 'PS C:\\> ';
+            } else if (theme === 'true-black') {
+                document.body.classList.add('theme-true-black');
+                promptText.textContent = '$ ';
+            } else if (theme === 'matrix') {
+                document.body.classList.add('theme-matrix');
+                promptText.textContent = '$ ';
+            } else {
+                // powershell-dark (ขาว-ดำ / Charcoal)
+                promptText.textContent = 'PS > ';
+            }
+            themeSelect.value = theme;
+            localStorage.setItem('ag_terminal_theme', theme);
+        }
+
+        // โหลดธีมที่เคยเลือกไว้ (เริ่มต้นที่ powershell-dark ขาว-ดำ)
+        const savedTheme = localStorage.getItem('ag_terminal_theme') || 'powershell-dark';
+        applyTheme(savedTheme);
+
         // ตรวจจับการเลื่อน Scroll เพื่อปิด Auto-Scroll ชั่วคราวหากผู้ใช้เลื่อนขึ้นไปอ่านข้อความเก่า
         consoleEl.addEventListener('scroll', () => {
             const isNearBottom = consoleEl.scrollHeight - consoleEl.scrollTop - consoleEl.clientHeight < 60;
             if (!isNearBottom && chkAutoScroll.checked) {
-                // ผู้ใช้กำลังเลื่อนดูข้อความข้างบน
                 isUserScrolling = true;
             } else if (isNearBottom) {
                 isUserScrolling = false;
@@ -374,11 +478,9 @@ HTML_PAGE = """<!DOCTYPE html>
                 if (res.ok) {
                     const text = await res.text();
                     
-                    // ป้องกันการกระตุกถ้าข้อความเหมือนเดิม
                     if (consoleEl.textContent !== text) {
                         consoleEl.textContent = text;
                         
-                        // เลื่อนลงล่างสุดเฉพาะเมื่อเปิด Auto-Scroll และผู้ใช้ไม่ได้เลื่อนอ่านข้อความเก่า
                         if (isFirstLoad || (chkAutoScroll.checked && !isUserScrolling)) {
                             consoleEl.scrollTop = consoleEl.scrollHeight;
                             isFirstLoad = false;
@@ -403,7 +505,6 @@ HTML_PAGE = """<!DOCTYPE html>
             const cmd = cmdInput.value.trim();
             if (!cmd) return;
 
-            // บันทึกประวัติคำสั่ง
             cmdHistory.push(cmd);
             historyIndex = cmdHistory.length;
 
@@ -411,7 +512,6 @@ HTML_PAGE = """<!DOCTYPE html>
             cmdStatus.textContent = '⏳ กำลังส่งและรันคำสั่ง: ' + cmd + '...';
             btnRun.disabled = true;
 
-            // แสดงคำสั่งบน Console ทันทีเพื่อความรู้สึกแบบ Real Terminal
             consoleEl.textContent += `\\n[WEB-TERMINAL] $ ${cmd}\\n`;
             if (chkAutoScroll.checked) consoleEl.scrollTop = consoleEl.scrollHeight;
 
@@ -504,7 +604,6 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
                 post_data = self.rfile.read(content_length).decode('utf-8')
                 
                 cmd = ""
-                # รองรับทั้ง JSON payload และ x-www-form-urlencoded
                 try:
                     data = json.loads(post_data)
                     cmd = data.get('cmd', '').strip()
@@ -534,7 +633,6 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
                 if not output.strip():
                     output = "(คำสั่งทำงานสำเร็จ รหัส Exit Code: 0)"
 
-                # บันทึกคำสั่งและผลลัพธ์ลง console_log.txt อัตโนมัติ เพื่อให้ซิงค์ขึ้น GDrive
                 formatted_log = (
                     f"\n[{get_thai_time()}] [WEB-TERMINAL-EXEC] $ {cmd} (ใช้เวลา {elapsed:.2f}s)\n"
                     f"{output.strip()}\n"
@@ -566,7 +664,6 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(json.dumps(data, ensure_ascii=False).encode("utf-8"))
 
     def log_message(self, format, *args):
-        # ปิด Access log ซ้ำซ้อนเพื่อไม่ให้รกหน้าจอและกิน CPU
         pass
 
 def run_server():
