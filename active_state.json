@@ -10,12 +10,12 @@
     "cooldown_until": null
   },
   "BTC/USDT": {
-    "in_position": true,
+    "in_position": false,
     "entry_price": 78154.01,
     "position_size": 8e-05,
     "tp": 79026.52964285713,
-    "sl": 77630.4982142857,
-    "be_set": false,
+    "sl": 78193.087005,
+    "be_set": true,
     "consecutive_losses": 1,
     "cooldown_until": null
   },
