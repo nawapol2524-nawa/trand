@@ -17,3 +17,5 @@ active_state_mt5.json
 active_state_deriv.json
 trade_log_deriv.txt
 console_log.txt
+daily_24h_log.txt
+.daily_cycle.json
