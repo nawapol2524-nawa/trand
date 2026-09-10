@@ -4,9 +4,36 @@ import time
 import json
 import asyncio
 from datetime import datetime, timedelta
-from dotenv import load_dotenv
 
-load_dotenv()
+# เพิ่ม site-packages เข้า sys.path อัตโนมัติสำหรับสภาพแวดล้อม Container / Virtualenv
+for p in [
+    os.path.abspath("venv/lib/python3.9/site-packages"),
+    os.path.abspath(".venv/lib/python3.9/site-packages"),
+    os.path.abspath(".local/lib/python3.11/site-packages"),
+    os.path.abspath(".local/lib/python3.10/site-packages"),
+    os.path.abspath(".local/lib/python3.9/site-packages"),
+    os.path.expanduser("~/.local/lib/python3.11/site-packages"),
+    os.path.expanduser("~/.local/lib/python3.9/site-packages")
+]:
+    if os.path.exists(p) and p not in sys.path:
+        sys.path.insert(0, p)
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    if os.path.exists(".env"):
+        try:
+            with open(".env", "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith("#") and "=" in line:
+                        k, v = line.split("=", 1)
+                        k, v = k.strip(), v.strip()
+                        if k not in os.environ:
+                            os.environ[k] = v
+        except Exception:
+            pass
 
 # ==========================================
 # 🔔 NOTIFICATION MODULE INTEGRATION
@@ -33,6 +60,7 @@ SYMBOLS = ["frxEURUSD", "frxGBPUSD", "frxUSDJPY"]
 PRIMARY_SYMBOL = "frxEURUSD"
 TIMEFRAME_SEC = 900 # 15m (15 * 60)
 STAKE_USD = 2.0     # เงินเดิมพันต่อไม้ ~2.00 USD (~68 บาท สำหรับงบไมโคร)
+MAX_SPREAD_PIPS = float(os.getenv("MAX_SPREAD_PIPS", "1.8")) # ตัวกรองสเปรดสดสูงสุด 1.8 pips
 
 MEMORY_FILE = "agent_memory_deriv.json"
 STATUS_FILE = "status_log_deriv.txt"
@@ -151,26 +179,43 @@ def load_memory():
     }
 
 def save_memory(mem):
+    temp_file = f"{MEMORY_FILE}.tmp_{os.getpid()}_{int(time.time() * 1000)}"
     try:
-        with open(MEMORY_FILE, "w", encoding="utf-8") as f:
+        with open(temp_file, "w", encoding="utf-8") as f:
             json.dump(mem, f, ensure_ascii=False, indent=2)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(temp_file, MEMORY_FILE)
     except Exception:
-        pass
+        if os.path.exists(temp_file):
+            try:
+                os.remove(temp_file)
+            except Exception:
+                pass
 
 memory = load_memory()
 
 def save_state(trade):
-    """บันทึกสถานะไม้ Deriv ลง active_state_deriv.json ทันทีเพื่อป้องกันลืมไม้"""
+    """บันทึกสถานะไม้ Deriv ลง active_state_deriv.json ทันทีแบบ Atomic (.tmp + os.replace) เพื่อป้องกันไฟล์เสียหาย (0 bytes)"""
+    temp_file = f"{STATE_FILE}.tmp_{os.getpid()}_{int(time.time() * 1000)}"
     try:
         payload = {
             "account_id": TARGET_DEMO_ACCOUNT,
             "active_trade": trade,
             "updated_at": get_thai_time()
         }
-        with open(STATE_FILE, "w", encoding="utf-8") as f:
+        with open(temp_file, "w", encoding="utf-8") as f:
             json.dump(payload, f, ensure_ascii=False, indent=2)
+            f.flush()
+            os.fsync(f.fileno())  # ยืนยันการเขียนข้อมูลลงดิสก์โดยตรง
+        os.replace(temp_file, STATE_FILE)  # Atomic rename ป้องกันปัญหาไฟล์ 0 bytes
     except Exception as e:
         log(f"⚠️ [STATE SAVE ERROR] {e}")
+        if os.path.exists(temp_file):
+            try:
+                os.remove(temp_file)
+            except Exception:
+                pass
 
 def load_state():
     """กู้คืนสถานะไม้ Deriv จาก active_state_deriv.json ทันทีที่สตาร์ท/รีสตาร์ท"""
@@ -209,39 +254,45 @@ import xml.etree.ElementTree as ET
 last_news_check = 0
 news_events = []
 
+import threading
+
 def fetch_high_impact_news():
-    global last_news_check, news_events
+    global last_news_check
     now = time.time()
     if now - last_news_check < 3600:
         return
     last_news_check = now
     
-    try:
-        url = "https://nfs.faireconomy.media/ff_calendar_thisweek.xml"
-        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        with urllib.request.urlopen(req, timeout=10) as response:
-            xml_data = response.read()
+    def _worker():
+        global news_events
+        try:
+            url = "https://nfs.faireconomy.media/ff_calendar_thisweek.xml"
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            with urllib.request.urlopen(req, timeout=10) as response:
+                xml_data = response.read()
+                
+            root = ET.fromstring(xml_data)
+            parsed_events = []
             
-        root = ET.fromstring(xml_data)
-        parsed_events = []
-        
-        for event in root.findall('event'):
-            impact = event.find('impact').text
-            currency = event.find('country').text
-            if impact and impact.strip() == 'High' and currency and currency.strip() in ['USD', 'EUR']:
-                date_str = event.find('date').text.strip()
-                time_str = event.find('time').text.strip()
-                if time_str:
-                    try:
-                        dt_str = f"{date_str} {time_str}"
-                        event_dt = datetime.strptime(dt_str, '%m-%d-%Y %I:%M%p')
-                        event_utc = event_dt + timedelta(hours=4)
-                        parsed_events.append(event_utc)
-                    except Exception:
-                        pass
-        news_events = parsed_events
-    except Exception as e:
-        log(f"⚠️ ไม่สามารถอัปเดตปฏิทินข่าวได้: {e}")
+            for event in root.findall('event'):
+                impact = event.find('impact').text
+                currency = event.find('country').text
+                if impact and impact.strip() == 'High' and currency and currency.strip() in ['USD', 'EUR']:
+                    date_str = event.find('date').text.strip()
+                    time_str = event.find('time').text.strip()
+                    if time_str:
+                        try:
+                            dt_str = f"{date_str} {time_str}"
+                            event_dt = datetime.strptime(dt_str, '%m-%d-%Y %I:%M%p')
+                            event_utc = event_dt + timedelta(hours=4)
+                            parsed_events.append(event_utc)
+                        except Exception:
+                            pass
+            news_events = parsed_events
+        except Exception as e:
+            log(f"⚠️ ไม่สามารถอัปเดตปฏิทินข่าวได้: {e}")
+
+    threading.Thread(target=_worker, daemon=True).start()
 
 def is_news_freeze():
     fetch_high_impact_news()
@@ -321,13 +372,8 @@ def calculate_bb_rsi(candles, period=20, std_dev=2.0, rsi_period=14):
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
 _forex_news_cache = {"data": None, "ts": 0}
 
-async def get_market_context_async():
-    """ดึง Fear & Greed Index + ข่าวสดจาก RSS ฟรี (แคช 3 นาทีเพื่อ Low-CPU)"""
-    global _forex_news_cache
-    now = time.time()
-    if _forex_news_cache["data"] and (now - _forex_news_cache["ts"] < 180):
-        return _forex_news_cache["data"]
-
+def _fetch_market_context_sync():
+    """ดึง Fear & Greed Index + ข่าวสดจาก RSS (รันใน Background Thread ผ่าน asyncio.to_thread)"""
     import requests
     import xml.etree.ElementTree as ET
     context = {}
@@ -372,15 +418,32 @@ async def get_market_context_async():
         except Exception:
             pass
     context["headlines"] = headlines
+    return context
+
+async def get_market_context_async():
+    """ดึง Fear & Greed Index + ข่าวสดจาก RSS ฟรี (แคช 3 นาทีเพื่อ Low-CPU) แบบ Non-blocking"""
+    global _forex_news_cache
+    now = time.time()
+    if _forex_news_cache["data"] and (now - _forex_news_cache["ts"] < 180):
+        return _forex_news_cache["data"]
+
+    try:
+        context = await asyncio.to_thread(_fetch_market_context_sync)
+    except Exception:
+        context = {"fear_greed": "N/A", "market_cap_change_24h": "N/A", "headlines": []}
     _forex_news_cache = {"data": context, "ts": now}
     return context
+
+def _query_groq_api_sync(url, headers, data):
+    """ส่ง Request ไปยัง Groq API แบบ Synchronous (รันใน Background Thread ผ่าน asyncio.to_thread)"""
+    import requests
+    return requests.post(url, headers=headers, json=data, timeout=15)
 
 async def ask_groq_ai_sentiment(symbol, price, rsi, pattern_name):
     if not GROQ_API_KEY:
         return True
         
     try:
-        import requests
         url = "https://api.groq.com/openai/v1/chat/completions"
         headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
 
@@ -407,7 +470,8 @@ Reply ONLY with YES or NO."""
             "temperature": 0.1
         }
         
-        res = requests.post(url, headers=headers, json=data, timeout=15)
+        # รัน external HTTP request ในแยก Thread ผ่าน asyncio.to_thread ไม่บล็อก Async Event Loop
+        res = await asyncio.to_thread(_query_groq_api_sync, url, headers, data)
         if res.status_code == 200:
             content = res.json()["choices"][0]["message"]["content"].strip().upper()
             is_approved = "NO" not in content
@@ -436,8 +500,56 @@ Reply ONLY with YES or NO."""
             return True
         else:
             return True
-    except Exception:
+    except Exception as e:
+        log(f"⚠️ [GROQ AI ERROR] {e}")
         return True
+
+# ==========================================
+# 🎯 LIVE SPREAD FILTER (MAX 1.8 PIPS)
+# ==========================================
+async def get_live_spread(ws, symbol):
+    """
+    ตรวจสอบสเปรดสด (Ask - Bid) ผ่าน Deriv WebSocket
+    คืนค่า (spread_pips, ask, bid) หรือ (None, None, None) หากเกิดข้อผิดพลาด
+    """
+    pip_size = 0.01 if "JPY" in symbol else 0.0001
+    try:
+        # ส่งคำขอ tick สดจาก Deriv
+        await ws.send(json.dumps({"ticks": symbol}))
+        raw_res = await asyncio.wait_for(ws.recv(), timeout=5)
+        res = json.loads(raw_res)
+        
+        # ป้องกันกรณีมีข้อความค้างในคิว WebSocket
+        attempts = 0
+        while "tick" not in res and attempts < 3:
+            raw_res = await asyncio.wait_for(ws.recv(), timeout=5)
+            res = json.loads(raw_res)
+            attempts += 1
+            
+        tick_data = res.get("tick")
+        if not tick_data:
+            return None, None, None
+
+        ask = float(tick_data.get("ask", 0.0))
+        bid = float(tick_data.get("bid", 0.0))
+        sub_id = res.get("subscription", {}).get("id") or tick_data.get("id")
+
+        # ยกเลิก subscription ทันทีเพื่อไม่ให้สตรีม tick ค้างรบกวนลูป WebSocket
+        if sub_id:
+            await ws.send(json.dumps({"forget": sub_id}))
+            try:
+                drain = json.loads(await asyncio.wait_for(ws.recv(), timeout=3))
+                while drain.get("msg_type") == "tick":
+                    drain = json.loads(await asyncio.wait_for(ws.recv(), timeout=3))
+            except Exception:
+                pass
+
+        if ask > 0 and bid > 0 and ask >= bid:
+            spread_pips = round((ask - bid) / pip_size, 2)
+            return spread_pips, ask, bid
+    except Exception as e:
+        log(f"⚠️ [LIVE SPREAD] ไม่สามารถตรวจสอบสเปรดสด {symbol}: {e}")
+    return None, None, None
 
 # ==========================================
 # 🌐 WEBSOCKET ENGINE (STRICT DEMO DOT94482469)
@@ -528,10 +640,12 @@ async def deriv_engine():
                         log("⏸️ ตลาด Forex ปิดสุดสัปดาห์ (Standby รอเปิดวันจันทร์)...")
                         await asyncio.sleep(60)
                         continue
-                    elif is_rollover:
-                        log("⏸️ Rollover Spread Freeze (03:45-06:15 น. เลี่ยงสเปรดถ่าง)...")
-                        await asyncio.sleep(60)
-                        continue
+
+                    if is_rollover:
+                        if active_trade:
+                            log("🛡️ [ROLLOVER WINDOW 03:45-06:15] New Entry Freeze แต่ยังคงเฝ้าดูแล SL/TP และ Trailing Stop ของไม้ที่ถืออยู่ 100%")
+                        else:
+                            log("⏸️ [ROLLOVER WINDOW 03:45-06:15] เข้าสู่ช่วง Rollover Spread Freeze (งดเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่าง)...")
 
                     # 1. ขอข้อมูลแท่งเทียน H1 ของ PRIMARY_SYMBOL (แคช 5 นาทีเพื่อ Low-CPU)
                     now_ts = time.time()
@@ -729,67 +843,81 @@ async def deriv_engine():
                             active_trade = None
                             save_state(None) # ล้างสถานะไม้ในไฟล์
 
-                    # 4. สแกนหาจังหวะเปิดไม้ใหม่ (เมื่อไม่มีไม้ค้าง)
+                    # 4. สแกนหาจังหวะเปิดไม้ใหม่ (เมื่อไม่มีไม้ค้าง และไม่อยู่ในช่วง Rollover Freeze)
                     elif not active_trade and primary_indicators:
-                        price = primary_indicators['price']
-                        rsi = primary_indicators['rsi']
-                        lower_bb = primary_indicators['lower_bb']
-                        bb_width = primary_indicators.get('bb_width', 0.001)
-                        ema50 = primary_indicators.get('ema50', price)
-                        learned_oversold = memory.get("learned_params", {}).get("rsi_oversold", 35.0)
-
-                        if price < ema50 * 0.9990:
-                            effective_oversold = min(learned_oversold, 25.0)
+                        if is_rollover:
+                            # New Entry Freeze ในช่วง Rollover 03:45 - 06:15 น. (ห้ามเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่าง)
+                            pass
                         else:
-                            effective_oversold = learned_oversold
+                            price = primary_indicators['price']
+                            rsi = primary_indicators['rsi']
+                            lower_bb = primary_indicators['lower_bb']
+                            bb_width = primary_indicators.get('bb_width', 0.001)
+                            ema50 = primary_indicators.get('ema50', price)
+                            learned_oversold = memory.get("learned_params", {}).get("rsi_oversold", 35.0)
 
-                        is_squeezed = bb_width < 0.0006
-                        has_pattern = primary_indicators.get('has_bullish_pattern', False)
-                        
-                        is_pullback = price <= lower_bb and rsi <= effective_oversold and not is_squeezed
-                        is_reversal = has_pattern and (rsi <= 45) and not is_squeezed
-                        
-                        if (is_pullback or is_reversal) and not is_news_freeze():
-                            trigger_name = "Candle_Reversal" if is_reversal and not is_pullback else "Pullback_Oversold"
+                            if price < ema50 * 0.9990:
+                                effective_oversold = min(learned_oversold, 25.0)
+                            else:
+                                effective_oversold = learned_oversold
+
+                            is_squeezed = bb_width < 0.0006
+                            has_pattern = primary_indicators.get('has_bullish_pattern', False)
                             
-                            # ปรึกษา Groq AI
-                            is_ai_approved = await ask_groq_ai_sentiment(PRIMARY_SYMBOL, price, rsi, trigger_name)
-                            if is_ai_approved:
-                                active_trade = {
-                                    "contract_id": f"DEMO-{int(time.time())}",
-                                    "symbol": PRIMARY_SYMBOL,
-                                    "type": "BUY 0.01 Lot (Demo)",
-                                    "entry_price": price,
-                                    "stake": STAKE_USD,
-                                    "entry_time": get_thai_time(),
-                                    "start_time": time.time(),
-                                    "be_locked": False,
-                                    "trailing_sl_pips": -20.0
-                                }
-                                save_state(active_trade) # บันทึกลง active_state_deriv.json ทันที
+                            is_pullback = price <= lower_bb and rsi <= effective_oversold and not is_squeezed
+                            is_reversal = has_pattern and (rsi <= 45) and not is_squeezed
+                            
+                            if (is_pullback or is_reversal) and not is_news_freeze():
+                                trigger_name = "Candle_Reversal" if is_reversal and not is_pullback else "Pullback_Oversold"
                                 
-                                print_highlight_box(
-                                    f"BUY ORDER EXECUTED - {PRIMARY_SYMBOL}",
-                                    [
-                                        ("Engine / Account", f"Deriv Forex (Demo: {TARGET_DEMO_ACCOUNT})"),
-                                        ("Symbol", PRIMARY_SYMBOL),
-                                        ("Entry Price", f"{price:.5f}"),
-                                        ("Size / Stake", f"0.01 Lot (~${STAKE_USD:.2f} USD)"),
-                                        ("Strategy Trigger", trigger_name),
-                                        ("RSI / BB-Width", f"{rsi:.1f} / {bb_width:.5f}")
-                                    ],
-                                    icon="🟢"
-                                )
-                                
-                                if notifier:
-                                    try:
-                                        notifier.notify_buy(
-                                            "Deriv", PRIMARY_SYMBOL, price, STAKE_USD,
-                                            price + 0.0030, price - 0.0020, trigger_name,
-                                            f"บัญชี Demo: {TARGET_DEMO_ACCOUNT}"
+                                # 4.1 ตรวจสอบ Live Spread Filter (Ask - Bid <= MAX_SPREAD_PIPS) ก่อนเปิดไม้
+                                spread_pips, ask_p, bid_p = await get_live_spread(ws, PRIMARY_SYMBOL)
+                                if spread_pips is not None and spread_pips > MAX_SPREAD_PIPS:
+                                    log(f"⚠️ [SPREAD FILTER] สเปรดสด {PRIMARY_SYMBOL} ถ่างเกินกำหนด: {spread_pips:.1f} pips (Max: {MAX_SPREAD_PIPS} pips | Ask: {ask_p:.5f}, Bid: {bid_p:.5f}) -> ข้ามจังหวะเปิดไม้เพื่อความปลอดภัย")
+                                else:
+                                    if spread_pips is not None:
+                                        log(f"✅ [SPREAD PASS] สเปรดสด {PRIMARY_SYMBOL}: {spread_pips:.1f} pips <= {MAX_SPREAD_PIPS} pips (Ask: {ask_p:.5f}, Bid: {bid_p:.5f})")
+                                    
+                                    # 4.2 ปรึกษา Groq AI
+                                    is_ai_approved = await ask_groq_ai_sentiment(PRIMARY_SYMBOL, price, rsi, trigger_name)
+                                    if is_ai_approved:
+                                        active_trade = {
+                                            "contract_id": f"DEMO-{int(time.time())}",
+                                            "symbol": PRIMARY_SYMBOL,
+                                            "type": "BUY 0.01 Lot (Demo)",
+                                            "entry_price": price,
+                                            "stake": STAKE_USD,
+                                            "entry_time": get_thai_time(),
+                                            "start_time": time.time(),
+                                            "be_locked": False,
+                                            "trailing_sl_pips": -20.0
+                                        }
+                                        save_state(active_trade) # บันทึกลง active_state_deriv.json ทันทีแบบ Atomic
+                                        
+                                        spread_str = f"{spread_pips:.1f} pips" if spread_pips is not None else "N/A"
+                                        print_highlight_box(
+                                            f"BUY ORDER EXECUTED - {PRIMARY_SYMBOL}",
+                                            [
+                                                ("Engine / Account", f"Deriv Forex (Demo: {TARGET_DEMO_ACCOUNT})"),
+                                                ("Symbol", PRIMARY_SYMBOL),
+                                                ("Entry Price", f"{price:.5f}"),
+                                                ("Live Spread", spread_str),
+                                                ("Size / Stake", f"0.01 Lot (~${STAKE_USD:.2f} USD)"),
+                                                ("Strategy Trigger", trigger_name),
+                                                ("RSI / BB-Width", f"{rsi:.1f} / {bb_width:.5f}")
+                                            ],
+                                            icon="🟢"
                                         )
-                                    except Exception:
-                                        pass
+                                        
+                                        if notifier:
+                                            try:
+                                                notifier.notify_buy(
+                                                    "Deriv", PRIMARY_SYMBOL, price, STAKE_USD,
+                                                    price + 0.0030, price - 0.0020, trigger_name,
+                                                    f"บัญชี Demo: {TARGET_DEMO_ACCOUNT}"
+                                                )
+                                            except Exception:
+                                                pass
 
                     # 5. พิมพ์ตารางสถานะ Quant Terminal
                     if scan_rows:

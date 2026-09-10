@@ -30,6 +30,7 @@ MT5_SCRIPT = "main_mt5.py"
 SUPERVISOR_LOG = "supervisor_log.txt"
 CONSOLE_LOG_FILE = "console_log.txt"
 STATUS_LOG_FILE = "status_log.txt"
+TRADE_LOG_FILE = "trade_log.txt"
 
 ENABLE_DERIV = os.getenv("ENABLE_DERIV", "true").lower() in ("true", "1", "yes")
 ENABLE_MT5 = os.getenv("ENABLE_MT5", "false").lower() in ("true", "1", "yes")
@@ -49,15 +50,15 @@ def append_console_log(text):
             pass
 
 def trim_console_log():
-    """จำกัดขนาด console_log.txt ไม่ให้เกิน ~500KB (รักษา ~2,500 บรรทัดล่าสุด) เพื่อความเร็วและประหยัดพื้นที่"""
+    """จำกัดขนาด console_log.txt รักษาประวัติไว้ 3,000 - 5,000 บรรทัดล่าสุด เพื่อความเร็วและคงประวัติยาวนานตลอดทั้งวัน"""
     with _log_lock:
         try:
-            if os.path.exists(CONSOLE_LOG_FILE) and os.path.getsize(CONSOLE_LOG_FILE) > 500_000:
+            if os.path.exists(CONSOLE_LOG_FILE) and os.path.getsize(CONSOLE_LOG_FILE) > 1_000_000:
                 with open(CONSOLE_LOG_FILE, "r", encoding="utf-8", errors="replace") as f:
                     lines = f.readlines()
-                if len(lines) > 3000:
+                if len(lines) > 5000:
                     with open(CONSOLE_LOG_FILE, "w", encoding="utf-8") as f:
-                        f.writelines(lines[-2500:])
+                        f.writelines(lines[-4000:])
         except Exception:
             pass
 
@@ -115,7 +116,7 @@ GDRIVE_WEBHOOK_URL = os.getenv("GDRIVE_WEBHOOK_URL")
 last_gdrive_sync = 0
 
 def sync_to_gdrive():
-    """ส่ง Console Log สด 100% ขึ้น Google Drive ทุก 1 นาที พร้อมอัปเดต status_log.txt"""
+    """ส่ง Console Log สด 100% ขึ้น Google Drive ทุก 1 นาที พร้อมประวัติการเทรดทั้งวันและอัปเดต status_log.txt"""
     global last_gdrive_sync
     if not GDRIVE_WEBHOOK_URL or "your_" in GDRIVE_WEBHOOK_URL:
         return
@@ -128,24 +129,53 @@ def sync_to_gdrive():
         import requests
         thai_now = get_thai_time()
         
+        # 1. ดึง Console Log สด 1,500 บรรทัดล่าสุด (ครอบคลุมประวัติยาวนานหลายชั่วโมง ไม่หลุดช่วงเย็น)
         console_content = ""
         if os.path.exists(CONSOLE_LOG_FILE):
             with _log_lock:
                 try:
                     with open(CONSOLE_LOG_FILE, "r", encoding="utf-8", errors="replace") as f:
                         lines = f.readlines()
-                    console_content = "".join(lines[-300:]) if len(lines) > 300 else "".join(lines)
+                    console_content = "".join(lines[-1500:]) if len(lines) > 1500 else "".join(lines)
                 except Exception:
                     pass
         
         if not console_content.strip():
             console_content = "กำลังรอรวบรวมข้อมูล Console Log..."
 
+        # 2. ดึงประวัติการเทรดล่าสุดจาก trade_log.txt มารวมไว้ด้วย ให้เปิด Google Drive แล้วเห็นประวัติการเทรดทั้งวัน
+        trade_log_raw = ""
+        if os.path.exists(TRADE_LOG_FILE):
+            try:
+                with open(TRADE_LOG_FILE, "r", encoding="utf-8", errors="replace") as f:
+                    t_lines = f.readlines()
+                trade_log_raw = "".join(t_lines[-300:]) if len(t_lines) > 300 else "".join(t_lines)
+            except Exception:
+                pass
+
+        if trade_log_raw.strip():
+            trade_section = (
+                f"📋 ประวัติการเทรดล่าสุด (TRADE HISTORY SUMMARY - ทั้งวัน):\n"
+                f"{'─' * 70}\n"
+                f"{trade_log_raw.strip()}\n"
+                f"{'═' * 70}\n\n"
+            )
+        else:
+            trade_section = (
+                f"📋 ประวัติการเทรดล่าสุด (TRADE HISTORY SUMMARY):\n"
+                f"{'─' * 70}\n"
+                f"(ยังไม่มีประวัติการเทรดบันทึกไว้ในระบบ)\n"
+                f"{'═' * 70}\n\n"
+            )
+
         full_content = (
             f"{'═' * 70}\n"
-            f"🏛️ AG 2.0 DUAL-ENGINE LIVE QUANT TERMINAL LOG (ALL CONSOLE OUTPUT)\n"
+            f"🏛️ AG 2.0 DUAL-ENGINE LIVE QUANT TERMINAL LOG (CONSOLE + TRADE HISTORY)\n"
             f"🕒 อัปเดตล่าสุด: {thai_now} (เวลาไทย - ซิงค์ทุก 1 นาที)\n"
             f"{'═' * 70}\n\n"
+            f"{trade_section}"
+            f"💻 CONSOLE OUTPUT (LIVE STREAM - 1,500 บรรทัดล่าสุด):\n"
+            f"{'─' * 70}\n"
             f"{console_content}"
         )
 
@@ -173,8 +203,19 @@ def sync_to_gdrive():
         except Exception:
             pass
 
+        # 3. ส่งไฟล์ trade_log.txt แยกขึ้น Google Drive ด้วย
+        if trade_log_raw.strip():
+            try:
+                requests.post(
+                    GDRIVE_WEBHOOK_URL,
+                    json={"filename": "trade_log.txt", "content": trade_log_raw},
+                    timeout=15
+                )
+            except Exception:
+                pass
+
         if resp.status_code == 200:
-            log_supervisor("☁️ [GDRIVE-SYNC] อัปเดต Console Log (console_log.txt & status_log.txt) ขึ้น Google Drive สำเร็จ!")
+            log_supervisor("☁️ [GDRIVE-SYNC] อัปเดต Console Log และประวัติการเทรด (console_log / status_log / trade_log) ขึ้น Google Drive สำเร็จ!")
     except Exception as e:
         log_supervisor(f"⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: {e}")
 

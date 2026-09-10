@@ -2,7 +2,8 @@ import os
 import sys
 import time
 import json
-import subprocess
+import uuid
+from decimal import Decimal
 import ccxt
 import pandas as pd
 from datetime import datetime, timedelta
@@ -27,7 +28,7 @@ except ImportError:
 SYMBOLS = ['SOL/USDT', 'BTC/USDT', 'NEAR/USDT', 'AVAX/USDT', 'GALA/USDT', 'VET/USDT']
 TIMEFRAME = '15m'
 HTF_TIMEFRAME = '1h'
-TRADE_AMOUNT_USDT = 6.5 # จำนวนเงินที่ใช้ซื้อต่อ 1 ไม้ (~220 บาท เผื่อ Buffer ตอน Stop Loss ไม่ให้หลุดเกณฑ์ขั้นต่ำ $5 ของ Binance)
+TRADE_AMOUNT_USDT = 8.5 # จำนวนเงินที่ใช้ซื้อต่อ 1 ไม้ (~290 บาท มี Buffer เหนือ Min Notional $5 ของ Binance > 50% ป้องกันกรณี Stop Loss แม้ร่วง -20% หรือโดนหัก fee ยังขายได้)
 
 MEMORY_FILE = "agent_memory_multi.json"
 LOG_FILE = "trade_log.txt"
@@ -56,6 +57,10 @@ def connect_and_check_balance():
     start_usdt = 0.0
     while True:
         try:
+            try:
+                exchange.load_markets()
+            except Exception:
+                pass
             bal = exchange.fetch_balance()
             start_usdt = bal['total'].get('USDT', 0.0)
             print(f"✅ เชื่อมต่อ Binance Testnet (Sandbox) สำเร็จ! ยอดเงิน: {start_usdt:.2f} USDT", flush=True)
@@ -68,6 +73,71 @@ def connect_and_check_balance():
             except Exception:
                 pass
             time.sleep(30)
+
+def truncate_amount(sym, amount):
+    """
+    ปัดเศษจำนวนเหรียญลง (Truncation / Round Down) ตาม stepSize ของกระดานเสมอ
+    เพื่อป้องกันปัญหา Insufficient Balance หรือการปัดเศษเกินยอดเหรียญจริง
+    """
+    try:
+        if not getattr(exchange, 'markets', None):
+            try:
+                exchange.load_markets()
+            except Exception:
+                pass
+
+        market = exchange.markets.get(sym) if getattr(exchange, 'markets', None) else None
+        if not market and hasattr(exchange, 'market'):
+            try:
+                market = exchange.market(sym)
+            except Exception:
+                market = None
+
+        step_size = None
+        if market:
+            # 1. ดึง stepSize จาก filter LOT_SIZE ของ Binance
+            for f in market.get('info', {}).get('filters', []):
+                if f.get('filterType') == 'LOT_SIZE':
+                    step_size = f.get('stepSize')
+                    break
+            # 2. ถ้าไม่มีใน filter ให้ดูจาก precision['amount']
+            if not step_size:
+                step_size = market.get('precision', {}).get('amount')
+
+        if step_size is not None:
+            d_amount = Decimal(str(amount))
+            d_step = Decimal(str(step_size)).normalize()
+            decimals = abs(d_step.as_tuple().exponent) if d_step.as_tuple().exponent < 0 else 0
+            truncated = (d_amount // d_step) * d_step
+            if decimals == 0:
+                return float(int(truncated))
+            return float(f"{truncated:.{decimals}f}")
+
+        # 3. Fallback ใช้ decimal_to_precision ของ ccxt ด้วยโหมด TRUNCATE (0)
+        try:
+            prec = market.get('precision', {}).get('amount') if market else None
+            res_str = exchange.decimal_to_precision(amount, getattr(ccxt, 'TRUNCATE', 0), prec, exchange.precisionMode)
+            return float(res_str)
+        except Exception:
+            pass
+
+    except Exception:
+        pass
+
+    # 4. Fallback แบบ Manual ปัดลงตามระดับราคาเหรียญ
+    try:
+        d_amount = Decimal(str(amount))
+        raw = float(amount)
+        if raw >= 100:
+            return float(int(raw))
+        elif raw >= 1:
+            return float(int(d_amount * 100) / 100.0)
+        elif raw >= 0.01:
+            return float(int(d_amount * 1000) / 1000.0)
+        else:
+            return float(int(d_amount * 100000) / 100000.0)
+    except Exception:
+        return float(amount)
 
 # ==========================================
 # 🖥️ QUANT TERMINAL UI & HIGHLIGHT BOXES
@@ -380,30 +450,10 @@ Reply ONLY with YES or NO."""
         return True
 
 # ==========================================
-# 🔄 AUTO-PATCH SYSTEM
+# 🔄 AUTO-PATCH SYSTEM (DELEGATED TO SUPERVISOR)
 # ==========================================
-last_update_check = 0
-def check_for_updates():
-    global last_update_check
-    now = time.time()
-    if now - last_update_check < 300:
-        return
-    last_update_check = now
-    
-    try:
-        subprocess.run(["git", "fetch", "origin", "main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        status = subprocess.run(["git", "status", "-uno"], capture_output=True, text=True)
-        if "Your branch is behind" in status.stdout:
-            diff = subprocess.run(["git", "diff", "--name-only", "HEAD", "origin/main"], capture_output=True, text=True)
-            if "main_binance.py" in diff.stdout or "main.py" in diff.stdout or "requirements.txt" in diff.stdout:
-                subprocess.run(["git", "reset", "--hard", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                log_trade("🔄 [AUTO-PATCH] พบการอัปเดตโค้ดหลัก! กำลังดาวน์โหลดและรีสตาร์ทตัวเอง...")
-                time.sleep(2)
-                os.execv(sys.executable, [sys.executable] + sys.argv)
-            else:
-                subprocess.run(["git", "reset", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    except Exception as e:
-        log_trade(f"⚠️ [AUTO-PATCH ERROR] อัปเดตไม่สำเร็จ: {e}")
+# หมายเหตุ: ระบบ Auto-Patch ผ่าน Git ถูกรวมศูนย์ไว้ที่ main.py (Supervisor) เพียงจุดเดียว
+# เพื่อป้องกันปัญหา Git lock collision (.git/index.lock) ระหว่างหลาย Process
 
 # ==========================================
 # 📊 INDICATORS & LOGIC
@@ -681,16 +731,20 @@ def process_symbol(sym, btc_bullish):
                 real_entry = float(ticker['last'])
                 raw_size = TRADE_AMOUNT_USDT / real_entry
                 
-                try:
-                    size = float(exchange.amount_to_precision(sym, raw_size))
-                except Exception:
-                    if real_entry < 0.1: size = round(raw_size)
-                    elif real_entry < 10: size = round(raw_size, 1)
-                    elif real_entry < 1000: size = round(raw_size, 2)
-                    else: size = round(raw_size, 4)
+                # คำนวณ Lot Size โดยใช้ Truncation (ปัดลงตาม stepSize ของกระดานเสมอ) ป้องกัน Insufficient Balance
+                size = truncate_amount(sym, raw_size)
+                if size <= 0:
+                    log_trade(f"⚠️ [BUY SKIP {sym}] คำนวณ Lot size ได้ {size} (ต่ำกว่าขั้นต่ำของกระดาน)")
+                    return summary_row
 
                 try:
-                    order = exchange.create_market_buy_order(sym, size)
+                    # แนบ clientOrderId (Idempotency Key) ทุกครั้งที่ส่งคำสั่งซื้อ ป้องกันการส่งคำสั่งซ้ำซ้อนกรณี Network Timeout
+                    clean_sym = sym.replace('/', '').replace(':', '').lower()
+                    client_oid = f"buy_{clean_sym[:6]}_{int(time.time())}_{uuid.uuid4().hex[:6]}"
+                    order = exchange.create_market_buy_order(sym, size, {
+                        'clientOrderId': client_oid,
+                        'newClientOrderId': client_oid
+                    })
                     avg_price = order.get('average')
                     if avg_price is None: avg_price = order.get('price')
                     if avg_price is None: avg_price = real_entry
@@ -803,12 +857,20 @@ def process_symbol(sym, btc_bullish):
                     base_coin = sym.split('/')[0]
                     free_bal = exchange.fetch_free_balance().get(base_coin, 0)
                     sell_size = min(s['position_size'], free_bal) if free_bal > 0 else s['position_size']
-                    try:
-                        sell_size = float(exchange.amount_to_precision(sym, sell_size))
-                    except Exception:
-                        pass
+                    # ปัดเศษลงตาม stepSize ของกระดานเสมอ ป้องกันการขายเกินยอด free_bal หรือ Insufficient Balance
+                    sell_size = truncate_amount(sym, sell_size)
                     
-                    order = exchange.create_market_sell_order(sym, sell_size)
+                    if sell_size <= 0:
+                        log_trade(f"⚠️ [SELL SKIP {sym}] sell_size เป็น 0 หลัง truncate (free_bal: {free_bal})")
+                        return summary_row
+
+                    # แนบ clientOrderId (Idempotency Key) ป้องกันการส่งคำสั่งซ้ำซ้อนกรณี Network Timeout
+                    clean_sym = sym.replace('/', '').replace(':', '').lower()
+                    client_oid = f"sell_{clean_sym[:6]}_{int(time.time())}_{uuid.uuid4().hex[:6]}"
+                    order = exchange.create_market_sell_order(sym, sell_size, {
+                        'clientOrderId': client_oid,
+                        'newClientOrderId': client_oid
+                    })
                     avg_price = order.get('average')
                     if avg_price is None: avg_price = order.get('price')
                     if avg_price is None: avg_price = current_price
@@ -898,8 +960,6 @@ if __name__ == '__main__':
 
     last_github_sync = 0
     while True:
-        check_for_updates()
-        
         # อัปโหลดขึ้น GitHub ทุกๆ 1 ชั่วโมง
         now = time.time()
         if now - last_github_sync > 3600:
