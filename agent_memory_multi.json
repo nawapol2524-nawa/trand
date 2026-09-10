@@ -111,12 +111,12 @@
     ]
   },
   "AVAX/USDT": {
-    "total_trades": 0,
-    "wins": 0,
+    "total_trades": 1,
+    "wins": 1,
     "losses": 0,
     "learned_params": {
-      "min_volume_ratio": 1.45,
-      "min_adx": 14.0
+      "min_volume_ratio": 1.4,
+      "min_adx": 13.5
     },
     "reflections": [
       {
@@ -124,6 +124,12 @@
         "type": "INIT",
         "pnl": "+0.00%",
         "lesson": "Initialized AVAX/USDT high-momentum sniper pool"
+      },
+      {
+        "date": "2026-09-10 16:41:11",
+        "type": "WIN",
+        "pnl": "+0.00%",
+        "lesson": "Win (+0.00%): ลดเกณฑ์ Vol->1.4x, ADX->13.5"
       }
     ]
   },
