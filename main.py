@@ -331,20 +331,19 @@ last_update_check = 0
 def check_for_updates():
     global last_update_check
     now = time.time()
-    if now - last_update_check < 300:
+    if now - last_update_check < 60:
         return
     last_update_check = now
     
     try:
-        subprocess.run(["git", "fetch", "origin", "main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        status = subprocess.run(["git", "status", "-uno"], capture_output=True, text=True)
-        if "Your branch is behind" in status.stdout:
-            diff = subprocess.run(["git", "diff", "--name-only", "HEAD", "origin/main"], capture_output=True, text=True)
-            core_files = ["main.py", "main_binance.py", "main_forex.py", "dashboard.py", "requirements.txt", "notifier.py"]
+        subprocess.run(["git", "fetch", "origin", "main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=20)
+        diff = subprocess.run(["git", "diff", "--name-only", "HEAD", "origin/main"], capture_output=True, text=True, timeout=10)
+        if diff.stdout.strip():
+            core_files = ["main.py", "main_binance.py", "main_forex.py", "main_deriv_synthetic.py", "dashboard.py", "requirements.txt", "notifier.py"]
             if any(cf in diff.stdout for cf in core_files):
                 log_supervisor("🔄 [AUTO-PATCH] พบการอัปเดตโค้ดหลักใน GitHub! กำลังอัปเดตและรีสตาร์ทระบบ...")
                 req_changed = "requirements.txt" in diff.stdout
-                subprocess.run(["git", "reset", "--hard", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                subprocess.run(["git", "reset", "--hard", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=20)
                 if req_changed:
                     log_supervisor("📦 [AUTO-PATCH] ตรวจพบแพ็กเกจใหม่ กำลังรัน pip install -r requirements.txt...")
                     pip_cmd = [sys.executable, "-m", "pip", "install", "-r", "requirements.txt"]
@@ -354,7 +353,7 @@ def check_for_updates():
                 time.sleep(2)
                 restart_entire_system()
             else:
-                subprocess.run(["git", "reset", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                subprocess.run(["git", "reset", "--hard", "origin/main"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=20)
     except Exception as e:
         log_supervisor(f"⚠️ [AUTO-PATCH ERROR] ตรวจสอบอัปเดตไม่สำเร็จ: {e}")
 
