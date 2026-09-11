@@ -20,13 +20,13 @@
     "cooldown_until": null
   },
   "NEAR/USDT": {
-    "in_position": true,
+    "in_position": false,
     "entry_price": 2.523,
     "position_size": 3.3,
     "tp": 2.613714285714286,
     "sl": 2.468571428571429,
     "be_set": false,
-    "consecutive_losses": 0,
+    "consecutive_losses": 1,
     "cooldown_until": null
   },
   "AVAX/USDT": {
