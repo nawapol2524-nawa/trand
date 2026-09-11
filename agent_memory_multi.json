@@ -1,0 +1,69 @@
+{
+  "SOL/USDT": {
+    "total_trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "learned_params": {
+      "min_volume_ratio": 1.3,
+      "min_adx": 14.0
+    },
+    "reflections": []
+  },
+  "BTC/USDT": {
+    "total_trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "learned_params": {
+      "min_volume_ratio": 1.3,
+      "min_adx": 14.0
+    },
+    "reflections": []
+  },
+  "NEAR/USDT": {
+    "total_trades": 1,
+    "wins": 0,
+    "losses": 1,
+    "learned_params": {
+      "min_volume_ratio": 1.4,
+      "min_adx": 15.0
+    },
+    "reflections": [
+      {
+        "date": "2026-09-12 04:53:43",
+        "type": "LOSS",
+        "pnl": "-2.58%",
+        "lesson": "Loss (False Break): เพิ่มเกณฑ์ Vol->1.4x, ADX->15.0"
+      }
+    ]
+  },
+  "AVAX/USDT": {
+    "total_trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "learned_params": {
+      "min_volume_ratio": 1.3,
+      "min_adx": 14.0
+    },
+    "reflections": []
+  },
+  "GALA/USDT": {
+    "total_trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "learned_params": {
+      "min_volume_ratio": 1.3,
+      "min_adx": 14.0
+    },
+    "reflections": []
+  },
+  "VET/USDT": {
+    "total_trades": 0,
+    "wins": 0,
+    "losses": 0,
+    "learned_params": {
+      "min_volume_ratio": 1.3,
+      "min_adx": 14.0
+    },
+    "reflections": []
+  }
+}
