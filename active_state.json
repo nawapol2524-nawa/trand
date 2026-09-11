@@ -20,12 +20,12 @@
     "cooldown_until": "2026-09-11T03:58:16.820739"
   },
   "NEAR/USDT": {
-    "in_position": false,
-    "entry_price": 2.441,
+    "in_position": true,
+    "entry_price": 2.437,
     "position_size": 3.4,
-    "tp": 3.7439999999999998,
-    "sl": 2.4997499999999997,
-    "be_set": true,
+    "tp": 2.5014642857142855,
+    "sl": 2.3983214285714283,
+    "be_set": false,
     "consecutive_losses": 0,
     "cooldown_until": null
   },
