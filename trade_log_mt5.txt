@@ -1,4 +1,0 @@
-🚀 [INITIALIZED] AG 2.0 MetaTrader 5 Cent Bot Trade Log Initialized
-[2026-09-08 22:17:35] ⚠️ [LOOP WARNING] เกิดข้อผิดพลาดในการทำงาน: Forbidden. Request URL: https://mt-provisioning-api-v1.agiliumtrade.agiliumtrade.ai/users/current/accounts/your_metaapi_account_id_here
-[2026-09-09 09:21:25] ⚠️ [LOOP WARNING] เกิดข้อผิดพลาดในการทำงาน: To allow trading account deployment please top up your account. (d7edfa69f57e4b09bace43f1c7156c93). Request URL: https://mt-provisioning-api-v1.agiliumtrade.agiliumtrade.ai/users/current/accounts/c5fddb1b-f837-42fd-b30e-1329887a8493/deploy
-[2026-09-09 09:21:44] ⚠️ [LOOP WARNING] เกิดข้อผิดพลาดในการทำงาน: To allow trading account deployment please top up your account. (8e098b8076ec41b6a455ffc71890d280). Request URL: https://mt-provisioning-api-v1.agiliumtrade.agiliumtrade.ai/users/current/accounts/c5fddb1b-f837-42fd-b30e-1329887a8493/deploy
