@@ -122,6 +122,7 @@ def append_console_log(text):
 def trim_console_log():
     """
     จำกัดขนาดเฉพาะ console_log.txt สำหรับ Web Terminal ให้คงประวัติไว้ 5,000 - 10,000 บรรทัดล่าสุด
+    แบบ Atomic File Replacement ป้องกัน Dashboard หรือ Reader อื่นอ่านเจอไฟล์ขนาด 0 ไบต์
     (daily_24h_log.txt ห้ามตัดทิ้งเด็ดขาดระหว่างรอบ 24 ชม. เพื่อให้ Gemini Spark อ่านได้ครบถ้วน 100%)
     """
     with _log_lock:
@@ -130,8 +131,10 @@ def trim_console_log():
                 with open(CONSOLE_LOG_FILE, "r", encoding="utf-8", errors="replace") as f:
                     lines = f.readlines()
                 if len(lines) > 10000:
-                    with open(CONSOLE_LOG_FILE, "w", encoding="utf-8") as f:
+                    tmp_file = CONSOLE_LOG_FILE + ".tmp"
+                    with open(tmp_file, "w", encoding="utf-8") as f:
                         f.writelines(lines[-7500:])
+                    os.replace(tmp_file, CONSOLE_LOG_FILE)
         except Exception:
             pass
 
@@ -678,10 +681,12 @@ def sync_to_gdrive(force=False):
 
         full_content, trade_ledger_text = build_ai_analysis_report(c_start, c_end, thai_now)
 
-        # 1. บันทึกทับ status_log.txt บนเครื่องท้องถิ่น
+        # 1. บันทึกทับ status_log.txt บนเครื่องท้องถิ่นแบบ Atomic
         try:
-            with open(STATUS_LOG_FILE, "w", encoding="utf-8") as f:
+            tmp_status = STATUS_LOG_FILE + ".tmp"
+            with open(tmp_status, "w", encoding="utf-8") as f:
                 f.write(full_content)
+            os.replace(tmp_status, STATUS_LOG_FILE)
         except Exception:
             pass
 
@@ -846,13 +851,13 @@ def manage_market_engines():
     """
     weekend = is_forex_weekend()
 
-    # ดูแล BinanceEngine ให้ทำงานตลอด 24/7 (พร้อม Weekend Guard)
-    if "BinanceEngine" not in processes or processes["BinanceEngine"]["proc"].poll() is not None:
+    # ดูแล BinanceEngine ให้เริ่มต้นทำงานหากยังไม่ได้เปิด
+    if "BinanceEngine" not in processes:
         if os.path.exists(BINANCE_SCRIPT):
             start_worker("BinanceEngine", BINANCE_SCRIPT)
 
-    # ดูแล WebDashboard ให้ทำงานตลอด 24/7
-    if "WebDashboard" not in processes or processes["WebDashboard"]["proc"].poll() is not None:
+    # ดูแล WebDashboard ให้เริ่มต้นทำงานหากยังไม่ได้เปิด
+    if "WebDashboard" not in processes:
         if os.path.exists(DASHBOARD_SCRIPT):
             start_worker("WebDashboard", DASHBOARD_SCRIPT)
 
@@ -988,6 +993,15 @@ def check_weekend_ai_optimization():
                 run_background_ai_training()
 
 def monitor_workers():
+    # ตรวจสอบว่าบริการสำคัญ (BinanceEngine และ WebDashboard) มีอยู่ใน processes หรือไม่
+    if "WebDashboard" not in processes and os.path.exists(DASHBOARD_SCRIPT):
+        log_supervisor("⚠️ ตรวจพบ WebDashboard ยังไม่เริ่มทำงาน กำลังเปิดใช้งาน...")
+        start_worker("WebDashboard", DASHBOARD_SCRIPT)
+
+    if "BinanceEngine" not in processes and os.path.exists(BINANCE_SCRIPT):
+        log_supervisor("⚠️ ตรวจพบ BinanceEngine ยังไม่เริ่มทำงาน กำลังเปิดใช้งาน...")
+        start_worker("BinanceEngine", BINANCE_SCRIPT)
+
     for name, item in list(processes.items()):
         proc = item.get('proc')
         if proc is None or proc.poll() is not None:
@@ -1004,13 +1018,23 @@ def monitor_workers():
 
             log_supervisor(f"🚨 [ALERT] {name} หยุดทำงานผิดปกติ! (Exit Code: {exit_code})")
             
-            if now - item['last_restart'] < 10:
-                log_supervisor(f"⏳ {name} แครชไวเกินไป พัก 10 วินาทีก่อนเปิดใหม่...")
-                time.sleep(10)
+            # Crash-loop guard: หากแครชติดๆ กันใน 10 วินาที ให้ชะลอการรีสตาร์ท
+            last_rst = item.get('last_restart', 0)
+            if now - last_rst < 10:
+                wait_sec = max(1, 10 - int(now - last_rst))
+                log_supervisor(f"⏳ {name} แครชไวเกินไป พัก {wait_sec} วินาทีก่อนเปิดใหม่...")
+                time.sleep(wait_sec)
             
-            item['restarts'] += 1
+            item['restarts'] = item.get('restarts', 0) + 1
             item['last_restart'] = time.time()
             log_supervisor(f"🔄 กำลังรีสตาร์ท {name} (ครั้งที่ {item['restarts']})...")
+
+            if notifier:
+                try:
+                    notifier.notify_system("AG 2.0 Supervisor", f"🚨 [ALERT] {name} หยุดทำงาน (Exit: {exit_code}) -> รีสตาร์ทครั้งที่ {item['restarts']}")
+                except Exception:
+                    pass
+
             new_proc = subprocess.Popen(
                 [sys.executable, "-u", item['script']],
                 stdout=subprocess.PIPE,

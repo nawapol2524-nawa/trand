@@ -7,6 +7,8 @@ import threading
 import json
 import urllib.parse
 import subprocess
+import socket
+import signal
 from datetime import datetime, timedelta
 
 PORT = 9848
@@ -16,17 +18,51 @@ STATUS_LOG_FILE = "status_log.txt"
 def get_thai_time():
     return (datetime.utcnow() + timedelta(hours=7)).strftime('%Y-%m-%d %H:%M:%S')
 
-def get_console_text(lines=180):
-    """อ่านข้อความล่าสุดจาก console_log.txt หรือ status_log.txt"""
-    target = CONSOLE_LOG_FILE if os.path.exists(CONSOLE_LOG_FILE) else STATUS_LOG_FILE
-    if not os.path.exists(target):
-        return "⏳ กำลังรอสัญญาณ Console Log จากระบบ Supervisor..."
+def read_last_lines(filepath, num_lines=180, buffer_size=128 * 1024):
+    """
+    อ่าน N บรรทัดสุดท้ายจากไฟล์อย่างปลอดภัย รวดเร็วระดับ O(1)
+    ไม่โหลดทั้งไฟล์เข้า RAM รองรับไฟล์ขนาดใหญ่หลายร้อย MB ปลอดภัยต่อ Race Condition
+    """
     try:
-        with open(target, "r", encoding="utf-8", errors="replace") as f:
-            all_lines = f.readlines()
-            return "".join(all_lines[-lines:])
-    except Exception as e:
-        return f"⚠️ ไม่สามารถอ่าน Log ได้: {e}"
+        if not os.path.exists(filepath):
+            return ""
+        size = os.path.getsize(filepath)
+        if size == 0:
+            return ""
+
+        with open(filepath, "rb") as f:
+            if size <= buffer_size:
+                data = f.read()
+            else:
+                f.seek(size - buffer_size)
+                data = f.read()
+                # ถ้า seek กลางไฟล์ ให้ตัดบรรทัดแรกที่อาจไม่สมบูรณ์ทิ้ง
+                first_nl = data.find(b"\n")
+                if first_nl != -1:
+                    data = data[first_nl + 1:]
+
+            text = data.decode("utf-8", errors="replace")
+            lines = text.splitlines(keepends=True)
+            if len(lines) > num_lines:
+                lines = lines[-num_lines:]
+            return "".join(lines)
+    except Exception:
+        return ""
+
+def get_console_text(lines=180):
+    """อ่านข้อความล่าสุดจาก console_log.txt หรือ status_log.txt อย่างปลอดภัย 100%"""
+    # 1. พยายามอ่านจาก console_log.txt ก่อน
+    content = read_last_lines(CONSOLE_LOG_FILE, num_lines=lines)
+
+    # 2. ถ้า console_log.txt ยังว่างหรือไม่มี ให้สลับไปอ่าน status_log.txt
+    if not content.strip():
+        content = read_last_lines(STATUS_LOG_FILE, num_lines=lines)
+
+    # 3. ถ้ายังว่างทั้งคู่ ให้แสดงสถานะที่ชัดเจน
+    if not content.strip():
+        return "⏳ กำลังรอสัญญาณ Console Log จากระบบ Supervisor..."
+
+    return content
 
 def append_to_console_log(text):
     """บันทึกคำสั่งและผลลัพธ์ลง console_log.txt เพื่อให้ซิงค์ขึ้น Google Drive และแสดงสด"""
@@ -169,6 +205,18 @@ HTML_PAGE = """<!DOCTYPE html>
             border: 1px solid rgba(46, 160, 67, 0.4);
         }
 
+        .badge-warning {
+            background: rgba(227, 179, 65, 0.2);
+            color: #e3b341;
+            border: 1px solid rgba(227, 179, 65, 0.4);
+        }
+
+        .badge-error {
+            background: rgba(248, 81, 73, 0.2);
+            color: #f85149;
+            border: 1px solid rgba(248, 81, 73, 0.4);
+        }
+
         .pulse-dot {
             width: 8px;
             height: 8px;
@@ -177,9 +225,26 @@ HTML_PAGE = """<!DOCTYPE html>
             animation: pulse 1.8s infinite;
         }
 
+        .pulse-dot.warning {
+            background-color: #e3b341;
+            animation: pulse-warn 1.4s infinite;
+        }
+
+        .pulse-dot.error {
+            background-color: #f85149;
+            animation: none;
+            box-shadow: 0 0 6px #f85149;
+        }
+
         @keyframes pulse {
             0% { transform: scale(0.9); opacity: 0.7; }
             50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 8px #3fb950; }
+            100% { transform: scale(0.9); opacity: 0.7; }
+        }
+
+        @keyframes pulse-warn {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 8px #e3b341; }
             100% { transform: scale(0.9); opacity: 0.7; }
         }
 
@@ -375,9 +440,9 @@ HTML_PAGE = """<!DOCTYPE html>
             <span style="color: var(--text-dim); font-size: 0.85em;">Wispbyte Live Stream</span>
         </div>
         <div class="header-status">
-            <span class="badge badge-live">
-                <span class="pulse-dot"></span>
-                <span>STREAMING</span>
+            <span class="badge badge-live" id="streamBadge">
+                <span class="pulse-dot" id="pulseDot"></span>
+                <span id="badgeText">STREAMING</span>
             </span>
             <span style="color: var(--text-dim); font-size: 0.8em;" id="lastSyncTime">Sync: ...</span>
         </div>
@@ -427,11 +492,37 @@ HTML_PAGE = """<!DOCTYPE html>
         const btnRun = document.getElementById('btnRun');
         const themeSelect = document.getElementById('themeSelect');
         const promptText = document.getElementById('promptText');
+        const streamBadge = document.getElementById('streamBadge');
+        const pulseDot = document.getElementById('pulseDot');
+        const badgeText = document.getElementById('badgeText');
 
         let isFirstLoad = true;
         let isUserScrolling = false;
         let cmdHistory = [];
         let historyIndex = -1;
+        let consecutiveErrors = 0;
+
+        function updateStreamStatus(state, msg) {
+            if (state === 'live') {
+                consecutiveErrors = 0;
+                if (streamBadge) streamBadge.className = 'badge badge-live';
+                if (pulseDot) pulseDot.className = 'pulse-dot';
+                if (badgeText) badgeText.textContent = 'STREAMING';
+                if (lastSyncTimeEl) lastSyncTimeEl.textContent = 'Sync: ' + msg;
+            } else if (state === 'reconnecting') {
+                consecutiveErrors++;
+                if (consecutiveErrors >= 3) {
+                    if (streamBadge) streamBadge.className = 'badge badge-error';
+                    if (pulseDot) pulseDot.className = 'pulse-dot error';
+                    if (badgeText) badgeText.textContent = 'OFFLINE';
+                } else {
+                    if (streamBadge) streamBadge.className = 'badge badge-warning';
+                    if (pulseDot) pulseDot.className = 'pulse-dot warning';
+                    if (badgeText) badgeText.textContent = 'RECONNECTING';
+                }
+                if (lastSyncTimeEl) lastSyncTimeEl.textContent = 'Sync: ' + msg;
+            }
+        }
 
         // จัดการเปลี่ยนและบันทึก Theme ลง LocalStorage
         function applyTheme(theme) {
@@ -480,28 +571,33 @@ HTML_PAGE = """<!DOCTYPE html>
             isFetching = true;
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 3500);
+                const timeoutId = setTimeout(() => controller.abort(), 4000);
                 const res = await fetch('/api/console?t=' + Date.now(), { signal: controller.signal });
                 clearTimeout(timeoutId);
                 if (res.ok) {
                     const text = await res.text();
                     
-                    if (consoleEl.textContent !== text) {
-                        consoleEl.textContent = text;
-                        
-                        if (isFirstLoad || (chkAutoScroll.checked && !isUserScrolling)) {
-                            consoleEl.scrollTop = consoleEl.scrollHeight;
-                            isFirstLoad = false;
+                    if (text && text.trim().length > 0) {
+                        if (consoleEl.textContent !== text) {
+                            consoleEl.textContent = text;
+                            
+                            if (isFirstLoad || (chkAutoScroll.checked && !isUserScrolling)) {
+                                consoleEl.scrollTop = consoleEl.scrollHeight;
+                                isFirstLoad = false;
+                            }
                         }
+                    } else if (isFirstLoad) {
+                        consoleEl.textContent = "⏳ กำลังรอสัญญาณ Console Log จากระบบ Supervisor...";
                     }
 
                     const now = new Date();
-                    lastSyncTimeEl.textContent = 'Sync: ' + now.toLocaleTimeString('th-TH');
+                    updateStreamStatus('live', now.toLocaleTimeString('th-TH'));
                 } else {
-                    lastSyncTimeEl.textContent = 'Sync: HTTP ' + res.status;
+                    updateStreamStatus('reconnecting', 'HTTP ' + res.status);
                 }
             } catch (err) {
-                lastSyncTimeEl.textContent = 'Sync: ' + (err.name === 'AbortError' ? 'Timeout' : 'Reconnecting...');
+                const errLabel = err.name === 'AbortError' ? 'Timeout' : 'Reconnecting...';
+                updateStreamStatus('reconnecting', errLabel);
             } finally {
                 isFetching = false;
             }
@@ -596,46 +692,62 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
 
     def do_OPTIONS(self):
-        self.send_response(200)
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "*")
-        self.send_header("Content-Length", "0")
-        self.send_header("Connection", "close")
-        self.end_headers()
+        try:
+            self.close_connection = True
+            self.send_response(200)
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+            self.send_header("Access-Control-Allow-Headers", "*")
+            self.send_header("Content-Length", "0")
+            self.send_header("Connection", "close")
+            self.end_headers()
+        except (BrokenPipeError, ConnectionResetError, socket.error):
+            pass
 
     def do_GET(self):
-        # 1. API: ส่งคืนข้อความ Console สดล่าสุด
-        if self.path.startswith("/api/console"):
-            log_content = get_console_text(lines=180)
-            encoded = log_content.encode("utf-8")
-            self.send_response(200)
-            self.send_header("Content-type", "text/plain; charset=utf-8")
-            self.send_header("Content-Length", str(len(encoded)))
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+        self.close_connection = True
+        try:
+            # 1. API: ส่งคืนข้อความ Console สดล่าสุด
+            if self.path.startswith("/api/console"):
+                log_content = get_console_text(lines=180)
+                encoded = log_content.encode("utf-8")
+                self.send_response(200)
+                self.send_header("Content-type", "text/plain; charset=utf-8")
+                self.send_header("Content-Length", str(len(encoded)))
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+                self.send_header("Connection", "close")
+                self.end_headers()
+                self.wfile.write(encoded)
+                try:
+                    self.wfile.flush()
+                except Exception:
+                    pass
+                return
+
+            # 2. Web Page: หน้าจอเดี่ยว Pure Live Terminal
+            if self.path == "/" or self.path.startswith("/?"):
+                encoded = HTML_PAGE.encode("utf-8")
+                self.send_response(200)
+                self.send_header("Content-type", "text/html; charset=utf-8")
+                self.send_header("Content-Length", str(len(encoded)))
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+                self.send_header("Connection", "close")
+                self.end_headers()
+                self.wfile.write(encoded)
+                try:
+                    self.wfile.flush()
+                except Exception:
+                    pass
+                return
+
+            self.send_response(404)
+            self.send_header("Content-Length", "0")
             self.send_header("Connection", "close")
             self.end_headers()
-            self.wfile.write(encoded)
-            return
-
-        # 2. Web Page: หน้าจอเดี่ยว Pure Live Terminal
-        if self.path == "/" or self.path.startswith("/?"):
-            encoded = HTML_PAGE.encode("utf-8")
-            self.send_response(200)
-            self.send_header("Content-type", "text/html; charset=utf-8")
-            self.send_header("Content-Length", str(len(encoded)))
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
-            self.send_header("Connection", "close")
-            self.end_headers()
-            self.wfile.write(encoded)
-            return
-
-        self.send_response(404)
-        self.send_header("Content-Length", "0")
-        self.send_header("Connection", "close")
-        self.end_headers()
+        except (BrokenPipeError, ConnectionResetError, socket.error):
+            pass
 
     def do_POST(self):
         # API: รับคำสั่งจากหน้าเว็บไป Execute บนเซิร์ฟเวอร์แบบ AJAX In-Page
@@ -813,36 +925,82 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
             self.end_headers()
 
     def _send_json(self, data, status=200):
-        encoded = json.dumps(data, ensure_ascii=False).encode("utf-8")
-        self.send_response(status)
-        self.send_header("Content-type", "application/json; charset=utf-8")
-        self.send_header("Content-Length", str(len(encoded)))
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
-        self.send_header("Connection", "close")
-        self.end_headers()
-        self.wfile.write(encoded)
+        try:
+            self.close_connection = True
+            encoded = json.dumps(data, ensure_ascii=False).encode("utf-8")
+            self.send_response(status)
+            self.send_header("Content-type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(encoded)))
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+            self.send_header("Connection", "close")
+            self.end_headers()
+            self.wfile.write(encoded)
+            try:
+                self.wfile.flush()
+            except Exception:
+                pass
+        except (BrokenPipeError, ConnectionResetError, socket.error):
+            pass
 
     def log_message(self, format, *args):
         pass
 
+class RobustThreadingHTTPServer(http.server.ThreadingHTTPServer):
+    daemon_threads = True
+    allow_reuse_address = True
+
+    def server_bind(self):
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        if hasattr(socket, "SO_REUSEPORT"):
+            try:
+                self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+            except Exception:
+                pass
+        super().server_bind()
+
+    def handle_error(self, request, client_address):
+        # ละเว้น BrokenPipeError / ConnectionResetError ที่เกิดจาก client ตัดการเชื่อมต่อทั่วไป
+        exc_type, exc_val, _ = sys.exc_info()
+        if exc_type in (BrokenPipeError, ConnectionResetError, socket.timeout):
+            return
+        super().handle_error(request, client_address)
+
+_shutdown_event = threading.Event()
+
+def signal_handler(signum, frame):
+    print(f"\n🛑 ได้รับสัญญาณ ({signum}) กำลังปิด Terminal Server อย่างปลอดภัย...")
+    _shutdown_event.set()
+
 def run_server():
     print(f"🚀 เริ่มต้นระบบ AG 2.0 Live Quant Terminal Server ที่พอร์ต {PORT}...")
     print(f"🌐 ใช้งานผ่าน URL: http://0.0.0.0:{PORT}")
-    try:
-        from http.server import ThreadingHTTPServer
-        server_cls = ThreadingHTTPServer
-    except Exception:
-        class ThreadingHTTPServerFallback(socketserver.ThreadingMixIn, http.server.HTTPServer):
-            daemon_threads = True
-        server_cls = ThreadingHTTPServerFallback
 
-    server_cls.allow_reuse_address = True
-    with server_cls(("0.0.0.0", PORT), QuantTerminalHandler) as httpd:
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+
+    httpd = None
+    for attempt in range(1, 11):
         try:
-            httpd.serve_forever()
-        except KeyboardInterrupt:
-            print("\n🛑 หยุดการทำงานของ Terminal Server เรียบร้อย")
+            httpd = RobustThreadingHTTPServer(("0.0.0.0", PORT), QuantTerminalHandler)
+            break
+        except OSError as e:
+            if attempt == 10:
+                print(f"❌ ไม่สามารถเปิดพอร์ต {PORT} ได้หลังพยายาม 10 ครั้ง: {e}")
+                sys.exit(1)
+            print(f"⏳ พอร์ต {PORT} กำลังรอเคลียร์ (ความพยายาม {attempt}/10)...")
+            time.sleep(1)
+
+    srv_thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+    srv_thread.start()
+
+    while not _shutdown_event.is_set():
+        _shutdown_event.wait(0.5)
+
+    print("🛑 กำลังหยุดการทำงานของ HTTP Server...")
+    httpd.shutdown()
+    httpd.server_close()
+    print("👋 ปิด Terminal Server เรียบร้อยสมบูรณ์")
 
 if __name__ == "__main__":
     run_server()
