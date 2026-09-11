@@ -647,7 +647,7 @@ HTML_PAGE = """<!DOCTYPE html>
                 if (isRestart) {
                     cmdStatus.className = 'cmd-status success';
                     cmdStatus.textContent = '🔄 กำลังรีสตาร์ทระบบและดึงโค้ดล่าสุด... สตรีมสดจะกลับมาใน 3-5 วินาที';
-                    consoleEl.textContent += '\n[WEB-TERMINAL] 🔄 ส่งสัญญาณรีสตาร์ทระบบสำเร็จ กำลังเชื่อมต่อใหม่อัตโนมัติ...\n';
+                    consoleEl.textContent += '\\n[WEB-TERMINAL] 🔄 ส่งสัญญาณรีสตาร์ทระบบสำเร็จ กำลังเชื่อมต่อใหม่อัตโนมัติ...\\n';
                 } else {
                     cmdStatus.className = 'cmd-status error';
                     cmdStatus.textContent = '❌ ไม่สามารถส่งคำสั่งได้: ' + err.message;
