@@ -873,3 +873,19 @@
 ╚══════════════════════════════════════════════════════════════════════════════╝
 [2026-09-11 09:15:27] ⚠️ Error VET/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=1h&limit=210&symbol=VETUSDT
 [2026-09-11 09:37:52] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔄 RECOVERED ACTIVE POSITION - NEAR/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine                : Binance Testnet Spot
+║  • Symbol                : NEAR/USDT
+║  • Entry Price           : $2.437000
+║  • Position Size         : 3.4
+║  • Take Profit (TP)      : $2.501464
+║  • Stop Loss (SL)        : $2.398321
+║  • Breakeven Locked      : False
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-11 13:18:14] 🔄 [RECOVER] กู้คืนสถานะการถือครอง NEAR/USDT @ $2.437000 (TP: $2.501464 | SL: $2.398321)
+[2026-09-11 13:18:17] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9969.76 USDT)
+[2026-09-11 13:18:17] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-11 13:18:17] 🧠 [GROQ AI ENGINE] สถานะ: 🟢 พร้อมใช้งาน (v3 News-Aware)
+[2026-09-11 13:18:17] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
