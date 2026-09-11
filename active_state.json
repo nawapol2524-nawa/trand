@@ -21,11 +21,11 @@
   },
   "NEAR/USDT": {
     "in_position": false,
-    "entry_price": 2.443,
+    "entry_price": 2.449,
     "position_size": 3.4,
-    "tp": 3.7470000000000003,
-    "sl": 2.474214285714286,
-    "be_set": true,
+    "tp": 2.4968571428571424,
+    "sl": 2.420285714285714,
+    "be_set": false,
     "consecutive_losses": 0,
     "cooldown_until": null
   },
