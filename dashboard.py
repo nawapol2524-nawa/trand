@@ -473,10 +473,16 @@ HTML_PAGE = """<!DOCTYPE html>
             consoleEl.scrollTop = consoleEl.scrollHeight;
         }
 
+        let isFetching = false;
         // ฟังก์ชันดึง Console Log แบบ AJAX Real-time ทุก 2 วินาที (ไร้การ Reload หน้าเว็บ)
         async function fetchConsoleLogs() {
+            if (isFetching) return;
+            isFetching = true;
             try {
-                const res = await fetch('/api/console?t=' + Date.now());
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 3500);
+                const res = await fetch('/api/console?t=' + Date.now(), { signal: controller.signal });
+                clearTimeout(timeoutId);
                 if (res.ok) {
                     const text = await res.text();
                     
@@ -491,9 +497,13 @@ HTML_PAGE = """<!DOCTYPE html>
 
                     const now = new Date();
                     lastSyncTimeEl.textContent = 'Sync: ' + now.toLocaleTimeString('th-TH');
+                } else {
+                    lastSyncTimeEl.textContent = 'Sync: HTTP ' + res.status;
                 }
             } catch (err) {
-                console.error('Fetch log error:', err);
+                lastSyncTimeEl.textContent = 'Sync: ' + (err.name === 'AbortError' ? 'Timeout' : 'Reconnecting...');
+            } finally {
+                isFetching = false;
             }
         }
 
@@ -583,28 +593,48 @@ HTML_PAGE = """<!DOCTYPE html>
 
 class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
     timeout = 10  # ป้องกัน Socket ค้างไม่เกิน 10 วินาที
-    
+    protocol_version = "HTTP/1.1"
+
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "*")
+        self.send_header("Content-Length", "0")
+        self.send_header("Connection", "close")
+        self.end_headers()
+
     def do_GET(self):
         # 1. API: ส่งคืนข้อความ Console สดล่าสุด
         if self.path.startswith("/api/console"):
+            log_content = get_console_text(lines=180)
+            encoded = log_content.encode("utf-8")
             self.send_response(200)
             self.send_header("Content-type", "text/plain; charset=utf-8")
+            self.send_header("Content-Length", str(len(encoded)))
+            self.send_header("Access-Control-Allow-Origin", "*")
             self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+            self.send_header("Connection", "close")
             self.end_headers()
-            log_content = get_console_text(lines=180)
-            self.wfile.write(log_content.encode("utf-8"))
+            self.wfile.write(encoded)
             return
 
         # 2. Web Page: หน้าจอเดี่ยว Pure Live Terminal
         if self.path == "/" or self.path.startswith("/?"):
+            encoded = HTML_PAGE.encode("utf-8")
             self.send_response(200)
             self.send_header("Content-type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(encoded)))
+            self.send_header("Access-Control-Allow-Origin", "*")
             self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+            self.send_header("Connection", "close")
             self.end_headers()
-            self.wfile.write(HTML_PAGE.encode("utf-8"))
+            self.wfile.write(encoded)
             return
 
         self.send_response(404)
+        self.send_header("Content-Length", "0")
+        self.send_header("Connection", "close")
         self.end_headers()
 
     def do_POST(self):
@@ -783,11 +813,15 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
             self.end_headers()
 
     def _send_json(self, data, status=200):
+        encoded = json.dumps(data, ensure_ascii=False).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-type", "application/json; charset=utf-8")
+        self.send_header("Content-Length", str(len(encoded)))
+        self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+        self.send_header("Connection", "close")
         self.end_headers()
-        self.wfile.write(json.dumps(data, ensure_ascii=False).encode("utf-8"))
+        self.wfile.write(encoded)
 
     def log_message(self, format, *args):
         pass
