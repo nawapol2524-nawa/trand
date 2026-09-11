@@ -118,12 +118,12 @@
     ]
   },
   "NEAR/USDT": {
-    "total_trades": 5,
-    "wins": 4,
+    "total_trades": 6,
+    "wins": 5,
     "losses": 1,
     "learned_params": {
       "min_volume_ratio": 1.1,
-      "min_adx": 11.0
+      "min_adx": 10.5
     },
     "reflections": [
       {
@@ -161,6 +161,12 @@
         "type": "WIN",
         "pnl": "+1.19%",
         "lesson": "Win (+1.19%): ลดเกณฑ์ Vol->1.1x, ADX->11.0"
+      },
+      {
+        "date": "2026-09-11 15:48:30",
+        "type": "WIN",
+        "pnl": "+0.94%",
+        "lesson": "Win (+0.94%): ลดเกณฑ์ Vol->1.1x, ADX->10.5"
       }
     ]
   },
