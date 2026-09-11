@@ -109,7 +109,7 @@ def print_highlight_box(title, items, icon="⚡"):
     except Exception:
         pass
 
-def print_quant_table(thai_time, rows, account_info, memory):
+def print_quant_table(thai_time, rows, account_info, memory, h1_bull=True):
     """ตารางสรุปสถานะ Forex แบบ Compact สไตล์ Quant Terminal ไม่สแปมซ้ำซ้อน"""
     curr = account_info.get("currency", "USD")
     bal = float(account_info.get("balance", 0.0))
@@ -126,10 +126,11 @@ def print_quant_table(thai_time, rows, account_info, memory):
     account_profit_usd = round(bal - initial_demo_bal, 2)
     account_profit_thb = round(account_profit_usd * usd_thb_rate, 1)
 
+    h1_str = "🟢 BULLISH" if h1_bull else "🔴 BEARISH"
     lines = [
         "╔══════════════════════════════════════════════════════════════════════════════════╗",
         f"║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: {TARGET_DEMO_ACCOUNT:<24})║",
-        f"║  🕒 เวลาไทย: {thai_time} | โหมด: DEMO TRAINING (100% ห้ามใช้เงินจริง)       ║",
+        f"║  🕒 {thai_time} | H1 Trend: {h1_str} | โหมด: DEMO TRAINING (ห้ามเงินจริง)   ║",
         "╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣",
         "║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║",
         "╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣"
@@ -360,17 +361,35 @@ def calculate_bb_rsi(candles, period=20, std_dev=2.0, rsi_period=14):
     prev2_body = abs(prev2['close'] - prev2['open'])
 
     is_hammer = (lower_wick >= 2 * body) and (upper_wick <= candle_range * 0.1) and (body > 0)
+    is_pin_bar = (lower_wick >= 0.55 * candle_range) and (upper_wick <= 0.25 * candle_range) and (candle_range > 0)
     is_bullish_engulfing = (prev['close'] < prev['open']) and (curr['close'] > curr['open']) and (curr['open'] <= prev['close']) and (curr['close'] >= prev['open']) and (body > prev_body)
     is_morning_star = (prev2['close'] < prev2['open']) and (prev_body < (prev2_body * 0.3)) and (curr['close'] > curr['open']) and (curr['close'] > (prev2['close'] + prev2['open']) / 2)
 
-    has_bullish_pattern = is_hammer or is_bullish_engulfing or is_morning_star
-    pattern_name = "Hammer" if is_hammer else ("Engulf" if is_bullish_engulfing else ("MornStar" if is_morning_star else "None"))
+    # 🌊 Brad Goh Step 4: Liquidity Sweep (ราคากวาด Low แท่งก่อนหน้าแล้วดึงกลับขึ้นมา)
+    prior_lows = [c['low'] for c in candles[-11:-1]]
+    prior_swing_low = min(prior_lows) if prior_lows else curr['low']
+    is_liquidity_sweep = (curr['low'] < prior_swing_low) and (curr['close'] > prior_swing_low)
+
+    has_bullish_pattern = is_hammer or is_pin_bar or is_bullish_engulfing or is_morning_star or is_liquidity_sweep
+    pattern_name = "Sweep+Rej" if (is_liquidity_sweep and (is_pin_bar or is_hammer)) else (
+        "LiqSweep" if is_liquidity_sweep else (
+            "Hammer" if is_hammer else (
+                "PinBar" if is_pin_bar else (
+                    "Engulf" if is_bullish_engulfing else (
+                        "MornStar" if is_morning_star else "None"
+                    )
+                )
+            )
+        )
+    )
 
     return {
         'price': closes[-1],
         'sma': sma,
         'has_bullish_pattern': has_bullish_pattern,
         'pattern_name': pattern_name,
+        'is_liquidity_sweep': is_liquidity_sweep,
+        'is_pin_bar': is_pin_bar,
         'upper_bb': upper_bb,
         'lower_bb': lower_bb,
         'bb_width': bb_width,
@@ -802,19 +821,23 @@ async def deriv_engine():
                                     except Exception:
                                         pass
 
-                        # ตรวจสอบจุดปิดไม้: ชนเส้น Trailing SL หรือหมดเวลา 15 นาที
+                        # ตรวจสอบจุดปิดไม้: ชนเส้น Trailing SL, ชนเป้าหมาย Swing High / Upper BB, หรือหมดเวลา 15 นาที
                         hold_sec = time.time() - active_trade.get('start_time', time.time())
                         is_sl = diff_pips <= trailing_sl_pips
+                        is_bb_target = (cur_price >= primary_indicators['upper_bb']) and (diff_pips >= 10.0)
                         is_timeout = hold_sec >= 900 and not (diff_pips >= 30.0)
                         is_be_hit = is_sl and active_trade.get('be_locked', False)
 
-                        if is_be_hit or is_sl or is_timeout:
+                        if is_be_hit or is_sl or is_timeout or is_bb_target:
                             profit_usd = (diff_pips * 0.10) # 0.01 lot pip value ~$0.10
                             profit_thb = profit_usd * usd_thb_rate
                             
                             if is_be_hit:
                                 status_title = "SL-BREAKEVEN CLOSED"
                                 icon_str = "🛡️"
+                            elif is_bb_target:
+                                status_title = "TAKE PROFIT (UPPER BB / SWING HIGH - เข้าไวออกไวกว่า)"
+                                icon_str = "🎯"
                             elif profit_usd >= 0:
                                 status_title = "TAKE PROFIT (WIN)"
                                 icon_str = "🎯"
@@ -881,12 +904,28 @@ async def deriv_engine():
 
                             is_squeezed = bb_width < 0.0006
                             has_pattern = primary_indicators.get('has_bullish_pattern', False)
+                            is_sweep = primary_indicators.get('is_liquidity_sweep', False)
+                            is_h1_bull = getattr(deriv_engine, "_cached_h1_bull", True)
+
+                            # 🛡️ Brad Goh Step 1: Trend Alignment (1H ต้องเป็น Bullish > EMA50)
+                            # A+ Setup 1: Pullback แตะ Lower BB + RSI Oversold (เมื่อ 1H Bullish)
+                            is_pullback = (price <= lower_bb * 1.0002) and (rsi <= effective_oversold) and not is_squeezed and is_h1_bull
                             
-                            is_pullback = price <= lower_bb and rsi <= effective_oversold and not is_squeezed
-                            is_reversal = has_pattern and (rsi <= 45) and not is_squeezed
+                            # A+ Setup 2: Reversal Pattern / Liquidity Sweep (เมื่อ 1H Bullish)
+                            is_reversal = (has_pattern or is_sweep) and (rsi <= 45.0) and not is_squeezed and is_h1_bull
+
+                            # A+ Setup 3: Extreme Confluence (คลิป 2) - RSI ดิ่งลึก (<25) + หลุด BB + มีแท่งกลับตัว/Sweep
+                            is_extreme_confluence = (rsi <= 25.0) and (price <= lower_bb) and (has_pattern or is_sweep) and not is_squeezed
                             
-                            if (is_pullback or is_reversal) and not is_news_freeze():
-                                trigger_name = "Candle_Reversal" if is_reversal and not is_pullback else "Pullback_Oversold"
+                            if (is_pullback or is_reversal or is_extreme_confluence) and not is_news_freeze():
+                                if is_extreme_confluence:
+                                    trigger_name = "Extreme_Confluence"
+                                elif is_sweep:
+                                    trigger_name = f"LiqSweep_{primary_indicators.get('pattern_name', 'Rej')}"
+                                elif is_reversal and not is_pullback:
+                                    trigger_name = f"Candle_{primary_indicators.get('pattern_name', 'Reversal')}"
+                                else:
+                                    trigger_name = "Pullback_Oversold"
                                 
                                 # 4.1 ตรวจสอบ Live Spread Filter (Ask - Bid <= MAX_SPREAD_PIPS) ก่อนเปิดไม้
                                 spread_pips, ask_p, bid_p = await get_live_spread(ws, PRIMARY_SYMBOL)
@@ -939,7 +978,7 @@ async def deriv_engine():
 
                     # 5. พิมพ์ตารางสถานะ Quant Terminal
                     if scan_rows:
-                        print_quant_table(get_thai_time(), scan_rows, account_info, memory)
+                        print_quant_table(get_thai_time(), scan_rows, account_info, memory, h1_bull=getattr(deriv_engine, "_cached_h1_bull", True))
 
                     # วนพัก 60 วินาที โดยส่ง Keepalive Ping {"ping": 1} ทุกๆ 20 วินาที เพื่อรักษาการเชื่อมต่อ
                     for _ in range(3):

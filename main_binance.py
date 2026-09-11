@@ -531,13 +531,18 @@ def calculate_indicators(df):
 
     df['is_doji'] = body <= (candle_range * 0.1)
     df['is_hammer'] = (lower_wick >= 2 * body) & (upper_wick <= candle_range * 0.1) & (body > 0)
+    df['is_pin_bar'] = (lower_wick >= 0.55 * candle_range) & (upper_wick <= 0.25 * candle_range) & (candle_range > 0)
     df['is_shooting_star'] = (upper_wick >= 2 * body) & (lower_wick <= candle_range * 0.1) & (body > 0)
     df['is_bullish_engulfing'] = (prev_close < prev_open) & (df['close'] > df['open']) & (df['open'] <= prev_close) & (df['close'] >= prev_open) & (body > prev_body)
     df['is_morning_star'] = (prev2_close < prev2_open) & (prev_body < (prev2_body * 0.3)) & (df['close'] > df['open']) & (df['close'] > (prev2_close + prev2_open) / 2)
 
+    # 🌊 Brad Goh Step 4: Liquidity Sweep (ราคากวาด Low 10 แท่งก่อนหน้าแล้วดึงกลับ)
+    prior_low_10 = df['low'].shift(1).rolling(window=10).min()
+    df['is_liquidity_sweep'] = (df['low'] < prior_low_10) & (df['close'] > prior_low_10)
+
     return df
 
-def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi, adx, atr, bb_lower, wyckoff_valid, btc_bullish, is_hammer, is_bullish_engulfing, is_morning_star, is_4h_bull):
+def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi, adx, atr, bb_lower, wyckoff_valid, btc_bullish, is_hammer, is_bullish_engulfing, is_morning_star, is_4h_bull, is_pin_bar=False, is_liquidity_sweep=False):
     learned = memory[sym]["learned_params"]
     min_vol = learned.get("min_volume_ratio", 1.30)
     min_adx = learned.get("min_adx", 14.0)
@@ -558,27 +563,37 @@ def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume
     decision = "WAIT"
     reason = f"ยังไม่ทะลุ Swing High ${prev_high:.6f}"
 
+    has_bullish_pattern = is_hammer or is_pin_bar or is_bullish_engulfing or is_morning_star or is_liquidity_sweep
+
+    # 🛡️ Brad Goh Step 1: Trend Alignment & Entry Models
+    # กลยุทธ์ 1: Trend Breakout
     is_strat1 = is_htf_bull and is_4h_bull and is_breakout and vol_confirmed and rsi_valid and adx_valid and wyckoff_valid and gatekeeper_pass
-    is_strat2 = (current_price <= bb_lower * 1.002) and (rsi <= 40)
-    has_bullish_pattern = is_hammer or is_bullish_engulfing or is_morning_star
-    is_strat3 = has_bullish_pattern and (rsi <= 45)
+
+    # กลยุทธ์ 2: Pullback ช้อนแนวรับเมื่อ 1H เป็น Bullish หรือ Extreme Confluence (คลิป 2)
+    is_strat2_trend = is_htf_bull and (current_price <= bb_lower * 1.002) and (rsi <= 40)
+    is_strat2_extreme = (current_price <= bb_lower) and (rsi <= 28.0) and has_bullish_pattern
+    is_strat2 = is_strat2_trend or is_strat2_extreme
+
+    # กลยุทธ์ 3: Candle Reversal / Liquidity Sweep คอนเฟิร์ม (Brad Goh Step 4)
+    is_strat3 = is_htf_bull and has_bullish_pattern and (rsi <= 45)
 
     if is_strat1:
         decision = "BUY"
         reason = f"[Breakout] ยืนยันครบ | RSI:{rsi:.1f} ADX:{adx:.1f} Vol:{vol_ratio:.2f}x"
     elif is_strat2:
         decision = "BUY"
-        reason = f"[Pullback_Sniper] ช้อนถูก | RSI:{rsi:.1f} แตะ BB-Lower"
+        trigger_sub = "Extreme_Confluence" if is_strat2_extreme and not is_strat2_trend else "Pullback_Sniper"
+        reason = f"[{trigger_sub}] ช้อนแนวรับ | RSI:{rsi:.1f} แตะ BB-Lower"
     elif is_strat3:
         decision = "BUY"
-        pattern_name = "Hammer" if is_hammer else ("Engulfing" if is_bullish_engulfing else "MorningStar")
+        pattern_name = "LiqSweep" if is_liquidity_sweep else ("Hammer" if is_hammer else ("PinBar" if is_pin_bar else ("Engulf" if is_bullish_engulfing else "MornStar")))
         reason = f"[Candle_Reversal] พบ {pattern_name} | RSI:{rsi:.1f}"
     elif is_breakout and not gatekeeper_pass:
         reason = "ระงับ Breakout (รอ BTC ยืนเหนือ 1h EMA200)"
+    elif not is_htf_bull and not is_strat2_extreme: 
+        reason = "ราคาใต้ 1h EMA200 (รอ Trend Alignment)"
     elif not is_4h_bull and not is_strat2:
         reason = "ราคาใต้ 4h EMA50 (MTF)"
-    elif not is_htf_bull and not is_strat2: 
-        reason = "ราคาใต้ 1h EMA200"
 
     return {
         "decision": decision,
@@ -703,11 +718,18 @@ def process_symbol(sym, btc_bullish):
             _htf_cache[sym] = {'ema_200_1h': ema_200_1h, 'is_4h_bull': is_4h_bull, 'ts': now_ts}
 
         is_hammer = bool(current_row['is_hammer'])
+        is_pin_bar = bool(current_row.get('is_pin_bar', False))
         is_bullish_engulfing = bool(current_row['is_bullish_engulfing'])
         is_morning_star = bool(current_row['is_morning_star'])
+        is_liquidity_sweep = bool(current_row.get('is_liquidity_sweep', False))
 
         # 2. ประเมินตลาด
-        eval_result = ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi_14, adx_14, atr_14, bb_lower, wyckoff_valid, btc_bullish, is_hammer, is_bullish_engulfing, is_morning_star, is_4h_bull)
+        eval_result = ag_evaluate_market(
+            sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h,
+            rsi_14, adx_14, atr_14, bb_lower, wyckoff_valid, btc_bullish,
+            is_hammer, is_bullish_engulfing, is_morning_star, is_4h_bull,
+            is_pin_bar=is_pin_bar, is_liquidity_sweep=is_liquidity_sweep
+        )
         
         s = state[sym]
         is_cooling_down = s['cooldown_until'] and datetime.utcnow() < s['cooldown_until']
