@@ -555,6 +555,20 @@ def build_ai_analysis_report(cycle_start, cycle_end, thai_now):
     cycle_start_str = cycle_start.strftime("%Y-%m-%d %H:%M:%S")
     cycle_end_str = cycle_end.strftime("%Y-%m-%d %H:%M:%S")
 
+    # คำนวณสถานะความเสี่ยงข่าว CPI (ตามแผนกลยุทธ์ Gemini Spark)
+    now_th = datetime.utcnow() + timedelta(hours=7)
+    if now_th.year == 2026 and now_th.month == 9 and now_th.day == 11:
+        if (19, 0) <= (now_th.hour, now_th.minute) < (20, 30):
+            cpi_status_note = "🔴 ACTIVE (19:00 - 20:30 น.) - งดเปิดไม้ใหม่ทุกตลาดเพื่อเลี่ยงพายุ CPI & Whipsaw"
+        elif (18, 30) <= (now_th.hour, now_th.minute) < (19, 0):
+            cpi_status_note = "⚠️ PRE-NEWS WINDOW (18:30 - 19:00 น.) - เตรียมปิดไม้เสี่ยงก่อนข่าว CPI 19:30 น."
+        elif (now_th.hour, now_th.minute) < (18, 30):
+            cpi_status_note = "⏳ SCHEDULED - เตรียมล็อกระบบ 19:00 - 20:30 น. คืนนี้ (US CPI 19:30 น.)"
+        else:
+            cpi_status_note = "🟢 COMPLETED - พ้นช่วงอันตรายข่าว CPI เรียบร้อยแล้ว ระบบปลดล็อก 100%"
+    else:
+        cpi_status_note = "⚪ NORMAL - ไม่มีมาตรการ Red Folder Freeze เฉพาะกิจในวันนี้"
+
     header_block = (
         f"╔══════════════════════════════════════════════════════════════════════════════════╗\n"
         f"║  🏛️ AG 2.0 QUANT SYSTEM | DAILY 24H EXECUTIVE AI REPORT (GEMINI SPARK AUDIT)   ║\n"
@@ -569,6 +583,7 @@ def build_ai_analysis_report(cycle_start, cycle_end, thai_now):
         f"• 🎯 สถิติการเทรดรอบวัน (Stats)     : ทั้งหมด {total_trades} ไม้ (ชนะ {wins} | แพ้ {losses} | Breakeven {be_count}) | Win Rate: {win_rate:.1f}%\n"
         f"• ⚡ สถานะเครื่องยนต์ (Engines)    : {engine_status_summary}\n"
         f"• 🪙 สถานะพอร์ตปัจจุบัน (Positions) : {pos_status}\n"
+        f"• 🔴 มาตรการความเสี่ยงข่าว CPI (Risk Window) : {cpi_status_note}\n"
         f"{'═' * 82}\n\n"
         f"🚨 [24H SYSTEM HEALTH & ERRORS]\n"
         f"{'─' * 82}\n"

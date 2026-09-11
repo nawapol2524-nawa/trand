@@ -450,6 +450,32 @@ Reply ONLY with YES or NO."""
         return True
 
 # ==========================================
+# 🔴 HIGH-IMPACT CPI NEWS RISK MANAGEMENT (GEMINI SPARK AUDIT)
+# ==========================================
+def is_cpi_news_freeze():
+    """
+    ตัวล็อกงดเปิดไม้ใหม่ช่วงข่าวกล่องแดงแรงสุด (US Core CPI 19:30 น.)
+    ตามแผนกลยุทธ์ของ Gemini Spark: ช่วง 19:00 - 20:30 น. ของวันที่ 11 ก.ย. 2026
+    เมื่อพ้น 20:30:00 น. จะปลดล็อกตัวเองและกลับมาสแกนเทรดอัตโนมัติ 100%
+    """
+    now_th = datetime.utcnow() + timedelta(hours=7)
+    if now_th.year == 2026 and now_th.month == 9 and now_th.day == 11:
+        if (19, 0) <= (now_th.hour, now_th.minute) < (20, 30):
+            return True
+    return False
+
+def is_pre_cpi_safety_exit_time():
+    """
+    ช่วงเวลา Pre-News Safety Exit (18:30 - 19:29 น. วันที่ 11 ก.ย. 2026)
+    หากมีไม้ค้างอยู่ ให้ปิดทำกำไรหรือเคลียร์พอร์ตล่วงหน้า 1 ชม. ก่อนข่าว CPI ตามแผน Spark เพื่อถือเงินสดปลอดภัย 100%
+    """
+    now_th = datetime.utcnow() + timedelta(hours=7)
+    if now_th.year == 2026 and now_th.month == 9 and now_th.day == 11:
+        if (18, 30) <= (now_th.hour, now_th.minute) < (19, 30):
+            return True
+    return False
+
+# ==========================================
 # 🔄 AUTO-PATCH SYSTEM (DELEGATED TO SUPERVISOR)
 # ==========================================
 # หมายเหตุ: ระบบ Auto-Patch ผ่าน Git ถูกรวมศูนย์ไว้ที่ main.py (Supervisor) เพียงจุดเดียว
@@ -698,6 +724,9 @@ def process_symbol(sym, btc_bullish):
             pnl = ((current_price - s['entry_price']) / s['entry_price']) * 100
             pos_display = f"🟢 +{pnl:.2f}%" if pnl >= 0 else f"🔴 {pnl:.2f}%"
             status_display = "BE-Locked" if s.get('be_set') else "Holding"
+        elif is_cpi_news_freeze():
+            pos_display = "⚪ FLAT"
+            status_display = "CPI-Freeze"
         elif any_in_position:
             status_display = "Standby"
         else:
@@ -721,6 +750,10 @@ def process_symbol(sym, btc_bullish):
 
         # 3. ตัดสินใจซื้อ (Single-Slot Sniper: เข้าได้เมื่อไม่มีเหรียญใดถือครองอยู่เลย)
         if not s['in_position'] and not is_cooling_down and not any_in_position:
+            # 🔴 ตัวล็อกงดเปิดออเดอร์ใหม่ช่วงข่าวกล่องแดง (US CPI News Freeze 19:00 - 20:30 น.)
+            if is_cpi_news_freeze():
+                return summary_row
+
             if eval_result["decision"] == "BUY":
                 # ปรึกษา Groq AI
                 is_ai_approved = ask_groq_ai_sentiment(sym, eval_result["reason"])
@@ -851,8 +884,14 @@ def process_symbol(sym, btc_bullish):
                         except Exception:
                             pass
 
-            # ปิดออเดอร์เมื่อราคาตัดต่ำกว่าเส้น Stop Loss (รวมทั้ง SL ตัดขาดทุน และ SL ล็อกกำไร)
-            if current_price <= s['sl']:
+            # 🔴 PRE-CPI SAFETY EXIT: หากถึงเวลา 18:30 - 19:29 น. วันนี้ (1 ชม. ก่อนข่าว CPI 19:30 น.)
+            # สั่งปิดทำกำไร/ตัดความเสี่ยงออกก่อนตามแผนกลยุทธ์ของ Gemini Spark เพื่อถือเงินสดปลอดภัย 100%
+            is_pre_cpi_exit = is_pre_cpi_safety_exit_time()
+            if is_pre_cpi_exit:
+                log_trade(f"🛡️ [PRE-CPI SAFETY EXIT {sym}] ถึงเวลา 18:30 น. (1 ชม. ก่อนข่าว CPI) สั่งปิดไม้เพื่อถือเงินสด 100% ตามแผน Spark!")
+
+            # ปิดออเดอร์เมื่อราคาตัดต่ำกว่าเส้น Stop Loss หรือถึงเวลา Pre-CPI Safety Exit
+            if current_price <= s['sl'] or is_pre_cpi_exit:
                 try:
                     base_coin = sym.split('/')[0]
                     free_bal = exchange.fetch_free_balance().get(base_coin, 0)
@@ -885,7 +924,33 @@ def process_symbol(sym, btc_bullish):
                     s['in_position'] = False
                     memory[sym]["total_trades"] += 1
 
-                    if s['be_set'] and real_pnl_pct >= 0:
+                    if is_pre_cpi_exit:
+                        # ปิดไม้เพื่อความปลอดภัยก่อนข่าว CPI
+                        s['consecutive_losses'] = 0
+                        if real_pnl_pct >= 0: memory[sym]["wins"] += 1
+                        else: memory[sym]["losses"] += 1
+                        lesson = ag_learn_from_trade(sym, "WIN" if real_pnl_pct >= 0 else "LOSS", real_pnl_pct * 100)
+                        print_highlight_box(
+                            f"PRE-CPI SAFETY EXIT - {sym}",
+                            [
+                                ("Exit Price", f"${exit_price:.6f}"),
+                                ("Net Return", f"{real_pnl_pct*100:+.2f}%"),
+                                ("Net PnL", f"{net_pnl_usdt:+.4f} USDT ({net_pnl_thb:+.2f} บาท)"),
+                                ("Status", "🛡️ เคลียร์พอร์ตปลอดภัยก่อนข่าว CPI ตามแผน Spark"),
+                                ("AI Reflection", lesson)
+                            ],
+                            icon="🛡️"
+                        )
+                        if notifier:
+                            try:
+                                notifier.notify_system(
+                                    "Binance Pre-CPI Safety Exit",
+                                    f"🛡️ ปิดไม้ {sym} ที่ ${exit_price:.6f} ({real_pnl_pct*100:+.2f}% | {net_pnl_usdt:+.4f} USDT)\n"
+                                    f"• ถือเงินสด 100% ล่วงหน้าก่อนข่าว CPI ออกเวลา 19:30 น. สำเร็จ!"
+                                )
+                            except Exception:
+                                pass
+                    elif s['be_set'] and real_pnl_pct >= 0:
                         # ปิดแบบเสมอตัวหรือกำไร Breakeven/Trailing
                         s['consecutive_losses'] = 0
                         memory[sym]["wins"] += 1

@@ -303,6 +303,18 @@ def is_news_freeze():
             return True
     return False
 
+def is_cpi_news_freeze():
+    """
+    ตัวล็อกงดเปิดไม้ใหม่ช่วงข่าวเงินเฟ้อสหรัฐฯ (US CPI 19:30 น.)
+    ตามแผนกลยุทธ์ของ Gemini Spark: ช่วง 19:00 - 20:30 น. ของวันที่ 11 ก.ย. 2026
+    เมื่อพ้น 20:30:00 น. จะปลดล็อกตัวเองและกลับมาสแกนเทรดอัตโนมัติ 100%
+    """
+    now_th = datetime.utcnow() + timedelta(hours=7)
+    if now_th.year == 2026 and now_th.month == 9 and now_th.day == 11:
+        if (19, 0) <= (now_th.hour, now_th.minute) < (20, 30):
+            return True
+    return False
+
 # ==========================================
 # 📊 TECHNICAL INDICATORS
 # ==========================================
@@ -647,6 +659,12 @@ async def deriv_engine():
                         else:
                             log("⏸️ [ROLLOVER WINDOW 03:45-06:15] เข้าสู่ช่วง Rollover Spread Freeze (งดเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่าง)...")
 
+                    if is_cpi_news_freeze():
+                        if active_trade:
+                            log("🛡️ [CPI NEWS FREEZE 19:00-20:30] New Entry Freeze (ข่าว US CPI) แต่ยังคงเฝ้าดูแล SL/TP ของไม้ที่ถืออยู่ 100%")
+                        else:
+                            log("⏸️ [CPI NEWS FREEZE 19:00-20:30] เข้าสู่ช่วง US CPI Red Folder Freeze (งดเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่างและ Slippage)...")
+
                     # 1. ขอข้อมูลแท่งเทียน H1 ของ PRIMARY_SYMBOL (แคช 5 นาทีเพื่อ Low-CPU)
                     now_ts = time.time()
                     if not hasattr(deriv_engine, "_last_h1_time") or (now_ts - deriv_engine._last_h1_time > 300):
@@ -843,10 +861,10 @@ async def deriv_engine():
                             active_trade = None
                             save_state(None) # ล้างสถานะไม้ในไฟล์
 
-                    # 4. สแกนหาจังหวะเปิดไม้ใหม่ (เมื่อไม่มีไม้ค้าง และไม่อยู่ในช่วง Rollover Freeze)
+                    # 4. สแกนหาจังหวะเปิดไม้ใหม่ (เมื่อไม่มีไม้ค้าง และไม่อยู่ในช่วง Rollover Freeze หรือ CPI Freeze)
                     elif not active_trade and primary_indicators:
-                        if is_rollover:
-                            # New Entry Freeze ในช่วง Rollover 03:45 - 06:15 น. (ห้ามเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่าง)
+                        if is_rollover or is_cpi_news_freeze():
+                            # New Entry Freeze ในช่วง Rollover 03:45 - 06:15 น. หรือช่วงข่าว CPI 19:00 - 20:30 น.
                             pass
                         else:
                             price = primary_indicators['price']
