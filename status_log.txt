@@ -7,49 +7,17 @@
 📊 [24H DAILY EXECUTIVE RECAP]
 ──────────────────────────────────────────────────────────────────────────────────
 • 🕒 รอบเวลาวิเคราะห์ (24H Cycle) : 2026-09-11 09:00:00 -> 2026-09-12 09:00:00 (เวลาไทย UTC+7)
-• 🕒 อัปเดตข้อมูลล่าสุด (Last Sync) : 2026-09-12 06:15:26 (เวลาไทย)
-• 💰 ยอด PnL รวมรอบ 24 ชม.        : -0.2145 USDT | +0.00 USD (≈ -7.29 บาท)
-• 🎯 สถิติการเทรดรอบวัน (Stats)     : ทั้งหมด 1 ไม้ (ชนะ 0 | แพ้ 1 | Breakeven 0) | Win Rate: 0.0%
+• 🕒 อัปเดตข้อมูลล่าสุด (Last Sync) : 2026-09-12 06:36:45 (เวลาไทย)
+• 💰 ยอด PnL รวมรอบ 24 ชม.        : -0.3471 USDT | +0.00 USD (≈ -11.80 บาท)
+• 🎯 สถิติการเทรดรอบวัน (Stats)     : ทั้งหมด 2 ไม้ (ชนะ 0 | แพ้ 2 | Breakeven 0) | Win Rate: 0.0%
 • ⚡ สถานะเครื่องยนต์ (Engines)    : BinanceEngine (🟢 ONLINE) | WebDashboard (🟢 ONLINE) | DerivSyntheticEngine (🟢 ONLINE)
-• 🪙 สถานะพอร์ตปัจจุบัน (Positions) : NEAR/USDT (Entry: $2.4310, Size: 3.4)
+• 🪙 สถานะพอร์ตปัจจุบัน (Positions) : ⚪ FLAT ทุกเหรียญ (ไม่มีออเดอร์ค้าง สแตนด์บายรอสัญญาณใหม่)
 • 🔴 มาตรการความเสี่ยงข่าว CPI (Risk Window) : ⚪ NORMAL - ไม่มีมาตรการ Red Folder Freeze เฉพาะกิจในวันนี้
 ══════════════════════════════════════════════════════════════════════════════════
 
 🚨 [24H SYSTEM HEALTH & ERRORS]
 ──────────────────────────────────────────────────────────────────────────────────
-🚨 ตรวจพบสัญญาณแจ้งเตือนทั้งหมด 129 รายการในรอบ 24 ชม.:
-  • [2026-09-12 05:43:09] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
-  • [2026-09-12 05:43:10] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
-  • [2026-09-12 05:43:10] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
-  • [2026-09-12 05:43:10] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
-  • [2026-09-12 05:51:33] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
-  • [2026-09-12 05:51:33] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
-  • [2026-09-12 05:51:33] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
-  • [2026-09-12 05:51:33] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
-  • [2026-09-12 05:51:33] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_10 ได้
-  • [2026-09-12 05:52:39] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
-  • [2026-09-12 05:52:39] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
-  • [2026-09-12 05:52:39] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
-  • [2026-09-12 05:52:40] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
-  • [2026-09-12 05:52:40] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
-  • [2026-09-12 05:52:43] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
-  • [2026-09-12 05:52:43] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
-  • [2026-09-12 05:52:43] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
-  • [2026-09-12 05:52:43] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
-  • [2026-09-12 05:52:43] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_10 ได้
-  • [2026-09-12 05:53:49] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
-  • [2026-09-12 05:53:49] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
-  • [2026-09-12 05:53:50] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
-  • [2026-09-12 05:53:50] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
-  • [2026-09-12 05:53:50] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_10 ได้
-  • [2026-09-12 05:54:55] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
-  • [2026-09-12 05:54:55] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
-  • [2026-09-12 05:54:56] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
-  • [2026-09-12 05:54:56] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
-  • [2026-09-12 05:54:56] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_10 ได้
-  • [2026-09-12 05:57:03] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
-  • [2026-09-12 05:57:03] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
-  • [2026-09-12 05:57:03] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+🚨 ตรวจพบสัญญาณแจ้งเตือนทั้งหมด 161 รายการในรอบ 24 ชม.:
   • [2026-09-12 05:57:04] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
   • [2026-09-12 05:57:04] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
   • [2026-09-12 05:58:09] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
@@ -68,6 +36,38 @@
   • [2026-09-12 06:02:28] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
   • [2026-09-12 06:02:28] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_10 ได้
   • [2026-09-12 06:07:34] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: . กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+  • [2026-09-12 06:16:05] 🚨 [CIRCUIT BREAKER NEAR/USDT] ขาดทุนติด 2 ครั้ง พัก 4 ชม.
+  • [2026-09-12 06:30:05] ⚠️ Error SOL/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=SOLUSDT
+  • [2026-09-12 06:30:43] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:30:43] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:30:43] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:30:43] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:30:43] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
+  • [2026-09-12 06:31:49] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:31:49] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:31:49] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:31:50] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:31:50] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
+  • [2026-09-12 06:32:55] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:32:55] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:32:55] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:32:56] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:32:56] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
+  • [2026-09-12 06:34:01] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:34:02] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:34:02] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:34:03] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:34:03] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
+  • [2026-09-12 06:35:09] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:35:09] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:35:10] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:35:10] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:35:10] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
+  • [2026-09-12 06:36:17] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:36:18] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:36:19] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:36:19] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+  • [2026-09-12 06:36:19] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
 ══════════════════════════════════════════════════════════════════════════════════
 
 📋 [24H TRADE LEDGER]
@@ -141,6 +141,16 @@
 ║  • Strategy Reason       : [Candle_Reversal] พบ LiqSweep | RSI:35.6
 ╚══════════════════════════════════════════════════════════════════════════════╝
 [2026-09-12 05:36:22] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-12 06:16:05] 🚨 [CIRCUIT BREAKER NEAR/USDT] ขาดทุนติด 2 ครั้ง พัก 4 ชม.
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛑 STOP LOSS CUT - NEAR/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exit Price            : $2.392000
+║  • Net Return            : -1.60%
+║  • Net Loss              : -$0.1326 USDT (-4.51 บาท)
+║  • AI Reflection         : Loss (False Break): เพิ่มเกณฑ์ Vol->1.5x, ADX->16.0
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:30:05] ⚠️ Error SOL/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=SOLUSDT
 
 --- DERIV FOREX TRADES (24H) ---
 [2026-09-11 13:18:11] [DERIV-FOREX] 🚀 กำลังตรวจสอบและเชื่อมต่อ Deriv Engine...
@@ -543,6 +553,90 @@
 [2026-09-12 06:07:34] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: . กำลังเชื่อมต่อใหม่ใน 3 วินาที...
 [2026-09-12 06:07:38] [DERIV-SYNTHETIC] ✅ ยืนยันสิทธิ์บัญชี Demo DOT94482469 สำเร็จ! ยอดเงิน: $10,004.73 USD
 [2026-09-12 06:07:39] [DERIV-SYNTHETIC] 🔌 เชื่อมต่อ Deriv WebSocket สำเร็จ! (บัญชี: DOT94482469)
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🧠 GROQ AI SYNTHETIC EVALUATION - R_25
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Decision              : APPROVED (YES)
+║  • Strategy              : Price: 2737.0230 | RSI: 28.5 | Liquidity_Sweep
+║  • Volatility Width      : 0.01066
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:30:42] [DERIV-SYNTHETIC] 🧠 [GROQ AI] อนุมัติการเปิดไม้ R_25 (AI คอนเฟิร์มสัญญาณ Mean Reversion)
+[2026-09-12 06:30:43] [DERIV-SYNTHETIC] 📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers (R_25, Stake: $1.0, Multiplier: x100)...
+[2026-09-12 06:30:43] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:30:43] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:30:43] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:30:43] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:30:43] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🧠 GROQ AI SYNTHETIC EVALUATION - R_25
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Decision              : APPROVED (YES)
+║  • Strategy              : Price: 2736.3570 | RSI: 27.7 | Pullback_LowerBB_Oversold
+║  • Volatility Width      : 0.01076
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:31:48] [DERIV-SYNTHETIC] 🧠 [GROQ AI] อนุมัติการเปิดไม้ R_25 (AI คอนเฟิร์มสัญญาณ Mean Reversion)
+[2026-09-12 06:31:49] [DERIV-SYNTHETIC] 📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers (R_25, Stake: $1.0, Multiplier: x100)...
+[2026-09-12 06:31:49] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:31:49] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:31:49] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:31:50] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:31:50] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🧠 GROQ AI SYNTHETIC EVALUATION - R_25
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Decision              : APPROVED (YES)
+║  • Strategy              : Price: 2735.9890 | RSI: 27.4 | Pullback_LowerBB_Oversold
+║  • Volatility Width      : 0.01082
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:32:55] [DERIV-SYNTHETIC] 🧠 [GROQ AI] อนุมัติการเปิดไม้ R_25 (AI คอนเฟิร์มสัญญาณ Mean Reversion)
+[2026-09-12 06:32:55] [DERIV-SYNTHETIC] 📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers (R_25, Stake: $1.0, Multiplier: x100)...
+[2026-09-12 06:32:55] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:32:55] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:32:55] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:32:56] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:32:56] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🧠 GROQ AI SYNTHETIC EVALUATION - R_25
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Decision              : APPROVED (YES)
+║  • Strategy              : Price: 2736.6690 | RSI: 27.9 | Pullback_LowerBB_Oversold
+║  • Volatility Width      : 0.01071
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:34:01] [DERIV-SYNTHETIC] 🧠 [GROQ AI] อนุมัติการเปิดไม้ R_25 (AI คอนเฟิร์มสัญญาณ Mean Reversion)
+[2026-09-12 06:34:01] [DERIV-SYNTHETIC] 📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers (R_25, Stake: $1.0, Multiplier: x100)...
+[2026-09-12 06:34:01] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:34:02] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:34:02] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:34:03] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:34:03] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🧠 GROQ AI SYNTHETIC EVALUATION - R_25
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Decision              : APPROVED (YES)
+║  • Strategy              : Price: 2738.0950 | RSI: 30.3 | Liquidity_Sweep
+║  • Volatility Width      : 0.01050
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:35:09] [DERIV-SYNTHETIC] 🧠 [GROQ AI] อนุมัติการเปิดไม้ R_25 (AI คอนเฟิร์มสัญญาณ Mean Reversion)
+[2026-09-12 06:35:09] [DERIV-SYNTHETIC] 📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers (R_25, Stake: $1.0, Multiplier: x100)...
+[2026-09-12 06:35:09] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:35:09] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:35:10] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:35:10] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:35:10] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🧠 GROQ AI SYNTHETIC EVALUATION - R_25
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Decision              : APPROVED (YES)
+║  • Strategy              : Price: 2737.6000 | RSI: 29.5 | Liquidity_Sweep
+║  • Volatility Width      : 0.01057
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:36:17] [DERIV-SYNTHETIC] 🧠 [GROQ AI] อนุมัติการเปิดไม้ R_25 (AI คอนเฟิร์มสัญญาณ Mean Reversion)
+[2026-09-12 06:36:17] [DERIV-SYNTHETIC] 📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers (R_25, Stake: $1.0, Multiplier: x100)...
+[2026-09-12 06:36:17] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:36:18] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:36:19] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:36:19] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:36:19] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
 ══════════════════════════════════════════════════════════════════════════════════
 
 📜 [FULL 24H CONSOLE STREAM]
@@ -23771,7 +23865,20 @@ KeyboardInterrupt
 ║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 [2026-09-12 06:15:05] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
-
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:16:02 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   49939.3334 ║ 67.7 ║  0.02868 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2742.2650 ║ 36.4 ║  0.00865 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.2116 ║ 73.5 ║  0.01696 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4845.2460 ║ 44.8 ║  0.00244 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
 [2026-09-12 06:16:05] 🚨 [CIRCUIT BREAKER NEAR/USDT] ขาดทุนติด 2 ครั้ง พัก 4 ชม.
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║ 🛑 STOP LOSS CUT - NEAR/USDT
@@ -23781,3 +23888,561 @@ KeyboardInterrupt
 ║  • Net Loss              : -$0.1326 USDT (-4.51 บาท)
 ║  • AI Reflection         : Loss (False Break): เพิ่มเกณฑ์ Vol->1.5x, ADX->16.0
 ╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-11 23:16:06] [INFO] ✅ [LINE-BOT] ส่งข้อความสำเร็จ
+[2026-09-12 06:16:24] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-12 06:16:24 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $102.13 ║ 50.8 ║ 14.3 ║  0.04x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,125.72 ║ 41.4 ║ 67.7 ║  0.21x ║ ⚪ FLAT          ║ Standby    ║
+║ NEAR/USDT   ║        $2.39 ║ 28.8 ║ 36.9 ║  0.03x ║ 🔴 -1.73%        ║ Holding    ║
+║ AVAX/USDT   ║        $7.43 ║ 42.6 ║ 29.8 ║  0.07x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ GALA/USDT   ║    $0.001667 ║ 40.6 ║ 23.0 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ VET/USDT    ║    $0.007326 ║ 47.3 ║ 15.8 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:17:05 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50009.9364 ║ 69.0 ║  0.02896 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2742.9550 ║ 37.6 ║  0.00855 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.3054 ║ 74.8 ║  0.01719 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4845.4170 ║ 45.2 ║  0.00244 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:17:45] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-12 06:17:55 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $102.30 ║ 52.8 ║ 14.1 ║  0.08x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ BTC/USDT    ║   $77,146.41 ║ 42.3 ║ 67.7 ║  0.26x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ NEAR/USDT   ║        $2.40 ║ 30.1 ║ 36.9 ║  0.49x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.44 ║ 44.5 ║ 29.7 ║  0.09x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ GALA/USDT   ║    $0.001667 ║ 40.6 ║ 23.0 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ VET/USDT    ║    $0.007326 ║ 47.3 ║ 15.8 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:18:08 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50063.3742 ║ 69.9 ║  0.02921 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2742.8060 ║ 37.3 ║  0.00857 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.3527 ║ 75.4 ║  0.01733 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4846.2690 ║ 47.2 ║  0.00245 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:19:03] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:19:11 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50064.4480 ║ 69.9 ║  0.02921 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2743.3150 ║ 38.2 ║  0.00850 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.3311 ║ 75.1 ║  0.01727 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4846.3410 ║ 47.3 ║  0.00245 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-12 06:19:29 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $102.29 ║ 52.7 ║ 14.0 ║  0.16x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ BTC/USDT    ║   $77,142.02 ║ 42.1 ║ 67.7 ║  0.29x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ NEAR/USDT   ║        $2.39 ║ 28.5 ║ 37.0 ║  0.54x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.44 ║ 44.9 ║ 29.7 ║  0.11x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ GALA/USDT   ║    $0.001667 ║ 40.6 ║ 23.0 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ VET/USDT    ║    $0.007337 ║ 49.0 ║ 15.8 ║  0.33x ║ ⚪ FLAT          ║ BelowEMA   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:20:13 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50073.1407 ║ 70.0 ║  0.02926 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2742.6230 ║ 37.0 ║  0.00860 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.2472 ║ 74.0 ║  0.01705 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4846.3470 ║ 47.4 ║  0.00245 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:20:21] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-12 06:20:58 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $102.29 ║ 52.7 ║ 14.0 ║  0.20x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ BTC/USDT    ║   $77,150.01 ║ 42.4 ║ 67.7 ║  0.30x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ NEAR/USDT   ║        $2.39 ║ 28.9 ║ 37.0 ║  1.01x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.45 ║ 45.2 ║ 29.5 ║  0.17x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ GALA/USDT   ║    $0.001667 ║ 40.6 ║ 23.0 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ VET/USDT    ║    $0.007337 ║ 49.0 ║ 15.8 ║  0.33x ║ ⚪ FLAT          ║ BelowEMA   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:21:16 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50141.9871 ║ 71.1 ║  0.02962 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2742.1990 ║ 36.3 ║  0.00866 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.2691 ║ 74.3 ║  0.01710 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4846.3240 ║ 47.3 ║  0.00245 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:21:39] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:22:19 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50179.0976 ║ 71.6 ║  0.02983 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2741.4370 ║ 35.3 ║  0.00877 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.2339 ║ 73.8 ║  0.01701 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4846.4480 ║ 47.6 ║  0.00245 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-12 06:22:29 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $102.27 ║ 52.4 ║ 14.0 ║  0.32x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ BTC/USDT    ║   $77,148.00 ║ 42.4 ║ 67.7 ║  0.32x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ NEAR/USDT   ║        $2.37 ║ 26.5 ║ 37.2 ║  1.18x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.44 ║ 44.2 ║ 29.5 ║  0.18x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ GALA/USDT   ║    $0.001667 ║ 40.6 ║ 23.0 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ VET/USDT    ║    $0.007346 ║ 50.3 ║ 15.5 ║  0.36x ║ ⚪ FLAT          ║ BelowEMA   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-12 06:23:05] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:23:22 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50205.7191 ║ 72.0 ║  0.03000 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2739.3260 ║ 33.4 ║  0.00911 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.2558 ║ 74.1 ║  0.01707 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4846.8490 ║ 48.5 ║  0.00246 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-12 06:23:59 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $102.17 ║ 51.3 ║ 14.0 ║  0.43x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ BTC/USDT    ║   $77,147.27 ║ 42.3 ║ 67.7 ║  0.32x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ NEAR/USDT   ║        $2.36 ║ 26.1 ║ 37.3 ║  1.39x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.44 ║ 44.0 ║ 29.5 ║  0.20x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ GALA/USDT   ║    $0.001667 ║ 40.6 ║ 23.0 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ VET/USDT    ║    $0.007323 ║ 46.9 ║ 15.5 ║  0.67x ║ ⚪ FLAT          ║ BelowEMA   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:24:24 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50272.4542 ║ 72.9 ║  0.03043 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2739.0150 ║ 33.1 ║  0.00917 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.2635 ║ 74.2 ║  0.01709 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4846.6320 ║ 48.0 ║  0.00245 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:24:25] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:25:27 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50316.5649 ║ 73.5 ║  0.03073 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2736.7280 ║ 31.3 ║  0.00958 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.2336 ║ 73.8 ║  0.01701 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4846.9590 ║ 48.7 ║  0.00246 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-12 06:25:33 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $102.08 ║ 50.2 ║ 14.0 ║  0.47x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ BTC/USDT    ║   $77,156.01 ║ 42.7 ║ 67.7 ║  0.32x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ NEAR/USDT   ║        $2.36 ║ 26.1 ║ 37.3 ║  1.39x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.44 ║ 43.6 ║ 29.5 ║  0.26x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ GALA/USDT   ║    $0.001667 ║ 40.6 ║ 23.0 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ VET/USDT    ║    $0.007311 ║ 45.3 ║ 16.1 ║  1.53x ║ ⚪ FLAT          ║ BelowEMA   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-12 06:25:42] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:26:29 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50451.7114 ║ 75.1 ║  0.03177 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2737.4660 ║ 31.8 ║  0.00944 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.2730 ║ 74.3 ║  0.01711 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4846.3070 ║ 47.3 ║  0.00245 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:27:01] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-12 06:27:04 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $102.23 ║ 52.0 ║ 14.0 ║  0.52x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ BTC/USDT    ║   $77,186.39 ║ 43.9 ║ 67.7 ║  0.35x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ NEAR/USDT   ║        $2.36 ║ 26.0 ║ 37.3 ║  1.50x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.44 ║ 44.2 ║ 29.5 ║  0.35x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ GALA/USDT   ║    $0.001667 ║ 40.6 ║ 23.0 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ VET/USDT    ║    $0.007311 ║ 45.3 ║ 16.1 ║  1.53x ║ ⚪ FLAT          ║ BelowEMA   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:27:32 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50460.5956 ║ 75.2 ║  0.03185 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2737.6400 ║ 32.0 ║  0.00941 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.2690 ║ 74.3 ║  0.01710 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4845.6850 ║ 45.8 ║  0.00245 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:28:19] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-12 06:28:34 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $102.32 ║ 53.0 ║ 14.0 ║  0.59x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ BTC/USDT    ║   $77,190.01 ║ 44.1 ║ 67.7 ║  0.40x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ NEAR/USDT   ║        $2.36 ║ 26.0 ║ 37.3 ║  1.50x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.45 ║ 45.2 ║ 29.5 ║  0.43x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ GALA/USDT   ║    $0.001667 ║ 40.6 ║ 23.0 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ VET/USDT    ║    $0.007311 ║ 45.3 ║ 16.1 ║  1.53x ║ ⚪ FLAT          ║ BelowEMA   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:28:35 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50496.3016 ║ 75.6 ║  0.03215 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2737.1760 ║ 31.6 ║  0.00950 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.0925 ║ 70.7 ║  0.01674 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4845.6240 ║ 45.7 ║  0.00245 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:29:38 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50483.6063 ║ 75.4 ║  0.03204 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2737.0950 ║ 31.5 ║  0.00951 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.0753 ║ 70.1 ║  0.01671 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4844.5360 ║ 43.2 ║  0.00245 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:29:44] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+[2026-09-12 06:30:05] ⚠️ Error SOL/USDT: binance GET https://testnet.binance.vision/api/v3/klines?interval=15m&limit=100&symbol=SOLUSDT
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-12 06:30:20 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║          N/A ║  N/A ║  N/A ║   N/Ax ║ ERROR           ║ ErrFetch   ║
+║ BTC/USDT    ║   $77,190.00 ║ 44.0 ║ 67.5 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ NEAR/USDT   ║        $2.36 ║ 26.0 ║ 39.0 ║  0.00x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.45 ║ 45.5 ║ 29.5 ║  0.02x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ GALA/USDT   ║    $0.001667 ║ 40.5 ║ 23.1 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ VET/USDT    ║    $0.007311 ║ 45.3 ║ 16.1 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🧠 GROQ AI SYNTHETIC EVALUATION - R_25
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Decision              : APPROVED (YES)
+║  • Strategy              : Price: 2737.0230 | RSI: 28.5 | Liquidity_Sweep
+║  • Volatility Width      : 0.01066
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:30:42] [DERIV-SYNTHETIC] 🧠 [GROQ AI] อนุมัติการเปิดไม้ R_25 (AI คอนเฟิร์มสัญญาณ Mean Reversion)
+[2026-09-12 06:30:43] [DERIV-SYNTHETIC] 📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers (R_25, Stake: $1.0, Multiplier: x100)...
+[2026-09-12 06:30:43] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:30:43] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:30:43] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:30:43] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:30:43] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:30:43 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50454.3801 ║ 71.6 ║  0.03348 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2737.0230 ║ 28.5 ║  0.01066 ║ LiqSweep   ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.1207 ║ 68.9 ║  0.01681 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4845.7850 ║ 40.2 ║  0.00243 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-11 23:30:44] [INFO] ✅ [LINE-BOT] ส่งข้อความสำเร็จ
+[2026-09-12 06:31:04] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🧠 GROQ AI SYNTHETIC EVALUATION - R_25
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Decision              : APPROVED (YES)
+║  • Strategy              : Price: 2736.3570 | RSI: 27.7 | Pullback_LowerBB_Oversold
+║  • Volatility Width      : 0.01076
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:31:48] [DERIV-SYNTHETIC] 🧠 [GROQ AI] อนุมัติการเปิดไม้ R_25 (AI คอนเฟิร์มสัญญาณ Mean Reversion)
+[2026-09-12 06:31:49] [DERIV-SYNTHETIC] 📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers (R_25, Stake: $1.0, Multiplier: x100)...
+[2026-09-12 06:31:49] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:31:49] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:31:49] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:31:50] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:31:50] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:31:50 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50470.4653 ║ 72.2 ║  0.03359 ║ PinBar     ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2736.3570 ║ 27.7 ║  0.01076 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.2073 ║ 70.4 ║  0.01697 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4845.0110 ║ 37.9 ║  0.00243 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-11 23:31:50] [INFO] ✅ [LINE-BOT] ส่งข้อความสำเร็จ
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-12 06:31:53 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $102.28 ║ 52.5 ║ 13.5 ║  0.01x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ BTC/USDT    ║   $77,196.28 ║ 44.3 ║ 67.5 ║  0.02x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ NEAR/USDT   ║        $2.36 ║ 25.9 ║ 39.0 ║  0.48x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.45 ║ 45.5 ║ 29.4 ║  0.08x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ GALA/USDT   ║    $0.001667 ║ 40.5 ║ 23.1 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ VET/USDT    ║    $0.007311 ║ 45.3 ║ 16.1 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-12 06:32:25] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🧠 GROQ AI SYNTHETIC EVALUATION - R_25
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Decision              : APPROVED (YES)
+║  • Strategy              : Price: 2735.9890 | RSI: 27.4 | Pullback_LowerBB_Oversold
+║  • Volatility Width      : 0.01082
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:32:55] [DERIV-SYNTHETIC] 🧠 [GROQ AI] อนุมัติการเปิดไม้ R_25 (AI คอนเฟิร์มสัญญาณ Mean Reversion)
+[2026-09-12 06:32:55] [DERIV-SYNTHETIC] 📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers (R_25, Stake: $1.0, Multiplier: x100)...
+[2026-09-12 06:32:55] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:32:55] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:32:55] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:32:56] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:32:56] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:32:56 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50398.2949 ║ 69.8 ║  0.03309 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2735.9890 ║ 27.4 ║  0.01082 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.2803 ║ 71.5 ║  0.01713 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4844.4640 ║ 36.6 ║  0.00244 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-11 23:32:56] [INFO] ✅ [LINE-BOT] ส่งข้อความสำเร็จ
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-12 06:33:22 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $102.34 ║ 53.3 ║ 13.5 ║  0.08x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ BTC/USDT    ║   $77,202.00 ║ 44.5 ║ 67.5 ║  0.03x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ NEAR/USDT   ║        $2.36 ║ 25.9 ║ 39.0 ║  0.48x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.45 ║ 46.4 ║ 29.3 ║  0.14x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ GALA/USDT   ║    $0.001667 ║ 40.5 ║ 23.1 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ VET/USDT    ║    $0.007311 ║ 45.3 ║ 16.1 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-12 06:33:44] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🧠 GROQ AI SYNTHETIC EVALUATION - R_25
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Decision              : APPROVED (YES)
+║  • Strategy              : Price: 2736.6690 | RSI: 27.9 | Pullback_LowerBB_Oversold
+║  • Volatility Width      : 0.01071
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:34:01] [DERIV-SYNTHETIC] 🧠 [GROQ AI] อนุมัติการเปิดไม้ R_25 (AI คอนเฟิร์มสัญญาณ Mean Reversion)
+[2026-09-12 06:34:01] [DERIV-SYNTHETIC] 📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers (R_25, Stake: $1.0, Multiplier: x100)...
+[2026-09-12 06:34:01] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-11 23:34:02] [INFO] ✅ [LINE-BOT] ส่งข้อความสำเร็จ
+[2026-09-12 06:34:02] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:34:02] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:34:03] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:34:03] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:34:03 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50362.3792 ║ 68.6 ║  0.03285 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2736.6690 ║ 27.9 ║  0.01071 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.1801 ║ 69.9 ║  0.01691 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4846.6190 ║ 42.5 ║  0.00244 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-12 06:34:52 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $102.32 ║ 53.0 ║ 13.5 ║  0.16x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ BTC/USDT    ║   $77,200.01 ║ 44.4 ║ 67.5 ║  0.03x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ NEAR/USDT   ║        $2.35 ║ 25.1 ║ 39.1 ║  0.49x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.45 ║ 45.3 ║ 29.3 ║  0.20x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ GALA/USDT   ║    $0.001667 ║ 40.5 ║ 23.1 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ VET/USDT    ║    $0.007311 ║ 45.3 ║ 16.1 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-12 06:35:03] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🧠 GROQ AI SYNTHETIC EVALUATION - R_25
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Decision              : APPROVED (YES)
+║  • Strategy              : Price: 2738.0950 | RSI: 30.3 | Liquidity_Sweep
+║  • Volatility Width      : 0.01050
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:35:09] [DERIV-SYNTHETIC] 🧠 [GROQ AI] อนุมัติการเปิดไม้ R_25 (AI คอนเฟิร์มสัญญาณ Mean Reversion)
+[2026-09-12 06:35:09] [DERIV-SYNTHETIC] 📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers (R_25, Stake: $1.0, Multiplier: x100)...
+[2026-09-12 06:35:09] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:35:09] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:35:10] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-11 23:35:10] [INFO] ✅ [LINE-BOT] ส่งข้อความสำเร็จ
+[2026-09-12 06:35:10] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:35:10] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:35:10 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50401.0734 ║ 69.8 ║  0.03311 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2738.0950 ║ 30.3 ║  0.01050 ║ LiqSweep   ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.2337 ║ 70.8 ║  0.01702 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4845.9920 ║ 40.8 ║  0.00243 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🧠 GROQ AI SYNTHETIC EVALUATION - R_25
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Decision              : APPROVED (YES)
+║  • Strategy              : Price: 2737.6000 | RSI: 29.5 | Liquidity_Sweep
+║  • Volatility Width      : 0.01057
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 06:36:17] [DERIV-SYNTHETIC] 🧠 [GROQ AI] อนุมัติการเปิดไม้ R_25 (AI คอนเฟิร์มสัญญาณ Mean Reversion)
+[2026-09-12 06:36:17] [DERIV-SYNTHETIC] 📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers (R_25, Stake: $1.0, Multiplier: x100)...
+[2026-09-12 06:36:17] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:36:18] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x50 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-11 23:36:18] [INFO] ✅ [LINE-BOT] ส่งข้อความสำเร็จ
+[2026-09-12 06:36:19] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:36:19] [DERIV-SYNTHETIC] ⚠️ Proposal R_25 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 160,400,800,1200,1600.
+[2026-09-12 06:36:19] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_25 ได้
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 06:36:19 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50296.6859 ║ 66.6 ║  0.03245 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2737.6000 ║ 29.5 ║  0.01057 ║ LiqSweep   ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.1421 ║ 69.3 ║  0.01684 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4846.1070 ║ 41.1 ║  0.00243 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-12 06:36:22 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $102.32 ║ 53.0 ║ 13.5 ║  0.19x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ BTC/USDT    ║   $77,208.00 ║ 44.8 ║ 67.5 ║  0.04x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ NEAR/USDT   ║        $2.35 ║ 25.1 ║ 39.1 ║  0.49x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.45 ║ 45.5 ║ 29.3 ║  0.28x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ GALA/USDT   ║    $0.001667 ║ 40.5 ║ 23.1 ║  0.00x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ VET/USDT    ║    $0.007303 ║ 44.2 ║ 16.3 ║  0.02x ║ ⚪ FLAT          ║ BelowEMA   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-12 06:36:23] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+
+[2026-09-12 06:37:37] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
