@@ -7,7 +7,7 @@
 📊 [24H DAILY EXECUTIVE RECAP]
 ──────────────────────────────────────────────────────────────────────────────────
 • 🕒 รอบเวลาวิเคราะห์ (24H Cycle) : 2026-09-11 09:00:00 -> 2026-09-12 09:00:00 (เวลาไทย UTC+7)
-• 🕒 อัปเดตข้อมูลล่าสุด (Last Sync) : 2026-09-11 19:34:59 (เวลาไทย)
+• 🕒 อัปเดตข้อมูลล่าสุด (Last Sync) : 2026-09-11 19:39:41 (เวลาไทย)
 • 💰 ยอด PnL รวมรอบ 24 ชม.        : +0.1768 USDT | +0.00 USD (≈ +6.01 บาท)
 • 🎯 สถิติการเทรดรอบวัน (Stats)     : ทั้งหมด 3 ไม้ (ชนะ 2 | แพ้ 1 | Breakeven 2) | Win Rate: 66.7%
 • ⚡ สถานะเครื่องยนต์ (Engines)    : BinanceEngine (🟢 ONLINE) | WebDashboard (🟢 ONLINE) | DerivForexEngine (🟢 ONLINE)
@@ -151,6 +151,10 @@
 ║  • AI Reflection         : Loss (False Break): เพิ่มเกณฑ์ Vol->1.2x, ADX->11.5
 ╚══════════════════════════════════════════════════════════════════════════════╝
 [2026-09-11 19:21:56] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-11 19:35:44] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9978.21 USDT)
+[2026-09-11 19:35:44] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-11 19:35:44] 🧠 [GROQ AI ENGINE] สถานะ: 🟢 พร้อมใช้งาน (v3 News-Aware)
+[2026-09-11 19:35:44] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
 
 --- DERIV FOREX TRADES (24H) ---
 [2026-09-11 13:18:11] [DERIV-FOREX] 🚀 กำลังตรวจสอบและเชื่อมต่อ Deriv Engine...
@@ -201,6 +205,13 @@
 [2026-09-11 19:31:53] [DERIV-FOREX] ⏸️ [CPI NEWS FREEZE 19:00-20:30] เข้าสู่ช่วง US CPI Red Folder Freeze (งดเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่างและ Slippage)...
 [2026-09-11 19:33:03] [DERIV-FOREX] ⏸️ [CPI NEWS FREEZE 19:00-20:30] เข้าสู่ช่วง US CPI Red Folder Freeze (งดเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่างและ Slippage)...
 [2026-09-11 19:34:13] [DERIV-FOREX] ⏸️ [CPI NEWS FREEZE 19:00-20:30] เข้าสู่ช่วง US CPI Red Folder Freeze (งดเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่างและ Slippage)...
+[2026-09-11 19:35:20] [DERIV-FOREX] 🚀 กำลังตรวจสอบและเชื่อมต่อ Deriv Engine...
+[2026-09-11 19:35:24] [DERIV-FOREX] ✅ ยืนยันสิทธิ์บัญชี Demo DOT94482469 สำเร็จ! ยอดเงิน: $10,004.73 USD
+[2026-09-11 19:35:26] [DERIV-FOREX] 🔌 เชื่อมต่อ Deriv WebSocket สำเร็จ! (บัญชี: DOT94482469)
+[2026-09-11 19:35:26] [DERIV-FOREX] ⏸️ [CPI NEWS FREEZE 19:00-20:30] เข้าสู่ช่วง US CPI Red Folder Freeze (งดเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่างและ Slippage)...
+[2026-09-11 19:36:29] [DERIV-FOREX] ⏸️ [CPI NEWS FREEZE 19:00-20:30] เข้าสู่ช่วง US CPI Red Folder Freeze (งดเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่างและ Slippage)...
+[2026-09-11 19:37:32] [DERIV-FOREX] ⏸️ [CPI NEWS FREEZE 19:00-20:30] เข้าสู่ช่วง US CPI Red Folder Freeze (งดเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่างและ Slippage)...
+[2026-09-11 19:38:35] [DERIV-FOREX] ⏸️ [CPI NEWS FREEZE 19:00-20:30] เข้าสู่ช่วง US CPI Red Folder Freeze (งดเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่างและ Slippage)...
 ══════════════════════════════════════════════════════════════════════════════════
 
 📜 [FULL 24H CONSOLE STREAM]
@@ -8686,8 +8697,152 @@
 [2026-09-11 19:34:50] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: DerivForexEngine (main_forex.py)...
 [2026-09-11 19:34:50] [SUPERVISOR] ✅ DerivForexEngine ทำงานสำเร็จ (PID: 1746)
 [2026-09-11 19:34:50] [SUPERVISOR] 👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers, Weekend Switching และ AI Lab...
-
+🚀 เริ่มต้นระบบ AG 2.0 Live Quant Terminal Server ที่พอร์ต 9848...
+🌐 ใช้งานผ่าน URL: http://0.0.0.0:9848
+🧠 [MEMORY] โหลด agent_memory_deriv.json สำเร็จ (เทรดรวม: 14 ไม้)
+=================================================================
+🏛️ DERIV FOREX QUANT ENGINE STARTING (DEMO: DOT94482469)
+🧠 GROQ AI ENGINE : 🟢 พร้อมใช้งาน (v3 News-Aware)
+=================================================================
+[2026-09-11 19:35:20] [DERIV-FOREX] 🚀 กำลังตรวจสอบและเชื่อมต่อ Deriv Engine...
+📂 [STATE] โหลด active_state_deriv.json สำเร็จ (ไม่มีไม้ค้าง - สแตนด์บายพร้อมเทรด)
+[2026-09-11 19:35:24] [DERIV-FOREX] ✅ ยืนยันสิทธิ์บัญชี Demo DOT94482469 สำเร็จ! ยอดเงิน: $10,004.73 USD
+[2026-09-11 19:35:26] [DERIV-FOREX] 🔌 เชื่อมต่อ Deriv WebSocket สำเร็จ! (บัญชี: DOT94482469)
+[2026-09-11 19:35:26] [DERIV-FOREX] ⏸️ [CPI NEWS FREEZE 19:00-20:30] เข้าสู่ช่วง US CPI Red Folder Freeze (งดเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่างและ Slippage)...
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 2026-09-11 19:35:29 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.15842 ║ 30.1 ║  0.00180 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.34998 ║ 47.1 ║  0.00125 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.05600 ║ 44.9 ║  0.00286 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 14 ไม้ (ชนะ 10 | แพ้ 4 | WR: 71.4%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+🧠 [MEMORY] กู้คืน agent_memory_multi.json สำเร็จ (เทรดรวม: 41 ไม้ | ชนะ 20 | แพ้ 18)
+📂 [STATE] โหลด active_state.json สำเร็จ (ไม่มีออเดอร์ค้าง - สแตนด์บายพร้อมเทรด)
+✅ เชื่อมต่อ Binance Testnet (Sandbox) สำเร็จ! ยอดเงิน: 9978.21 USDT
 [2026-09-11 19:35:44] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9978.21 USDT)
 [2026-09-11 19:35:44] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
 [2026-09-11 19:35:44] 🧠 [GROQ AI ENGINE] สถานะ: 🟢 พร้อมใช้งาน (v3 News-Aware)
 [2026-09-11 19:35:44] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-11 19:35:45] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-11 19:36:13 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $100.16 ║ 60.9 ║ 17.6 ║  2.26x ║ ⚪ FLAT          ║ CPI-Freeze ║
+║ BTC/USDT    ║   $77,475.19 ║ 62.9 ║ 72.4 ║  1.11x ║ ⚪ FLAT          ║ CPI-Freeze ║
+║ NEAR/USDT   ║        $2.50 ║ 57.9 ║ 14.6 ║  2.31x ║ ⚪ FLAT          ║ CPI-Freeze ║
+║ AVAX/USDT   ║        $7.53 ║ 63.0 ║ 38.7 ║  0.83x ║ ⚪ FLAT          ║ CPI-Freeze ║
+║ GALA/USDT   ║    $0.001695 ║ 58.1 ║ 21.8 ║  0.28x ║ ⚪ FLAT          ║ CPI-Freeze ║
+║ VET/USDT    ║    $0.007349 ║ 43.2 ║ 29.1 ║  2.23x ║ ⚪ FLAT          ║ CPI-Freeze ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-11 19:36:29] [DERIV-FOREX] ⏸️ [CPI NEWS FREEZE 19:00-20:30] เข้าสู่ช่วง US CPI Red Folder Freeze (งดเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่างและ Slippage)...
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 2026-09-11 19:36:32 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.15870 ║ 32.8 ║  0.00170 ║ PinBar     ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35040 ║ 50.9 ║  0.00115 ║ Sweep+Rej  ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.02500 ║ 42.8 ║  0.00287 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 14 ไม้ (ชนะ 10 | แพ้ 4 | WR: 71.4%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-11 19:36:42] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+[2026-09-11 19:37:32] [DERIV-FOREX] ⏸️ [CPI NEWS FREEZE 19:00-20:30] เข้าสู่ช่วง US CPI Red Folder Freeze (งดเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่างและ Slippage)...
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 2026-09-11 19:37:35 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.15875 ║ 33.3 ║  0.00169 ║ Hammer     ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35038 ║ 50.7 ║  0.00116 ║ Sweep+Rej  ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.01000 ║ 41.7 ║  0.00289 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 14 ไม้ (ชนะ 10 | แพ้ 4 | WR: 71.4%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-11 19:37:43 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $100.61 ║ 65.8 ║ 17.6 ║  2.50x ║ ⚪ FLAT          ║ CPI-Freeze ║
+║ BTC/USDT    ║   $77,577.45 ║ 65.1 ║ 72.4 ║  1.29x ║ ⚪ FLAT          ║ CPI-Freeze ║
+║ NEAR/USDT   ║        $2.53 ║ 63.1 ║ 15.0 ║  2.33x ║ ⚪ FLAT          ║ CPI-Freeze ║
+║ AVAX/USDT   ║        $7.64 ║ 71.2 ║ 40.1 ║  1.10x ║ ⚪ FLAT          ║ CPI-Freeze ║
+║ GALA/USDT   ║    $0.001695 ║ 58.1 ║ 21.8 ║  0.28x ║ ⚪ FLAT          ║ CPI-Freeze ║
+║ VET/USDT    ║    $0.007349 ║ 43.2 ║ 29.1 ║  2.23x ║ ⚪ FLAT          ║ CPI-Freeze ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-11 19:37:57] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+[2026-09-11 19:38:35] [DERIV-FOREX] ⏸️ [CPI NEWS FREEZE 19:00-20:30] เข้าสู่ช่วง US CPI Red Folder Freeze (งดเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่างและ Slippage)...
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 2026-09-11 19:38:38 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.15860 ║ 31.8 ║  0.00174 ║ PinBar     ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35024 ║ 49.3 ║  0.00118 ║ Sweep+Rej  ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.04600 ║ 44.2 ║  0.00286 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 14 ไม้ (ชนะ 10 | แพ้ 4 | WR: 71.4%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-11 19:39:13 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $101.00 ║ 69.2 ║ 18.4 ║  2.93x ║ ⚪ FLAT          ║ CPI-Freeze ║
+║ BTC/USDT    ║   $77,438.01 ║ 61.9 ║ 71.6 ║  1.62x ║ ⚪ FLAT          ║ CPI-Freeze ║
+║ NEAR/USDT   ║        $2.56 ║ 67.1 ║ 15.8 ║  2.51x ║ ⚪ FLAT          ║ CPI-Freeze ║
+║ AVAX/USDT   ║        $7.60 ║ 68.8 ║ 40.1 ║  1.27x ║ ⚪ FLAT          ║ CPI-Freeze ║
+║ GALA/USDT   ║    $0.001695 ║ 58.1 ║ 21.8 ║  0.28x ║ ⚪ FLAT          ║ CPI-Freeze ║
+║ VET/USDT    ║    $0.007349 ║ 43.2 ║ 29.1 ║  2.23x ║ ⚪ FLAT          ║ CPI-Freeze ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-11 19:39:13] [SUPERVISOR] 🛑 ได้รับสัญญาณหยุดระบบ! กำลังปิด Workers ทั้งหมดอย่างปลอดภัย...
+[2026-09-11 19:39:13] [SUPERVISOR] ⏳ กำลังส่งคำสั่งปิด BinanceEngine (PID: 1742)...
+
+🛑 หยุดการทำงานของ Terminal Server เรียบร้อย
+[2026-09-11 19:39:13] [SUPERVISOR] ✅ BinanceEngine ปิดเรียบร้อยแล้ว
+[2026-09-11 19:39:13] [SUPERVISOR] ⏳ กำลังส่งคำสั่งปิด DerivForexEngine (PID: 1746)...
+[2026-09-11 19:39:13] [SUPERVISOR] ✅ DerivForexEngine ปิดเรียบร้อยแล้ว
+[2026-09-11 19:39:13] [SUPERVISOR] 👋 ระบบ Supervisor ปิดตัวเองเรียบร้อย
+[2026-09-11 19:39:13] [SUPERVISOR] 🛑 ได้รับสัญญาณหยุดระบบ! กำลังปิด Workers ทั้งหมดอย่างปลอดภัย...
+[2026-09-11 19:39:13] [SUPERVISOR] 👋 ระบบ Supervisor ปิดตัวเองเรียบร้อย
+[2026-09-11 19:39:37] [SUPERVISOR] ╔══════════════════════════════════════════════════════════════════════════════════╗
+[2026-09-11 19:39:37] [SUPERVISOR] ║  🏛️ AG 2.0 QUANT TERMINAL | DUAL-ENGINE SUPERVISOR (QUANT SHIELD)                 ║
+[2026-09-11 19:39:37] [SUPERVISOR] ║  ⚡ Binance Engine : Spot Sandbox Testnet (100% Demo / 24/7 Weekend Guard)       ║
+[2026-09-11 19:39:37] [SUPERVISOR] ║  ⚡ Deriv Engine   : Auto-Switching Forex Demo / Weekend Synthetic (24/7)         ║
+[2026-09-11 19:39:37] [SUPERVISOR] ║  🧪 AI Retraining  : Brad Goh SMC + Weekend Optimization Lab (Sat 09:15)         ║
+[2026-09-11 19:39:37] [SUPERVISOR] ║  📡 Console Logger : Streamed to console_log.txt & synced as status_log.txt      ║
+[2026-09-11 19:39:37] [SUPERVISOR] ║  🔔 LINE Notify    : Active for BUY, TP, SL, Breakeven & Trailing Run             ║
+[2026-09-11 19:39:37] [SUPERVISOR] ╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-11 19:39:37] [SUPERVISOR] 📂 ไดเรกทอรีทำงาน: /home/container
+[2026-09-11 19:39:37] [SUPERVISOR] 📋 [24H LOG SYSTEM] ประจำการรอบ 24 ชม.: 2026-09-11 09:00 -> 2026-09-12 09:00 (รอบ ID: 20260911)
+[2026-09-11 19:39:37] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: BinanceEngine (main_binance.py)...
+[2026-09-11 19:39:37] [SUPERVISOR] ✅ BinanceEngine ทำงานสำเร็จ (PID: 31)
+[2026-09-11 19:39:37] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: WebDashboard (dashboard.py)...
+[2026-09-11 19:39:37] [SUPERVISOR] ✅ WebDashboard ทำงานสำเร็จ (PID: 33)
+[2026-09-11 19:39:37] [SUPERVISOR] 🚀 [WEEKDAY SWITCH] เริ่มต้น DerivForexEngine (EURUSD, GBPUSD, USDJPY)...
+[2026-09-11 19:39:37] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: DerivForexEngine (main_forex.py)...
+[2026-09-11 19:39:37] [SUPERVISOR] ✅ DerivForexEngine ทำงานสำเร็จ (PID: 35)
+[2026-09-11 19:39:37] [SUPERVISOR] 👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers, Weekend Switching และ AI Lab...
+
+[2026-09-11 19:39:53] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9978.21 USDT)
+[2026-09-11 19:39:53] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-11 19:39:53] 🧠 [GROQ AI ENGINE] สถานะ: 🟢 พร้อมใช้งาน (v3 News-Aware)
+[2026-09-11 19:39:53] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
