@@ -131,7 +131,7 @@ def send_line_message(message: str, async_send: bool = True) -> bool:
 
 def notify_trade_entry(market: str, symbol: str, side: str, price: float,
                        tp: float = None, sl: float = None, reason: str = "",
-                       async_send: bool = True) -> bool:
+                       contract_id = None, async_send: bool = True) -> bool:
     """แจ้งเตือนเมื่อเปิดไม้ใหม่"""
     side_icon = "🟢 BUY" if "buy" in str(side).lower() or "call" in str(side).lower() else "🔴 SELL"
     tp_str = f"{tp:,.5f}" if isinstance(tp, (int, float)) else (str(tp) if tp else "ตามสัญญาณ")
@@ -148,6 +148,8 @@ def notify_trade_entry(market: str, symbol: str, side: str, price: float,
         f"🎯 Take Profit (TP): {tp_str}\n"
         f"🛑 Stop Loss (SL): {sl_str}\n"
     )
+    if contract_id:
+        msg += f"🎫 สัญญา (Contract ID): #{contract_id}\n"
     if reason:
         msg += f"💡 เหตุผลเข้า: {reason}\n"
     msg += f"⏰ เวลา: {get_thai_time()}"
@@ -155,18 +157,18 @@ def notify_trade_entry(market: str, symbol: str, side: str, price: float,
     return send_line(msg, async_send=async_send)
 
 
-def notify_buy(engine: str, symbol: str, price: float, size: float = 0, tp: float = None, sl: float = None, reason: str = "", extra_info: str = "", async_send: bool = True) -> bool:
+def notify_buy(engine: str, symbol: str, price: float, size: float = 0, tp: float = None, sl: float = None, reason: str = "", extra_info: str = "", contract_id = None, async_send: bool = True) -> bool:
     """Alias for notify_trade_entry with detailed parameters"""
     reason_full = reason
     if extra_info:
         reason_full = f"{reason} | {extra_info}" if reason else extra_info
-    return notify_trade_entry(market=engine, symbol=symbol, side="BUY", price=price, tp=tp, sl=sl, reason=reason_full, async_send=async_send)
+    return notify_trade_entry(market=engine, symbol=symbol, side="BUY", price=price, tp=tp, sl=sl, reason=reason_full, contract_id=contract_id, async_send=async_send)
 
 
 def notify_trade_close(market: str, symbol: str, pnl_usd: float,
                        pnl_thb: float = None, is_win: bool = None,
                        win_rate: float = None, details: str = "",
-                       async_send: bool = True) -> bool:
+                       contract_id = None, async_send: bool = True) -> bool:
     """แจ้งเตือนเมื่อปิดไม้เทรด (TP / SL)"""
     if is_win is None:
         is_win = (pnl_usd is not None and pnl_usd >= 0)
@@ -186,6 +188,8 @@ def notify_trade_close(market: str, symbol: str, pnl_usd: float,
         f"💵 กำไร/ขาดทุน: {usd_str}\n"
         f"🇹🇭 กำไร/ขาดทุน (THB): {thb_str}\n"
     )
+    if contract_id:
+        msg += f"🎫 สัญญา (Contract ID): #{contract_id}\n"
     if win_rate is not None:
         msg += f"🎯 Win Rate รวม: {win_rate:.1f}%\n"
     if details:
@@ -195,26 +199,26 @@ def notify_trade_close(market: str, symbol: str, pnl_usd: float,
     return send_line(msg, async_send=async_send)
 
 
-def notify_tp(engine: str, symbol: str, exit_price: float, pnl_pct: float = 0.0, pnl_amount: float = 0.0, currency: str = "USDT", lesson: str = "", async_send: bool = True) -> bool:
+def notify_tp(engine: str, symbol: str, exit_price: float, pnl_pct: float = 0.0, pnl_amount: float = 0.0, currency: str = "USDT", lesson: str = "", contract_id = None, async_send: bool = True) -> bool:
     """Alias for notify_trade_close for Take Profit"""
     details = f"ราคาปิด: {exit_price:,.5f} ({pnl_pct:+.2f}%)"
     if lesson:
         details += f" | AI: {lesson}"
     thb_val = pnl_amount * 34.0 if currency in ("USD", "USDT") else None
-    return notify_trade_close(market=engine, symbol=symbol, pnl_usd=pnl_amount, pnl_thb=thb_val, is_win=True, details=details, async_send=async_send)
+    return notify_trade_close(market=engine, symbol=symbol, pnl_usd=pnl_amount, pnl_thb=thb_val, is_win=True, details=details, contract_id=contract_id, async_send=async_send)
 
 
-def notify_sl(engine: str, symbol: str, exit_price: float, pnl_pct: float = 0.0, pnl_amount: float = 0.0, currency: str = "USDT", is_breakeven: bool = False, lesson: str = "", async_send: bool = True) -> bool:
+def notify_sl(engine: str, symbol: str, exit_price: float, pnl_pct: float = 0.0, pnl_amount: float = 0.0, currency: str = "USDT", is_breakeven: bool = False, lesson: str = "", contract_id = None, async_send: bool = True) -> bool:
     """Alias for notify_trade_close for Stop Loss / Breakeven"""
     tag = "SL-Breakeven เสมอตัว" if is_breakeven else "Stop Loss"
     details = f"{tag} ราคาปิด: {exit_price:,.5f} ({pnl_pct:+.2f}%)"
     if lesson:
         details += f" | AI: {lesson}"
     thb_val = pnl_amount * 34.0 if currency in ("USD", "USDT") else None
-    return notify_trade_close(market=engine, symbol=symbol, pnl_usd=pnl_amount, pnl_thb=thb_val, is_win=is_breakeven or pnl_amount >= 0, details=details, async_send=async_send)
+    return notify_trade_close(market=engine, symbol=symbol, pnl_usd=pnl_amount, pnl_thb=thb_val, is_win=is_breakeven or pnl_amount >= 0, details=details, contract_id=contract_id, async_send=async_send)
 
 
-def notify_breakeven(market: str, symbol: str, current_price: float = 0.0, new_sl: float = 0.0, pnl_pct: float = 0.0, async_send: bool = True) -> bool:
+def notify_breakeven(market: str, symbol: str, current_price: float = 0.0, new_sl: float = 0.0, pnl_pct: float = 0.0, contract_id = None, async_send: bool = True) -> bool:
     """แจ้งเตือนเมื่อระบบขยับ Stop Loss บังหน้าทุน (Auto-Breakeven)"""
     new_sl_str = f"{new_sl:,.5f}" if isinstance(new_sl, (int, float)) else str(new_sl)
     cur_str = f"{current_price:,.5f}" if isinstance(current_price, (int, float)) else str(current_price)
@@ -226,6 +230,10 @@ def notify_breakeven(market: str, symbol: str, current_price: float = 0.0, new_s
         f"💎 สินทรัพย์: {symbol}\n"
         f"💵 ราคาปัจจุบัน: {cur_str} (+{pnl_pct:.2f}%)\n"
         f"🔒 SL ใหม่ (จุดคุ้มทุน): {new_sl_str}\n"
+    )
+    if contract_id:
+        msg += f"🎫 สัญญา (Contract ID): #{contract_id}\n"
+    msg += (
         f"✨ ล็อกกำไร/กันทุนเรียบร้อย ไม้นี้ไร้ความเสี่ยง 100%!\n"
         f"⏰ เวลา: {get_thai_time()}"
     )
@@ -233,7 +241,7 @@ def notify_breakeven(market: str, symbol: str, current_price: float = 0.0, new_s
     return send_line(msg, async_send=async_send)
 
 
-def notify_trailing(market: str, symbol: str, current_price: float, new_sl: float, pnl_pct: float = 0.0, async_send: bool = True) -> bool:
+def notify_trailing(market: str, symbol: str, current_price: float, new_sl: float, pnl_pct: float = 0.0, contract_id = None, async_send: bool = True) -> bool:
     """แจ้งเตือนเมื่อขยับ Dynamic Trailing Stop ตามกำไร"""
     new_sl_str = f"{new_sl:,.5f}" if isinstance(new_sl, (int, float)) else str(new_sl)
     cur_str = f"{current_price:,.5f}" if isinstance(current_price, (int, float)) else str(current_price)
@@ -245,6 +253,10 @@ def notify_trailing(market: str, symbol: str, current_price: float, new_sl: floa
         f"💎 สินทรัพย์: {symbol}\n"
         f"💵 ราคาปัจจุบัน: {cur_str} (+{pnl_pct:.2f}%)\n"
         f"🎯 Trailing SL ใหม่: {new_sl_str}\n"
+    )
+    if contract_id:
+        msg += f"🎫 สัญญา (Contract ID): #{contract_id}\n"
+    msg += (
         f"🌟 Let Profit Run ต่อเนื่อง!\n"
         f"⏰ เวลา: {get_thai_time()}"
     )
