@@ -573,6 +573,8 @@ HTML_PAGE = """<!DOCTYPE html>
 """
 
 class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
+    timeout = 10  # ป้องกัน Socket ค้างไม่เกิน 10 วินาที
+    
     def do_GET(self):
         # 1. API: ส่งคืนข้อความ Console สดล่าสุด
         if self.path.startswith("/api/console"):
@@ -731,8 +733,16 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
 def run_server():
     print(f"🚀 เริ่มต้นระบบ AG 2.0 Live Quant Terminal Server ที่พอร์ต {PORT}...")
     print(f"🌐 ใช้งานผ่าน URL: http://0.0.0.0:{PORT}")
-    socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.TCPServer(("0.0.0.0", PORT), QuantTerminalHandler) as httpd:
+    try:
+        from http.server import ThreadingHTTPServer
+        server_cls = ThreadingHTTPServer
+    except Exception:
+        class ThreadingHTTPServerFallback(socketserver.ThreadingMixIn, http.server.HTTPServer):
+            daemon_threads = True
+        server_cls = ThreadingHTTPServerFallback
+
+    server_cls.allow_reuse_address = True
+    with server_cls(("0.0.0.0", PORT), QuantTerminalHandler) as httpd:
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
