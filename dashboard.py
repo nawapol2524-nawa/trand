@@ -1,7 +1,9 @@
 import http.server
 import socketserver
 import os
+import sys
 import time
+import threading
 import json
 import urllib.parse
 import subprocess
@@ -647,6 +649,46 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
                     })
                     return
 
+                # ⚡ คำสั่งพิเศษ: สั่งรัน AI Retraining ใน Background
+                elif cmd_lower in ("train", "retrain", "train ai", "ai train"):
+                    def run_bg_train():
+                        try:
+                            append_to_console_log(f"\n[{get_thai_time()}] [AI-TRAIN] 🧠 เริ่มต้นกระบวนการ Offline Retraining ใน Background (Brad Goh SMC + Grid Search)...\n")
+                            proc = subprocess.Popen(
+                                [sys.executable, "-u", "train_offline.py"],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT,
+                                text=True,
+                                bufsize=1
+                            )
+                            for line in iter(proc.stdout.readline, ''):
+                                if not line:
+                                    break
+                                append_to_console_log(line.rstrip())
+                            proc.stdout.close()
+                            proc.wait()
+                            append_to_console_log(f"\n[{get_thai_time()}] [AI-TRAIN] 🎯 การฝึกโมเดล AI RL เสร็จสมบูรณ์ (Exit Code: {proc.returncode})\n")
+                        except Exception as e:
+                            append_to_console_log(f"\n[{get_thai_time()}] [AI-TRAIN ERROR] ❌ {e}\n")
+
+                    threading.Thread(target=run_bg_train, daemon=True).start()
+
+                    output = (
+                        "🧠 [AI RETRAINING INITIATED]\n"
+                        "คำสั่งฝึกฝนโมเดล AI RL ถูกส่งไปยัง Background Process เรียบร้อยแล้ว!\n"
+                        "⚡ กำลังเริ่มรัน train_offline.py (Brad Goh SMC + 64 Grid Search Combinations)...\n"
+                        "📡 ท่านสามารถติดตาม Log ความคืบหน้าได้สดๆ บนหน้าจอ Console นี้แบบ Real-Time\n"
+                        "🎯 ผลลัพธ์ที่ดีที่สุดจะถูกอัปเดตลง agent_memory_multi.json โดยอัตโนมัติ"
+                    )
+                    append_to_console_log(f"\n[{get_thai_time()}] [WEB-TERMINAL-TRAIN] $ {cmd}\n{output}\n")
+                    self._send_json({
+                        "status": "success",
+                        "cmd": cmd,
+                        "output": output,
+                        "elapsed_sec": 0.1
+                    })
+                    return
+
                 # ⚡ คำสั่งพิเศษ: รีสตาร์ทเฉพาะ Binance
                 elif cmd_lower in ("restart binance", "restart btc", "restart crypto"):
                     subprocess.run(["pkill", "-f", "main_binance.py"])
@@ -655,10 +697,11 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
                     self._send_json({"status": "success", "cmd": cmd, "output": output, "elapsed_sec": 0.2})
                     return
 
-                # ⚡ คำสั่งพิเศษ: รีสตาร์ทเฉพาะ Deriv
-                elif cmd_lower in ("restart deriv", "restart forex"):
+                # ⚡ คำสั่งพิเศษ: รีสตาร์ทเฉพาะ Deriv (Forex / Synthetic)
+                elif cmd_lower in ("restart deriv", "restart forex", "restart synthetic"):
                     subprocess.run(["pkill", "-f", "main_forex.py"])
-                    output = "🔄 กำลังสั่งรีสตาร์ทเฉพาะ Deriv Forex Engine... (Supervisor จะเปิดขึ้นมาใหม่ใน 2 วินาที)"
+                    subprocess.run(["pkill", "-f", "main_deriv_synthetic.py"])
+                    output = "🔄 กำลังสั่งรีสตาร์ท Deriv Engine... (Supervisor จะเปิดขึ้นมาใหม่ตามโหมดวันทำการใน 2 วินาที)"
                     append_to_console_log(f"\n[{get_thai_time()}] [WEB-TERMINAL-RESTART] $ {cmd}\n{output}\n")
                     self._send_json({"status": "success", "cmd": cmd, "output": output, "elapsed_sec": 0.2})
                     return
@@ -669,7 +712,8 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
                         "📖 [AVAILABLE BOT COMMANDS]\n"
                         "  • restart          : ดึงโค้ดล่าสุดจาก GitHub และรีสตาร์ทระบบทั้งหมด (main.py + Binance + Deriv)\n"
                         "  • restart binance  : รีสตาร์ทเฉพาะ Binance Spot Engine\n"
-                        "  • restart deriv    : รีสตาร์ทเฉพาะ Deriv Forex Engine\n"
+                        "  • restart deriv    : รีสตาร์ทเฉพาะ Deriv Engine (Forex/Synthetic ตามวันทำการ)\n"
+                        "  • train / retrain  : สั่งรัน AI Retraining (train_offline.py) ใน Background ทันที\n"
                         "  • git pull         : ดึงโค้ดอัปเดตจาก GitHub ทันที\n"
                         "  • git status       : เช็คสถานะไฟล์และ Git Commit ล่าสุด\n"
                         "  • ls -la           : ดูรายชื่อไฟล์ทั้งหมดในโฟลเดอร์\n"

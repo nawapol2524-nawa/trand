@@ -41,6 +41,8 @@ except ImportError:
 # ==========================================
 BINANCE_SCRIPT = "main_binance.py"
 FOREX_SCRIPT = "main_forex.py"
+DERIV_SYNTHETIC_SCRIPT = "main_deriv_synthetic.py"
+TRAIN_OFFLINE_SCRIPT = "train_offline.py"
 DASHBOARD_SCRIPT = "dashboard.py"
 MT5_SCRIPT = "main_mt5.py"
 SUPERVISOR_LOG = "supervisor_log.txt"
@@ -48,6 +50,7 @@ CONSOLE_LOG_FILE = "console_log.txt"
 STATUS_LOG_FILE = "status_log.txt"
 TRADE_LOG_FILE = "trade_log.txt"
 TRADE_LOG_DERIV_FILE = "trade_log_deriv.txt"
+TRADE_LOG_SYNTHETIC_FILE = "trade_log_synthetic.txt"
 DAILY_24H_LOG_FILE = "daily_24h_log.txt"
 DAILY_CYCLE_STATE_FILE = ".daily_cycle.json"
 ARCHIVE_DIR = os.path.join("archive", "logs")
@@ -57,12 +60,33 @@ ENABLE_MT5 = os.getenv("ENABLE_MT5", "false").lower() in ("true", "1", "yes")
 
 _log_lock = threading.Lock()
 current_active_cycle = None
+last_ai_train_date = None
 
 def get_thai_datetime():
     return datetime.utcnow() + timedelta(hours=7)
 
 def get_thai_time():
     return get_thai_datetime().strftime('%Y-%m-%d %H:%M:%S')
+
+def is_forex_weekend(dt=None):
+    """
+    ตรวจสอบสถานะวันหยุดสุดสัปดาห์ของตลาด Forex:
+    - ปิดตั้งแต่เช้าวันเสาร์ 04:00 น. จนถึงเช้าวันจันทร์ 04:00 น. ตามเวลาไทย (UTC+7)
+    - คืนค่า True หากเป็นช่วงสุดสัปดาห์ (ตลาดปิด), False หากเป็นวันธรรมดา (ตลาดเปิด)
+    """
+    if dt is None:
+        dt = get_thai_datetime()
+    wd = dt.weekday()  # Mon=0, Tue=1, Wed=2, Thu=3, Fri=4, Sat=5, Sun=6
+    hour = dt.hour
+
+    if wd == 5:  # วันเสาร์
+        return hour >= 4
+    elif wd == 6:  # วันอาทิตย์
+        return True
+    elif wd == 0:  # วันจันทร์
+        return hour < 4
+    else:  # วันอังคาร - วันศุกร์
+        return False
 
 def get_current_24h_cycle_info():
     """
@@ -153,7 +177,7 @@ def init_daily_24h_log():
     - หากพบค้างจากรอบเก่า ทำการ archive และเริ่มรอบใหม่
     - ดูแลให้ daily_24h_log.txt พร้อมบันทึกตลอด 24 ชม. เต็มโดยไม่ Trim
     """
-    global current_active_cycle
+    global current_active_cycle, last_ai_train_date
     os.makedirs(ARCHIVE_DIR, exist_ok=True)
     c_start, c_end, c_str = get_current_24h_cycle_info()
     current_active_cycle = c_str
@@ -164,6 +188,7 @@ def init_daily_24h_log():
             with open(DAILY_CYCLE_STATE_FILE, "r", encoding="utf-8") as f:
                 state_data = json.load(f)
                 saved_cycle = state_data.get("cycle_id")
+                last_ai_train_date = state_data.get("last_ai_train_date")
         except Exception:
             pass
 
@@ -212,6 +237,7 @@ def init_daily_24h_log():
                 "cycle_id": c_str,
                 "cycle_start": c_start.strftime("%Y-%m-%d %H:%M:%S"),
                 "cycle_end": c_end.strftime("%Y-%m-%d %H:%M:%S"),
+                "last_ai_train_date": last_ai_train_date,
                 "updated_at": get_thai_time()
             }, f, indent=2)
     except Exception:
@@ -275,6 +301,7 @@ def check_and_rotate_24h_log():
                     "cycle_id": c_str,
                     "cycle_start": c_start.strftime("%Y-%m-%d %H:%M:%S"),
                     "cycle_end": c_end.strftime("%Y-%m-%d %H:%M:%S"),
+                    "last_ai_train_date": last_ai_train_date,
                     "updated_at": get_thai_time()
                 }, f, indent=2)
         except Exception:
@@ -456,6 +483,26 @@ def build_ai_analysis_report(cycle_start, cycle_end, thai_now):
         except Exception:
             pass
 
+    if os.path.exists(TRADE_LOG_SYNTHETIC_FILE):
+        try:
+            with open(TRADE_LOG_SYNTHETIC_FILE, "r", encoding="utf-8", errors="replace") as f:
+                s_lines = f.readlines()
+            current_s_dt = None
+            s_ledger = []
+            for line in s_lines:
+                m = re.match(r"^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]", line)
+                if m:
+                    try:
+                        current_s_dt = datetime.strptime(m.group(1), "%Y-%m-%d %H:%M:%S")
+                    except Exception:
+                        pass
+                if current_s_dt and cycle_start <= current_s_dt < cycle_end:
+                    s_ledger.append(line)
+            if s_ledger:
+                ledger_lines.append("\n--- DERIV SYNTHETIC TRADES (24H) ---\n" + "".join(s_ledger))
+        except Exception:
+            pass
+
     total_trades = wins + losses
     win_rate = (wins / total_trades * 100) if total_trades > 0 else 0.0
     trade_ledger_text = "".join(ledger_lines).strip()
@@ -487,6 +534,18 @@ def build_ai_analysis_report(cycle_start, cycle_end, thai_now):
                 sym_d = at.get("symbol")
                 ep_d = at.get("entry_price")
                 active_positions.append(f"{sym_d} [Deriv] (Entry: {ep_d})")
+        except Exception:
+            pass
+
+    if os.path.exists("active_state_synthetic.json"):
+        try:
+            with open("active_state_synthetic.json", "r", encoding="utf-8") as f:
+                syn_data = json.load(f)
+            at_syn = syn_data.get("active_trade")
+            if at_syn:
+                sym_syn = at_syn.get("symbol")
+                ep_syn = at_syn.get("entry_price")
+                active_positions.append(f"{sym_syn} [Synthetic] (Entry: {ep_syn})")
         except Exception:
             pass
 
@@ -655,8 +714,21 @@ def sync_to_gdrive(force=False):
             except Exception:
                 pass
 
+        # 5. ส่ง agent_memory_multi.json (AI RL Parameter Memory) ไปยัง Google Drive
+        if os.path.exists("agent_memory_multi.json"):
+            try:
+                with open("agent_memory_multi.json", "r", encoding="utf-8") as mf:
+                    mem_content = mf.read()
+                requests.post(
+                    GDRIVE_WEBHOOK_URL,
+                    json={"filename": "agent_memory_multi.json", "content": mem_content},
+                    timeout=30
+                )
+            except Exception:
+                pass
+
         if resp.status_code == 200:
-            log_supervisor("☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log) ขึ้น Google Drive สำเร็จ!")
+            log_supervisor("☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!")
     except Exception as e:
         log_supervisor(f"⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: {e}")
 
@@ -708,9 +780,27 @@ def start_worker(name, script_path):
         log_supervisor(f"❌ ไม่สามารถเปิด {name} ได้: {e}")
         return None
 
+def stop_worker(name):
+    """หยุดการทำงานของ worker เฉพาะตัวอย่างปลอดภัยและลบออกจาก processes dict"""
+    if name in processes:
+        item = processes[name]
+        proc = item.get('proc')
+        if proc and proc.poll() is None:
+            log_supervisor(f"⏳ กำลังส่งคำสั่งปิด {name} (PID: {proc.pid})...")
+            try:
+                proc.terminate()
+                try:
+                    proc.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    proc.kill()
+                log_supervisor(f"✅ {name} ปิดเรียบร้อยแล้ว")
+            except Exception as e:
+                log_supervisor(f"⚠️ ผิดพลาดขณะปิด {name}: {e}")
+        processes.pop(name, None)
+
 def stop_all_workers(signum=None, frame=None):
     log_supervisor("🛑 ได้รับสัญญาณหยุดระบบ! กำลังปิด Workers ทั้งหมดอย่างปลอดภัย...")
-    for name, item in processes.items():
+    for name, item in list(processes.items()):
         proc = item.get('proc')
         if proc and proc.poll() is None:
             try:
@@ -723,6 +813,7 @@ def stop_all_workers(signum=None, frame=None):
                 log_supervisor(f"✅ {name} ปิดเรียบร้อยแล้ว")
             except Exception as e:
                 log_supervisor(f"⚠️ ผิดพลาดขณะปิด {name}: {e}")
+    processes.clear()
     log_supervisor("👋 ระบบ Supervisor ปิดตัวเองเรียบร้อย")
     sys.exit(0)
 
@@ -748,12 +839,170 @@ def restart_entire_system():
 signal.signal(signal.SIGINT, stop_all_workers)
 signal.signal(signal.SIGTERM, stop_all_workers)
 
+def manage_market_engines():
+    """
+    ตรวจสอบสถานะวันหยุดสุดสัปดาห์ และสลับเครื่องยนต์อัตโนมัติ 100%:
+    - วันธรรมดา (จันทร์ - ศุกร์): รัน BinanceEngine + DerivForexEngine (ปิด DerivSyntheticEngine)
+    - วันเสาร์ - อาทิตย์ (ส. 04:00 - จ. 04:00 น.): รัน BinanceEngine + DerivSyntheticEngine (ปิด DerivForexEngine)
+    """
+    weekend = is_forex_weekend()
+
+    # ดูแล BinanceEngine ให้ทำงานตลอด 24/7 (พร้อม Weekend Guard)
+    if "BinanceEngine" not in processes or processes["BinanceEngine"]["proc"].poll() is not None:
+        if os.path.exists(BINANCE_SCRIPT):
+            start_worker("BinanceEngine", BINANCE_SCRIPT)
+
+    # ดูแล WebDashboard ให้ทำงานตลอด 24/7
+    if "WebDashboard" not in processes or processes["WebDashboard"]["proc"].poll() is not None:
+        if os.path.exists(DASHBOARD_SCRIPT):
+            start_worker("WebDashboard", DASHBOARD_SCRIPT)
+
+    if weekend:
+        # === ช่วงวันหยุดสุดสัปดาห์ (ตลาด Forex โลกปิดทำการ) ===
+        # 1. ปิด DerivForexEngine หากรันอยู่
+        if "DerivForexEngine" in processes:
+            log_supervisor("⏸️ [WEEKEND SWITCH] ตลาด Forex โลกปิดทำการ (ส. 04:00 - จ. 04:00 น. เวลาไทย) -> กำลังปิด DerivForexEngine...")
+            stop_worker("DerivForexEngine")
+            if notifier:
+                try:
+                    notifier.notify_system("AG 2.0 Supervisor", "⏸️ เข้าสู่โหมดวันหยุดสุดสัปดาห์: สลับปิด Deriv Forex Engine เรียบร้อย (ตลาด Forex ปิด)")
+                except Exception:
+                    pass
+
+        # 2. รัน DerivSyntheticEngine หากมีไฟล์และเปิด ENABLE_DERIV
+        if ENABLE_DERIV:
+            if "DerivSyntheticEngine" not in processes or processes["DerivSyntheticEngine"]["proc"].poll() is not None:
+                if os.path.exists(DERIV_SYNTHETIC_SCRIPT):
+                    log_supervisor("🚀 [WEEKEND SWITCH] เริ่มต้น DerivSyntheticEngine สำหรับเทรด Synthetic Indices 24/7...")
+                    start_worker("DerivSyntheticEngine", DERIV_SYNTHETIC_SCRIPT)
+                    if notifier:
+                        try:
+                            notifier.notify_system("AG 2.0 Supervisor", "🚀 สลับเปิด Deriv Synthetic Engine สำหรับเทรดช่วงวันหยุดสุดสัปดาห์")
+                        except Exception:
+                            pass
+    else:
+        # === ช่วงวันธรรมดา (ตลาด Forex โลกเปิดทำการ) ===
+        # 1. ปิด DerivSyntheticEngine หากรันอยู่
+        if "DerivSyntheticEngine" in processes:
+            log_supervisor("🔄 [WEEKDAY SWITCH] ตลาด Forex โลกเปิดทำการ -> กำลังปิด DerivSyntheticEngine...")
+            stop_worker("DerivSyntheticEngine")
+
+        # 2. รัน DerivForexEngine
+        if ENABLE_DERIV:
+            if "DerivForexEngine" not in processes or processes["DerivForexEngine"]["proc"].poll() is not None:
+                if os.path.exists(FOREX_SCRIPT):
+                    log_supervisor("🚀 [WEEKDAY SWITCH] เริ่มต้น DerivForexEngine (EURUSD, GBPUSD, USDJPY)...")
+                    start_worker("DerivForexEngine", FOREX_SCRIPT)
+                    if notifier:
+                        try:
+                            notifier.notify_system("AG 2.0 Supervisor", "▶️ ตลาด Forex เปิดทำการ: สลับเปิด Deriv Forex Engine เรียบร้อย")
+                        except Exception:
+                            pass
+        elif ENABLE_MT5:
+            if "MT5Engine" not in processes or processes["MT5Engine"]["proc"].poll() is not None:
+                if os.path.exists(MT5_SCRIPT):
+                    start_worker("MT5Engine", MT5_SCRIPT)
+
+_ai_training_lock = threading.Lock()
+_is_ai_training_running = False
+
+def run_background_ai_training():
+    """รัน train_offline.py ใน Background Process โดยไม่กระทบการทำงานของบอทเทรดสด"""
+    global _is_ai_training_running
+    with _ai_training_lock:
+        if _is_ai_training_running:
+            log_supervisor("⚠️ [AI LAB] การเทรนรอบก่อนหน้ายังทำงานไม่เสร็จสิ้น ข้ามรอบนี้")
+            return
+        _is_ai_training_running = True
+
+    def _train_task():
+        global _is_ai_training_running
+        try:
+            log_supervisor("🧪 [WEEKEND AI LAB] เริ่มต้นกระบวนการ Offline Retraining & Grid Search (Brad Goh SMC)...")
+            append_console_log(f"\n[{get_thai_time()}] 🧪 [WEEKEND AI LAB] สั่งรัน train_offline.py ใน Background\n")
+            if notifier:
+                try:
+                    notifier.notify_system("AG 2.0 AI Lab", "🧪 เริ่มต้นกระบวนการ Weekend AI Retraining (Brad Goh SMC)")
+                except Exception:
+                    pass
+
+            proc = subprocess.Popen(
+                [sys.executable, "-u", TRAIN_OFFLINE_SCRIPT],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1
+            )
+            for line in iter(proc.stdout.readline, ''):
+                if not line:
+                    break
+                sys.stdout.write(line)
+                sys.stdout.flush()
+                append_console_log(line)
+            proc.stdout.close()
+            proc.wait()
+
+            if proc.returncode == 0:
+                log_supervisor("🎯 [WEEKEND AI LAB] ✅ การฝึกโมเดล AI RL ประสบความสำเร็จสมบูรณ์! กำลังซิงค์ผลลัพธ์ขึ้น Google Drive...")
+                sync_to_gdrive(force=True)
+                if notifier:
+                    try:
+                        notifier.notify_system("AG 2.0 AI Lab", "✅ Weekend AI Retraining สำเร็จ! อัปเดตพารามิเตอร์ SMC ลง Memory และ Google Drive เรียบร้อย")
+                    except Exception:
+                        pass
+            else:
+                log_supervisor(f"⚠️ [WEEKEND AI LAB] การเทรนเสร็จสิ้นด้วย Exit Code: {proc.returncode}")
+        except Exception as e:
+            log_supervisor(f"❌ [WEEKEND AI LAB ERROR] ผิดพลาดขณะรัน AI Retraining: {e}")
+        finally:
+            with _ai_training_lock:
+                _is_ai_training_running = False
+
+    t = threading.Thread(target=_train_task, daemon=True)
+    t.start()
+
+def check_weekend_ai_optimization():
+    """
+    ตรวจสอบเวลาทุกเช้าวันเสาร์ 09:15 น. (หลัง Daily Rollover 24 ชม. เสร็จสิ้น):
+    สั่งรัน train_offline.py ใน Background Process โดยไม่กระทบการทำงานของบอทเทรดสด
+    """
+    global last_ai_train_date
+    now_th = get_thai_datetime()
+    # วันเสาร์คือ weekday == 5, เวลาตั้งแต่ 09:15 น. ขึ้นไป
+    if now_th.weekday() == 5:
+        if (now_th.hour == 9 and now_th.minute >= 15) or (now_th.hour > 9):
+            today_str = now_th.strftime("%Y-%m-%d")
+            if last_ai_train_date != today_str:
+                last_ai_train_date = today_str
+                # บันทึกสถานะลง .daily_cycle.json ป้องกันการรันซ้ำซ้อน
+                try:
+                    state_data = {}
+                    if os.path.exists(DAILY_CYCLE_STATE_FILE):
+                        with open(DAILY_CYCLE_STATE_FILE, "r", encoding="utf-8") as f:
+                            state_data = json.load(f)
+                    state_data["last_ai_train_date"] = today_str
+                    with open(DAILY_CYCLE_STATE_FILE, "w", encoding="utf-8") as f:
+                        json.dump(state_data, f, indent=2)
+                except Exception:
+                    pass
+                log_supervisor(f"📅 [WEEKEND AI LAB] ถึงกำหนดเวลาเสาร์ 09:15 น. (รอบวันที่ {today_str}) -> เริ่มต้น AI Optimization Lab")
+                run_background_ai_training()
+
 def monitor_workers():
     for name, item in list(processes.items()):
         proc = item.get('proc')
         if proc is None or proc.poll() is not None:
             exit_code = proc.poll() if proc else 'N/A'
             now = time.time()
+
+            # ตรวจสอบความสอดคล้องกับโหมดวันทำการ (ห้ามปลุกตัวที่ควรปิด)
+            if name == "DerivForexEngine" and is_forex_weekend():
+                processes.pop(name, None)
+                continue
+            if name == "DerivSyntheticEngine" and not is_forex_weekend():
+                processes.pop(name, None)
+                continue
+
             log_supervisor(f"🚨 [ALERT] {name} หยุดทำงานผิดปกติ! (Exit Code: {exit_code})")
             
             if now - item['last_restart'] < 10:
@@ -783,8 +1032,9 @@ if __name__ == '__main__':
     banner_lines = [
         "╔══════════════════════════════════════════════════════════════════════════════════╗",
         "║  🏛️ AG 2.0 QUANT TERMINAL | DUAL-ENGINE SUPERVISOR (QUANT SHIELD)                 ║",
-        "║  ⚡ Binance Engine : Spot Sandbox Testnet (100% Demo / Training)                 ║",
-        "║  ⚡ Deriv Engine   : Forex Demo Account (DOT94482469 - 100% No Real Money)       ║",
+        "║  ⚡ Binance Engine : Spot Sandbox Testnet (100% Demo / 24/7 Weekend Guard)       ║",
+        "║  ⚡ Deriv Engine   : Auto-Switching Forex Demo / Weekend Synthetic (24/7)         ║",
+        "║  🧪 AI Retraining  : Brad Goh SMC + Weekend Optimization Lab (Sat 09:15)         ║",
         "║  📡 Console Logger : Streamed to console_log.txt & synced as status_log.txt      ║",
         "║  🔔 LINE Notify    : Active for BUY, TP, SL, Breakeven & Trailing Run             ║",
         "╚══════════════════════════════════════════════════════════════════════════════════╝"
@@ -799,38 +1049,15 @@ if __name__ == '__main__':
     # ส่งแจ้งเตือนเริ่มต้นระบบ
     if notifier:
         try:
-            notifier.notify_system("AG 2.0 Supervisor", "🚀 เริ่มต้นระบบ Dual-Engine (Binance Testnet Sandbox + Deriv Demo DOT94482469)")
+            notifier.notify_system("AG 2.0 Supervisor", "🚀 เริ่มต้นระบบ Dual-Engine Supervisor (Binance + Deriv Auto-Switching)")
         except Exception:
             pass
 
-    # 1. เริ่มต้น Binance Engine
-    if os.path.exists(BINANCE_SCRIPT):
-        start_worker("BinanceEngine", BINANCE_SCRIPT)
-    else:
-        log_supervisor(f"❌ ไม่พบไฟล์ {BINANCE_SCRIPT}!")
+    # 1. จัดการและเริ่มต้น Engine ตามสถานะวันเวลา (Forex วันธรรมดา หรือ Synthetic วันหยุด)
+    manage_market_engines()
 
-    # 2. เริ่มต้น Deriv Forex Engine (Demo DOT94482469)
-    if ENABLE_DERIV:
-        if os.path.exists(FOREX_SCRIPT):
-            start_worker("DerivForexEngine", FOREX_SCRIPT)
-        else:
-            log_supervisor(f"❌ ไม่พบไฟล์ {FOREX_SCRIPT}!")
-    elif ENABLE_MT5:
-        if os.path.exists(MT5_SCRIPT):
-            start_worker("MT5Engine", MT5_SCRIPT)
-        else:
-            log_supervisor(f"❌ ไม่พบไฟล์ {MT5_SCRIPT}!")
-    else:
-        log_supervisor("⏸️ [MODE] รันเฉพาะ Binance Spot 100%")
-
-    # 3. เริ่มต้น Web Dashboard
-    if os.path.exists(DASHBOARD_SCRIPT):
-        start_worker("WebDashboard", DASHBOARD_SCRIPT)
-    else:
-        log_supervisor(f"❌ ไม่พบไฟล์ {DASHBOARD_SCRIPT}!")
-
-    # 4. ลูปเฝ้าระวัง (Watchdog Loop)
-    log_supervisor("👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers และตรวจจับ Auto-Patch...")
+    # 2. ลูปเฝ้าระวัง (Watchdog Loop)
+    log_supervisor("👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers, Weekend Switching และ AI Lab...")
     while True:
         try:
             # 1. ตรวจสอบว่ามีคำสั่ง Restart จาก Web Terminal หรือไม่ (ตอบสนองใน 1-2 วินาที)
@@ -842,6 +1069,8 @@ if __name__ == '__main__':
                     pass
                 restart_entire_system()
 
+            manage_market_engines()
+            check_weekend_ai_optimization()
             check_for_updates()
             check_and_rotate_24h_log()
             sync_to_gdrive()

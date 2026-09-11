@@ -145,6 +145,26 @@ def truncate_amount(sym, amount):
 def get_thai_time():
     return (datetime.utcnow() + timedelta(hours=7)).strftime('%Y-%m-%d %H:%M:%S')
 
+def is_weekend_mode(dt_utc=None):
+    """
+    ตรวจจับช่วงเวลาวันเสาร์และวันอาทิตย์ (Weekend Guard Mode)
+    - เวลาไทย: วันเสาร์ 07:00 น. จนถึง เช้าวันจันทร์ 04:00 น.
+    - หรือ UTC: วันเสาร์ 00:00 UTC จนถึง วันอาทิตย์ 21:00 UTC
+    เมื่อเปิดใช้งาน:
+      1. ระงับกลยุทธ์ Breakout (สถาบันปิดทำการ เลี่ยง False Breakout)
+      2. เน้นกลยุทธ์ช้อนแนวรับ Mean-Reversion และ Reversal
+      3. ปรับขนาดเป้าหมายทำกำไร (Take Profit) ให้กระชับขึ้นเป็น 1.8 ATR (เดิม 2.5 ATR)
+      4. ปรับจุดคุ้มทุน (Auto-Breakeven) เมื่อกำไรแตะ +0.35% (เดิม +0.40%)
+    """
+    now = dt_utc or datetime.utcnow()
+    # วันเสาร์ UTC (weekday 5) ตลอดวัน (00:00 - 23:59 UTC = เสาร์ 07:00 - อาทิตย์ 06:59 ไทย)
+    # วันอาทิตย์ UTC (weekday 6) ก่อน 21:00 UTC (00:00 - 21:00 UTC = อาทิตย์ 07:00 - จันทร์ 04:00 ไทย)
+    if now.weekday() == 5:
+        return True
+    elif now.weekday() == 6 and now.hour < 21:
+        return True
+    return False
+
 def log_trade(text):
     now = get_thai_time()
     log_msg = f"[{now}] {text}"
@@ -182,20 +202,27 @@ def print_highlight_box(title, items, icon="⚡"):
 def print_quant_table(thai_time, btc_bullish, coin_rows):
     """ตารางสรุปสถานะเหรียญแบบ Compact อ่านง่าย ไม่สแปมซ้ำซ้อน"""
     trend_tag = "🟢 BULLISH (> 1h EMA200)" if btc_bullish else "🔴 BEARISH (<= 1h EMA200)"
+    weekend_active = is_weekend_mode()
     lines = [
         "╔══════════════════════════════════════════════════════════════════════════════════╗",
         "║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║",
+    ]
+    if weekend_active:
+        lines.append("║  🛡️ [WEEKEND GUARD ACTIVE] (งด Breakout | เน้น Mean-Rev | TP 1.8 ATR | BE 0.35%) ║")
+    lines.extend([
         f"║  🕒 เวลาไทย: {thai_time} | แนวโน้ม BTC: {trend_tag:<37}║",
         "╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣",
         "║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║",
         "╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣"
-    ]
+    ])
     for r in coin_rows:
         lines.append(
             f"║ {r['symbol']:<11} ║ {r['price']:>12} ║ {r['rsi']:>4} ║ {r['adx']:>4} ║ {r['vol']:>5}x ║ {r['pos']:<15} ║ {r['status']:<10} ║"
         )
     lines.append("╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝")
     full_text = "\n".join(lines)
+    if weekend_active:
+        print("🛡️ [WEEKEND GUARD ACTIVE] ตลาดสุดสัปดาห์: สถาบันหยุดทำการ เลี่ยง False Breakout (เน้นช้อนแนวรับ Mean-Rev)", flush=True)
     print(full_text, flush=True)
     try:
         with open(STATUS_FILE, "a", encoding="utf-8") as f:
@@ -543,6 +570,9 @@ def calculate_indicators(df):
     return df
 
 def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume, ema_200_1h, rsi, adx, atr, bb_lower, wyckoff_valid, btc_bullish, is_hammer, is_bullish_engulfing, is_morning_star, is_4h_bull, is_pin_bar=False, is_liquidity_sweep=False):
+    # 🛡️ ตรวจสอบ Weekend Guard Mode
+    is_weekend = is_weekend_mode()
+
     learned = memory[sym]["learned_params"]
     min_vol = learned.get("min_volume_ratio", 1.30)
     min_adx = learned.get("min_adx", 14.0)
@@ -567,14 +597,16 @@ def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume
 
     # 🛡️ Brad Goh Step 1: Trend Alignment & Entry Models
     # กลยุทธ์ 1: Trend Breakout
-    is_strat1 = is_htf_bull and is_4h_bull and is_breakout and vol_confirmed and rsi_valid and adx_valid and wyckoff_valid and gatekeeper_pass
+    strat1_raw = is_htf_bull and is_4h_bull and is_breakout and vol_confirmed and rsi_valid and adx_valid and wyckoff_valid and gatekeeper_pass
+    # หากอยู่ในโหมด Weekend Guard: ปิดการทำงาน Breakout ทันที (is_strat1 = False) เพื่อเลี่ยง False Breakout จากวอลุ่มเบาช่วงวันหยุด
+    is_strat1 = strat1_raw and (not is_weekend)
 
-    # กลยุทธ์ 2: Pullback ช้อนแนวรับเมื่อ 1H เป็น Bullish หรือ Extreme Confluence (คลิป 2)
+    # กลยุทธ์ 2: Pullback ช้อนแนวรับเมื่อ 1H เป็น Bullish หรือ Extreme Confluence (เน้นในวันหยุด Mean-Reversion)
     is_strat2_trend = is_htf_bull and (current_price <= bb_lower * 1.002) and (rsi <= 40)
     is_strat2_extreme = (current_price <= bb_lower) and (rsi <= 28.0) and has_bullish_pattern
     is_strat2 = is_strat2_trend or is_strat2_extreme
 
-    # กลยุทธ์ 3: Candle Reversal / Liquidity Sweep คอนเฟิร์ม (Brad Goh Step 4)
+    # กลยุทธ์ 3: Candle Reversal / Liquidity Sweep คอนเฟิร์ม (Brad Goh Step 4) (เน้นในวันหยุด Reversal)
     is_strat3 = is_htf_bull and has_bullish_pattern and (rsi <= 45)
 
     if is_strat1:
@@ -583,11 +615,15 @@ def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume
     elif is_strat2:
         decision = "BUY"
         trigger_sub = "Extreme_Confluence" if is_strat2_extreme and not is_strat2_trend else "Pullback_Sniper"
-        reason = f"[{trigger_sub}] ช้อนแนวรับ | RSI:{rsi:.1f} แตะ BB-Lower"
+        weekend_tag = " (Weekend Mean-Rev)" if is_weekend else ""
+        reason = f"[{trigger_sub}] ช้อนแนวรับ{weekend_tag} | RSI:{rsi:.1f} แตะ BB-Lower"
     elif is_strat3:
         decision = "BUY"
         pattern_name = "LiqSweep" if is_liquidity_sweep else ("Hammer" if is_hammer else ("PinBar" if is_pin_bar else ("Engulf" if is_bullish_engulfing else "MornStar")))
-        reason = f"[Candle_Reversal] พบ {pattern_name} | RSI:{rsi:.1f}"
+        weekend_tag = " (Weekend Reversal)" if is_weekend else ""
+        reason = f"[Candle_Reversal] พบ {pattern_name}{weekend_tag} | RSI:{rsi:.1f}"
+    elif is_weekend and (strat1_raw or is_breakout):
+        reason = "ระงับ Breakout (Weekend Guard: สถาบันหยุดทำการ เลี่ยง False Breakout)"
     elif is_breakout and not gatekeeper_pass:
         reason = "ระงับ Breakout (รอ BTC ยืนเหนือ 1h EMA200)"
     elif not is_htf_bull and not is_strat2_extreme: 
@@ -595,12 +631,19 @@ def ag_evaluate_market(sym, current_price, prev_high, avg_volume, current_volume
     elif not is_4h_bull and not is_strat2:
         reason = "ราคาใต้ 4h EMA50 (MTF)"
 
+    # ปรับขนาดเป้าหมายทำกำไร (Take Profit) สำหรับวันหยุดให้กระชับขึ้น: 1.8 ATR (เดิม 2.5 ATR) เพื่อเก็บกำไรในกรอบไซด์เวย์เร็วขึ้น
+    tp_mult = 1.8 if is_weekend else 2.5
+    suggested_tp_price = current_price + (tp_mult * atr)
+    suggested_sl_price = current_price - (1.5 * atr)
+
     return {
         "decision": decision,
-        "suggested_tp_price": current_price + (2.5 * atr),
-        "suggested_sl_price": current_price - (1.5 * atr),
+        "suggested_tp_price": suggested_tp_price,
+        "suggested_sl_price": suggested_sl_price,
         "reason": reason,
-        "rsi": rsi, "adx": adx, "vol_ratio": vol_ratio
+        "rsi": rsi, "adx": adx, "vol_ratio": vol_ratio,
+        "is_weekend": is_weekend,
+        "auto_be_pct": 0.35 if is_weekend else 0.40
     }
 
 def sync_data_to_github():
@@ -752,9 +795,17 @@ def process_symbol(sym, btc_bullish):
         elif any_in_position:
             status_display = "Standby"
         else:
-            if "Breakout" in eval_result['reason']: status_display = "ReadyBuy"
+            if "Breakout" in eval_result['reason']:
+                if "Weekend Guard" in eval_result['reason']:
+                    status_display = "WkndGuard"
+                else:
+                    status_display = "ReadyBuy"
+            elif "Extreme_Confluence" in eval_result['reason']: status_display = "MeanRevBuy"
+            elif "Pullback_Sniper" in eval_result['reason']: status_display = "PullbackBuy"
+            elif "Candle_Reversal" in eval_result['reason']: status_display = "ReverslBuy"
             elif "BTC" in eval_result['reason']: status_display = "WaitBTC"
             elif "EMA200" in eval_result['reason']: status_display = "BelowEMA"
+            elif is_weekend_mode(): status_display = "WkndScan"
             else: status_display = "Scanning"
 
         price_str = f"${current_price:.6f}" if current_price < 1.0 else f"${current_price:,.2f}"
@@ -808,7 +859,8 @@ def process_symbol(sym, btc_bullish):
                     s['in_position'] = True
                     s['be_set'] = False
                     
-                    s['tp'] = s['entry_price'] + (2.5 * atr_14)
+                    tp_mult = 1.8 if is_weekend_mode() else 2.5
+                    s['tp'] = s['entry_price'] + (tp_mult * atr_14)
                     s['sl'] = s['entry_price'] - (1.5 * atr_14)
                     save_state()
                     
@@ -816,6 +868,7 @@ def process_symbol(sym, btc_bullish):
                     invested_thb = invested_usdt * 34.0
                     
                     # แสดงกรอบเน้นสไตล์ Quant Terminal
+                    tp_label = f"${s['tp']:.6f} (+{tp_mult:.1f} ATR - Weekend Guard)" if is_weekend_mode() else f"${s['tp']:.6f} (+2.5 ATR)"
                     print_highlight_box(
                         f"BUY ORDER EXECUTED - {sym}",
                         [
@@ -823,7 +876,7 @@ def process_symbol(sym, btc_bullish):
                             ("Symbol", sym),
                             ("Entry Price", f"${s['entry_price']:.6f}"),
                             ("Size", f"{size} (~${invested_usdt:.2f} USDT / {invested_thb:.1f} บาท)"),
-                            ("Take Profit (TP)", f"${s['tp']:.6f} (+2.5 ATR)"),
+                            ("Take Profit (TP)", tp_label),
                             ("Stop Loss (SL)", f"${s['sl']:.6f} (-1.5 ATR)"),
                             ("Strategy Reason", eval_result['reason'])
                         ],
@@ -849,16 +902,19 @@ def process_symbol(sym, btc_bullish):
         elif s['in_position']:
             pnl_percent = (current_price - s['entry_price']) / s['entry_price']
 
-            # 🛡️ Auto-Breakeven เมื่อกำไรแตะ +0.40% ขยับ SL มาล็อกต้นทุนทันที (+0.05% เผื่อค่าธรรมเนียม)
-            if not s['be_set'] and pnl_percent >= 0.004:
+            # 🛡️ Auto-Breakeven เมื่อกำไรแตะเกณฑ์ ขยับ SL มาล็อกต้นทุนทันที (+0.05% เผื่อค่าธรรมเนียม)
+            # Weekend Guard: ปรับให้กระชับแตะ +0.35% (วันปกติ +0.40%)
+            be_threshold = 0.0035 if is_weekend_mode() else 0.0040
+            if not s['be_set'] and pnl_percent >= be_threshold:
                 s['sl'] = s['entry_price'] * 1.0005
                 s['be_set'] = True
                 save_state()
+                th_label = f"+{be_threshold*100:.2f}% (Weekend Guard)" if is_weekend_mode() else f"+{be_threshold*100:.2f}%"
                 print_highlight_box(
                     f"AUTO-BREAKEVEN ACTIVATED - {sym}",
                     [
                         ("Current Price", f"${current_price:.6f}"),
-                        ("Profit Reached", f"+{pnl_percent*100:.2f}% (Threshold: +0.40%)"),
+                        ("Profit Reached", f"+{pnl_percent*100:.2f}% (Threshold: {th_label})"),
                         ("New Stop Loss", f"${s['sl']:.6f} (Locked +0.05% with Fee Buffer)")
                     ],
                     icon="🛡️"
@@ -1046,6 +1102,8 @@ if __name__ == '__main__':
     log_trade(f"🪙 เหรียญที่เฝ้าเทรด: {', '.join(SYMBOLS)}")
     ai_status = "🟢 พร้อมใช้งาน (v3 News-Aware)" if GROQ_API_KEY else "⚪ ไม่ได้เปิดใช้งาน (ข้ามไปใช้ Pure Quant)"
     log_trade(f"🧠 [GROQ AI ENGINE] สถานะ: {ai_status}")
+    if is_weekend_mode():
+        log_trade("🛡️ [WEEKEND GUARD ACTIVE] สถาบันหยุดทำการ | ระงับ Breakout | เน้นช้อนแนวรับ Mean-Rev & Reversal | TP 1.8 ATR | Auto-BE +0.35%")
 
     last_github_sync = 0
     while True:
