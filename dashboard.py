@@ -537,8 +537,15 @@ HTML_PAGE = """<!DOCTYPE html>
                     cmdStatus.textContent = '❌ ผิดพลาด: ' + (data.error || 'Unknown error');
                 }
             } catch (err) {
-                cmdStatus.className = 'cmd-status error';
-                cmdStatus.textContent = '❌ ไม่สามารถส่งคำสั่งได้: ' + err.message;
+                const isRestart = cmd.toLowerCase().startsWith('restart') || cmd.toLowerCase() === 'reboot';
+                if (isRestart) {
+                    cmdStatus.className = 'cmd-status success';
+                    cmdStatus.textContent = '🔄 กำลังรีสตาร์ทระบบและดึงโค้ดล่าสุด... สตรีมสดจะกลับมาใน 3-5 วินาที';
+                    consoleEl.textContent += '\n[WEB-TERMINAL] 🔄 ส่งสัญญาณรีสตาร์ทระบบสำเร็จ กำลังเชื่อมต่อใหม่อัตโนมัติ...\n';
+                } else {
+                    cmdStatus.className = 'cmd-status error';
+                    cmdStatus.textContent = '❌ ไม่สามารถส่งคำสั่งได้: ' + err.message;
+                }
             } finally {
                 btnRun.disabled = false;
                 cmdInput.value = '';
@@ -631,8 +638,15 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
                     except Exception as ge:
                         git_msg = f"\n[GIT NOTE] {ge}"
 
-                    with open("restart.flag", "w", encoding="utf-8") as f:
-                        f.write(f"restart requested at {get_thai_time()}")
+                    def schedule_restart_flag():
+                        time.sleep(0.8)
+                        try:
+                            with open("restart.flag", "w", encoding="utf-8") as f:
+                                f.write(f"restart requested at {get_thai_time()}")
+                        except Exception:
+                            pass
+
+                    threading.Thread(target=schedule_restart_flag, daemon=True).start()
 
                     output = (
                         "🔄 [COMMAND RESTART ACCEPTED]\n"
@@ -647,6 +661,10 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
                         "output": output,
                         "elapsed_sec": 0.5
                     })
+                    try:
+                        self.wfile.flush()
+                    except Exception:
+                        pass
                     return
 
                 # ⚡ คำสั่งพิเศษ: สั่งรัน AI Retraining ใน Background
