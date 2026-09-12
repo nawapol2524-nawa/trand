@@ -1,0 +1,202 @@
+/**
+ * QuantPro Terminal - Theme System
+ * css/theme.css
+ * 
+ * Provides CSS Custom Properties for:
+ * 1. Dark Theme (QuantPro Slate/Midnight)
+ * 2. Light Theme (Bloomberg Day Mode / Clean Minimalist)
+ * 
+ * Transition policy:
+ * Transitions are strictly confined to background-color, color, border-color,
+ * box-shadow, fill, and stroke. Layout, box model properties (width, height,
+ * margin, padding, display, position, flex, grid) MUST NEVER transition
+ * to eliminate layout shifts (CLS = 0).
+ */
+
+:root,
+[data-theme="dark"] {
+  /* ==========================================================================
+     Dark Theme - QuantPro Signature Palette (Dark / Slate)
+     ========================================================================== */
+  --bg-app: #0c0e14;
+  --bg-card: #121722;
+  --bg-card-elevated: #161c2a;
+  --bg-card-hover: #1a2336;
+  --bg-input: #0f141e;
+  --bg-header: #0f131c;
+  --bg-subtle: #171d2b;
+  --bg-active-row: rgba(59, 130, 246, 0.12);
+
+  /* Borders & Dividers */
+  --border-card: #1e2638;
+  --border-subtle: #182030;
+  --border-accent: #3b82f6;
+
+  /* Typography */
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-inverse: #0f172a;
+
+  /* Market Performance Indicators */
+  --color-up: #10b981;             /* Bullish / +% / Online / Long */
+  --color-up-bg: rgba(16, 185, 129, 0.14);
+  --color-up-glow: rgba(16, 185, 129, 0.35);
+
+  --color-down: #ef4444;           /* Bearish / -% / Danger / Short */
+  --color-down-bg: rgba(239, 68, 68, 0.14);
+  --color-down-glow: rgba(239, 68, 68, 0.35);
+
+  /* Technical Indicators */
+  --color-ema: #f59e0b;            /* EMA 50 - Amber */
+  --color-ema-bg: rgba(245, 158, 11, 0.12);
+
+  --color-bb: #3b82f6;             /* Bollinger Bands - Vivid Blue */
+  --color-bb-fill: rgba(59, 130, 246, 0.08);
+
+  --color-smc: #a855f7;            /* SMC Liquidity Sweep - Purple */
+  --color-smc-bg: rgba(168, 85, 247, 0.15);
+
+  --color-rsi: #ec4899;            /* RSI - Pink / Magenta */
+  --color-volume-up: rgba(16, 185, 129, 0.35);
+  --color-volume-down: rgba(239, 68, 68, 0.35);
+
+  /* Interactive Controls & Range Sliders */
+  --slider-track: #1e2638;
+  --slider-fill-sl: #ef4444;
+  --slider-fill-tp: #10b981;
+  --slider-thumb-bg: #e2e8f0;
+  --slider-thumb-border: #3b82f6;
+  --slider-thumb-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+
+  /* Switch Toggle for Trailing Stop */
+  --switch-track-off: #1e2638;
+  --switch-track-on: #10b981;
+  --switch-thumb: #ffffff;
+  --switch-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+
+  /* Badges, Tabs & Status Pills */
+  --pill-bg: #161c2a;
+  --pill-border: #1e2638;
+  --pill-connected-dot: #10b981;
+  --pill-connected-glow: 0 0 8px #10b981;
+
+  /* Scrollbars */
+  --scrollbar-track: #0c0e14;
+  --scrollbar-thumb: #1e2638;
+  --scrollbar-thumb-hover: #334155;
+
+  /* Chart Canvas Background for Lightweight Charts sync */
+  --chart-canvas-bg: #121722;
+  --chart-grid-color: rgba(30, 38, 56, 0.4);
+  --chart-text-color: #94a3b8;
+
+  /* Theme Transition Duration (color & background only) */
+  --theme-transition-duration: 0.22s;
+}
+
+[data-theme="light"] {
+  /* ==========================================================================
+     Light Theme - Bloomberg Day Mode / Clean Minimalist
+     ========================================================================== */
+  --bg-app: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-card-elevated: #f1f5f9;
+  --bg-card-hover: #e2e8f0;
+  --bg-input: #ffffff;
+  --bg-header: #ffffff;
+  --bg-subtle: #f8fafc;
+  --bg-active-row: rgba(37, 99, 235, 0.08);
+
+  /* Borders & Dividers */
+  --border-card: #e2e8f0;
+  --border-subtle: #edf2f7;
+  --border-accent: #2563eb;
+
+  /* Typography */
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --text-inverse: #f8fafc;
+
+  /* Market Performance Indicators */
+  --color-up: #059669;             /* Crisp Green */
+  --color-up-bg: rgba(5, 150, 105, 0.1);
+  --color-up-glow: rgba(5, 150, 105, 0.25);
+
+  --color-down: #dc2626;           /* Vivid Red */
+  --color-down-bg: rgba(220, 38, 38, 0.1);
+  --color-down-glow: rgba(220, 38, 38, 0.25);
+
+  /* Technical Indicators */
+  --color-ema: #d97706;            /* EMA 50 - Warm Amber */
+  --color-ema-bg: rgba(217, 119, 6, 0.1);
+
+  --color-bb: #2563eb;             /* Bollinger Bands - Royal Blue */
+  --color-bb-fill: rgba(37, 99, 235, 0.06);
+
+  --color-smc: #7c3aed;            /* SMC Liquidity Sweep - Deep Purple */
+  --color-smc-bg: rgba(124, 58, 237, 0.1);
+
+  --color-rsi: #db2777;            /* RSI - Magenta */
+  --color-volume-up: rgba(5, 150, 105, 0.3);
+  --color-volume-down: rgba(220, 38, 38, 0.3);
+
+  /* Interactive Controls & Range Sliders */
+  --slider-track: #e2e8f0;
+  --slider-fill-sl: #dc2626;
+  --slider-fill-tp: #059669;
+  --slider-thumb-bg: #ffffff;
+  --slider-thumb-border: #2563eb;
+  --slider-thumb-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+
+  /* Switch Toggle for Trailing Stop */
+  --switch-track-off: #cbd5e1;
+  --switch-track-on: #059669;
+  --switch-thumb: #ffffff;
+  --switch-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+
+  /* Badges, Tabs & Status Pills */
+  --pill-bg: #f1f5f9;
+  --pill-border: #e2e8f0;
+  --pill-connected-dot: #059669;
+  --pill-connected-glow: 0 0 6px rgba(5, 150, 105, 0.6);
+
+  /* Scrollbars */
+  --scrollbar-track: #f8fafc;
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-thumb-hover: #94a3b8;
+
+  /* Chart Canvas Background for Lightweight Charts sync */
+  --chart-canvas-bg: #ffffff;
+  --chart-grid-color: rgba(226, 232, 240, 0.7);
+  --chart-text-color: #64748b;
+}
+
+/* ==========================================================================
+   Smooth Color Transitions (Zero CLS Guarantee)
+   Notice: Width, Height, Margin, Padding, Flex, Grid are NEVER transitioned.
+   Only visual surface properties are animated to protect Cumulative Layout Shift.
+   ========================================================================== */
+html,
+body,
+.terminal-header,
+.terminal-pane,
+.card,
+.watchlist-row,
+.indicator-tag,
+.status-pill,
+.account-pill,
+.theme-btn,
+.timeframe-btn,
+.pos-card,
+.log-item,
+.slider-container,
+.input-search,
+.chart-container,
+.chart-header {
+  transition: background-color var(--theme-transition-duration) ease,
+              color var(--theme-transition-duration) ease,
+              border-color var(--theme-transition-duration) ease,
+              box-shadow var(--theme-transition-duration) ease;
+}
