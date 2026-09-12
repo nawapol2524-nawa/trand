@@ -694,7 +694,7 @@ def sync_to_gdrive(force=False):
         resp = requests.post(
             GDRIVE_WEBHOOK_URL,
             json={"filename": "console_log.txt", "content": full_content},
-            timeout=30
+            timeout=(5, 20)
         )
 
         # 3. ส่งทับ status_log.txt บน Google Drive เพื่อให้ไฟล์เดิมอัปเดตสดทันที
@@ -702,7 +702,7 @@ def sync_to_gdrive(force=False):
             requests.post(
                 GDRIVE_WEBHOOK_URL,
                 json={"filename": "status_log.txt", "content": full_content},
-                timeout=30
+                timeout=(5, 20)
             )
         except Exception:
             pass
@@ -713,7 +713,7 @@ def sync_to_gdrive(force=False):
                 requests.post(
                     GDRIVE_WEBHOOK_URL,
                     json={"filename": "trade_log.txt", "content": trade_ledger_text},
-                    timeout=30
+                    timeout=(5, 20)
                 )
             except Exception:
                 pass
@@ -726,7 +726,7 @@ def sync_to_gdrive(force=False):
                 requests.post(
                     GDRIVE_WEBHOOK_URL,
                     json={"filename": "agent_memory_multi.json", "content": mem_content},
-                    timeout=30
+                    timeout=(5, 20)
                 )
             except Exception:
                 pass

@@ -20,6 +20,7 @@ import sys
 import time
 import json
 import ssl
+import re
 import asyncio
 from datetime import datetime, timedelta
 
@@ -620,16 +621,26 @@ async def authorize_deriv_account(ws, token):
 # ==========================================
 # 📑 DERIV MULTIPLIERS CONTRACT OPERATIONS
 # ==========================================
+# Multiplier ranges ที่ Deriv รองรับตามแต่ละดัชนีจำลอง
+SYMBOL_MULTIPLIER_MAP = {
+    'R_10': [100, 40, 20, 160, 200],
+    'R_25': [160, 400, 800, 1200, 1600],
+    'R_50': [100, 80, 50, 200, 400],
+    'R_75': [100, 50, 40, 20, 200],
+    'R_100': [200, 400, 600, 800, 1000]
+}
+
 async def get_valid_multiplier(ws, symbol):
     """
     ตรวจสอบค่า Multiplier ที่ Deriv อนุญาตสำหรับ Symbol
-    ส่งคำขอ contracts_for และเลือกค่าตัวคูณ เช่น 100, 50, หรือค่าที่ใกล้เคียงที่สุด
+    ส่งคำขอ contracts_for และเลือกค่าตัวคูณที่ปลอดภัย เช่น 160 สำหรับ R_25 หรือ 100 สำหรับ R_75
     """
     default_map = {
-        'R_75': 100,
-        'R_25': 100,
+        'R_10': 100,
+        'R_25': 160,  # Deriv บังคับใช้ 160, 400, 800, 1200, 1600 สำหรับ R_25
         'R_50': 100,
-        'R_10': 100
+        'R_75': 100,
+        'R_100': 200
     }
     fallback_mult = default_map.get(symbol, DEFAULT_MULTIPLIER)
 
@@ -647,11 +658,11 @@ async def get_valid_multiplier(ws, symbol):
             ]
             if mult_contracts:
                 c = mult_contracts[0]
-                ranges = c.get("multiplier_range") or c.get("multipliers") or []
+                ranges = c.get("multiplier_range") or c.get("multipliers") or c.get("available_multipliers") or []
                 if ranges:
-                    if 100 in ranges:
-                        return 100
-                    closest = min(ranges, key=lambda x: abs(x - 100))
+                    if fallback_mult in ranges:
+                        return int(fallback_mult)
+                    closest = min(ranges, key=lambda x: abs(x - fallback_mult))
                     return int(closest)
     except Exception as e:
         log(f"⚠️ [CONTRACTS_FOR] ตรวจสอบ multiplier ของ {symbol} ไม่สำเร็จ: {e} -> ใช้ค่าเริ่มต้น {fallback_mult}")
@@ -662,12 +673,13 @@ async def request_multiplier_proposal(ws, symbol, stake, multiplier):
     """
     ส่งคำขอ Proposal สัญญา Multipliers ไปยัง Deriv WebSocket:
     {"proposal": 1, "amount": STAKE_USD, "basis": "stake", "contract_type": "MULTUP", "currency": "USD", "multiplier": multiplier, "underlying_symbol": symbol}
-    พร้อมกลไก Fallback และ Error Handling ครอบคลุม: InsufficientBalance, ParameterInvalid, MarketClosed, RateLimit
+    พร้อมกลไก Fallback และ Auto-Healing จากข้อความ Error ของ Deriv
     """
-    test_multipliers = [multiplier]
-    for alt in [100, 50, 40, 20]:
-        if alt not in test_multipliers:
-            test_multipliers.append(alt)
+    symbol_alts = SYMBOL_MULTIPLIER_MAP.get(symbol, [multiplier, 100, 50, 40, 20, 160])
+    test_multipliers = [int(multiplier)]
+    for alt in symbol_alts:
+        if int(alt) not in test_multipliers:
+            test_multipliers.append(int(alt))
 
     for mult in test_multipliers:
         prop_req = {
@@ -703,6 +715,15 @@ async def request_multiplier_proposal(ws, symbol, stake, multiplier):
                     log(f"⏳ [RATE LIMIT] Deriv Rate Limit: {msg} -> ชะลอ 2 วินาทีเพื่อความเสถียร...")
                     await asyncio.sleep(2.0)
                     continue
+
+                # ตรวจจับข้อความ ContractBuyValidationError เพื่อดึงค่าตัวคูณที่ Deriv ยอมรับได้อัตโนมัติ (Self-Healing)
+                if "acceptable range" in msg.lower() or "acceptable values" in msg.lower():
+                    found_numbers = [int(n) for n in re.findall(r'\b\d+\b', msg)]
+                    valid_candidates = [n for n in found_numbers if 10 <= n <= 5000]
+                    for cand in valid_candidates:
+                        if cand not in test_multipliers:
+                            test_multipliers.append(cand)
+                            log(f"💡 [AUTO-DETECT MULTIPLIER] เพิ่มตัวคูณที่ยอมรับได้สำหรับ {symbol}: x{cand}")
 
                 # กรณี ParameterInvalid (ลอง fallback ด้วย "symbol" แทน "underlying_symbol")
                 if code == "ParameterInvalid":
