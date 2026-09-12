@@ -580,14 +580,18 @@ Reply ONLY with YES or NO."""
         return True
 
 # ==========================================
-# 🎯 LIVE SPREAD FILTER (MAX 1.8 PIPS)
+# 🎯 DYNAMIC PIP SIZE & LIVE SPREAD FILTER
 # ==========================================
+def get_forex_pip_size(symbol):
+    """คืนค่าขนาด 1 pip ตามคู่เงิน: JPY = 0.01, คู่เงินอื่นๆ = 0.00010"""
+    return 0.01 if "JPY" in str(symbol).upper() else 0.00010
+
 async def get_live_spread(ws, symbol):
     """
     ตรวจสอบสเปรดสด (Ask - Bid) ผ่าน Deriv WebSocket
     คืนค่า (spread_pips, ask, bid) หรือ (None, None, None) หากเกิดข้อผิดพลาด
     """
-    pip_size = 0.01 if "JPY" in symbol else 0.0001
+    pip_size = get_forex_pip_size(symbol)
     try:
         # ส่งคำขอ tick สดจาก Deriv
         await ws.send(json.dumps({"ticks": symbol}))
@@ -796,9 +800,8 @@ async def recover_active_position(ws, saved_trade, memory_ref):
 
     poc = await get_open_contract_status(ws, contract_id)
     if not poc:
-        log(f"⚠️ [RECOVERY] ไม่พบข้อมูลสัญญา #{contract_id} บน Deriv (อาจปิดไปแล้วหรือเป็น Demo เก่า) -> รีเซ็ตสถานะไม้ค้าง")
-        save_state(None)
-        return None
+        log(f"⚠️ [RECOVERY WARNING] ไม่สามารถดึงสถานะสัญญา #{contract_id} ได้ในขณะนี้ (อาจเป็นเพราะเครือข่ายชั่วคราว) -> คงสถานะไม้ไว้เฝ้าต่อ")
+        return saved_trade
 
     is_sold = poc.get("is_sold", 0)
     profit_usd = float(poc.get("profit", 0.0))
@@ -996,7 +999,7 @@ async def deriv_engine():
                                 if active_trade and active_trade.get('symbol') == sym:
                                     cur_p = inds['price']
                                     ent = active_trade['entry_price']
-                                    pips = (cur_p - ent) / 0.00010
+                                    pips = (cur_p - ent) / get_forex_pip_size(sym)
                                     pos_str = f"🟢 {pips:+.1f} pips"
                                     st_str = "BE" if active_trade.get('be_locked') else "IN"
 
@@ -1020,9 +1023,11 @@ async def deriv_engine():
 
                     # 3. จัดการสถานะไม้ที่ถืออยู่ (Active Position Management)
                     if active_trade and primary_indicators:
+                        trade_sym = active_trade.get('symbol', PRIMARY_SYMBOL)
+                        sym_pip = get_forex_pip_size(trade_sym)
                         cur_price = primary_indicators['price']
                         entry = active_trade['entry_price']
-                        diff_pips = (cur_price - entry) / 0.00010
+                        diff_pips = (cur_price - entry) / sym_pip
                         trailing_sl_pips = active_trade.get('trailing_sl_pips', 1.0 if active_trade.get('be_locked', False) else -20.0)
                         real_cid = active_trade.get('contract_id')
                         is_real_contract = real_cid and not str(real_cid).startswith("DEMO-")
@@ -1058,7 +1063,7 @@ async def deriv_engine():
                             )
                             if notifier:
                                 try:
-                                    notifier.notify_breakeven("Deriv", active_trade['symbol'], cur_price, entry + 0.00010, diff_pips, contract_id=active_trade.get('contract_id'))
+                                    notifier.notify_breakeven("Deriv", active_trade['symbol'], cur_price, entry + (1.0 * sym_pip), diff_pips, contract_id=active_trade.get('contract_id'))
                                 except Exception:
                                     pass
 
@@ -1081,7 +1086,7 @@ async def deriv_engine():
                                 )
                                 if notifier:
                                     try:
-                                        notifier.notify_trailing("Deriv", active_trade['symbol'], cur_price, cur_price - (15.0 * 0.00010), diff_pips, contract_id=active_trade.get('contract_id'))
+                                        notifier.notify_trailing("Deriv", active_trade['symbol'], cur_price, cur_price - (15.0 * sym_pip), diff_pips, contract_id=active_trade.get('contract_id'))
                                     except Exception:
                                         pass
 
@@ -1094,8 +1099,11 @@ async def deriv_engine():
 
                         if contract_closed_by_broker or is_be_hit or is_sl or is_timeout or is_bb_target:
                             profit_usd = 0.0
+                            is_confirmed_closed = False
+
                             if contract_closed_by_broker:
                                 profit_usd = broker_pnl_usd
+                                is_confirmed_closed = True
                             elif is_real_contract:
                                 # ส่งคำสั่งขายที่ราคาตลาดไปยัง Deriv
                                 sell_res = await execute_multiplier_sell(ws, real_cid)
@@ -1103,68 +1111,73 @@ async def deriv_engine():
                                     sold_for = float(sell_res.get("sold_for", 0.0))
                                     stake_paid = float(active_trade.get("stake", STAKE_USD))
                                     profit_usd = round(sold_for - stake_paid, 2)
+                                    is_confirmed_closed = True
                                 else:
                                     poc_check = await get_open_contract_status(ws, real_cid)
                                     if poc_check and poc_check.get("is_sold") == 1:
                                         profit_usd = float(poc_check.get("profit", 0.0))
+                                        is_confirmed_closed = True
                                     else:
-                                        profit_usd = (diff_pips * 0.10)
+                                        log(f"⚠️ [SELL PENDING] สัญญา #{real_cid} ({trade_sym}) ยังไม่ปิดบน Deriv -> คงสถานะไม้ไว้เฝ้าต่อ ห้ามทอดทิ้ง!")
+                                        is_confirmed_closed = False
                             else:
-                                profit_usd = (diff_pips * 0.10) # 0.01 lot pip value ~$0.10
+                                profit_usd = (diff_pips * 0.10) # Demo pip value ~$0.10
+                                is_confirmed_closed = True
 
-                            profit_thb = profit_usd * usd_thb_rate
-                            
-                            if is_be_hit:
-                                status_title = "SL-BREAKEVEN CLOSED"
-                                icon_str = "🛡️"
-                            elif is_bb_target:
-                                status_title = "TAKE PROFIT (UPPER BB / SWING HIGH - เข้าไวออกไวกว่า)"
-                                icon_str = "🎯"
-                            elif profit_usd >= 0:
-                                status_title = "TAKE PROFIT (WIN)"
-                                icon_str = "🎯"
-                            else:
-                                status_title = "STOP LOSS (LOSS)"
-                                icon_str = "🛑"
+                            if is_confirmed_closed:
+                                profit_thb = profit_usd * usd_thb_rate
+                                
+                                if is_be_hit:
+                                    status_title = "SL-BREAKEVEN CLOSED"
+                                    icon_str = "🛡️"
+                                elif is_bb_target:
+                                    status_title = "TAKE PROFIT (UPPER BB / SWING HIGH - เข้าไวออกไวกว่า)"
+                                    icon_str = "🎯"
+                                elif profit_usd >= 0:
+                                    status_title = "TAKE PROFIT (WIN)"
+                                    icon_str = "🎯"
+                                else:
+                                    status_title = "STOP LOSS (LOSS)"
+                                    icon_str = "🛑"
 
-                            print_highlight_box(
-                                f"{status_title} - {active_trade['symbol']}",
-                                [
-                                    ("Exit Price", f"{cur_price:.5f}"),
-                                    ("Result Pips", f"{diff_pips:+.1f} pips"),
-                                    ("Net Profit", f"${profit_usd:+,.2f} USD (≈ {profit_thb:+,.2f} THB)"),
-                                    ("Account Balance", f"${account_info['balance'] + profit_usd:,.2f} USD")
-                                ],
-                                icon=icon_str
-                            )
+                                print_highlight_box(
+                                    f"{status_title} - {active_trade['symbol']}",
+                                    [
+                                        ("Exit Price", f"{cur_price:.5f}"),
+                                        ("Result Pips", f"{diff_pips:+.1f} pips"),
+                                        ("Net Profit", f"${profit_usd:+,.2f} USD (≈ {profit_thb:+,.2f} THB)"),
+                                        ("Account Balance", f"${account_info['balance'] + profit_usd:,.2f} USD")
+                                    ],
+                                    icon=icon_str
+                                )
 
-                            account_info['balance'] = round(account_info['balance'] + profit_usd, 2)
-                            memory["total_trades"] = memory.get("total_trades", 0) + 1
-                            
-                            if profit_usd >= 0:
-                                memory["wins"] = memory.get("wins", 0) + 1
-                                if notifier:
-                                    try:
-                                        notifier.notify_tp("Deriv", active_trade['symbol'], cur_price, diff_pips, profit_usd, "USD", contract_id=active_trade.get('contract_id'))
-                                    except Exception:
-                                        pass
-                            else:
-                                memory["losses"] = memory.get("losses", 0) + 1
-                                current_oversold = memory.get("learned_params", {}).get("rsi_oversold", 35.0)
-                                if current_oversold > 28.0:
-                                    memory["learned_params"]["rsi_oversold"] = round(current_oversold - 0.5, 1)
-                                if notifier:
-                                    try:
-                                        notifier.notify_sl("Deriv", active_trade['symbol'], cur_price, diff_pips, profit_usd, "USD", is_breakeven=is_be_hit, contract_id=active_trade.get('contract_id'))
-                                    except Exception:
-                                        pass
+                                account_info['balance'] = round(account_info['balance'] + profit_usd, 2)
+                                memory["total_trades"] = memory.get("total_trades", 0) + 1
+                                
+                                if profit_usd >= 0:
+                                    memory["wins"] = memory.get("wins", 0) + 1
+                                    if notifier:
+                                        try:
+                                            notifier.notify_tp("Deriv", active_trade['symbol'], cur_price, diff_pips, profit_usd, "USD", contract_id=active_trade.get('contract_id'))
+                                        except Exception:
+                                            pass
+                                else:
+                                    memory["losses"] = memory.get("losses", 0) + 1
+                                    current_oversold = memory.get("learned_params", {}).get("rsi_oversold", 35.0)
+                                    if current_oversold > 28.0:
+                                        memory["learned_params"]["rsi_oversold"] = round(current_oversold - 0.5, 1)
+                                    if notifier:
+                                        try:
+                                            notifier.notify_sl("Deriv", active_trade['symbol'], cur_price, diff_pips, profit_usd, "USD", is_breakeven=is_be_hit, contract_id=active_trade.get('contract_id'))
+                                        except Exception:
+                                            pass
 
-                            memory["net_profit_usd"] = memory.get("net_profit_usd", 0.0) + profit_usd
-                            memory["net_profit_thb"] = memory.get("net_profit_thb", 0.0) + profit_thb
-                            save_memory(memory)
-                            
-                            active_trade = None
-                            save_state(None) # ล้างสถานะไม้ในไฟล์
+                                memory["net_profit_usd"] = memory.get("net_profit_usd", 0.0) + profit_usd
+                                memory["net_profit_thb"] = memory.get("net_profit_thb", 0.0) + profit_thb
+                                save_memory(memory)
+                                
+                                active_trade = None
+                                save_state(None) # ล้างสถานะไม้ในไฟล์เมื่อปิดสำเร็จ 100% แล้วเท่านั้น
 
                     # 4. สแกนหาจังหวะเปิดไม้ใหม่ (เมื่อไม่มีไม้ค้าง และไม่อยู่ในช่วง Rollover Freeze หรือ CPI Freeze)
                     elif not active_trade and primary_indicators:

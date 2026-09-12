@@ -797,6 +797,10 @@ def stop_worker(name):
                     proc.wait(timeout=5)
                 except subprocess.TimeoutExpired:
                     proc.kill()
+                    try:
+                        proc.wait(timeout=2)
+                    except Exception:
+                        pass
                 log_supervisor(f"✅ {name} ปิดเรียบร้อยแล้ว")
             except Exception as e:
                 log_supervisor(f"⚠️ ผิดพลาดขณะปิด {name}: {e}")
@@ -814,6 +818,10 @@ def stop_all_workers(signum=None, frame=None):
                     proc.wait(timeout=5)
                 except subprocess.TimeoutExpired:
                     proc.kill()
+                    try:
+                        proc.wait(timeout=2)
+                    except Exception:
+                        pass
                 log_supervisor(f"✅ {name} ปิดเรียบร้อยแล้ว")
             except Exception as e:
                 log_supervisor(f"⚠️ ผิดพลาดขณะปิด {name}: {e}")
@@ -833,6 +841,10 @@ def restart_entire_system():
                     proc.wait(timeout=3)
                 except subprocess.TimeoutExpired:
                     proc.kill()
+                    try:
+                        proc.wait(timeout=2)
+                    except Exception:
+                        pass
                 log_supervisor(f"✅ {name} ปิดเรียบร้อย")
             except Exception:
                 pass
@@ -1018,13 +1030,19 @@ def monitor_workers():
 
             log_supervisor(f"🚨 [ALERT] {name} หยุดทำงานผิดปกติ! (Exit Code: {exit_code})")
             
-            # Crash-loop guard: หากแครชติดๆ กันใน 10 วินาที ให้ชะลอการรีสตาร์ท
+            # Crash-loop guard: หากแครชติดๆ กันใน 10 วินาที ให้ชะลอการรีสตาร์ทแบบ Non-blocking (ไม่บล็อก Supervisor)
             last_rst = item.get('last_restart', 0)
             if now - last_rst < 10:
-                wait_sec = max(1, 10 - int(now - last_rst))
-                log_supervisor(f"⏳ {name} แครชไวเกินไป พัก {wait_sec} วินาทีก่อนเปิดใหม่...")
-                time.sleep(wait_sec)
-            
+                wait_until = item.get('restart_after_ts', 0)
+                if wait_until == 0:
+                    wait_sec = max(1, 10 - int(now - last_rst))
+                    item['restart_after_ts'] = now + wait_sec
+                    log_supervisor(f"⏳ {name} แครชไวเกินไป รอ {wait_sec} วินาทีก่อนเปิดใหม่... (Non-blocking)")
+                    continue
+                elif now < wait_until:
+                    continue
+
+            item['restart_after_ts'] = 0
             item['restarts'] = item.get('restarts', 0) + 1
             item['last_restart'] = time.time()
             log_supervisor(f"🔄 กำลังรีสตาร์ท {name} (ครั้งที่ {item['restarts']})...")

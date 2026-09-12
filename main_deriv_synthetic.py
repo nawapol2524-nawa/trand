@@ -822,9 +822,8 @@ async def recover_active_position(ws, saved_trade, memory_ref):
 
     poc = await get_open_contract_status(ws, contract_id)
     if not poc:
-        log(f"⚠️ [RECOVERY] ไม่พบข้อมูลสัญญา #{contract_id} บน Deriv (อาจถูกล้างหรือหมดอายุ) -> รีเซ็ตสถานะไม้ค้าง")
-        save_state(None)
-        return None
+        log(f"⚠️ [RECOVERY WARNING] ไม่สามารถดึงสถานะสัญญา #{contract_id} ได้ในขณะนี้ (อาจเป็นเพราะเครือข่ายชั่วคราว) -> คงสถานะไม้ไว้เฝ้าต่อ")
+        return saved_trade
 
     is_sold = poc.get("is_sold", 0)
     profit_usd = float(poc.get("profit", 0.0))

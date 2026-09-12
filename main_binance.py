@@ -294,21 +294,25 @@ memory = load_memory()
 
 def save_memory(mem):
     try:
-        with open(MEMORY_FILE, 'w', encoding='utf-8') as f:
+        tmp = MEMORY_FILE + ".tmp"
+        with open(tmp, 'w', encoding='utf-8') as f:
             json.dump(mem, f, ensure_ascii=False, indent=2)
+        os.replace(tmp, MEMORY_FILE)
     except Exception:
         pass
 
 def save_state():
-    """บันทึกสถานะการถือครอง (Active Positions) และ Cooldown ลง active_state.json แบบทันที"""
+    """บันทึกสถานะการถือครอง (Active Positions) และ Cooldown ลง active_state.json แบบ Atomic ป้องกันไฟล์ 0 Bytes"""
     try:
         serializable_state = {}
         for sym, data in state.items():
             serializable_state[sym] = data.copy()
             if isinstance(data.get('cooldown_until'), datetime):
                 serializable_state[sym]['cooldown_until'] = data['cooldown_until'].isoformat()
-        with open(STATE_FILE, 'w', encoding='utf-8') as f:
+        tmp = STATE_FILE + ".tmp"
+        with open(tmp, 'w', encoding='utf-8') as f:
             json.dump(serializable_state, f, indent=2)
+        os.replace(tmp, STATE_FILE)
     except Exception as e:
         log_trade(f"⚠️ [STATE SAVE ERROR] {e}")
 
@@ -981,6 +985,42 @@ def process_symbol(sym, btc_bullish):
                         log_trade(f"⚠️ [SELL SKIP {sym}] sell_size เป็น 0 หลัง truncate (free_bal: {free_bal})")
                         return summary_row
 
+                    # ตรวจสอบ Min Notional ($5 USDT) ของ Binance
+                    sell_notional = sell_size * current_price
+                    if sell_notional < 5.0:
+                        log_trade(f"⚠️ [MIN NOTIONAL {sym}] มูลค่าเหรียญที่จะขาย (${sell_notional:.2f} USDT) ต่ำกว่าเกณฑ์ $5 ของ Binance")
+                        try:
+                            usdt_free = exchange.fetch_free_balance().get('USDT', 0)
+                            if usdt_free >= 5.5:
+                                topup_usdt = 5.5
+                                topup_qty = truncate_amount(sym, topup_usdt / current_price)
+                                if topup_qty > 0:
+                                    log_trade(f"💡 [TOP-UP & FLUSH {sym}] กำลังซื้อเพิ่ม {topup_qty} (~${topup_usdt} USDT) เพื่อปลดล็อกขายออกทั้งก้อน...")
+                                    exchange.create_market_buy_order(sym, topup_qty)
+                                    time.sleep(0.5)
+                                    new_free = exchange.fetch_free_balance().get(base_coin, 0)
+                                    sell_size = truncate_amount(sym, new_free)
+                                    log_trade(f"✅ [TOP-UP OK {sym}] ยอดเหรียญใหม่พร้อมเทขาย: {sell_size} (~${sell_size * current_price:.2f} USDT)")
+                        except Exception as topup_err:
+                            log_trade(f"⚠️ [TOP-UP FAILED {sym}] ซื้อเพิ่มไม่สำเร็จ: {topup_err}")
+
+                    # หากมูลค่ายังคงต่ำกว่า $5 (ไม่สามารถขายผ่านกระดานได้)
+                    if (sell_size * current_price) < 5.0:
+                        log_trade(f"🛑 [DUST FREEZE {sym}] มูลค่าคงเหลือ (${sell_size * current_price:.2f} USDT) ต่ำกว่า $5 -> ปลดสถานะเป็น Dust Lock เพื่อป้องกันลูปตาย")
+                        s['in_position'] = False
+                        s['cooldown_until'] = datetime.utcnow() + timedelta(hours=4)
+                        save_state()
+                        if notifier:
+                            try:
+                                notifier.notify_system(
+                                    f"Binance Dust Alert: {sym}",
+                                    f"⚠️ เหรียญ {sym} มูลค่าคงเหลือ ${sell_size * current_price:.2f} USDT ต่ำกว่าเกณฑ์ขาย $5 (Min Notional)\n"
+                                    f"• ระบบปลดสถานะ Flat และเข้าสู่ Cooldown 4 ชม. เพื่อความปลอดภัยเรียบร้อย"
+                                )
+                            except Exception:
+                                pass
+                        return summary_row
+
                     # แนบ clientOrderId (Idempotency Key) ป้องกันการส่งคำสั่งซ้ำซ้อนกรณี Network Timeout
                     clean_sym = sym.replace('/', '').replace(':', '').lower()
                     client_oid = f"sell_{clean_sym[:6]}_{int(time.time())}_{uuid.uuid4().hex[:6]}"
@@ -1049,20 +1089,21 @@ def process_symbol(sym, btc_bullish):
                             except Exception:
                                 pass
                     else:
-                        # ขาดทุน Stop Loss
-                        memory[sym]["losses"] += 1
+                        # ปิดแบบตัดขาดทุน Stop Loss
                         s['consecutive_losses'] += 1
-
+                        memory[sym]["losses"] += 1
+                        lesson = ag_learn_from_trade(sym, "LOSS", real_pnl_pct * 100)
+                        
+                        # หากแพ้ติดต่อกัน 2 ไม้ ให้เปิดโหมด Cooldown 4 ชั่วโมงสำหรับเหรียญนั้น
                         if s['consecutive_losses'] >= 2:
                             s['cooldown_until'] = datetime.utcnow() + timedelta(hours=4)
-                            log_trade(f"🚨 [CIRCUIT BREAKER {sym}] ขาดทุนติด 2 ครั้ง พัก 4 ชม.")
+                            log_trade(f"🛑 [CIRCUIT BREAKER {sym}] แพ้ติดกัน {s['consecutive_losses']} ไม้ -> พักเทรดเหรียญนี้ 4 ชั่วโมง")
 
-                        lesson = ag_learn_from_trade(sym, "LOSS", real_pnl_pct * 100)
                         print_highlight_box(
-                            f"STOP LOSS CUT - {sym}",
+                            f"STOP LOSS EXECUTED - {sym}",
                             [
                                 ("Exit Price", f"${exit_price:.6f}"),
-                                ("Net Return", f"{real_pnl_pct*100:.2f}%"),
+                                ("Net Return", f"{real_pnl_pct*100:+.2f}%"),
                                 ("Net Loss", f"-${abs(net_pnl_usdt):.4f} USDT ({net_pnl_thb:.2f} บาท)"),
                                 ("AI Reflection", lesson)
                             ],
@@ -1078,6 +1119,11 @@ def process_symbol(sym, btc_bullish):
                     sync_data_to_github()
                 except Exception as e:
                     log_trade(f"❌ [EXIT ERROR {sym}] {e}")
+                    if "notional" in str(e).lower():
+                        log_trade(f"🛑 [NOTIONAL RECOVERY {sym}] ตรวจพบข้อผิดพลาด Notional -> ปลดสถานะเพื่อป้องกันค้างลูป")
+                        s['in_position'] = False
+                        s['cooldown_until'] = datetime.utcnow() + timedelta(hours=4)
+                        save_state()
 
         return summary_row
 
