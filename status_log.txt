@@ -7,7 +7,7 @@
 📊 [24H DAILY EXECUTIVE RECAP]
 ──────────────────────────────────────────────────────────────────────────────────
 • 🕒 รอบเวลาวิเคราะห์ (24H Cycle) : 2026-09-12 09:00:00 -> 2026-09-13 09:00:00 (เวลาไทย UTC+7)
-• 🕒 อัปเดตข้อมูลล่าสุด (Last Sync) : 2026-09-12 10:24:01 (เวลาไทย)
+• 🕒 อัปเดตข้อมูลล่าสุด (Last Sync) : 2026-09-12 10:31:03 (เวลาไทย)
 • 💰 ยอด PnL รวมรอบ 24 ชม.        : +0.0000 USDT | +0.00 USD (≈ +0.00 บาท)
 • 🎯 สถิติการเทรดรอบวัน (Stats)     : ทั้งหมด 0 ไม้ (ชนะ 0 | แพ้ 0 | Breakeven 0) | Win Rate: 0.0%
 • ⚡ สถานะเครื่องยนต์ (Engines)    : BinanceEngine (🟢 ONLINE) | WebDashboard (🟢 ONLINE) | DerivSyntheticEngine (🟢 ONLINE)
@@ -17,11 +17,20 @@
 
 🚨 [24H SYSTEM HEALTH & ERRORS]
 ──────────────────────────────────────────────────────────────────────────────────
-✅ 100% HEALTHY - ไม่พบ Error, Timeout หรือข้อผิดพลาดใดๆ ตลอดรอบ 24 ชม. ระบบทำงานราบรื่นสมบูรณ์แบบ
+🚨 ตรวจพบสัญญาณแจ้งเตือนทั้งหมด 3 รายการในรอบ 24 ชม.:
+  • Traceback (most recent call last):
+  • asyncio.exceptions.CancelledError
+  • During handling of the above exception, another exception occurred:
 ══════════════════════════════════════════════════════════════════════════════════
 
 📋 [24H TRADE LEDGER]
 ──────────────────────────────────────────────────────────────────────────────────
+[2026-09-12 10:24:20] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9977.86 USDT)
+[2026-09-12 10:24:20] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-12 10:24:20] 🧠 [GROQ AI ENGINE] สถานะ: 🟢 พร้อมใช้งาน (v3 News-Aware)
+[2026-09-12 10:24:20] 🛡️ [WEEKEND GUARD ACTIVE] สถาบันหยุดทำการ | ระงับ Breakout | เน้นช้อนแนวรับ Mean-Rev & Reversal | TP 1.8 ATR | Auto-BE +0.35%
+[2026-09-12 10:24:20] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+
 --- DERIV SYNTHETIC TRADES (24H) ---
 [2026-09-12 09:16:23] [DERIV-SYNTHETIC] 🧠 [GROQ AI] อนุมัติการเปิดไม้ R_50 (AI คอนเฟิร์มสัญญาณ Mean Reversion)
 [2026-09-12 09:16:23] [DERIV-SYNTHETIC] 📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers (R_50, Stake: $1.0, Multiplier: x100)...
@@ -30,6 +39,9 @@
 [2026-09-12 09:16:23] [DERIV-SYNTHETIC] ⚠️ Proposal R_50 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 80,200,400,600,800.
 [2026-09-12 09:16:24] [DERIV-SYNTHETIC] ⚠️ Proposal R_50 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 80,200,400,600,800.
 [2026-09-12 09:16:24] [DERIV-SYNTHETIC] ⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ R_50 ได้
+[2026-09-12 10:24:10] [DERIV-SYNTHETIC] 🚀 กำลังเริ่มต้น AG 2.0 Deriv Synthetic Volatility Engine (24/7 Non-Stop Live Demo)...
+[2026-09-12 10:24:12] [DERIV-SYNTHETIC] ✅ ยืนยันสิทธิ์บัญชี Demo DOT94482469 สำเร็จ! ยอดเงิน: $10,004.73 USD
+[2026-09-12 10:24:13] [DERIV-SYNTHETIC] 🔌 เชื่อมต่อ Deriv WebSocket สำเร็จ! (บัญชี: DOT94482469)
 ══════════════════════════════════════════════════════════════════════════════════
 
 📜 [FULL 24H CONSOLE STREAM]
@@ -72,9 +84,249 @@
 [2026-09-12 10:23:58] [SUPERVISOR] 🧪 [WEEKEND AI LAB] เริ่มต้นกระบวนการ Offline Retraining & Grid Search (Brad Goh SMC)...
 
 [2026-09-12 10:23:58] 🧪 [WEEKEND AI LAB] สั่งรัน train_offline.py ใน Background
+🚀 เริ่มต้นระบบ AG 2.0 Live Quant Terminal Server ที่พอร์ต 9848...
+🌐 ใช้งานผ่าน URL: http://0.0.0.0:9848
+===========================================================================
+🏛️ DERIV SYNTHETIC 24/7 LIVE MULTIPLIERS ENGINE (DEMO: DOT94482469)
+🎯 ASSETS: ['R_75', 'R_25', 'R_50', 'R_10'] (Focus: ['R_75', 'R_25'])
+⚙️ RISK: Stake $1.00 USD | BE +10.0 pips | Trailing +20.0 pips
+🧠 AI ADVISOR : 🟢 พร้อมใช้งาน (Groq Synthetic Quant Advisor)
+===========================================================================
+[2026-09-12 10:24:10] [DERIV-SYNTHETIC] 🚀 กำลังเริ่มต้น AG 2.0 Deriv Synthetic Volatility Engine (24/7 Non-Stop Live Demo)...
+[2026-09-12 10:24:12] [DERIV-SYNTHETIC] ✅ ยืนยันสิทธิ์บัญชี Demo DOT94482469 สำเร็จ! ยอดเงิน: $10,004.73 USD
+[2026-09-12 10:24:13] [DERIV-SYNTHETIC] 🔌 เชื่อมต่อ Deriv WebSocket สำเร็จ! (บัญชี: DOT94482469)
+======================================================================
+🧠 RL OFFLINE PRE-TRAINING & BACKTESTING ENGINE (BRAD GOH SMC)
+======================================================================
+📊 พารามิเตอร์ Grid Search (64 Combinations ต่อเหรียญ):
+  • min_volume_ratio : [1.15, 1.25, 1.35, 1.45]
+  • min_adx          : [12.0, 14.0, 16.0, 18.0]
+  • rsi_oversold     : [28.0, 32.0, 35.0, 38.0]
+  • Target Strategy  : Liquidity Sweep, Pin Bar Rejection, Upper BB Exit
+  • Score Function   : (WinRate * NetPnL) / (MaxDrawdown + 1)
+----------------------------------------------------------------------
 
+📡 กำลังดาวน์โหลดข้อมูลสด M15 จาก Binance Public API (6 เหรียญ)...
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 10:24:16 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   49827.8038 ║ 45.3 ║  0.03259 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2764.9060 ║ 79.7 ║  0.01428 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      87.9537 ║ 52.4 ║  0.00857 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4856.5160 ║ 65.4 ║  0.00378 ║ PinBar     ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+🧠 [MEMORY] กู้คืน agent_memory_multi.json สำเร็จ (เทรดรวม: 2 ไม้ | ชนะ 0 | แพ้ 2)
+📂 [STATE] โหลด active_state.json สำเร็จ (ไม่มีออเดอร์ค้าง - สแตนด์บายพร้อมเทรด)
+✅ เชื่อมต่อ Binance Testnet (Sandbox) สำเร็จ! ยอดเงิน: 9977.86 USDT
 [2026-09-12 10:24:20] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9977.86 USDT)
 [2026-09-12 10:24:20] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
 [2026-09-12 10:24:20] 🧠 [GROQ AI ENGINE] สถานะ: 🟢 พร้อมใช้งาน (v3 News-Aware)
 [2026-09-12 10:24:20] 🛡️ [WEEKEND GUARD ACTIVE] สถาบันหยุดทำการ | ระงับ Breakout | เน้นช้อนแนวรับ Mean-Rev & Reversal | TP 1.8 ATR | Auto-BE +0.35%
 [2026-09-12 10:24:20] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-12 10:24:21] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+🛡️ [WEEKEND GUARD ACTIVE] ตลาดสุดสัปดาห์: สถาบันหยุดทำการ เลี่ยง False Breakout (เน้นช้อนแนวรับ Mean-Rev)
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🛡️ [WEEKEND GUARD ACTIVE] (งด Breakout | เน้น Mean-Rev | TP 1.8 ATR | BE 0.35%) ║
+║  🕒 เวลาไทย: 2026-09-12 10:24:47 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $101.88 ║ 46.7 ║ 15.5 ║  0.31x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ BTC/USDT    ║   $77,314.01 ║ 50.4 ║ 64.6 ║  0.28x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ NEAR/USDT   ║        $2.37 ║ 41.8 ║ 39.4 ║  0.33x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ AVAX/USDT   ║        $7.46 ║ 48.2 ║ 15.8 ║  0.47x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ GALA/USDT   ║    $0.001711 ║ 69.7 ║ 24.2 ║  0.43x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ VET/USDT    ║    $0.007379 ║ 54.8 ║  8.7 ║ 20.62x ║ ⚪ FLAT          ║ BelowEMA   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 10:25:19 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   49947.3216 ║ 47.6 ║  0.03202 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2765.8880 ║ 80.2 ║  0.01436 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      87.9189 ║ 51.7 ║  0.00863 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4855.9310 ║ 64.0 ║  0.00374 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 10:25:27] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+✅ SOL/USDT   | Vol: 1.15x | ADX: 12.0 | RSI_OS: 28.0 | WinRate:  85.0% | ไม้: 20 | PnL:  +5.94% | MaxDD: 0.95% | Score: 259.59
+🛡️ [WEEKEND GUARD ACTIVE] ตลาดสุดสัปดาห์: สถาบันหยุดทำการ เลี่ยง False Breakout (เน้นช้อนแนวรับ Mean-Rev)
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🛡️ [WEEKEND GUARD ACTIVE] (งด Breakout | เน้น Mean-Rev | TP 1.8 ATR | BE 0.35%) ║
+║  🕒 เวลาไทย: 2026-09-12 10:26:19 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $101.88 ║ 46.7 ║ 15.5 ║  0.36x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ BTC/USDT    ║   $77,314.00 ║ 50.4 ║ 64.6 ║  0.35x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ NEAR/USDT   ║        $2.37 ║ 41.8 ║ 39.4 ║  0.33x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ AVAX/USDT   ║        $7.45 ║ 46.6 ║ 15.8 ║  0.50x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ GALA/USDT   ║    $0.001711 ║ 69.7 ║ 24.2 ║  0.43x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ VET/USDT    ║    $0.007379 ║ 54.8 ║  9.0 ║ 20.67x ║ ⚪ FLAT          ║ BelowEMA   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 10:26:22 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50010.0788 ║ 48.7 ║  0.03177 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2765.5390 ║ 80.0 ║  0.01433 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.0417 ║ 53.9 ║  0.00848 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4855.5800 ║ 63.2 ║  0.00372 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 10:26:33] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-12 10:27:24 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   49889.9294 ║ 46.5 ║  0.03228 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2766.1450 ║ 80.3 ║  0.01438 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      88.0650 ║ 54.3 ║  0.00847 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4855.9160 ║ 64.0 ║  0.00374 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.73 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.73 USD (+160.8 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 10:27:38] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+🛡️ [WEEKEND GUARD ACTIVE] ตลาดสุดสัปดาห์: สถาบันหยุดทำการ เลี่ยง False Breakout (เน้นช้อนแนวรับ Mean-Rev)
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🛡️ [WEEKEND GUARD ACTIVE] (งด Breakout | เน้น Mean-Rev | TP 1.8 ATR | BE 0.35%) ║
+║  🕒 เวลาไทย: 2026-09-12 10:27:52 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $101.88 ║ 46.7 ║ 15.5 ║  0.37x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ BTC/USDT    ║   $77,314.00 ║ 50.4 ║ 64.6 ║  0.39x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ NEAR/USDT   ║        $2.37 ║ 41.4 ║ 39.4 ║  0.36x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ AVAX/USDT   ║        $7.45 ║ 46.6 ║ 15.8 ║  0.54x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ GALA/USDT   ║    $0.001711 ║ 69.7 ║ 24.2 ║  0.43x ║ ⚪ FLAT          ║ BelowEMA   ║
+║ VET/USDT    ║    $0.007379 ║ 54.8 ║  9.0 ║ 20.67x ║ ⚪ FLAT          ║ BelowEMA   ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+✅ BTC/USDT   | Vol: 1.15x | ADX: 12.0 | RSI_OS: 35.0 | WinRate:  65.0% | ไม้: 20 | PnL:  +2.68% | MaxDD: 0.62% | Score: 107.91
+[2026-09-12 10:28:07] [SUPERVISOR] 🛑 ได้รับสัญญาณหยุดระบบ! กำลังปิด Workers ทั้งหมดอย่างปลอดภัย...
+
+Traceback (most recent call last):
+🛑 ได้รับสัญญาณ (2) กำลังปิด Terminal Server อย่างปลอดภัย...
+🛑 กำลังหยุดการทำงานของ HTTP Server...
+Traceback (most recent call last):
+  File "/home/container/main_binance.py", line 1146, in <module>
+[2026-09-12 10:28:07] [SUPERVISOR] ⏳ กำลังส่งคำสั่งปิด BinanceEngine (PID: 36)...
+  File "/home/container/train_offline.py", line 350, in <module>
+    time.sleep(75) # พัก 75 วินาทีเพื่อ Low-CPU 100%
+    ^^^^^^^^^^^^^^
+KeyboardInterrupt
+    run_training_cycle()
+  File "/home/container/train_offline.py", line 268, in run_training_cycle
+    trades = simulate_strategy(df, vol_param, adx_param, rsi_param)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/train_offline.py", line 121, in simulate_strategy
+    prev_high = df['high'].iloc[i-11:i-1].max()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.11/site-packages/pandas/util/_decorators.py", line 336, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.11/site-packages/pandas/core/series.py", line 7873, in max
+    return NDFrame.max(
+           ^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.11/site-packages/pandas/core/generic.py", line 11802, in max
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/container/main_deriv_synthetic.py", line 1330, in deriv_synthetic_engine
+    await asyncio.sleep(20)
+  File "/usr/local/lib/python3.11/asyncio/tasks.py", line 649, in sleep
+    return await future
+           ^^^^^^^^^^^^
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/container/main_deriv_synthetic.py", line 1350, in <module>
+    asyncio.run(deriv_synthetic_engine())
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 123, in run
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+    return self._stat_function(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.11/site-packages/pandas/core/generic.py", line 11773, in _stat_function
+    return self._reduce(
+👋 ปิด Terminal Server เรียบร้อยสมบูรณ์
+           ^^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.11/site-packages/pandas/core/series.py", line 7494, in _reduce
+    result = op(delegate, skipna=skipna, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.11/site-packages/pandas/core/nanops.py", line 149, in f
+    result = alt(values, axis=axis, skipna=skipna, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.11/site-packages/pandas/core/nanops.py", line 408, in new_func
+    result = func(values, axis=axis, skipna=skipna, mask=mask, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.11/site-packages/pandas/core/nanops.py", line 1112, in reduction
+    values, mask = _get_values(
+                   ^^^^^^^^^^^^
+  File "/home/container/.local/lib/python3.11/site-packages/pandas/core/nanops.py", line 316, in _get_values
+    if mask.any():
+       ^^^^^^^^^^
+  File "/home/container/.local/lib/python3.11/site-packages/numpy/_core/_methods.py", line 61, in _any
+    return umr_any(a, axis, dtype, out, keepdims)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+[2026-09-12 10:28:08] [SUPERVISOR] ✅ BinanceEngine ปิดเรียบร้อยแล้ว
+[2026-09-12 10:28:08] [SUPERVISOR] ⏳ กำลังส่งคำสั่งปิด WebDashboard (PID: 38)...
+[2026-09-12 10:28:08] [SUPERVISOR] ✅ WebDashboard ปิดเรียบร้อยแล้ว
+[2026-09-12 10:28:08] [SUPERVISOR] ⏳ กำลังส่งคำสั่งปิด DerivSyntheticEngine (PID: 40)...
+[2026-09-12 10:28:08] [SUPERVISOR] ✅ DerivSyntheticEngine ปิดเรียบร้อยแล้ว
+[2026-09-12 10:28:08] [SUPERVISOR] 👋 ระบบ Supervisor ปิดตัวเองเรียบร้อย
+[2026-09-12 10:28:08] [SUPERVISOR] 🛑 ได้รับสัญญาณหยุดระบบ! กำลังปิด Workers ทั้งหมดอย่างปลอดภัย...
+[2026-09-12 10:28:08] [SUPERVISOR] 👋 ระบบ Supervisor ปิดตัวเองเรียบร้อย
+[2026-09-12 10:31:01] [SUPERVISOR] ╔══════════════════════════════════════════════════════════════════════════════════╗
+[2026-09-12 10:31:01] [SUPERVISOR] ║  🏛️ AG 2.0 QUANT TERMINAL | DUAL-ENGINE SUPERVISOR (QUANT SHIELD)                 ║
+[2026-09-12 10:31:01] [SUPERVISOR] ║  ⚡ Binance Engine : Spot Sandbox Testnet (100% Demo / 24/7 Weekend Guard)       ║
+[2026-09-12 10:31:01] [SUPERVISOR] ║  ⚡ Deriv Engine   : Auto-Switching Forex Demo / Weekend Synthetic (24/7)         ║
+[2026-09-12 10:31:01] [SUPERVISOR] ║  🧪 AI Retraining  : Brad Goh SMC + Weekend Optimization Lab (Sat 09:15)         ║
+[2026-09-12 10:31:01] [SUPERVISOR] ║  📡 Console Logger : Streamed to console_log.txt & synced as status_log.txt      ║
+[2026-09-12 10:31:01] [SUPERVISOR] ║  🔔 LINE Notify    : Active for BUY, TP, SL, Breakeven & Trailing Run             ║
+[2026-09-12 10:31:01] [SUPERVISOR] ╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-12 10:31:01] [SUPERVISOR] 📂 ไดเรกทอรีทำงาน: /home/container
+[2026-09-12 10:31:01] [SUPERVISOR] 📋 [24H LOG SYSTEM] ประจำการรอบ 24 ชม.: 2026-09-12 09:00 -> 2026-09-13 09:00 (รอบ ID: 20260912)
+[2026-09-12 10:31:01] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: BinanceEngine (main_binance.py)...
+[2026-09-12 10:31:01] [SUPERVISOR] ✅ BinanceEngine ทำงานสำเร็จ (PID: 28)
+[2026-09-12 10:31:01] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: WebDashboard (dashboard.py)...
+[2026-09-12 10:31:01] [SUPERVISOR] ✅ WebDashboard ทำงานสำเร็จ (PID: 30)
+[2026-09-12 10:31:01] [SUPERVISOR] 🚀 [WEEKEND SWITCH] เริ่มต้น DerivSyntheticEngine สำหรับเทรด Synthetic Indices 24/7...
+[2026-09-12 10:31:01] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: DerivSyntheticEngine (main_deriv_synthetic.py)...
+[2026-09-12 10:31:01] [SUPERVISOR] ✅ DerivSyntheticEngine ทำงานสำเร็จ (PID: 32)
+[2026-09-12 10:31:01] [SUPERVISOR] 👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers, Weekend Switching และ AI Lab...
+
+[2026-09-12 10:31:15] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9977.86 USDT)
+[2026-09-12 10:31:15] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-12 10:31:15] 🧠 [GROQ AI ENGINE] สถานะ: 🟢 พร้อมใช้งาน (v3 News-Aware)
+[2026-09-12 10:31:15] 🛡️ [WEEKEND GUARD ACTIVE] สถาบันหยุดทำการ | ระงับ Breakout | เน้นช้อนแนวรับ Mean-Rev & Reversal | TP 1.8 ATR | Auto-BE +0.35%
+[2026-09-12 10:31:15] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
