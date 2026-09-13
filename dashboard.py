@@ -845,167 +845,9 @@ HTML_PAGE = """<!DOCTYPE html>
         .cmd-status.error {
             color: var(--danger);
         }
-
-        /* 🛡️ PIN SECURITY GATE OVERLAY */
-        .pin-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(4, 7, 13, 0.92);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 99999;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        .pin-overlay.unlocked {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .pin-card {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 32px 28px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
-            transition: transform 0.2s, border-color 0.2s;
-        }
-
-        .pin-card.shake {
-            animation: pinShake 0.4s cubic-bezier(.36,.07,.19,.97) both;
-            border-color: var(--danger) !important;
-        }
-
-        @keyframes pinShake {
-            10%, 90% { transform: translate3d(-3px, 0, 0); }
-            20%, 80% { transform: translate3d(5px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
-            40%, 60% { transform: translate3d(6px, 0, 0); }
-        }
-
-        .pin-icon {
-            font-size: 2.6em;
-            margin-bottom: 12px;
-        }
-
-        .pin-title {
-            font-size: 1.2em;
-            font-weight: 700;
-            letter-spacing: 0.8px;
-            color: var(--text-primary);
-            font-family: 'SF Mono', Monaco, Consolas, monospace;
-            margin-bottom: 6px;
-        }
-
-        .pin-subtitle {
-            font-size: 0.84em;
-            color: var(--text-dim);
-            line-height: 1.45;
-            margin-bottom: 22px;
-        }
-
-        .pin-inputs {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .pin-box {
-            width: 44px;
-            height: 52px;
-            text-align: center;
-            font-size: 1.6em;
-            font-weight: 700;
-            background: var(--input-bg);
-            color: var(--input-text);
-            border: 1.5px solid var(--border-color);
-            border-radius: 8px;
-            outline: none;
-            transition: all 0.2s;
-            font-family: monospace;
-        }
-
-        .pin-box:focus {
-            border-color: var(--text-primary);
-            box-shadow: 0 0 8px rgba(88, 166, 255, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .pin-box.filled {
-            border-color: var(--accent-btn);
-        }
-
-        .btn-unlock {
-            width: 100%;
-            padding: 12px;
-            background: var(--accent-btn);
-            color: #ffffff;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.95em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-unlock:hover {
-            background: var(--accent-btn-hover);
-            transform: translateY(-1px);
-        }
-
-        .pin-msg {
-            margin-top: 14px;
-            font-size: 0.82em;
-            color: var(--text-dim);
-            min-height: 20px;
-        }
-
-        .pin-msg.error {
-            color: var(--danger);
-            font-weight: 600;
-        }
-
-        .pin-msg.success {
-            color: #3fb950;
-            font-weight: 600;
-        }
     </style>
 </head>
 <body>
-    <!-- 🛡️ PIN Security Gate Screen Modal -->
-    <div id="pinOverlay" class="pin-overlay">
-        <div class="pin-card" id="pinCard">
-            <div class="pin-icon">🛡️</div>
-            <div class="pin-title">AG 2.0 QUANT TERMINAL</div>
-            <div class="pin-subtitle">Wispbyte Live Terminal • ป้องกันความปลอดภัยระดับสูง<br>กรุณาใส่รหัส PIN 6 หลักเพื่อปลดล็อก</div>
-            <div class="pin-inputs" id="pinInputsContainer">
-                <input type="password" maxlength="1" class="pin-box" data-idx="0" inputmode="numeric" pattern="[0-9]*" autocomplete="off" autofocus>
-                <input type="password" maxlength="1" class="pin-box" data-idx="1" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-                <input type="password" maxlength="1" class="pin-box" data-idx="2" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-                <input type="password" maxlength="1" class="pin-box" data-idx="3" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-                <input type="password" maxlength="1" class="pin-box" data-idx="4" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-                <input type="password" maxlength="1" class="pin-box" data-idx="5" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-            </div>
-            <button type="button" class="btn-unlock" id="btnUnlock" onclick="submitPin()">🔓 ปลดล็อกระบบ</button>
-            <div class="pin-msg" id="pinMsg">🔒 สิทธิ์การเข้าถึงจะถูกบันทึก 7 วัน (ไม่ต้องใส่ซ้ำ)</div>
-        </div>
-    </div>
-
     <!-- Header -->
     <header>
         <div class="header-title">
@@ -1091,12 +933,6 @@ HTML_PAGE = """<!DOCTYPE html>
         const pulseDot = document.getElementById('pulseDot');
         const badgeText = document.getElementById('badgeText');
 
-        // Elements for PIN Gate
-        const pinOverlay = document.getElementById('pinOverlay');
-        const pinCard = document.getElementById('pinCard');
-        const pinMsg = document.getElementById('pinMsg');
-        const pinBoxes = document.querySelectorAll('.pin-box');
-
         // Elements for Engine Mode & Indicators
         const indBinance = document.getElementById('indBinance');
         const indSynthetic = document.getElementById('indSynthetic');
@@ -1107,166 +943,6 @@ HTML_PAGE = """<!DOCTYPE html>
         let cmdHistory = [];
         let historyIndex = -1;
         let consecutiveErrors = 0;
-        let isAuthenticated = false;
-
-        // =====================================================================
-        // 🛡️ AUTHENTICATION & PIN GATE CONTROLLER
-        // =====================================================================
-        function getAuthToken() {
-            let token = localStorage.getItem('ag_terminal_token');
-            if (!token) {
-                const match = document.cookie.match(/(?:^|;\s*)token=([^;]+)/);
-                if (match) token = decodeURIComponent(match[1]);
-            }
-            return token || '';
-        }
-
-        async function checkAuthOnLoad() {
-            const token = getAuthToken();
-            if (!token) {
-                showPinGate();
-                return;
-            }
-            try {
-                const res = await fetch('/api/auth/verify?t=' + Date.now(), {
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.authenticated) {
-                        unlockDashboard();
-                        return;
-                    }
-                }
-            } catch (e) {
-                if (token && token.length > 20) {
-                    unlockDashboard();
-                    return;
-                }
-            }
-            showPinGate();
-        }
-
-        function showPinGate(msg) {
-            isAuthenticated = false;
-            if (pinOverlay) pinOverlay.classList.remove('unlocked');
-            if (pinMsg && msg) {
-                pinMsg.className = 'pin-msg error';
-                pinMsg.textContent = msg;
-            }
-            pinBoxes.forEach(b => {
-                b.value = '';
-                b.classList.remove('filled');
-            });
-            if (pinBoxes.length > 0) {
-                setTimeout(() => pinBoxes[0].focus(), 150);
-            }
-        }
-
-        function unlockDashboard() {
-            isAuthenticated = true;
-            if (pinOverlay) pinOverlay.classList.add('unlocked');
-            fetchConsoleLogs();
-            fetchEngineStatus();
-            if (cmdInput) cmdInput.focus();
-        }
-
-        async function submitPin() {
-            let pin = '';
-            pinBoxes.forEach(b => pin += b.value);
-            pin = pin.trim();
-
-            if (pin.length !== 6) {
-                showPinError('กรุณาใส่รหัส PIN 6 หลักให้ครบถ้วน');
-                return;
-            }
-
-            pinMsg.className = 'pin-msg';
-            pinMsg.textContent = '⏳ กำลังตรวจสอบรหัส PIN...';
-
-            try {
-                const res = await fetch('/api/auth', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ pin: pin })
-                });
-                const data = await res.json();
-                if (res.ok && data.authenticated && data.token) {
-                    localStorage.setItem('ag_terminal_token', data.token);
-                    document.cookie = 'token=' + encodeURIComponent(data.token) + '; Path=/; Max-Age=' + (7 * 86400) + '; SameSite=Lax';
-                    pinMsg.className = 'pin-msg success';
-                    pinMsg.textContent = '✅ ยืนยันสิทธิ์ถูกต้อง กำลังเข้าสู่ระบบ...';
-                    setTimeout(() => {
-                        unlockDashboard();
-                    }, 250);
-                } else {
-                    showPinError('❌ รหัส PIN ไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
-                }
-            } catch (err) {
-                showPinError('❌ เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + err.message);
-            }
-        }
-
-        function showPinError(msg) {
-            if (pinCard) {
-                pinCard.classList.remove('shake');
-                void pinCard.offsetWidth;
-                pinCard.classList.add('shake');
-            }
-            if (pinMsg) {
-                pinMsg.className = 'pin-msg error';
-                pinMsg.textContent = msg;
-            }
-            pinBoxes.forEach(b => {
-                b.value = '';
-                b.classList.remove('filled');
-            });
-            if (pinBoxes.length > 0) pinBoxes[0].focus();
-        }
-
-        pinBoxes.forEach((box, idx) => {
-            box.addEventListener('input', (e) => {
-                const val = box.value;
-                if (val.length > 0) {
-                    box.classList.add('filled');
-                    if (idx < pinBoxes.length - 1) {
-                        pinBoxes[idx + 1].focus();
-                    } else {
-                        submitPin();
-                    }
-                } else {
-                    box.classList.remove('filled');
-                }
-            });
-
-            box.addEventListener('keydown', (e) => {
-                if (e.key === 'Backspace' && !box.value && idx > 0) {
-                    pinBoxes[idx - 1].focus();
-                    pinBoxes[idx - 1].value = '';
-                    pinBoxes[idx - 1].classList.remove('filled');
-                } else if (e.key === 'Enter') {
-                    submitPin();
-                }
-            });
-
-            box.addEventListener('paste', (e) => {
-                e.preventDefault();
-                const text = (e.clipboardData || window.clipboardData).getData('text').trim();
-                if (text) {
-                    for (let i = 0; i < pinBoxes.length; i++) {
-                        if (i < text.length) {
-                            pinBoxes[i].value = text[i];
-                            pinBoxes[i].classList.add('filled');
-                        }
-                    }
-                    const nextIdx = Math.min(text.length, pinBoxes.length - 1);
-                    pinBoxes[nextIdx].focus();
-                    if (text.length >= 6) {
-                        submitPin();
-                    }
-                }
-            });
-        });
 
         // =====================================================================
         // ⚡ ENGINE MODE & REAL-TIME STATUS CONTROLLER
@@ -1537,9 +1213,11 @@ HTML_PAGE = """<!DOCTYPE html>
         // =====================================================================
         // 🚀 BOOTSTRAP TIMERS
         // =====================================================================
-        checkAuthOnLoad();
+        fetchConsoleLogs();
+        fetchEngineStatus();
         setInterval(fetchConsoleLogs, 2000);
         setInterval(fetchEngineStatus, 3000);
+        if (cmdInput) cmdInput.focus();
     </script>
 </body>
 </html>
@@ -1553,37 +1231,13 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
 
     def get_token_from_request(self):
-        """ดึง Authentication Token จาก Header, Cookie หรือ Query Parameter"""
-        # 1. Authorization: Bearer <token>
-        auth_hdr = self.headers.get("Authorization", "")
-        if auth_hdr.startswith("Bearer "):
-            return auth_hdr[7:].strip()
-        elif auth_hdr:
-            return auth_hdr.strip()
-
-        # 2. Query param ?token=<token>
-        parsed = urllib.parse.urlparse(self.path)
-        params = urllib.parse.parse_qs(parsed.query)
-        if "token" in params and params["token"]:
-            return params["token"][0].strip()
-
-        # 3. Cookie header
-        cookie_hdr = self.headers.get("Cookie", "")
-        if cookie_hdr:
-            for item in cookie_hdr.split(";"):
-                item = item.strip()
-                if item.startswith("token="):
-                    return urllib.parse.unquote(item[6:].strip())
-                elif item.startswith("session_token="):
-                    return urllib.parse.unquote(item[14:].strip())
-        return None
+        return ""
 
     def is_authenticated(self):
-        token = self.get_token_from_request()
-        return verify_session_token(token)
+        return True
 
-    def send_unauthorized(self, msg="Unauthorized: Security PIN required"):
-        self._send_json({"status": "error", "authenticated": False, "message": msg}, 401)
+    def send_unauthorized(self, msg="Unauthorized"):
+        self._send_json({"status": "ok", "authenticated": True}, 200)
 
     def _send_auth_success(self, token):
         try:
