@@ -54,6 +54,7 @@ TRADE_LOG_SYNTHETIC_FILE = "trade_log_synthetic.txt"
 DAILY_24H_LOG_FILE = "daily_24h_log.txt"
 DAILY_CYCLE_STATE_FILE = ".daily_cycle.json"
 ARCHIVE_DIR = os.path.join("archive", "logs")
+ENGINE_CONFIG_FILE = "engine_config.json"
 
 ENABLE_DERIV = os.getenv("ENABLE_DERIV", "true").lower() in ("true", "1", "yes")
 ENABLE_MT5 = os.getenv("ENABLE_MT5", "false").lower() in ("true", "1", "yes")
@@ -867,69 +868,227 @@ def restart_entire_system():
 signal.signal(signal.SIGINT, stop_all_workers)
 signal.signal(signal.SIGTERM, stop_all_workers)
 
+# ==========================================
+# 🎛️ DYNAMIC ENGINE CONFIGURATION & CONTROLLER
+# ==========================================
+_last_engine_mode = None
+_last_binance_enabled = None
+
+def load_engine_config():
+    """
+    โหลดการตั้งค่าเครื่องยนต์จาก engine_config.json
+    หากไฟล์ไม่มีอยู่ ให้สร้างไฟล์เริ่มต้นและคืนค่า default
+    """
+    default_config = {
+        "mode": "synthetic",
+        "binance": True,
+        "synthetic": True,
+        "forex": False,
+        "updated_at": get_thai_time()
+    }
+    if not os.path.exists(ENGINE_CONFIG_FILE):
+        save_engine_config(default_config)
+        return default_config
+    try:
+        with open(ENGINE_CONFIG_FILE, "r", encoding="utf-8") as f:
+            cfg = json.load(f)
+            if not isinstance(cfg, dict):
+                save_engine_config(default_config)
+                return default_config
+            for k, v in default_config.items():
+                if k not in cfg:
+                    cfg[k] = v
+            return cfg
+    except Exception as e:
+        log_supervisor(f"⚠️ [ENGINE CONFIG] ไม่สามารถอ่าน {ENGINE_CONFIG_FILE} ได้ ({e}) ใช้ค่าเริ่มต้นแทน")
+        return default_config
+
+def save_engine_config(config):
+    """บันทึกการตั้งค่าเครื่องยนต์ลง engine_config.json แบบ Atomic File Replacement"""
+    try:
+        if not isinstance(config, dict):
+            return False
+        config["updated_at"] = get_thai_time()
+        tmp_file = ENGINE_CONFIG_FILE + ".tmp"
+        with open(tmp_file, "w", encoding="utf-8") as f:
+            json.dump(config, f, indent=2, ensure_ascii=False)
+        os.replace(tmp_file, ENGINE_CONFIG_FILE)
+        return True
+    except Exception as e:
+        log_supervisor(f"❌ [ENGINE CONFIG] บันทึก {ENGINE_CONFIG_FILE} ล้มเหลว: {e}")
+        return False
+
+def is_worker_running(name):
+    """ตรวจสอบว่า worker กำลังทำงานอยู่จริงหรือไม่ (Process ยังไม่ตาย)"""
+    item = processes.get(name)
+    if not item:
+        return False
+    proc = item.get('proc')
+    if not proc:
+        return False
+    return proc.poll() is None
+
 def manage_market_engines():
     """
-    ตรวจสอบสถานะวันหยุดสุดสัปดาห์ และสลับเครื่องยนต์อัตโนมัติ 100%:
-    - วันธรรมดา (จันทร์ - ศุกร์): รัน BinanceEngine + DerivForexEngine (ปิด DerivSyntheticEngine)
-    - วันเสาร์ - อาทิตย์ (ส. 04:00 - จ. 04:00 น.): รัน BinanceEngine + DerivSyntheticEngine (ปิด DerivForexEngine)
+    ควบคุมและสลับเครื่องยนต์การเทรดแบบไดนามิกตาม engine_config.json:
+    - mode == 'synthetic':
+        - DerivSyntheticEngine รัน 24/7
+        - ปิด DerivForexEngine หากรันอยู่
+    - mode == 'all':
+        - DerivSyntheticEngine รัน 24/7
+        - หากไม่ใช่วันหยุด รัน DerivForexEngine; หากเป็นวันหยุด ปิด DerivForexEngine
+    - mode == 'forex':
+        - ปิด DerivSyntheticEngine หากรันอยู่
+        - หากไม่ใช่วันหยุด รัน DerivForexEngine; หากเป็นวันหยุด ปิด DerivForexEngine
+    - mode == 'auto':
+        - ทำงานตามตารางเดิม (สุดสัปดาห์ -> synthetic, วันธรรมดา -> forex)
+    - ทุกโหมดเคารพค่า binance: true/false เพื่อเปิด/ปิด BinanceEngine
     """
+    global _last_engine_mode, _last_binance_enabled
     weekend = is_forex_weekend()
+    config = load_engine_config()
 
-    # ดูแล BinanceEngine ให้เริ่มต้นทำงานหากยังไม่ได้เปิด
-    if "BinanceEngine" not in processes:
-        if os.path.exists(BINANCE_SCRIPT):
+    mode = str(config.get("mode", "synthetic")).lower().strip()
+    binance_enabled = bool(config.get("binance", True))
+
+    # บันทึก log เมื่อมีการเปลี่ยนแปลงโหมดหรือสถานะ Binance
+    if mode != _last_engine_mode or binance_enabled != _last_binance_enabled:
+        log_supervisor(f"🎛️ [ENGINE CONTROLLER] การตั้งค่า: Mode={mode.upper()} | Binance={'ON' if binance_enabled else 'OFF'} | ตลาดสุดสัปดาห์={weekend}")
+        _last_engine_mode = mode
+        _last_binance_enabled = binance_enabled
+
+    # 1. จัดการ BinanceEngine ตาม binance: true/false
+    if binance_enabled:
+        if not is_worker_running("BinanceEngine") and os.path.exists(BINANCE_SCRIPT):
+            log_supervisor("🚀 [ENGINE CONTROLLER] เริ่มต้น BinanceEngine (Spot Sandbox Testnet)...")
             start_worker("BinanceEngine", BINANCE_SCRIPT)
-
-    # ดูแล WebDashboard ให้เริ่มต้นทำงานหากยังไม่ได้เปิด
-    if "WebDashboard" not in processes:
-        if os.path.exists(DASHBOARD_SCRIPT):
-            start_worker("WebDashboard", DASHBOARD_SCRIPT)
-
-    if weekend:
-        # === ช่วงวันหยุดสุดสัปดาห์ (ตลาด Forex โลกปิดทำการ) ===
-        # 1. ปิด DerivForexEngine หากรันอยู่
-        if "DerivForexEngine" in processes:
-            log_supervisor("⏸️ [WEEKEND SWITCH] ตลาด Forex โลกปิดทำการ (ส. 04:00 - จ. 04:00 น. เวลาไทย) -> กำลังปิด DerivForexEngine...")
-            stop_worker("DerivForexEngine")
-            if notifier:
-                try:
-                    notifier.notify_system("AG 2.0 Supervisor", "⏸️ เข้าสู่โหมดวันหยุดสุดสัปดาห์: สลับปิด Deriv Forex Engine เรียบร้อย (ตลาด Forex ปิด)")
-                except Exception:
-                    pass
-
-        # 2. รัน DerivSyntheticEngine หากมีไฟล์และเปิด ENABLE_DERIV
-        if ENABLE_DERIV:
-            if "DerivSyntheticEngine" not in processes or processes["DerivSyntheticEngine"]["proc"].poll() is not None:
-                if os.path.exists(DERIV_SYNTHETIC_SCRIPT):
-                    log_supervisor("🚀 [WEEKEND SWITCH] เริ่มต้น DerivSyntheticEngine สำหรับเทรด Synthetic Indices 24/7...")
-                    start_worker("DerivSyntheticEngine", DERIV_SYNTHETIC_SCRIPT)
-                    if notifier:
-                        try:
-                            notifier.notify_system("AG 2.0 Supervisor", "🚀 สลับเปิด Deriv Synthetic Engine สำหรับเทรดช่วงวันหยุดสุดสัปดาห์")
-                        except Exception:
-                            pass
     else:
-        # === ช่วงวันธรรมดา (ตลาด Forex โลกเปิดทำการ) ===
-        # 1. ปิด DerivSyntheticEngine หากรันอยู่
-        if "DerivSyntheticEngine" in processes:
-            log_supervisor("🔄 [WEEKDAY SWITCH] ตลาด Forex โลกเปิดทำการ -> กำลังปิด DerivSyntheticEngine...")
-            stop_worker("DerivSyntheticEngine")
+        if "BinanceEngine" in processes:
+            log_supervisor("⏸️ [ENGINE CONTROLLER] ปิด BinanceEngine ตามคำสั่งใน engine_config.json (binance=False)...")
+            stop_worker("BinanceEngine")
 
-        # 2. รัน DerivForexEngine
+    # 2. ดูแล WebDashboard ให้ทำงานตลอดเวลา
+    if not is_worker_running("WebDashboard") and os.path.exists(DASHBOARD_SCRIPT):
+        start_worker("WebDashboard", DASHBOARD_SCRIPT)
+
+    # 3. จัดการ Deriv Engines ตามโหมด
+    if mode == "synthetic":
+        # DerivSyntheticEngine ทำงานตลอด 24/7
         if ENABLE_DERIV:
-            if "DerivForexEngine" not in processes or processes["DerivForexEngine"]["proc"].poll() is not None:
-                if os.path.exists(FOREX_SCRIPT):
-                    log_supervisor("🚀 [WEEKDAY SWITCH] เริ่มต้น DerivForexEngine (EURUSD, GBPUSD, USDJPY)...")
+            if not is_worker_running("DerivSyntheticEngine") and os.path.exists(DERIV_SYNTHETIC_SCRIPT):
+                log_supervisor("🚀 [MODE: SYNTHETIC] เริ่มต้น DerivSyntheticEngine (เทรด Synthetic Indices 24/7)...")
+                start_worker("DerivSyntheticEngine", DERIV_SYNTHETIC_SCRIPT)
+                if notifier:
+                    try:
+                        notifier.notify_system("AG 2.0 Supervisor", "🚀 เริ่มต้น Deriv Synthetic Engine (โหมด Synthetic 24/7)")
+                    except Exception:
+                        pass
+        # ปิด DerivForexEngine หากรันอยู่
+        if "DerivForexEngine" in processes:
+            log_supervisor("⏸️ [MODE: SYNTHETIC] ปิด DerivForexEngine...")
+            stop_worker("DerivForexEngine")
+
+    elif mode == "all":
+        # DerivSyntheticEngine ทำงานตลอด 24/7
+        if ENABLE_DERIV:
+            if not is_worker_running("DerivSyntheticEngine") and os.path.exists(DERIV_SYNTHETIC_SCRIPT):
+                log_supervisor("🚀 [MODE: ALL] เริ่มต้น DerivSyntheticEngine (เทรด Synthetic Indices 24/7)...")
+                start_worker("DerivSyntheticEngine", DERIV_SYNTHETIC_SCRIPT)
+
+        # DerivForexEngine: รันถ้าตลาดเปิด (ไม่ใช่วันหยุด), ปิดถ้าเป็นวันหยุด
+        if weekend:
+            if "DerivForexEngine" in processes:
+                log_supervisor("⏸️ [MODE: ALL] วันหยุดสุดสัปดาห์ตลาด Forex ปิด -> ปิด DerivForexEngine...")
+                stop_worker("DerivForexEngine")
+                if notifier:
+                    try:
+                        notifier.notify_system("AG 2.0 Supervisor", "⏸️ โหมด All: ปิด Deriv Forex Engine ชั่วคราวช่วงสุดสัปดาห์ (ตลาดปิด)")
+                    except Exception:
+                        pass
+        else:
+            if ENABLE_DERIV:
+                if not is_worker_running("DerivForexEngine") and os.path.exists(FOREX_SCRIPT):
+                    log_supervisor("🚀 [MODE: ALL] ตลาด Forex เปิดทำการ -> เริ่มต้น DerivForexEngine...")
                     start_worker("DerivForexEngine", FOREX_SCRIPT)
                     if notifier:
                         try:
-                            notifier.notify_system("AG 2.0 Supervisor", "▶️ ตลาด Forex เปิดทำการ: สลับเปิด Deriv Forex Engine เรียบร้อย")
+                            notifier.notify_system("AG 2.0 Supervisor", "▶️ โหมด All: เริ่มต้น Deriv Forex Engine (ตลาด Forex เปิดทำการ)")
                         except Exception:
                             pass
-        elif ENABLE_MT5:
-            if "MT5Engine" not in processes or processes["MT5Engine"]["proc"].poll() is not None:
-                if os.path.exists(MT5_SCRIPT):
+            elif ENABLE_MT5:
+                if not is_worker_running("MT5Engine") and os.path.exists(MT5_SCRIPT):
                     start_worker("MT5Engine", MT5_SCRIPT)
+
+    elif mode == "forex":
+        # ปิด DerivSyntheticEngine หากรันอยู่
+        if "DerivSyntheticEngine" in processes:
+            log_supervisor("⏸️ [MODE: FOREX] ปิด DerivSyntheticEngine...")
+            stop_worker("DerivSyntheticEngine")
+
+        # ตรวจสอบ DerivForexEngine ตามวันทำการ
+        if weekend:
+            if "DerivForexEngine" in processes:
+                log_supervisor("⏸️ [MODE: FOREX] ตลาด Forex โลกปิดทำการช่วงสุดสัปดาห์ -> พัก DerivForexEngine...")
+                stop_worker("DerivForexEngine")
+        else:
+            if ENABLE_DERIV:
+                if not is_worker_running("DerivForexEngine") and os.path.exists(FOREX_SCRIPT):
+                    log_supervisor("🚀 [MODE: FOREX] ตลาด Forex เปิดทำการ -> เริ่มต้น DerivForexEngine...")
+                    start_worker("DerivForexEngine", FOREX_SCRIPT)
+                    if notifier:
+                        try:
+                            notifier.notify_system("AG 2.0 Supervisor", "▶️ โหมด Forex: เริ่มต้น Deriv Forex Engine")
+                        except Exception:
+                            pass
+            elif ENABLE_MT5:
+                if not is_worker_running("MT5Engine") and os.path.exists(MT5_SCRIPT):
+                    start_worker("MT5Engine", MT5_SCRIPT)
+
+    elif mode == "auto":
+        # ตามตารางเดิม (สุดสัปดาห์ -> synthetic, วันธรรมดา -> forex)
+        if weekend:
+            if "DerivForexEngine" in processes:
+                log_supervisor("⏸️ [AUTO - WEEKEND] ตลาด Forex ปิดทำการ -> ปิด DerivForexEngine...")
+                stop_worker("DerivForexEngine")
+                if notifier:
+                    try:
+                        notifier.notify_system("AG 2.0 Supervisor", "⏸️ [AUTO] เข้าสู่โหมดวันหยุด: ปิด Deriv Forex Engine")
+                    except Exception:
+                        pass
+            if ENABLE_DERIV:
+                if not is_worker_running("DerivSyntheticEngine") and os.path.exists(DERIV_SYNTHETIC_SCRIPT):
+                    log_supervisor("🚀 [AUTO - WEEKEND] เริ่มต้น DerivSyntheticEngine สำหรับเทรดช่วงวันหยุด...")
+                    start_worker("DerivSyntheticEngine", DERIV_SYNTHETIC_SCRIPT)
+                    if notifier:
+                        try:
+                            notifier.notify_system("AG 2.0 Supervisor", "🚀 [AUTO] สลับเปิด Deriv Synthetic Engine สำหรับวันหยุดสุดสัปดาห์")
+                        except Exception:
+                            pass
+        else:
+            if "DerivSyntheticEngine" in processes:
+                log_supervisor("🔄 [AUTO - WEEKDAY] ตลาด Forex โลกเปิดทำการ -> ปิด DerivSyntheticEngine...")
+                stop_worker("DerivSyntheticEngine")
+            if ENABLE_DERIV:
+                if not is_worker_running("DerivForexEngine") and os.path.exists(FOREX_SCRIPT):
+                    log_supervisor("🚀 [AUTO - WEEKDAY] เริ่มต้น DerivForexEngine...")
+                    start_worker("DerivForexEngine", FOREX_SCRIPT)
+                    if notifier:
+                        try:
+                            notifier.notify_system("AG 2.0 Supervisor", "▶️ [AUTO] ตลาด Forex เปิดทำการ: สลับเปิด Deriv Forex Engine")
+                        except Exception:
+                            pass
+            elif ENABLE_MT5:
+                if not is_worker_running("MT5Engine") and os.path.exists(MT5_SCRIPT):
+                    start_worker("MT5Engine", MT5_SCRIPT)
+
+    else:
+        # Fallback หากระบุโหมดไม่ถูกต้อง
+        log_supervisor(f"⚠️ [ENGINE CONTROLLER] ไม่รู้จักโหมด '{mode}' ใช้ synthetic เป็นค่าเริ่มต้น")
+        if "DerivForexEngine" in processes:
+            stop_worker("DerivForexEngine")
+        if ENABLE_DERIV:
+            if not is_worker_running("DerivSyntheticEngine") and os.path.exists(DERIV_SYNTHETIC_SCRIPT):
+                start_worker("DerivSyntheticEngine", DERIV_SYNTHETIC_SCRIPT)
 
 _ai_training_lock = threading.Lock()
 _is_ai_training_running = False
@@ -1017,12 +1176,17 @@ def check_weekend_ai_optimization():
                 run_background_ai_training()
 
 def monitor_workers():
+    cfg = load_engine_config()
+    binance_enabled = bool(cfg.get("binance", True))
+    mode = str(cfg.get("mode", "synthetic")).lower().strip()
+    weekend = is_forex_weekend()
+
     # ตรวจสอบว่าบริการสำคัญ (BinanceEngine และ WebDashboard) มีอยู่ใน processes หรือไม่
     if "WebDashboard" not in processes and os.path.exists(DASHBOARD_SCRIPT):
         log_supervisor("⚠️ ตรวจพบ WebDashboard ยังไม่เริ่มทำงาน กำลังเปิดใช้งาน...")
         start_worker("WebDashboard", DASHBOARD_SCRIPT)
 
-    if "BinanceEngine" not in processes and os.path.exists(BINANCE_SCRIPT):
+    if binance_enabled and "BinanceEngine" not in processes and os.path.exists(BINANCE_SCRIPT):
         log_supervisor("⚠️ ตรวจพบ BinanceEngine ยังไม่เริ่มทำงาน กำลังเปิดใช้งาน...")
         start_worker("BinanceEngine", BINANCE_SCRIPT)
 
@@ -1046,11 +1210,30 @@ def monitor_workers():
         if proc is None or proc.poll() is not None:
             exit_code = proc.poll() if proc else 'N/A'
 
-            # ตรวจสอบความสอดคล้องกับโหมดวันทำการ (ห้ามปลุกตัวที่ควรปิด)
-            if name == "DerivForexEngine" and is_forex_weekend():
-                processes.pop(name, None)
-                continue
-            if name == "DerivSyntheticEngine" and not is_forex_weekend():
+            # ตรวจสอบความสอดคล้องกับ engine_config (ห้ามปลุกตัวที่ควรปิด)
+            should_revive = False
+            if name == "BinanceEngine":
+                should_revive = binance_enabled
+            elif name == "DerivSyntheticEngine":
+                if mode in ("synthetic", "all"):
+                    should_revive = True
+                elif mode == "auto":
+                    should_revive = weekend
+                else:
+                    should_revive = False
+            elif name == "DerivForexEngine":
+                if mode in ("forex", "all"):
+                    should_revive = not weekend
+                elif mode == "auto":
+                    should_revive = not weekend
+                else:
+                    should_revive = False
+            elif name == "WebDashboard":
+                should_revive = True
+            else:
+                should_revive = True
+
+            if not should_revive:
                 processes.pop(name, None)
                 continue
 
