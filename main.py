@@ -58,7 +58,7 @@ ARCHIVE_DIR = os.path.join("archive", "logs")
 ENABLE_DERIV = os.getenv("ENABLE_DERIV", "true").lower() in ("true", "1", "yes")
 ENABLE_MT5 = os.getenv("ENABLE_MT5", "false").lower() in ("true", "1", "yes")
 
-_log_lock = threading.Lock()
+_log_lock = threading.RLock()
 current_active_cycle = None
 last_ai_train_date = None
 
@@ -274,13 +274,15 @@ def check_and_rotate_24h_log():
         # ย้าย daily_24h_log.txt ไปยัง archive/logs/daily_archive_YYYYMMDD.txt
         os.makedirs(ARCHIVE_DIR, exist_ok=True)
         archive_path = os.path.join(ARCHIVE_DIR, f"daily_archive_{current_active_cycle}.txt")
+        archive_success = False
+        archive_error = None
         with _log_lock:
             try:
                 if os.path.exists(DAILY_24H_LOG_FILE):
                     shutil.move(DAILY_24H_LOG_FILE, archive_path)
-                    log_supervisor(f"💾 [24H ROLLOVER] สำรอง Log รอบ 24 ชม. สำเร็จ: {archive_path}")
+                    archive_success = True
             except Exception as e:
-                log_supervisor(f"⚠️ [24H ROLLOVER ARCHIVE ERROR] {e}")
+                archive_error = e
 
             # เริ่มต้นไฟล์ daily_24h_log.txt รอบใหม่สะอาดๆ
             try:
@@ -295,6 +297,11 @@ def check_and_rotate_24h_log():
                     f.write(header)
             except Exception:
                 pass
+
+        if archive_success:
+            log_supervisor(f"💾 [24H ROLLOVER] สำรอง Log รอบ 24 ชม. สำเร็จ: {archive_path}")
+        elif archive_error:
+            log_supervisor(f"⚠️ [24H ROLLOVER ARCHIVE ERROR] {archive_error}")
 
         # อัปเดตรอบและบันทึก State
         current_active_cycle = c_str
