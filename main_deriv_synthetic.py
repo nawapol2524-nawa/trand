@@ -66,6 +66,17 @@ except ImportError:
         notifier = None
 
 # ==========================================
+# 🕯️ CANDLESTICK INTELLIGENCE ENGINE
+# ==========================================
+try:
+    import synthetic_candlestick as sc
+except ImportError:
+    try:
+        from trand import synthetic_candlestick as sc
+    except ImportError:
+        sc = None
+
+# ==========================================
 # ⚙️ CONFIGURATION & CONSTANTS
 # ==========================================
 DERIV_TOKEN = os.getenv("DERIV_API_TOKEN", "").strip()
@@ -171,23 +182,25 @@ def print_quant_table(thai_time, rows, account_info, memory, active_trade=None):
     account_profit_thb = round(account_profit_usd * usd_thb_rate, 1)
 
     lines = [
-        "╔══════════════════════════════════════════════════════════════════════════════════╗",
-        f"║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: {TARGET_DEMO_ACCOUNT:<21})║",
-        f"║  🕒 {thai_time} | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║",
-        "╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣",
-        "║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║",
-        "╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣"
+        "╔═════════════════════════════════════════════════════════════════════════════════════════╗",
+        f"║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: {TARGET_DEMO_ACCOUNT:<21})     ║",
+        f"║  🕒 {thai_time} | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)                     ║",
+        "╠════════════╦══════════════╦══════╦══════════╦═══════════════════╦═════════════════╦════╣",
+        "║ Symbol     ║ Last Price   ║ RSI  ║ BB-Width ║ Candle Pattern    ║ Position / PnL  ║ St ║",
+        "╠════════════╬══════════════╬══════╬══════════╬═══════════════════╬═════════════════╬════╣"
     ]
     for r in rows:
         lines.append(
-            f"║ {r['symbol']:<11} ║ {r['price']:>12} ║ {r['rsi']:>4} ║ {r['bb_w']:>8} ║ {r['pattern']:<10} ║ {r['pos']:<15} ║ {r['st']:<2} ║"
+            f"║ {r['symbol']:<10} ║ {r['price']:>12} ║ {r['rsi']:>4} ║ {r['bb_w']:>8} ║ {r['pattern']:<17} ║ {r['pos']:<15} ║ {r['st']:<2} ║"
         )
-    lines.append("╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣")
-    lines.append(f"║ 👤 บัญชี Demo: {loginid:<14} 💰 Balance: ${bal:>10,.2f} USD (~{bal_thb:,.0f} ฿)          ║")
+    lines.append("╠════════════╩══════════════╩══════╩══════════╩═══════════════════╩═════════════════╩════╣")
+    lines.append(f"║ 👤 บัญชี Demo: {loginid:<14} 💰 Balance: ${bal:>10,.2f} USD (~{bal_thb:,.0f} ฿)                   ║")
     lines.append(f"║ 📈 กำไรพอร์ตรวม: ${account_profit_usd:+,.2f} USD ({account_profit_thb:+,.1f} ฿) | สถิติ AI: {total_trades} ไม้ (ชนะ {wins} | แพ้ {losses} | WR: {win_rate:4.1f}%) ║")
     if active_trade and active_trade.get("contract_id"):
-        lines.append(f"║ 🎫 Active Contract ID: {str(active_trade.get('contract_id')):<18} Symbol: {active_trade.get('symbol'):<6} Multiplier: x{active_trade.get('multiplier', DEFAULT_MULTIPLIER):<4}  ║")
-    lines.append("╚══════════════════════════════════════════════════════════════════════════════════╝")
+        pattern_str = active_trade.get('pattern', 'None')
+        rr_val = active_trade.get('estimated_rr', 1.0)
+        lines.append(f"║ 🎫 Active: #{str(active_trade.get('contract_id')):<12} {active_trade.get('symbol'):<6} x{active_trade.get('multiplier', DEFAULT_MULTIPLIER):<3} | {pattern_str:<16} | Est R:R 1:{rr_val:<4.1f} ║")
+    lines.append("╚═════════════════════════════════════════════════════════════════════════════════════════╝")
 
     full_text = "\n".join(lines)
     print(full_text, flush=True)
@@ -322,8 +335,8 @@ memory = load_memory()
 # ==========================================
 # 📊 TECHNICAL INDICATORS (BRAD GOH SMC + MEAN REVERSION)
 # ==========================================
-def calculate_bb_rsi(candles, period=20, std_dev=2.0, rsi_period=14):
-    """คำนวณ Bollinger Bands, BandWidth, EMA50, RSI และตรวจสอบ Price Action Reversals"""
+def calculate_bb_rsi(candles, symbol="R_75", period=20, std_dev=2.0, rsi_period=14):
+    """คำนวณ Bollinger Bands, BandWidth, EMA50, RSI และตรวจสอบ Price Action Reversals ผ่าน Candlestick Engine"""
     closes = [float(c['close']) for c in candles]
     if len(closes) < max(period, rsi_period, 50) + 2:
         return None
@@ -378,24 +391,52 @@ def calculate_bb_rsi(candles, period=20, std_dev=2.0, rsi_period=14):
     prior_swing_low = min(prior_lows) if prior_lows else curr['low']
     is_liquidity_sweep = (curr['low'] < prior_swing_low) and (curr['close'] > prior_swing_low)
 
-    has_bullish_pattern = is_hammer or is_pin_bar or is_bullish_engulfing or is_morning_star or is_liquidity_sweep
-    pattern_name = "Sweep+Rej" if (is_liquidity_sweep and (is_pin_bar or is_hammer)) else (
-        "LiqSweep" if is_liquidity_sweep else (
-            "Hammer" if is_hammer else (
-                "PinBar" if is_pin_bar else (
-                    "Engulf" if is_bullish_engulfing else (
-                        "MornStar" if is_morning_star else "None"
+    # 5. วิเคราะห์เชิงลึกผ่านโมดูล synthetic_candlestick
+    c_setup = None
+    if sc is not None:
+        try:
+            sym_pip_size = get_pip_size(symbol, closes[-1])
+            c_setup = sc.analyze_candlestick_setup(candles, lower_bb, upper_bb, sym_pip_size, rsi=rsi)
+        except Exception:
+            c_setup = None
+
+    if c_setup:
+        has_bullish_pattern = c_setup['has_setup']
+        pattern_name = c_setup['pattern_name']
+        quality_score = c_setup['quality_score']
+        dynamic_sl_pips = c_setup['dynamic_sl_pips']
+        estimated_rr = c_setup['estimated_rr']
+        bearish_exit = c_setup['bearish_exit']
+        is_pin_bar = c_setup['details'].get('is_pin_bar', is_pin_bar)
+        is_hammer = c_setup['details'].get('is_hammer', is_hammer)
+        is_liquidity_sweep = c_setup['details'].get('is_liquidity_sweep', is_liquidity_sweep)
+    else:
+        has_bullish_pattern = is_hammer or is_pin_bar or is_bullish_engulfing or is_morning_star or is_liquidity_sweep
+        pattern_name = "Sweep+Rej" if (is_liquidity_sweep and (is_pin_bar or is_hammer)) else (
+            "LiqSweep" if is_liquidity_sweep else (
+                "Hammer" if is_hammer else (
+                    "PinBar" if is_pin_bar else (
+                        "Engulf" if is_bullish_engulfing else (
+                            "MornStar" if is_morning_star else "None"
+                        )
                     )
                 )
             )
         )
-    )
+        quality_score = 75.0 if has_bullish_pattern else 0.0
+        dynamic_sl_pips = 20.0
+        estimated_rr = 1.5
+        bearish_exit = False
 
     return {
         'price': closes[-1],
         'sma': sma,
         'has_bullish_pattern': has_bullish_pattern,
         'pattern_name': pattern_name,
+        'quality_score': quality_score,
+        'dynamic_sl_pips': dynamic_sl_pips,
+        'estimated_rr': estimated_rr,
+        'bearish_exit': bearish_exit,
         'is_liquidity_sweep': is_liquidity_sweep,
         'is_pin_bar': is_pin_bar,
         'is_hammer': is_hammer,
@@ -966,6 +1007,7 @@ async def deriv_synthetic_engine():
 
                             inds = calculate_bb_rsi(
                                 candles,
+                                symbol=sym,
                                 period=memory.get("learned_params", {}).get("bb_period", 20),
                                 std_dev=memory.get("learned_params", {}).get("bb_std", 2.0)
                             )
@@ -1110,16 +1152,25 @@ async def deriv_synthetic_engine():
                                                 pass
 
                                 # ตรวจสอบเงื่อนไขการปิดสัญญา:
-                                # - ปิดสัญญาด้วย {"sell": contract_id, "price": 0} เมื่อราคาแตะ Upper Bollinger Band หรือแตะ Trailing Stop
+                                # - ปิดสัญญาด้วย {"sell": contract_id, "price": 0} เมื่อราคาแตะ Upper Bollinger Band, เกิด Bearish Reversal, หรือแตะ Trailing Stop
                                 hold_sec = time.time() - active_trade.get('start_time', time.time())
                                 is_sl = diff_pips <= trailing_sl_pips
                                 upper_bb = inds['upper_bb'] if inds else cur_price * 1.05
                                 is_bb_target = (cur_price >= upper_bb) and (diff_pips >= 5.0)
+                                is_bearish_exit = (inds.get('bearish_exit', False) if inds else False) and (diff_pips >= 6.0)
                                 is_timeout = hold_sec >= 2700 and not (diff_pips >= 15.0)
                                 is_be_hit = is_sl and active_trade.get('be_locked', False)
 
-                                if is_be_hit or is_sl or is_bb_target or is_timeout:
-                                    close_reason = "Upper BB TP" if is_bb_target else ("BE Hit" if is_be_hit else ("Trailing SL" if is_sl else "Timeout"))
+                                if is_be_hit or is_sl or is_bb_target or is_bearish_exit or is_timeout:
+                                    close_reason = (
+                                        "Bearish Reversal TP" if is_bearish_exit else (
+                                            "Upper BB TP" if is_bb_target else (
+                                                "BE Hit" if is_be_hit else (
+                                                    "Trailing SL" if is_sl else "Timeout"
+                                                )
+                                            )
+                                        )
+                                    )
                                     log(f"⚡ [EXIT TRIGGER] {close_reason} สำหรับสัญญา #{contract_id} ({curr_sym}) -> ส่งคำสั่งขาย sell...")
 
                                     sell_res = await execute_multiplier_sell(ws, contract_id)
@@ -1133,6 +1184,9 @@ async def deriv_synthetic_engine():
                                         if is_be_hit:
                                             status_title = "SL-BREAKEVEN CLOSED"
                                             icon_str = "🛡️"
+                                        elif is_bearish_exit:
+                                            status_title = "EARLY TAKE PROFIT (BEARISH REVERSAL ON UPPER BB)"
+                                            icon_str = "🎯"
                                         elif is_bb_target:
                                             status_title = "TAKE PROFIT (UPPER BB - BRAD GOH เข้าไวออกไวกว่า)"
                                             icon_str = "🎯"
@@ -1206,24 +1260,26 @@ async def deriv_synthetic_engine():
                                 effective_oversold = learned_oversold
 
                             is_squeezed = bb_width < 0.0004
+                            has_candle_setup = inds.get('has_bullish_pattern', False)
+                            pattern_score = float(inds.get('quality_score', 0.0))
+                            dynamic_sl_pips = float(inds.get('dynamic_sl_pips', 20.0))
+                            estimated_rr = float(inds.get('estimated_rr', 1.5))
+                            pattern_name = inds.get('pattern_name', 'None')
                             is_sweep = inds.get('is_liquidity_sweep', False)
                             is_pin_bar = inds.get('is_pin_bar', False)
                             is_hammer = inds.get('is_hammer', False)
 
-                            is_oversold_bb = (price <= lower_bb * 1.0005) and (rsi <= effective_oversold) and not is_squeezed
-                            is_reversal_pattern = (is_sweep or is_pin_bar or is_hammer) and (rsi <= 45.0) and not is_squeezed
+                            # 🕯️ เงื่อนไขการเปิดไม้ด้วย Candlestick Intelligence:
+                            # 1. ไม่เปิดในช่วง Squeeze แคบผิดปกติ
+                            # 2. ต้องมีสัญญาณแท่งเทียนยืนยัน (has_candle_setup หรือ Score >= 60 หรือ Liquidity Sweep)
+                            # 3. ป้องกัน Falling Knives: ถ้า Pattern Score < 50 ห้ามเปิดเด็ดขาด!
+                            # 4. RSI ต้องอยู่ในโซน Oversold (<= 45.0)
+                            # 5. ราคาต้องอยู่ใกล้ Lower BB (<= lower_bb * 1.002)
+                            is_candlestick_confirmed = (has_candle_setup or pattern_score >= 60.0 or is_sweep) and (pattern_score >= 50.0)
+                            is_oversold_zone = (rsi <= 45.0) and (price <= lower_bb * 1.002)
 
-                            if is_oversold_bb or is_reversal_pattern:
-                                if is_sweep and is_pin_bar:
-                                    trigger_name = "LiqSweep_PinBar"
-                                elif is_sweep:
-                                    trigger_name = "Liquidity_Sweep"
-                                elif is_pin_bar:
-                                    trigger_name = "PinBar_Rejection"
-                                elif is_hammer:
-                                    trigger_name = "Hammer_Reversal"
-                                else:
-                                    trigger_name = "Pullback_LowerBB_Oversold"
+                            if not is_squeezed and is_candlestick_confirmed and is_oversold_zone:
+                                trigger_name = f"{pattern_name} (Score: {pattern_score:.0f}/100 | R:R 1:{estimated_rr:.1f})"
 
                                 spread_pips, ask_p, bid_p = await get_live_spread(ws, sym)
                                 max_allowed_spread = 5.0
@@ -1279,7 +1335,11 @@ async def deriv_synthetic_engine():
                                     "entry_time": get_thai_time(),
                                     "start_time": order_start_time,
                                     "be_locked": False,
-                                    "trailing_sl_pips": INITIAL_SL_PIPS,
+                                    "initial_sl_pips": dynamic_sl_pips,
+                                    "trailing_sl_pips": -abs(dynamic_sl_pips),
+                                    "pattern": pattern_name,
+                                    "pattern_score": pattern_score,
+                                    "estimated_rr": estimated_rr,
                                     "account_id": TARGET_DEMO_ACCOUNT
                                 }
                                 save_state(active_trade)
@@ -1295,7 +1355,8 @@ async def deriv_synthetic_engine():
                                         ("Entry Price", f"{spot_price:.4f}"),
                                         ("Live Spread", spread_str),
                                         ("Stake", f"${actual_buy_price:.2f} USD"),
-                                        ("Strategy Trigger", trigger_name),
+                                        ("Candle Pattern", f"{pattern_name} (Score: {pattern_score:.0f}/100)"),
+                                        ("Dynamic SL / R:R", f"-{dynamic_sl_pips:.1f} pips | Est R:R 1:{estimated_rr:.1f}"),
                                         ("RSI / BB-Width", f"{rsi:.1f} / {bb_width:.5f}"),
                                         ("Account Balance", f"${balance_after:,.2f} USD")
                                     ],
