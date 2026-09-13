@@ -7,26 +7,17 @@
 📊 [24H DAILY EXECUTIVE RECAP]
 ──────────────────────────────────────────────────────────────────────────────────
 • 🕒 รอบเวลาวิเคราะห์ (24H Cycle) : 2026-09-13 09:00:00 -> 2026-09-14 09:00:00 (เวลาไทย UTC+7)
-• 🕒 อัปเดตข้อมูลล่าสุด (Last Sync) : 2026-09-13 22:27:42 (เวลาไทย)
+• 🕒 อัปเดตข้อมูลล่าสุด (Last Sync) : 2026-09-13 22:31:56 (เวลาไทย)
 • 💰 ยอด PnL รวมรอบ 24 ชม.        : -0.0487 USDT | +0.00 USD (≈ -1.66 บาท)
 • 🎯 สถิติการเทรดรอบวัน (Stats)     : ทั้งหมด 0 ไม้ (ชนะ 0 | แพ้ 0 | Breakeven 0) | Win Rate: 0.0%
 • ⚡ สถานะเครื่องยนต์ (Engines)    : BinanceEngine (🟢 ONLINE) | WebDashboard (🟢 ONLINE) | DerivSyntheticEngine (🟢 ONLINE)
-• 🪙 สถานะพอร์ตปัจจุบัน (Positions) : BTC/USDT (Entry: $77165.1800, Size: 0.00011), R_10 [Synthetic] (Entry: 4859.428)
+• 🪙 สถานะพอร์ตปัจจุบัน (Positions) : BTC/USDT (Entry: $77165.1800, Size: 0.00011), R_10 [Synthetic] (Entry: 4851.034)
 • 🔴 มาตรการความเสี่ยงข่าว CPI (Risk Window) : ⚪ NORMAL - ไม่มีมาตรการ Red Folder Freeze เฉพาะกิจในวันนี้
 ══════════════════════════════════════════════════════════════════════════════════
 
 🚨 [24H SYSTEM HEALTH & ERRORS]
 ──────────────────────────────────────────────────────────────────────────────────
-🚨 ตรวจพบสัญญาณแจ้งเตือนทั้งหมด 56 รายการในรอบ 24 ชม.:
-  • [2026-09-13 19:58:29] [SUPERVISOR] ⚠️ [AUTO-PATCH ERROR] ตรวจสอบอัปเดตไม่สำเร็จ: Command '['git', 'fetch', 'origin', 'main']' timed out after 20 seconds
-  • [2026-09-13 20:05:51] [SUPERVISOR] ⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: HTTPSConnectionPool(host='script.googleusercontent.com', port=443): Read timed out. (read timeout=20)
-  • [2026-09-13 20:13:10] [SUPERVISOR] ⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: HTTPSConnectionPool(host='script.googleusercontent.com', port=443): Read timed out. (read timeout=20)
-  • [2026-09-13 20:13:13] [DERIV-SYNTHETIC] ⚠️ Proposal R_50 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 80,200,400,600,800.
-  • [2026-09-13 13:13:14] [WARNING] ⚠️ [LINE-BOT] ส่งไม่สำเร็จ: Status 429
-  • [2026-09-13 13:15:21] [WARNING] ⚠️ [LINE-BOT] ส่งไม่สำเร็จ: Status 429
-  • [2026-09-13 20:20:07] [SUPERVISOR] ⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: HTTPSConnectionPool(host='script.google.com', port=443): Read timed out. (read timeout=20)
-  • [2026-09-13 13:20:37] [WARNING] ⚠️ [LINE-BOT] ส่งไม่สำเร็จ: Status 429
-  • [2026-09-13 20:34:21] [SUPERVISOR] ⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: HTTPSConnectionPool(host='script.google.com', port=443): Read timed out. (read timeout=20)
+🚨 ตรวจพบสัญญาณแจ้งเตือนทั้งหมด 65 รายการในรอบ 24 ชม.:
   • [2026-09-13 20:47:00] [SUPERVISOR] ⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: HTTPSConnectionPool(host='script.google.com', port=443): Read timed out. (read timeout=20)
   • [2026-09-13 13:54:11] [WARNING] ⚠️ [LINE-BOT] ส่งไม่สำเร็จ: Status 429
   • [2026-09-13 21:03:19] [SUPERVISOR] ⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: HTTPSConnectionPool(host='script.google.com', port=443): Read timed out. (read timeout=20)
@@ -68,6 +59,15 @@
   • File "/usr/local/lib/python3.11/email/errors.py", line 51, in <module>
   • asyncio.exceptions.CancelledError
   • During handling of the above exception, another exception occurred:
+  • [2026-09-13 22:27:56] [DERIV-SYNTHETIC] ⚡ [EXIT TRIGGER] Timeout สำหรับสัญญา #12801961919 (R_10) -> ส่งคำสั่งขาย sell...
+  • [2026-09-13 15:27:58] [WARNING] ⚠️ [LINE-BOT] ส่งไม่สำเร็จ: Status 429
+  • [2026-09-13 22:29:01] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+  • [2026-09-13 22:29:01] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+  • [2026-09-13 22:29:02] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+  • [2026-09-13 22:29:02] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x160 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+  • [2026-09-13 22:29:02] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x200 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+  • [2026-09-13 15:29:03] [WARNING] ⚠️ [LINE-BOT] ส่งไม่สำเร็จ: Status 429
+  • [2026-09-13 15:29:04] [WARNING] ⚠️ [LINE-BOT] ส่งไม่สำเร็จ: Status 429
 ══════════════════════════════════════════════════════════════════════════════════
 
 📋 [24H TRADE LEDGER]
@@ -172,6 +172,23 @@
 [2026-09-13 22:17:35] 🧠 [GROQ AI ENGINE] สถานะ: 🟢 พร้อมใช้งาน (v3 News-Aware)
 [2026-09-13 22:17:35] 🛡️ [WEEKEND GUARD ACTIVE] สถาบันหยุดทำการ | ระงับ Breakout | เน้นช้อนแนวรับ Mean-Rev & Reversal | TP 1.8 ATR | Auto-BE +0.35%
 [2026-09-13 22:17:35] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔄 RECOVERED ACTIVE POSITION - BTC/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine                : Binance Testnet Spot
+║  • Symbol                : BTC/USDT
+║  • Entry Price           : $77165.180000
+║  • Position Size         : 0.00011
+║  • Take Profit (TP)      : $77355.017000
+║  • Stop Loss (SL)        : $77006.982500
+║  • Breakeven Locked      : False
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-13 22:27:54] 🔄 [RECOVER] กู้คืนสถานะการถือครอง BTC/USDT @ $77165.180000 (TP: $77355.017000 | SL: $77006.982500)
+[2026-09-13 22:27:57] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9977.82 USDT)
+[2026-09-13 22:27:57] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-13 22:27:57] 🧠 [GROQ AI ENGINE] สถานะ: 🟢 พร้อมใช้งาน (v3 News-Aware)
+[2026-09-13 22:27:57] 🛡️ [WEEKEND GUARD ACTIVE] สถาบันหยุดทำการ | ระงับ Breakout | เน้นช้อนแนวรับ Mean-Rev & Reversal | TP 1.8 ATR | Auto-BE +0.35%
+[2026-09-13 22:27:57] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
 
 --- DERIV SYNTHETIC TRADES (24H) ---
 [2026-09-13 09:09:24] [DERIV-SYNTHETIC] ⚡ [EXIT TRIGGER] BE Hit สำหรับสัญญา #12733791319 (R_25) -> ส่งคำสั่งขาย sell...
@@ -504,6 +521,69 @@
 ║  • Breakeven Locked      : False
 ╚══════════════════════════════════════════════════════════════════════════════╝
 [2026-09-13 22:17:23] [DERIV-SYNTHETIC] ✅ [RECOVERY] กู้คืนสัญญาจริง #12801961919 สำเร็จ! เข้าสู่โหมดเฝ้าไม้ต่อทันที
+[2026-09-13 22:27:49] [DERIV-SYNTHETIC] 🚀 กำลังเริ่มต้น AG 2.0 Deriv Synthetic Volatility Engine (24/7 Non-Stop Live Demo)...
+[2026-09-13 22:27:49] [DERIV-SYNTHETIC] 🔄 [STATE FILE] ตรวจพบข้อมูลไม้ค้างใน active_state_synthetic.json: R_10 #12801961919
+[2026-09-13 22:27:52] [DERIV-SYNTHETIC] ✅ ยืนยันสิทธิ์บัญชี Demo DOT94482469 สำเร็จ! ยอดเงิน: $10,005.40 USD
+[2026-09-13 22:27:53] [DERIV-SYNTHETIC] 🔌 เชื่อมต่อ Deriv WebSocket สำเร็จ! (บัญชี: DOT94482469)
+[2026-09-13 22:27:53] [DERIV-SYNTHETIC] 🔍 [RECOVERY] กำลังตรวจสอบสถานะสัญญาจริง #12801961919 (R_10) กับ Deriv...
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔄 DERIV SYNTHETIC LIVE POSITION RECOVERED - R_10
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Demo Account          : DOT94482469
+║  • Contract ID           : 12801961919
+║  • Symbol                : R_10
+║  • Contract Type         : MULTUP (x400)
+║  • Entry Spot            : 4859.2770
+║  • Current Spot          : 4851.5500
+║  • Unrealized Profit     : $-0.66 USD (≈ -22.4 THB)
+║  • Breakeven Locked      : False
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-13 22:27:53] [DERIV-SYNTHETIC] ✅ [RECOVERY] กู้คืนสัญญาจริง #12801961919 สำเร็จ! เข้าสู่โหมดเฝ้าไม้ต่อทันที
+[2026-09-13 22:27:56] [DERIV-SYNTHETIC] ⚡ [EXIT TRIGGER] Timeout สำหรับสัญญา #12801961919 (R_10) -> ส่งคำสั่งขาย sell...
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛑 STOP LOSS (LOSS) - R_10
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine / Account      : Deriv Synthetic (Demo: DOT94482469)
+║  • Contract ID           : 12801961919
+║  • Exit Price            : 4851.4910
+║  • Result Pips           : -16.3 pips
+║  • Net Profit            : $-0.66 USD (≈ -22.4 THB)
+║  • Account Balance       : $10,005.74 USD
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🧠 GROQ AI SYNTHETIC EVALUATION - R_10
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Decision              : APPROVED (YES)
+║  • Strategy              : Price: 4851.3260 | RSI: 25.2 | Liquidity_Sweep
+║  • Volatility Width      : 0.00469
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] 🧠 [GROQ AI] อนุมัติการเปิดไม้ R_10 (AI คอนเฟิร์มสัญญาณ Mean Reversion)
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] 📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers (R_10, Stake: $1.0, Multiplier: x100)...
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] 💡 [AUTO-DETECT MULTIPLIER] เพิ่มตัวคูณที่ยอมรับได้สำหรับ R_10: x400
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] 💡 [AUTO-DETECT MULTIPLIER] เพิ่มตัวคูณที่ยอมรับได้สำหรับ R_10: x1000
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] 💡 [AUTO-DETECT MULTIPLIER] เพิ่มตัวคูณที่ยอมรับได้สำหรับ R_10: x2000
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] 💡 [AUTO-DETECT MULTIPLIER] เพิ่มตัวคูณที่ยอมรับได้สำหรับ R_10: x3000
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] 💡 [AUTO-DETECT MULTIPLIER] เพิ่มตัวคูณที่ยอมรับได้สำหรับ R_10: x4000
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+[2026-09-13 22:29:02] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+[2026-09-13 22:29:02] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x160 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+[2026-09-13 22:29:02] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x200 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+[2026-09-13 22:29:03] [DERIV-SYNTHETIC] ✅ [PROPOSAL OK] Proposal ID: 3cc4b804-c02c-8bb5-2756-422ba277c98b | Spot: 4851.034 | Multiplier: x400
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🟢 LIVE MULTIPLIER ORDER EXECUTED - R_10
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine / Account      : Deriv Synthetic 24/7 (Demo: DOT94482469)
+║  • Contract ID           : 12807258059
+║  • Contract Type         : MULTUP (x400)
+║  • Symbol                : R_10
+║  • Entry Price           : 4851.0340
+║  • Live Spread           : 0.4 pips
+║  • Stake                 : $1.00 USD
+║  • Strategy Trigger      : Liquidity_Sweep
+║  • RSI / BB-Width        : 25.2 / 0.00469
+║  • Account Balance       : $10,004.74 USD
+╚══════════════════════════════════════════════════════════════════════════════╝
 ══════════════════════════════════════════════════════════════════════════════════
 
 📜 [FULL 24H CONSOLE STREAM]
@@ -5069,7 +5149,35 @@ KeyboardInterrupt
 [2026-09-13 22:27:39] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: DerivSyntheticEngine (main_deriv_synthetic.py)...
 [2026-09-13 22:27:39] [SUPERVISOR] ✅ DerivSyntheticEngine ทำงานสำเร็จ (PID: 33)
 [2026-09-13 22:27:39] [SUPERVISOR] 👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers, Weekend Switching และ AI Lab...
-
+🚀 เริ่มต้นระบบ AG 2.0 Live Quant Terminal Server ที่พอร์ต 9848...
+🌐 ใช้งานผ่าน URL: http://0.0.0.0:9848
+🔓 โหมดความปลอดภัย: เข้าถึงได้ทันที (Direct Access - No PIN Required)
+🧠 [MEMORY] โหลด synthetic_memory.json สำเร็จ (สถิติรวม: 46 ไม้)
+===========================================================================
+🏛️ DERIV SYNTHETIC 24/7 LIVE MULTIPLIERS ENGINE (DEMO: DOT94482469)
+🎯 ASSETS: ['R_75', 'R_25', 'R_50', 'R_10'] (Focus: ['R_75', 'R_25'])
+⚙️ RISK: Stake $1.00 USD | BE +10.0 pips | Trailing +20.0 pips
+🧠 AI ADVISOR : 🟢 พร้อมใช้งาน (Groq Synthetic Quant Advisor)
+===========================================================================
+[2026-09-13 22:27:49] [DERIV-SYNTHETIC] 🚀 กำลังเริ่มต้น AG 2.0 Deriv Synthetic Volatility Engine (24/7 Non-Stop Live Demo)...
+[2026-09-13 22:27:49] [DERIV-SYNTHETIC] 🔄 [STATE FILE] ตรวจพบข้อมูลไม้ค้างใน active_state_synthetic.json: R_10 #12801961919
+[2026-09-13 22:27:52] [DERIV-SYNTHETIC] ✅ ยืนยันสิทธิ์บัญชี Demo DOT94482469 สำเร็จ! ยอดเงิน: $10,005.40 USD
+[2026-09-13 22:27:53] [DERIV-SYNTHETIC] 🔌 เชื่อมต่อ Deriv WebSocket สำเร็จ! (บัญชี: DOT94482469)
+[2026-09-13 22:27:53] [DERIV-SYNTHETIC] 🔍 [RECOVERY] กำลังตรวจสอบสถานะสัญญาจริง #12801961919 (R_10) กับ Deriv...
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔄 DERIV SYNTHETIC LIVE POSITION RECOVERED - R_10
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Demo Account          : DOT94482469
+║  • Contract ID           : 12801961919
+║  • Symbol                : R_10
+║  • Contract Type         : MULTUP (x400)
+║  • Entry Spot            : 4859.2770
+║  • Current Spot          : 4851.5500
+║  • Unrealized Profit     : $-0.66 USD (≈ -22.4 THB)
+║  • Breakeven Locked      : False
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-13 22:27:53] [DERIV-SYNTHETIC] ✅ [RECOVERY] กู้คืนสัญญาจริง #12801961919 สำเร็จ! เข้าสู่โหมดเฝ้าไม้ต่อทันที
+🧠 [MEMORY] กู้คืน agent_memory_multi.json สำเร็จ (เทรดรวม: 2 ไม้ | ชนะ 0 | แพ้ 2)
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║ 🔄 RECOVERED ACTIVE POSITION - BTC/USDT
 ╠──────────────────────────────────────────────────────────────────────────────╣
@@ -5082,8 +5190,215 @@ KeyboardInterrupt
 ║  • Breakeven Locked      : False
 ╚══════════════════════════════════════════════════════════════════════════════╝
 [2026-09-13 22:27:54] 🔄 [RECOVER] กู้คืนสถานะการถือครอง BTC/USDT @ $77165.180000 (TP: $77355.017000 | SL: $77006.982500)
+[2026-09-13 22:27:56] [DERIV-SYNTHETIC] ⚡ [EXIT TRIGGER] Timeout สำหรับสัญญา #12801961919 (R_10) -> ส่งคำสั่งขาย sell...
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛑 STOP LOSS (LOSS) - R_10
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine / Account      : Deriv Synthetic (Demo: DOT94482469)
+║  • Contract ID           : 12801961919
+║  • Exit Price            : 4851.4910
+║  • Result Pips           : -16.3 pips
+║  • Net Profit            : $-0.66 USD (≈ -22.4 THB)
+║  • Account Balance       : $10,005.74 USD
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-13 22:27:56 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50766.3468 ║ 51.0 ║  0.01646 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2750.7210 ║ 27.0 ║  0.01289 ║ MornStar   ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      91.8481 ║ 44.0 ║  0.01081 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4851.7200 ║ 25.5 ║  0.00465 ║ LiqSweep   ║ 🟢 -15.9 pips    ║ IN ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,005.74 USD (~340,195 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+5.74 USD (+195.2 ฿) | สถิติ AI: 47 ไม้ (ชนะ 29 | แพ้ 18 | WR: 61.7%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+✅ เชื่อมต่อ Binance Testnet (Sandbox) สำเร็จ! ยอดเงิน: 9977.82 USDT
 [2026-09-13 22:27:57] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9977.82 USDT)
 [2026-09-13 22:27:57] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
 [2026-09-13 22:27:57] 🧠 [GROQ AI ENGINE] สถานะ: 🟢 พร้อมใช้งาน (v3 News-Aware)
 [2026-09-13 22:27:57] 🛡️ [WEEKEND GUARD ACTIVE] สถาบันหยุดทำการ | ระงับ Breakout | เน้นช้อนแนวรับ Mean-Rev & Reversal | TP 1.8 ATR | Auto-BE +0.35%
 [2026-09-13 22:27:57] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+[2026-09-13 15:27:58] [WARNING] ⚠️ [LINE-BOT] ส่งไม่สำเร็จ: Status 429
+[2026-09-13 22:28:22] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+🛡️ [WEEKEND GUARD ACTIVE] ตลาดสุดสัปดาห์: สถาบันหยุดทำการ เลี่ยง False Breakout (เน้นช้อนแนวรับ Mean-Rev)
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🛡️ [WEEKEND GUARD ACTIVE] (งด Breakout | เน้น Mean-Rev | TP 1.8 ATR | BE 0.35%) ║
+║  🕒 เวลาไทย: 2026-09-13 22:28:25 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $100.48 ║ 55.9 ║ 35.8 ║  0.66x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,112.02 ║ 59.0 ║ 46.0 ║  0.70x ║ 🔴 -0.07%        ║ Holding    ║
+║ NEAR/USDT   ║        $2.29 ║ 41.2 ║ 15.6 ║  0.55x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.38 ║ 55.6 ║ 28.9 ║  2.36x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001690 ║ 48.2 ║ 16.6 ║  0.02x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007700 ║ 48.2 ║ 17.2 ║  0.20x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🧠 GROQ AI SYNTHETIC EVALUATION - R_10
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Decision              : APPROVED (YES)
+║  • Strategy              : Price: 4851.3260 | RSI: 25.2 | Liquidity_Sweep
+║  • Volatility Width      : 0.00469
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] 🧠 [GROQ AI] อนุมัติการเปิดไม้ R_10 (AI คอนเฟิร์มสัญญาณ Mean Reversion)
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] 📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers (R_10, Stake: $1.0, Multiplier: x100)...
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] 💡 [AUTO-DETECT MULTIPLIER] เพิ่มตัวคูณที่ยอมรับได้สำหรับ R_10: x400
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] 💡 [AUTO-DETECT MULTIPLIER] เพิ่มตัวคูณที่ยอมรับได้สำหรับ R_10: x1000
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] 💡 [AUTO-DETECT MULTIPLIER] เพิ่มตัวคูณที่ยอมรับได้สำหรับ R_10: x2000
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] 💡 [AUTO-DETECT MULTIPLIER] เพิ่มตัวคูณที่ยอมรับได้สำหรับ R_10: x3000
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] 💡 [AUTO-DETECT MULTIPLIER] เพิ่มตัวคูณที่ยอมรับได้สำหรับ R_10: x4000
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+[2026-09-13 22:29:01] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+[2026-09-13 22:29:02] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+[2026-09-13 22:29:02] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x160 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+[2026-09-13 22:29:02] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 multiplier x200 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+[2026-09-13 22:29:03] [DERIV-SYNTHETIC] ✅ [PROPOSAL OK] Proposal ID: 3cc4b804-c02c-8bb5-2756-422ba277c98b | Spot: 4851.034 | Multiplier: x400
+[2026-09-13 15:29:03] [WARNING] ⚠️ [LINE-BOT] ส่งไม่สำเร็จ: Status 429
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🟢 LIVE MULTIPLIER ORDER EXECUTED - R_10
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine / Account      : Deriv Synthetic 24/7 (Demo: DOT94482469)
+║  • Contract ID           : 12807258059
+║  • Contract Type         : MULTUP (x400)
+║  • Symbol                : R_10
+║  • Entry Price           : 4851.0340
+║  • Live Spread           : 0.4 pips
+║  • Stake                 : $1.00 USD
+║  • Strategy Trigger      : Liquidity_Sweep
+║  • RSI / BB-Width        : 25.2 / 0.00469
+║  • Account Balance       : $10,004.74 USD
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-13 22:29:03 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50844.5333 ║ 52.6 ║  0.01656 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2751.0560 ║ 27.5 ║  0.01286 ║ MornStar   ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      91.8209 ║ 43.4 ║  0.01088 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4851.3260 ║ 25.2 ║  0.00469 ║ LiqSweep   ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.74 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.74 USD (+161.2 ฿) | สถิติ AI: 47 ไม้ (ชนะ 29 | แพ้ 18 | WR: 61.7%) ║
+║ 🎫 Active Contract ID: 12807258059        Symbol: R_10   Multiplier: x400   ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-13 15:29:04] [WARNING] ⚠️ [LINE-BOT] ส่งไม่สำเร็จ: Status 429
+[2026-09-13 22:29:09] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+🛡️ [WEEKEND GUARD ACTIVE] ตลาดสุดสัปดาห์: สถาบันหยุดทำการ เลี่ยง False Breakout (เน้นช้อนแนวรับ Mean-Rev)
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🛡️ [WEEKEND GUARD ACTIVE] (งด Breakout | เน้น Mean-Rev | TP 1.8 ATR | BE 0.35%) ║
+║  🕒 เวลาไทย: 2026-09-13 22:29:56 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $100.35 ║ 52.9 ║ 35.8 ║  0.84x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,035.51 ║ 54.9 ║ 49.1 ║  1.38x ║ 🔴 -0.17%        ║ Holding    ║
+║ NEAR/USDT   ║        $2.29 ║ 40.3 ║ 15.7 ║  0.67x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.37 ║ 53.7 ║ 28.9 ║  2.37x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001690 ║ 48.2 ║ 16.6 ║  0.02x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007700 ║ 48.2 ║ 17.2 ║  0.20x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-13 22:30:06 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50768.4861 ║ 51.4 ║  0.01647 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2752.4080 ║ 32.0 ║  0.01314 ║ Hammer     ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      91.9868 ║ 46.7 ║  0.01027 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4850.8670 ║ 26.7 ║  0.00507 ║ None       ║ 🟢 -0.3 pips     ║ IN ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.74 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.74 USD (+161.2 ฿) | สถิติ AI: 47 ไม้ (ชนะ 29 | แพ้ 18 | WR: 61.7%) ║
+║ 🎫 Active Contract ID: 12807258059        Symbol: R_10   Multiplier: x400   ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-13 22:30:17] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: DOT94482469          )║
+║  🕒 2026-09-13 22:31:09 | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)            ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ R_75        ║   50776.9487 ║ 51.6 ║  0.01648 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_25        ║    2751.1810 ║ 30.8 ║  0.01325 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_50        ║      91.9993 ║ 47.0 ║  0.01026 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ R_10        ║    4851.9910 ║ 28.9 ║  0.00499 ║ LiqSweep   ║ 🟢 +2.0 pips     ║ IN ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.74 USD (~340,161 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.74 USD (+161.2 ฿) | สถิติ AI: 47 ไม้ (ชนะ 29 | แพ้ 18 | WR: 61.7%) ║
+║ 🎫 Active Contract ID: 12807258059        Symbol: R_10   Multiplier: x400   ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+🛡️ [WEEKEND GUARD ACTIVE] ตลาดสุดสัปดาห์: สถาบันหยุดทำการ เลี่ยง False Breakout (เน้นช้อนแนวรับ Mean-Rev)
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🛡️ [WEEKEND GUARD ACTIVE] (งด Breakout | เน้น Mean-Rev | TP 1.8 ATR | BE 0.35%) ║
+║  🕒 เวลาไทย: 2026-09-13 22:31:25 | แนวโน้ม BTC: 🔴 BEARISH (<= 1h EMA200)             ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $100.36 ║ 53.1 ║ 33.6 ║  0.05x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $77,078.00 ║ 56.7 ║ 52.2 ║  0.19x ║ 🔴 -0.11%        ║ Holding    ║
+║ NEAR/USDT   ║        $2.29 ║ 39.5 ║ 16.6 ║  0.89x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.37 ║ 53.7 ║ 27.2 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001686 ║ 46.2 ║ 15.9 ║  7.10x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007700 ║ 48.2 ║ 16.5 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-13 22:31:26] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!
+[2026-09-13 22:31:37] [SUPERVISOR] 🔄 [COMMAND RESTART] ตรวจพบคำสั่ง Restart จาก Web Terminal!
+[2026-09-13 22:31:37] [SUPERVISOR] 🛑 กำลังปิด Workers ทั้งหมดอย่างปลอดภัยเพื่อเตรียม Restart ระบบ...
+[2026-09-13 22:31:38] [SUPERVISOR] ✅ BinanceEngine ปิดเรียบร้อย
+
+🛑 ได้รับสัญญาณ (15) กำลังปิด Terminal Server อย่างปลอดภัย...
+🛑 กำลังหยุดการทำงานของ HTTP Server...
+👋 ปิด Terminal Server เรียบร้อยสมบูรณ์
+[2026-09-13 22:31:38] [SUPERVISOR] ✅ WebDashboard ปิดเรียบร้อย
+[2026-09-13 22:31:38] [SUPERVISOR] ✅ DerivSyntheticEngine ปิดเรียบร้อย
+[2026-09-13 22:31:38] [SUPERVISOR] 🚀 กำลัง Re-executing main.py เพื่อเริ่มระบบใหม่อย่างสมบูรณ์...
+[2026-09-13 22:31:47] [SUPERVISOR] ╔══════════════════════════════════════════════════════════════════════════════════╗
+[2026-09-13 22:31:47] [SUPERVISOR] ║  🏛️ AG 2.0 QUANT TERMINAL | DUAL-ENGINE SUPERVISOR (QUANT SHIELD)                 ║
+[2026-09-13 22:31:47] [SUPERVISOR] ║  ⚡ Binance Engine : Spot Sandbox Testnet (100% Demo / 24/7 Weekend Guard)       ║
+[2026-09-13 22:31:47] [SUPERVISOR] ║  ⚡ Deriv Engine   : Auto-Switching Forex Demo / Weekend Synthetic (24/7)         ║
+[2026-09-13 22:31:47] [SUPERVISOR] ║  🧪 AI Retraining  : Brad Goh SMC + Weekend Optimization Lab (Sat 09:15)         ║
+[2026-09-13 22:31:47] [SUPERVISOR] ║  📡 Console Logger : Streamed to console_log.txt & synced as status_log.txt      ║
+[2026-09-13 22:31:47] [SUPERVISOR] ║  🔔 LINE Notify    : Active for BUY, TP, SL, Breakeven & Trailing Run             ║
+[2026-09-13 22:31:47] [SUPERVISOR] ║  🛡️ Watchdog Shield: Independent Sentinel Active (Auto-Revive on Any Freeze)     ║
+[2026-09-13 22:31:47] [SUPERVISOR] ╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-13 22:31:47] [SUPERVISOR] 📂 ไดเรกทอรีทำงาน: /home/container
+[2026-09-13 22:31:47] [SUPERVISOR] 🛡️ [WATCHDOG SENTINEL] เธรดตรวจจับอาการค้างอิสระเริ่มทำงาน (Auto-Recovery < 120s)
+[2026-09-13 22:31:47] [SUPERVISOR] 📋 [24H LOG SYSTEM] ประจำการรอบ 24 ชม.: 2026-09-13 09:00 -> 2026-09-14 09:00 (รอบ ID: 20260913)
+[2026-09-13 22:31:47] [SUPERVISOR] 🎛️ [ENGINE CONTROLLER] การตั้งค่า: Mode=AUTO | Binance=ON | ตลาดสุดสัปดาห์=True
+[2026-09-13 22:31:47] [SUPERVISOR] 🚀 [ENGINE CONTROLLER] เริ่มต้น BinanceEngine (Spot Sandbox Testnet)...
+[2026-09-13 22:31:47] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: BinanceEngine (main_binance.py)...
+[2026-09-13 22:31:47] [SUPERVISOR] ✅ BinanceEngine ทำงานสำเร็จ (PID: 194)
+[2026-09-13 22:31:47] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: WebDashboard (dashboard.py)...
+[2026-09-13 22:31:47] [SUPERVISOR] ✅ WebDashboard ทำงานสำเร็จ (PID: 196)
+[2026-09-13 22:31:47] [SUPERVISOR] 🚀 [AUTO - WEEKEND] เริ่มต้น DerivSyntheticEngine สำหรับเทรดช่วงวันหยุด...
+[2026-09-13 22:31:47] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: DerivSyntheticEngine (main_deriv_synthetic.py)...
+[2026-09-13 22:31:47] [SUPERVISOR] ✅ DerivSyntheticEngine ทำงานสำเร็จ (PID: 198)
+[2026-09-13 22:31:48] [SUPERVISOR] 👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers, Weekend Switching และ AI Lab...
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔄 RECOVERED ACTIVE POSITION - BTC/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine                : Binance Testnet Spot
+║  • Symbol                : BTC/USDT
+║  • Entry Price           : $77165.180000
+║  • Position Size         : 0.00011
+║  • Take Profit (TP)      : $77355.017000
+║  • Stop Loss (SL)        : $77006.982500
+║  • Breakeven Locked      : False
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-13 22:32:41] 🔄 [RECOVER] กู้คืนสถานะการถือครอง BTC/USDT @ $77165.180000 (TP: $77355.017000 | SL: $77006.982500)
+[2026-09-13 22:32:48] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9977.82 USDT)
+[2026-09-13 22:32:48] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-13 22:32:48] 🧠 [GROQ AI ENGINE] สถานะ: 🟢 พร้อมใช้งาน (v3 News-Aware)
+[2026-09-13 22:32:48] 🛡️ [WEEKEND GUARD ACTIVE] สถาบันหยุดทำการ | ระงับ Breakout | เน้นช้อนแนวรับ Mean-Rev & Reversal | TP 1.8 ATR | Auto-BE +0.35%
+[2026-09-13 22:32:48] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
