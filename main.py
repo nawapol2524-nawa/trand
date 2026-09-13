@@ -751,9 +751,13 @@ processes = {}
 def stream_worker_output(name, proc):
     """อ่าน output จาก process ลูกแบบเรียลไทม์: พิมพ์ออกหน้าจอ + บันทึกใส่ console_log.txt"""
     try:
+        if name in processes:
+            processes[name]['last_output_ts'] = time.time()
         for line in iter(proc.stdout.readline, ''):
             if not line:
                 break
+            if name in processes:
+                processes[name]['last_output_ts'] = time.time()
             sys.stdout.write(line)
             sys.stdout.flush()
             append_console_log(line)
@@ -783,7 +787,8 @@ def start_worker(name, script_path):
             'script': script_path,
             'thread': t,
             'restarts': 0,
-            'last_restart': time.time()
+            'last_restart': time.time(),
+            'last_output_ts': time.time()
         }
         log_supervisor(f"✅ {name} ทำงานสำเร็จ (PID: {proc.pid})")
         return proc
@@ -1023,9 +1028,23 @@ def monitor_workers():
 
     for name, item in list(processes.items()):
         proc = item.get('proc')
+        now = time.time()
+
+        # 1. Active Watchdog: ตรวจจับอาการค้างเงียบ (Silent Stall / Hang Guard)
+        if proc and proc.poll() is None:
+            if "Engine" in name:
+                last_out = item.get('last_output_ts', now)
+                # ปกติบอทเทรดจะพิมพ์ข้อความทุก 20 - 75 วินาที หากเงียบสนิทเกิน 300 วินาที (5 นาที) แสดงว่า Socket/เธรดค้าง
+                if (now - last_out) > 300:
+                    log_supervisor(f"🚨 [WATCHDOG HANG] {name} ค้างเงียบเกิน 300 วินาที (สัญญาณชีพขาดหาย)! กำลัง Force Kill เพื่อคืนชีพ...")
+                    try:
+                        proc.kill()
+                    except Exception:
+                        pass
+                    continue
+
         if proc is None or proc.poll() is not None:
             exit_code = proc.poll() if proc else 'N/A'
-            now = time.time()
 
             # ตรวจสอบความสอดคล้องกับโหมดวันทำการ (ห้ามปลุกตัวที่ควรปิด)
             if name == "DerivForexEngine" and is_forex_weekend():
@@ -1071,7 +1090,39 @@ def monitor_workers():
             t.start()
             processes[name]['proc'] = new_proc
             processes[name]['thread'] = t
+            processes[name]['last_output_ts'] = time.time()
             log_supervisor(f"✅ {name} รีสตาร์ทสำเร็จ (New PID: {new_proc.pid})")
+
+# ==========================================
+# 🛡️ INDEPENDENT SENTINEL WATCHDOG (ZERO-LOCK)
+# ==========================================
+_supervisor_pulse_ts = time.time()
+
+def supervisor_pulse():
+    global _supervisor_pulse_ts
+    _supervisor_pulse_ts = time.time()
+
+def run_independent_sentinel():
+    """
+    เธรดเฝ้าระวังอิสระ (Zero-Lock Sentinel Watchdog):
+    ทำงานแยกขาดจากเธรดหลักและไม่พึ่งพา Lock ใดๆ ทั้งสิ้น
+    หาก Main Loop ของ Supervisor ไม่ส่งชีพจรเกิน 120 วินาที (เกิด Deadlock หรือ Socket Hang)
+    Sentinel จะส่งแจ้งเตือน LINE ฉุกเฉิน และสั่ง os._exit(1)
+    เพื่อให้ Docker / Wispbyte Container รีสตาร์ททั้งตู้ขึ้นมาใหม่ภายใน 2 วินาที
+    """
+    while True:
+        time.sleep(15)
+        elapsed = time.time() - _supervisor_pulse_ts
+        if elapsed > 120:
+            msg = f"🚨 [EMERGENCY SENTINEL] Supervisor ค้างเกิน {int(elapsed)} วินาที! สั่ง Hard Exit เพื่อให้ Container รีสตาร์ททันที..."
+            sys.stderr.write(f"\n{msg}\n")
+            sys.stderr.flush()
+            if notifier:
+                try:
+                    notifier.notify_system("AG 2.0 Sentinel", msg)
+                except Exception:
+                    pass
+            os._exit(1)
 
 # ==========================================
 # 👑 MAIN ENTRY POINT
@@ -1085,12 +1136,18 @@ if __name__ == '__main__':
         "║  🧪 AI Retraining  : Brad Goh SMC + Weekend Optimization Lab (Sat 09:15)         ║",
         "║  📡 Console Logger : Streamed to console_log.txt & synced as status_log.txt      ║",
         "║  🔔 LINE Notify    : Active for BUY, TP, SL, Breakeven & Trailing Run             ║",
+        "║  🛡️ Watchdog Shield: Independent Sentinel Active (Auto-Revive on Any Freeze)     ║",
         "╚══════════════════════════════════════════════════════════════════════════════════╝"
     ]
     for b in banner_lines:
         log_supervisor(b)
     log_supervisor(f"📂 ไดเรกทอรีทำงาน: {os.getcwd()}")
     
+    # เริ่มต้นเธรด Sentinel ตรวจจับอาการค้างอิสระ (Zero-Lock)
+    sentinel_thread = threading.Thread(target=run_independent_sentinel, daemon=True)
+    sentinel_thread.start()
+    log_supervisor("🛡️ [WATCHDOG SENTINEL] เธรดตรวจจับอาการค้างอิสระเริ่มทำงาน (Auto-Recovery < 120s)")
+
     # เริ่มต้นระบบ 24H Daily Log และตั้งค่า Rollover 09:00 น.
     init_daily_24h_log()
 
@@ -1108,6 +1165,8 @@ if __name__ == '__main__':
     log_supervisor("👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers, Weekend Switching และ AI Lab...")
     while True:
         try:
+            supervisor_pulse()
+
             # 1. ตรวจสอบว่ามีคำสั่ง Restart จาก Web Terminal หรือไม่ (ตอบสนองใน 1-2 วินาที)
             if os.path.exists("restart.flag"):
                 log_supervisor("🔄 [COMMAND RESTART] ตรวจพบคำสั่ง Restart จาก Web Terminal!")
@@ -1127,6 +1186,7 @@ if __name__ == '__main__':
 
             # วนลูปพัก 20 วินาที โดยตรวจ restart.flag ทุกๆ 1 วินาที เพื่อให้ตอบสนองคำสั่งทันที
             for _ in range(20):
+                supervisor_pulse()
                 if os.path.exists("restart.flag"):
                     break
                 time.sleep(1)
