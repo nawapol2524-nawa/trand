@@ -965,11 +965,8 @@ HTML_PAGE = """<!DOCTYPE html>
         }
 
         async function fetchEngineStatus() {
-            if (!isAuthenticated) return;
             try {
-                const res = await fetch('/api/engine_status?t=' + Date.now(), {
-                    headers: { 'Authorization': 'Bearer ' + getAuthToken() }
-                });
+                const res = await fetch('/api/engine_status?t=' + Date.now());
                 if (res.ok) {
                     const data = await res.json();
                     updateEngineStatusUI(data);
@@ -985,16 +982,10 @@ HTML_PAGE = """<!DOCTYPE html>
                 const res = await fetch('/api/set_engine_mode', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + getAuthToken()
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ mode: mode })
                 });
-
-                if (res.status === 401) {
-                    showPinGate('เซสชันหมดอายุ กรุณาใส่รหัส PIN เพื่อดำเนินการต่อ');
-                    return;
-                }
 
                 const data = await res.json();
                 if (res.ok && (data.status === 'success' || data.mode)) {
@@ -1076,21 +1067,15 @@ HTML_PAGE = """<!DOCTYPE html>
 
         let isFetching = false;
         async function fetchConsoleLogs() {
-            if (isFetching || !isAuthenticated) return;
+            if (isFetching) return;
             isFetching = true;
             try {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 4000);
                 const res = await fetch('/api/console?t=' + Date.now(), {
-                    signal: controller.signal,
-                    headers: { 'Authorization': 'Bearer ' + getAuthToken() }
+                    signal: controller.signal
                 });
                 clearTimeout(timeoutId);
-
-                if (res.status === 401) {
-                    showPinGate('เซสชันหมดอายุ กรุณาใส่รหัส PIN ใหม่อีกครั้ง');
-                    return;
-                }
 
                 if (res.ok) {
                     const text = await res.text();
@@ -1133,25 +1118,17 @@ HTML_PAGE = """<!DOCTYPE html>
             cmdStatus.textContent = '⏳ กำลังส่งและรันคำสั่ง: ' + cmd + '...';
             btnRun.disabled = true;
 
-            consoleEl.textContent += `\\n[WEB-TERMINAL] $ ${cmd}\\n`;
+            consoleEl.textContent += `\n[WEB-TERMINAL] $ ${cmd}\n`;
             if (chkAutoScroll.checked) consoleEl.scrollTop = consoleEl.scrollHeight;
 
             try {
                 const res = await fetch('/api/run', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + getAuthToken()
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ cmd: cmd })
                 });
-
-                if (res.status === 401) {
-                    showPinGate('เซสชันหมดอายุ กรุณาใส่รหัส PIN ก่อนรันคำสั่ง');
-                    cmdStatus.className = 'cmd-status error';
-                    cmdStatus.textContent = '❌ สิทธิ์ถูกปฏิเสธ: กรุณาใส่รหัส PIN';
-                    return;
-                }
 
                 const data = await res.json();
                 if (data.status === 'success') {
@@ -1371,37 +1348,13 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
 
-        # 1. API Auth: ตรวจสอบ PIN และสร้าง Session Token 7 วัน
+        # 1. API Auth: เข้าถึงได้ทันที (Direct Access)
         if path == "/api/auth":
-            try:
-                content_length = int(self.headers.get('Content-Length', 0))
-                post_data = self.rfile.read(content_length).decode('utf-8')
-                pin = ""
-                try:
-                    data = json.loads(post_data)
-                    pin = str(data.get('pin', '')).strip()
-                except Exception:
-                    params = urllib.parse.parse_qs(post_data)
-                    pin = params.get('pin', [''])[0].strip()
-
-                if pin and hmac.compare_digest(pin, DASHBOARD_PIN):
-                    token = generate_session_token()
-                    self._send_auth_success(token)
-                    return
-                else:
-                    time.sleep(0.4)  # ชะลอเวลาป้องกัน Brute-Force
-                    self._send_json({"status": "error", "message": "Invalid PIN"}, 401)
-                    return
-            except Exception as e:
-                self._send_json({"status": "error", "message": str(e)}, 500)
-                return
+            self._send_json({"status": "ok", "authenticated": True}, 200)
+            return
 
         # 2. API: ตั้งค่า Engine Mode (POST /api/set_engine_mode)
         if path == "/api/set_engine_mode":
-            if not self.is_authenticated():
-                self.send_unauthorized("Unauthorized: กรุณาใส่รหัส PIN เพื่อตั้งค่า Engine Mode")
-                return
-
             try:
                 content_length = int(self.headers.get('Content-Length', 0))
                 post_data = self.rfile.read(content_length).decode('utf-8')
@@ -1431,9 +1384,6 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
 
         # 3. API: รับคำสั่ง Execute Command บน Server (POST /api/run)
         if path in ("/api/run", "/run"):
-            if not self.is_authenticated():
-                self.send_unauthorized("Unauthorized: กรุณาใส่รหัส PIN ก่อนส่งคำสั่ง")
-                return
 
             try:
                 content_length = int(self.headers.get('Content-Length', 0))
@@ -1722,10 +1672,13 @@ def run_server():
 
     print(f"🚀 เริ่มต้นระบบ AG 2.0 Live Quant Terminal Server ที่พอร์ต {PORT}...")
     print(f"🌐 ใช้งานผ่าน URL: http://0.0.0.0:{PORT}")
-    print(f"🛡️ PIN Security Gate: พร้อมใช้งาน (Default PIN: {DASHBOARD_PIN})")
+    print(f"🔓 โหมดความปลอดภัย: เข้าถึงได้ทันที (Direct Access - No PIN Required)")
 
-    signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGTERM, signal_handler)
+    try:
+        signal.signal(signal.SIGINT, signal_handler)
+        signal.signal(signal.SIGTERM, signal_handler)
+    except ValueError:
+        pass
 
     httpd = None
     for attempt in range(1, 11):
