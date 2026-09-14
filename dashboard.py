@@ -12,7 +12,9 @@ import signal
 import hashlib
 import hmac
 import secrets
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+import warnings
+warnings.filterwarnings("ignore")
 
 # ==============================================================================
 # ⚙️ CONFIGURATION & PATHS
@@ -103,7 +105,7 @@ def verify_session_token(token: str) -> bool:
 # ⏱️ TIME & LOG HELPERS
 # ==============================================================================
 def get_thai_datetime():
-    return datetime.utcnow() + timedelta(hours=7)
+    return datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=7)
 
 def get_thai_time():
     return get_thai_datetime().strftime('%Y-%m-%d %H:%M:%S')
@@ -149,9 +151,10 @@ def read_last_lines(filepath, num_lines=180, buffer_size=128 * 1024):
 
             text = data.decode("utf-8", errors="replace")
             lines = text.splitlines(keepends=True)
-            if len(lines) > num_lines:
-                lines = lines[-num_lines:]
-            return "".join(lines)
+            clean_lines = [l for l in lines if "DeprecationWarning" not in l and "timezone-aware objects" not in l and "dt_utc or datetime.utcnow" not in l and "now_th = datetime.utcnow" not in l and "is_cooling_down = s" not in l]
+            if len(clean_lines) > num_lines:
+                clean_lines = clean_lines[-num_lines:]
+            return "".join(clean_lines)
     except Exception:
         return ""
 

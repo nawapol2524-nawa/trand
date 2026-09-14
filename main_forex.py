@@ -6,7 +6,9 @@ import ssl
 import asyncio
 import urllib.request
 import urllib.error
-from datetime import datetime, timedelta
+import warnings
+warnings.filterwarnings("ignore")
+from datetime import datetime, timedelta, timezone
 
 # เพิ่ม site-packages เข้า sys.path อัตโนมัติสำหรับสภาพแวดล้อม Container / Virtualenv
 for p in [
@@ -76,7 +78,7 @@ ENABLE_DERIV = os.getenv("ENABLE_DERIV", "true").lower() in ("true", "1", "yes")
 usd_thb_rate = 34.00
 
 def get_thai_time():
-    return (datetime.utcnow() + timedelta(hours=7)).strftime('%Y-%m-%d %H:%M:%S')
+    return (datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=7)).strftime('%Y-%m-%d %H:%M:%S')
 
 def log(text):
     now = get_thai_time()
@@ -305,7 +307,7 @@ def fetch_high_impact_news():
 
 def is_news_freeze():
     fetch_high_impact_news()
-    now_utc = datetime.utcnow()
+    now_utc = datetime.now(timezone.utc).replace(tzinfo=None)
     for evt in news_events:
         diff = (now_utc - evt).total_seconds() / 60.0
         if -30 <= diff <= 30:
@@ -318,7 +320,7 @@ def is_cpi_news_freeze():
     ตามแผนกลยุทธ์ของ Gemini Spark: ช่วง 19:00 - 20:30 น. ของวันที่ 11 ก.ย. 2026
     เมื่อพ้น 20:30:00 น. จะปลดล็อกตัวเองและกลับมาสแกนเทรดอัตโนมัติ 100%
     """
-    now_th = datetime.utcnow() + timedelta(hours=7)
+    now_th = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=7)
     if now_th.year == 2026 and now_th.month == 9 and now_th.day == 11:
         if (19, 0) <= (now_th.hour, now_th.minute) < (20, 30):
             return True
@@ -913,7 +915,7 @@ async def deriv_engine():
 
                 while True:
                     # ตรวจสอบวันหยุดเสาร์-อาทิตย์ และช่วง Rollover Spread Blackout
-                    utcnow = datetime.utcnow()
+                    utcnow = datetime.now(timezone.utc).replace(tzinfo=None)
                     thai_dt = utcnow + timedelta(hours=7)
                     thai_minute = thai_dt.hour * 60 + thai_dt.minute
                     is_weekend = utcnow.weekday() == 5 or (utcnow.weekday() == 6 and utcnow.hour < 21)

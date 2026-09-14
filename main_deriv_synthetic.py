@@ -22,7 +22,9 @@ import json
 import ssl
 import re
 import asyncio
-from datetime import datetime, timedelta
+import warnings
+warnings.filterwarnings("ignore")
+from datetime import datetime, timedelta, timezone
 
 # เพิ่ม site-packages เข้า sys.path อัตโนมัติสำหรับสภาพแวดล้อม Container / Virtualenv
 for p in [
@@ -107,7 +109,7 @@ usd_thb_rate = 34.00
 
 def get_thai_time():
     """เวลาปัจจุบันในเขตเวลาประเทศไทย (UTC+7)"""
-    return (datetime.utcnow() + timedelta(hours=7)).strftime('%Y-%m-%d %H:%M:%S')
+    return (datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=7)).strftime('%Y-%m-%d %H:%M:%S')
 
 def log(text):
     """บันทึกข้อความลง Console และ trade_log_synthetic.txt"""

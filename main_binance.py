@@ -6,7 +6,9 @@ import uuid
 from decimal import Decimal
 import ccxt
 import pandas as pd
-from datetime import datetime, timedelta
+import warnings
+warnings.filterwarnings("ignore")
+from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -69,7 +71,7 @@ def connect_and_check_balance():
             print(f"⚠️ เซิร์ฟเวอร์ Binance Testnet ขัดข้องชั่วคราว ({e}) -> เข้าสู่โหมด Standby รอเชื่อมต่อใหม่ใน 30 วินาที...", flush=True)
             try:
                 with open(STATUS_FILE, "w", encoding="utf-8") as f:
-                    f.write(f"⚠️ [BINANCE SPOT TESTNET - SANDBOX DEMO]\nเซิร์ฟเวอร์ Binance Testnet กำลังซ่อมบำรุง/ล่ม 502 ชั่วคราว\nระบบกำลังรอเชื่อมต่อใหม่อัตโนมัติทุก 30 วินาที ({datetime.utcnow() + timedelta(hours=7)})\n")
+                    f.write(f"⚠️ [BINANCE SPOT TESTNET - SANDBOX DEMO]\nเซิร์ฟเวอร์ Binance Testnet กำลังซ่อมบำรุง/ล่ม 502 ชั่วคราว\nระบบกำลังรอเชื่อมต่อใหม่อัตโนมัติทุก 30 วินาที ({datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=7)})\n")
             except Exception:
                 pass
             time.sleep(30)
@@ -143,7 +145,7 @@ def truncate_amount(sym, amount):
 # 🖥️ QUANT TERMINAL UI & HIGHLIGHT BOXES
 # ==========================================
 def get_thai_time():
-    return (datetime.utcnow() + timedelta(hours=7)).strftime('%Y-%m-%d %H:%M:%S')
+    return (datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=7)).strftime('%Y-%m-%d %H:%M:%S')
 
 def is_weekend_mode(dt_utc=None):
     """
@@ -156,7 +158,7 @@ def is_weekend_mode(dt_utc=None):
       3. ปรับขนาดเป้าหมายทำกำไร (Take Profit) ให้กระชับขึ้นเป็น 1.8 ATR (เดิม 2.5 ATR)
       4. ปรับจุดคุ้มทุน (Auto-Breakeven) เมื่อกำไรแตะ +0.35% (เดิม +0.40%)
     """
-    now = dt_utc or datetime.utcnow()
+    now = dt_utc or datetime.now(timezone.utc).replace(tzinfo=None)
     # วันเสาร์ UTC (weekday 5) ตลอดวัน (00:00 - 23:59 UTC = เสาร์ 07:00 - อาทิตย์ 06:59 ไทย)
     # วันอาทิตย์ UTC (weekday 6) ก่อน 21:00 UTC (00:00 - 21:00 UTC = อาทิตย์ 07:00 - จันทร์ 04:00 ไทย)
     if now.weekday() == 5:
@@ -489,7 +491,7 @@ def is_cpi_news_freeze():
     ตามแผนกลยุทธ์ของ Gemini Spark: ช่วง 19:00 - 20:30 น. ของวันที่ 11 ก.ย. 2026
     เมื่อพ้น 20:30:00 น. จะปลดล็อกตัวเองและกลับมาสแกนเทรดอัตโนมัติ 100%
     """
-    now_th = datetime.utcnow() + timedelta(hours=7)
+    now_th = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=7)
     if now_th.year == 2026 and now_th.month == 9 and now_th.day == 11:
         if (19, 0) <= (now_th.hour, now_th.minute) < (20, 30):
             return True
@@ -500,7 +502,7 @@ def is_pre_cpi_safety_exit_time():
     ช่วงเวลา Pre-News Safety Exit (18:30 - 19:29 น. วันที่ 11 ก.ย. 2026)
     หากมีไม้ค้างอยู่ ให้ปิดทำกำไรหรือเคลียร์พอร์ตล่วงหน้า 1 ชม. ก่อนข่าว CPI ตามแผน Spark เพื่อถือเงินสดปลอดภัย 100%
     """
-    now_th = datetime.utcnow() + timedelta(hours=7)
+    now_th = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=7)
     if now_th.year == 2026 and now_th.month == 9 and now_th.day == 11:
         if (18, 30) <= (now_th.hour, now_th.minute) < (19, 30):
             return True
@@ -779,7 +781,7 @@ def process_symbol(sym, btc_bullish):
         )
         
         s = state[sym]
-        is_cooling_down = s['cooldown_until'] and datetime.utcnow() < s['cooldown_until']
+        is_cooling_down = s['cooldown_until'] and datetime.now(timezone.utc).replace(tzinfo=None) < s['cooldown_until']
         any_in_position = any(state[k]['in_position'] for k in SYMBOLS)
 
         # จัดเตรียมข้อมูลสำหรับตารางสรุป
@@ -1008,7 +1010,7 @@ def process_symbol(sym, btc_bullish):
                     if (sell_size * current_price) < 5.0:
                         log_trade(f"🛑 [DUST FREEZE {sym}] มูลค่าคงเหลือ (${sell_size * current_price:.2f} USDT) ต่ำกว่า $5 -> ปลดสถานะเป็น Dust Lock เพื่อป้องกันลูปตาย")
                         s['in_position'] = False
-                        s['cooldown_until'] = datetime.utcnow() + timedelta(hours=4)
+                        s['cooldown_until'] = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=4)
                         save_state()
                         if notifier:
                             try:
@@ -1096,7 +1098,7 @@ def process_symbol(sym, btc_bullish):
                         
                         # หากแพ้ติดต่อกัน 2 ไม้ ให้เปิดโหมด Cooldown 4 ชั่วโมงสำหรับเหรียญนั้น
                         if s['consecutive_losses'] >= 2:
-                            s['cooldown_until'] = datetime.utcnow() + timedelta(hours=4)
+                            s['cooldown_until'] = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=4)
                             log_trade(f"🛑 [CIRCUIT BREAKER {sym}] แพ้ติดกัน {s['consecutive_losses']} ไม้ -> พักเทรดเหรียญนี้ 4 ชั่วโมง")
 
                         print_highlight_box(
@@ -1122,7 +1124,7 @@ def process_symbol(sym, btc_bullish):
                     if "notional" in str(e).lower():
                         log_trade(f"🛑 [NOTIONAL RECOVERY {sym}] ตรวจพบข้อผิดพลาด Notional -> ปลดสถานะเพื่อป้องกันค้างลูป")
                         s['in_position'] = False
-                        s['cooldown_until'] = datetime.utcnow() + timedelta(hours=4)
+                        s['cooldown_until'] = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=4)
                         save_state()
 
         return summary_row

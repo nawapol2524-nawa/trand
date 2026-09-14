@@ -7,7 +7,9 @@ import threading
 import json
 import re
 import shutil
-from datetime import datetime, timedelta
+import warnings
+warnings.filterwarnings("ignore")
+from datetime import datetime, timedelta, timezone
 try:
     from dotenv import load_dotenv
     load_dotenv()
@@ -66,7 +68,7 @@ current_active_cycle = None
 last_ai_train_date = None
 
 def get_thai_datetime():
-    return datetime.utcnow() + timedelta(hours=7)
+    return datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=7)
 
 def get_thai_time():
     return get_thai_datetime().strftime('%Y-%m-%d %H:%M:%S')
@@ -644,7 +646,7 @@ def build_ai_analysis_report(cycle_start, cycle_end, thai_now):
     cycle_end_str = cycle_end.strftime("%Y-%m-%d %H:%M:%S")
 
     # คำนวณสถานะความเสี่ยงข่าว CPI (ตามแผนกลยุทธ์ Gemini Spark)
-    now_th = datetime.utcnow() + timedelta(hours=7)
+    now_th = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=7)
     if now_th.year == 2026 and now_th.month == 9 and now_th.day == 11:
         if (19, 0) <= (now_th.hour, now_th.minute) < (20, 30):
             cpi_status_note = "🔴 ACTIVE (19:00 - 20:30 น.) - งดเปิดไม้ใหม่ทุกตลาดเพื่อเลี่ยงพายุ CPI & Whipsaw"
@@ -787,6 +789,9 @@ def stream_worker_output(name, proc):
         for line in iter(proc.stdout.readline, ''):
             if not line:
                 break
+            # กรอง DeprecationWarning และข้อความเตือน timezone ออกจากหน้าจอคอนโซล
+            if "DeprecationWarning" in line or "timezone-aware objects" in line:
+                continue
             if name in processes:
                 processes[name]['last_output_ts'] = time.time()
             sys.stdout.write(line)
@@ -804,7 +809,7 @@ def start_worker(name, script_path):
     log_supervisor(f"🚀 กำลังเปิดการทำงาน: {name} ({script_path})...")
     try:
         proc = subprocess.Popen(
-            [sys.executable, "-u", script_path],
+            [sys.executable, "-W", "ignore", "-u", script_path],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
