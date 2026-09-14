@@ -1,21 +1,21 @@
 """
 ================================================================================
-🕯️ AG 2.0 DERIV SYNTHETIC DUAL-DIRECTION CANDLESTICK PATTERN & RISK ENGINE
+🕯️ AG 2.0 DERIV SYNTHETIC DUAL-DIRECTION CANDLESTICK TEST FEATURE ENGINE
 ================================================================================
-โมดูลวิเคราะห์แท่งเทียนเฉพาะทางสำหรับ Deriv Synthetic Volatility Indices (24/7)
-- รองรับการเทรด 2 ฝั่งเต็มรูปแบบ:
-  * ฝั่งซื้อ (MULTUP / Long): Bullish Reversal / Pin Bar / Hammer / Engulfing / Sweep
-  * ฝั่งขาย (MULTDOWN / Short): Bearish Reversal / Shooting Star / Bearish Pin Bar / Engulfing / Sweep
-- คำนวณคะแนนคุณภาพแท่งเทียน (Pattern Quality Score: 0 - 100) ป้องกัน Falling Knife & Rocket Chasing
-- คำนวณจุดตัดขาดทุนแบบ Dynamic Wick-Based Stop Loss แนบหลังปลายไส้เทียนทั้ง 2 ฝั่ง
-- คำนวณอัตราส่วนผลตอบแทนต่อความเสี่ยง (Estimated Risk:Reward Ratio)
-- ตรวจจับสัญญาณทำกำไรล่วงหน้า (Early Exit) เมื่อเกิด Reversal ตรงข้ามที่ขอบ Bollinger Bands
+โมดูลวิเคราะห์คุณลักษณะแท่งเทียน (Price Action Test Features) สำหรับ Deriv Synthetic Indices
+- รองรับการทดสอบ 2 ทิศทาง:
+  * ฝั่งซื้อ (MULTUP / Long): Bullish Rejection / Pin Bar / Hammer / Engulfing / Failed Breakout Low
+  * ฝั่งขาย (MULTDOWN / Short): Bearish Rejection / Shooting Star / Bearish Pin Bar / Engulfing / Failed Breakout High
+- คำนวณคะแนนคุณภาพสัญญาณแท่งเทียน (0 - 100)
+- คำนวณจุดตัดขาดทุนแบบ Dynamic Wick & ATR-Based Stop Loss แนบหลังปลายแท่งเทียน
+- คำนวณ R:R ที่สมเหตุสมผลตามกรอบสถิติ (1.0R - 2.5R)
+- ตรวจจับสัญญาณปิดทำกำไรล่วงหน้า (Early Exit) เมื่อเกิด Reversal ตรงข้ามที่ขอบ Bollinger Bands
 ================================================================================
 """
 
 def detect_single_candle_patterns(curr, prev=None, prev2=None, prior_swing_low=None, prior_swing_high=None, lower_bb=0.0, upper_bb=0.0):
     """
-    วิเคราะห์แท่งเทียนเดี่ยวและกลุ่มแท่งเทียน 2-3 แท่งอย่างละเอียด ทั้งฝั่ง Bullish และ Bearish
+    วิเคราะห์แท่งเทียนเดี่ยวและกลุ่มแท่งเทียน 2-3 แท่ง ทั้งฝั่ง Bullish และ Bearish
     คืนค่า dict ข้อมูลการตรวจจับและสัดส่วนโครงสร้างแท่งเทียน
     """
     open_p = float(curr['open'])
@@ -53,10 +53,11 @@ def detect_single_candle_patterns(curr, prev=None, prev2=None, prior_swing_low=N
         (close_p >= low_p + (0.50 * candle_range))
     )
 
-    # 1.3 🌊 Bullish Liquidity Sweep (SMC Step 4)
-    is_liquidity_sweep = False
+    # 1.3 🌊 Bullish Failed Breakout Pattern (กวาดหลุด Low เดิมแล้วดีดกลับเข้ากรอบ)
+    is_failed_breakout = False
     if prior_swing_low is not None and prior_swing_low > 0:
-        is_liquidity_sweep = (low_p < prior_swing_low) and (close_p > prior_swing_low)
+        is_failed_breakout = (low_p < prior_swing_low) and (close_p > prior_swing_low)
+    is_liquidity_sweep = is_failed_breakout  # backward compatibility alias
 
     # 1.4 🟢 Bullish Engulfing
     is_bullish_engulfing = False
@@ -102,10 +103,11 @@ def detect_single_candle_patterns(curr, prev=None, prev2=None, prior_swing_low=N
         (close_p <= high_p - (0.50 * candle_range))
     )
 
-    # 2.3 🌊 Bearish Liquidity Sweep (SMC Top Sweep)
-    is_bearish_sweep = False
+    # 2.3 🌊 Bearish Failed Breakout Pattern (ทะลุ High เดิมแล้วดีดกลับลงกรอบ)
+    is_failed_breakout_high = False
     if prior_swing_high is not None and prior_swing_high > 0:
-        is_bearish_sweep = (high_p > prior_swing_high) and (close_p < prior_swing_high)
+        is_failed_breakout_high = (high_p > prior_swing_high) and (close_p < prior_swing_high)
+    is_bearish_sweep = is_failed_breakout_high  # backward compatibility alias
 
     # 2.4 🔴 Bearish Engulfing
     is_bearish_engulfing = False
@@ -136,8 +138,8 @@ def detect_single_candle_patterns(curr, prev=None, prev2=None, prior_swing_low=N
     # ----------------------------------------------------
     # 🏁 3. REVERSAL EXIT SIGNALS
     # ----------------------------------------------------
-    bearish_exit = (is_shooting_star or is_bearish_engulfing or is_bearish_pin_bar or is_bearish_sweep) and touches_upper_bb
-    bullish_exit = (is_hammer or is_bullish_engulfing or is_pin_bar or is_liquidity_sweep) and touches_lower_bb
+    bearish_exit = (is_shooting_star or is_bearish_engulfing or is_bearish_pin_bar or is_failed_breakout_high) and touches_upper_bb
+    bullish_exit = (is_hammer or is_bullish_engulfing or is_pin_bar or is_failed_breakout) and touches_lower_bb
 
     return {
         'open': open_p,
@@ -153,13 +155,15 @@ def detect_single_candle_patterns(curr, prev=None, prev2=None, prior_swing_low=N
         'upper_wick_ratio': upper_wick_ratio,
         'is_hammer': is_hammer,
         'is_pin_bar': is_pin_bar,
-        'is_liquidity_sweep': is_liquidity_sweep,
+        'is_failed_breakout': is_failed_breakout,
+        'is_liquidity_sweep': is_failed_breakout,
         'is_bullish_engulfing': is_bullish_engulfing,
         'is_morning_star': is_morning_star,
         'touches_lower_bb': touches_lower_bb,
         'is_shooting_star': is_shooting_star,
         'is_bearish_pin_bar': is_bearish_pin_bar,
-        'is_bearish_sweep': is_bearish_sweep,
+        'is_failed_breakout_high': is_failed_breakout_high,
+        'is_bearish_sweep': is_failed_breakout_high,
         'is_bearish_engulfing': is_bearish_engulfing,
         'is_evening_star': is_evening_star,
         'touches_upper_bb': touches_upper_bb,
@@ -188,9 +192,9 @@ def calculate_pattern_quality_score(candle_data, rsi=50.0, lower_bb=0.0):
     elif lower_wick_ratio >= 0.35:
         score += 15.0
 
-    if candle_data['is_liquidity_sweep'] and (candle_data['is_pin_bar'] or candle_data['is_hammer']):
+    if candle_data.get('is_failed_breakout', False) and (candle_data['is_pin_bar'] or candle_data['is_hammer']):
         score += 30.0
-    elif candle_data['is_liquidity_sweep']:
+    elif candle_data.get('is_failed_breakout', False):
         score += 20.0
     elif candle_data['is_hammer']:
         score += 22.0
@@ -250,9 +254,9 @@ def calculate_bearish_quality_score(candle_data, rsi=50.0, upper_bb=0.0):
         score += 15.0
 
     # 2. ลักษณะแพทเทิร์นขาลง
-    if candle_data['is_bearish_sweep'] and (candle_data['is_shooting_star'] or candle_data['is_bearish_pin_bar']):
+    if candle_data.get('is_failed_breakout_high', False) and (candle_data['is_shooting_star'] or candle_data['is_bearish_pin_bar']):
         score += 30.0
-    elif candle_data['is_bearish_sweep']:
+    elif candle_data.get('is_failed_breakout_high', False):
         score += 20.0
     elif candle_data['is_shooting_star']:
         score += 22.0
@@ -291,12 +295,12 @@ def calculate_bearish_quality_score(candle_data, rsi=50.0, upper_bb=0.0):
     return round(min(100.0, max(0.0, score)), 1)
 
 
-def analyze_candlestick_setup(candles, lower_bb, upper_bb, pip_size, rsi=50.0):
+def analyze_candlestick_setup(candles, lower_bb, upper_bb, pip_size, rsi=50.0, atr=None):
     """
     ฟังก์ชันหลักในการประมวลผลแท่งเทียน 2 ทิศทาง (MULTUP & MULTDOWN):
-    - สแกนหา Prior Swing Low & Prior Swing High ย้อนหลัง 10 แท่ง
-    - คำนวณ Pattern Quality Score ของทั้ง 2 ฝั่ง
-    - คำนวณ Dynamic Wick-Based Stop Loss และ Risk:Reward คาดการณ์
+    - สแกนหา Prior Swing Low & Prior Swing High ย้อนหลัง 10 แท่ง (Failed Breakout Features)
+    - คำนวณ Pattern Quality Score ของทั้ง 2 ฝั่ง (0 - 100)
+    - คำนวณ Dynamic Wick & ATR-Based Stop Loss และ Risk:Reward คาดการณ์ (1.0R - 2.5R)
     """
     if not candles or len(candles) < 12:
         return {
@@ -342,14 +346,14 @@ def analyze_candlestick_setup(candles, lower_bb, upper_bb, pip_size, rsi=50.0):
     candle_high = float(curr['high'])
 
     # 1. Bullish Setup Naming & SL/RR
-    if cd['is_liquidity_sweep'] and (cd['is_pin_bar'] or cd['is_hammer']):
-        b_name = f"Sweep+Pin ({bullish_score:.0f}%)"
-    elif cd['is_liquidity_sweep'] and cd['is_bullish_engulfing']:
-        b_name = f"Sweep+Engulf ({bullish_score:.0f}%)"
+    if cd['is_failed_breakout'] and (cd['is_pin_bar'] or cd['is_hammer']):
+        b_name = f"FailedBrk+Pin ({bullish_score:.0f}%)"
+    elif cd['is_failed_breakout'] and cd['is_bullish_engulfing']:
+        b_name = f"FailedBrk+Engulf ({bullish_score:.0f}%)"
     elif cd['is_bullish_engulfing']:
         b_name = f"Engulf ({bullish_score:.0f}%)"
-    elif cd['is_liquidity_sweep']:
-        b_name = f"LiqSweep ({bullish_score:.0f}%)"
+    elif cd['is_failed_breakout']:
+        b_name = f"FailedBrk ({bullish_score:.0f}%)"
     elif cd['is_hammer']:
         b_name = f"Hammer ({bullish_score:.0f}%)"
     elif cd['is_pin_bar']:
@@ -361,23 +365,15 @@ def analyze_candlestick_setup(candles, lower_bb, upper_bb, pip_size, rsi=50.0):
     else:
         b_name = "None"
 
-    # Bullish SL ใต้ Low + buffer 2 pips
-    b_sl_dist = max(cur_price - (candle_low - 2.0 * pip_size), pip_size)
-    bullish_sl_pips = round(max(6.0, min(b_sl_dist / pip_size, 25.0)), 1)
-    if upper_bb > cur_price:
-        bullish_rr = round((upper_bb - cur_price) / pip_size / bullish_sl_pips, 2)
-    else:
-        bullish_rr = 1.0
-
     # 2. Bearish Setup Naming & SL/RR
-    if cd['is_bearish_sweep'] and (cd['is_shooting_star'] or cd['is_bearish_pin_bar']):
-        s_name = f"BearSweep+Pin ({bearish_score:.0f}%)"
-    elif cd['is_bearish_sweep'] and cd['is_bearish_engulfing']:
-        s_name = f"BearSweep+Engulf ({bearish_score:.0f}%)"
+    if cd['is_failed_breakout_high'] and (cd['is_shooting_star'] or cd['is_bearish_pin_bar']):
+        s_name = f"BearFailedBrk+Pin ({bearish_score:.0f}%)"
+    elif cd['is_failed_breakout_high'] and cd['is_bearish_engulfing']:
+        s_name = f"BearFailedBrk+Engulf ({bearish_score:.0f}%)"
     elif cd['is_bearish_engulfing']:
         s_name = f"BearEngulf ({bearish_score:.0f}%)"
-    elif cd['is_bearish_sweep']:
-        s_name = f"BearSweep ({bearish_score:.0f}%)"
+    elif cd['is_failed_breakout_high']:
+        s_name = f"BearFailedBrk ({bearish_score:.0f}%)"
     elif cd['is_shooting_star']:
         s_name = f"ShootStar ({bearish_score:.0f}%)"
     elif cd['is_bearish_pin_bar']:
@@ -389,16 +385,35 @@ def analyze_candlestick_setup(candles, lower_bb, upper_bb, pip_size, rsi=50.0):
     else:
         s_name = "None"
 
-    # Bearish SL เหนือ High + buffer 2 pips
-    s_sl_dist = max((candle_high + 2.0 * pip_size) - cur_price, pip_size)
-    bearish_sl_pips = round(max(6.0, min(s_sl_dist / pip_size, 25.0)), 1)
-    if lower_bb > 0 and cur_price > lower_bb:
-        bearish_rr = round((cur_price - lower_bb) / pip_size / bearish_sl_pips, 2)
+    # คำนวณ Dynamic SL และ R:R แบบสถิติ ATR ปลอดภัย (ไม่จำกัด pips ตายตัว)
+    if atr and atr > 0:
+        buffer = 0.15 * atr
+        b_raw_sl = max(cur_price - (candle_low - buffer), 0.5 * atr)
+        b_sl_dist = max(0.8 * atr, min(b_raw_sl, 2.0 * atr))
+        bullish_sl_pips = round(b_sl_dist / pip_size, 1)
+
+        s_raw_sl = max((candle_high + buffer) - cur_price, 0.5 * atr)
+        s_sl_dist = max(0.8 * atr, min(s_raw_sl, 2.0 * atr))
+        bearish_sl_pips = round(s_sl_dist / pip_size, 1)
+    else:
+        b_sl_dist = max(cur_price - (candle_low - 2.0 * pip_size), pip_size)
+        bullish_sl_pips = round(max(6.0, min(b_sl_dist / pip_size, 35.0)), 1)
+        s_sl_dist = max((candle_high + 2.0 * pip_size) - cur_price, pip_size)
+        bearish_sl_pips = round(max(6.0, min(s_sl_dist / pip_size, 35.0)), 1)
+
+    # คำนวณ R:R สมเหตุสมผล (1.0R - 2.5R) ป้องกันภาพลวงตา RR 1:9
+    if upper_bb > cur_price and b_sl_dist > 0:
+        bullish_rr = round(min(2.5, max(1.0, (upper_bb - cur_price) / b_sl_dist)), 2)
+    else:
+        bullish_rr = 1.0
+
+    if lower_bb > 0 and cur_price > lower_bb and s_sl_dist > 0:
+        bearish_rr = round(min(2.5, max(1.0, (cur_price - lower_bb) / s_sl_dist)), 2)
     else:
         bearish_rr = 1.0
 
-    has_bullish_setup = (bullish_score >= 60.0) or (cd['is_liquidity_sweep'] and bullish_score >= 55.0)
-    has_bearish_setup = (bearish_score >= 60.0) or (cd['is_bearish_sweep'] and bearish_score >= 55.0)
+    has_bullish_setup = (bullish_score >= 60.0) or (cd['is_failed_breakout'] and bullish_score >= 55.0)
+    has_bearish_setup = (bearish_score >= 60.0) or (cd['is_failed_breakout_high'] and bearish_score >= 55.0)
 
     # เลือกลำดับความสำคัญ
     if has_bullish_setup and (bullish_score >= bearish_score):
@@ -407,18 +422,21 @@ def analyze_candlestick_setup(candles, lower_bb, upper_bb, pip_size, rsi=50.0):
         chosen_score = bullish_score
         chosen_sl = bullish_sl_pips
         chosen_rr = bullish_rr
+        chosen_sl_dist = b_sl_dist
     elif has_bearish_setup:
         setup_direction = 'SELL'
         dominant_pattern = s_name
         chosen_score = bearish_score
         chosen_sl = bearish_sl_pips
         chosen_rr = bearish_rr
+        chosen_sl_dist = s_sl_dist
     else:
         setup_direction = 'NONE'
         dominant_pattern = b_name if bullish_score >= bearish_score else s_name
         chosen_score = max(bullish_score, bearish_score)
         chosen_sl = bullish_sl_pips if bullish_score >= bearish_score else bearish_sl_pips
         chosen_rr = bullish_rr if bullish_score >= bearish_score else bearish_rr
+        chosen_sl_dist = b_sl_dist if bullish_score >= bearish_score else s_sl_dist
 
     return {
         'has_setup': has_bullish_setup or has_bearish_setup,
@@ -428,6 +446,7 @@ def analyze_candlestick_setup(candles, lower_bb, upper_bb, pip_size, rsi=50.0):
         'pattern_name': dominant_pattern,
         'quality_score': chosen_score,
         'dynamic_sl_pips': chosen_sl,
+        'dynamic_sl_dist': chosen_sl_dist,
         'estimated_rr': chosen_rr,
         'bullish_name': b_name,
         'bearish_name': s_name,
@@ -435,6 +454,8 @@ def analyze_candlestick_setup(candles, lower_bb, upper_bb, pip_size, rsi=50.0):
         'bearish_score': bearish_score,
         'bullish_sl_pips': bullish_sl_pips,
         'bearish_sl_pips': bearish_sl_pips,
+        'bullish_sl_dist': b_sl_dist,
+        'bearish_sl_dist': s_sl_dist,
         'bullish_rr': bullish_rr,
         'bearish_rr': bearish_rr,
         'bearish_exit': cd['bearish_exit'],

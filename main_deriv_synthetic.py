@@ -80,7 +80,7 @@ except ImportError:
         sc = None
 
 # ==========================================
-# ⚙️ CONFIGURATION & CONSTANTS
+# ⚙️ CONFIGURATION & CONSTANTS (BOT_RESEARCH_AND_RISK_SPEC_V1)
 # ==========================================
 DERIV_TOKEN = os.getenv("DERIV_API_TOKEN", "").strip()
 APP_ID = os.getenv("DERIV_APP_ID", "34lQGsI4JVHDtfZhaHAqk").strip()
@@ -93,13 +93,85 @@ TARGET_DEMO_ACCOUNT = "DOT94482469"
 SYMBOLS = ['R_75', 'R_25', 'R_50', 'R_10']
 PRIMARY_SYMBOLS = ['R_75', 'R_25']
 TIMEFRAME_SEC = 900  # M15 (15 * 60)
+CANDLE_COUNT = 220   # ดึง 220 แท่งเพื่อคำนวณ EMA200 Macro Trend Filter + ATR14
 
-# การจัดการความเสี่ยง (Risk Management)
-STAKE_USD = 1.00        # เงินเดิมพันขนาดเล็กปลอดภัยสำหรับ Demo: $1.00 USD ต่อไม้
-DEFAULT_MULTIPLIER = 100 # Multiplier ค่าเริ่มต้น
-BREAKEVEN_PIPS = 10.0   # Auto-Breakeven เมื่อกำไรแตะ +10 pips
-TRAILING_PIPS = 20.0    # Dynamic Trailing Stop เริ่มทำงานเมื่อกำไรแตะ +20 pips
-INITIAL_SL_PIPS = -20.0 # Stop Loss เริ่มต้น -20 pips
+# การจัดการความเสี่ยงสถาบัน (BOT_RESEARCH_AND_RISK_SPEC_V1 Institutional Risk Defaults)
+MAX_OPEN_POSITIONS = 1          # ถือครองได้สูงสุด 1 สัญญาพร้อมกันเท่านั้น
+STAKE_USD = 1.00                # ทุนต่อไม้ ($1.00 คิดเป็นเพียง 0.01% ของพอร์ต Demo $10,000 ปลอดภัยกว่าเพดาน 0.25%)
+MAX_RISK_PER_TRADE_PCT = 0.0025 # 0.25% of current equity
+DAILY_LOSS_LIMIT_PCT = 0.0100   # 1.00% daily loss stop ($100 บนพอร์ต $10,000)
+CONSECUTIVE_LOSS_PAUSE = 3      # หยุดพักทันทีเมื่อแพ้ติดกัน 3 ไม้
+PEAK_DRAWDOWN_PAUSE_PCT = 0.050 # 5.00% drawdown pause จากจุดสูงสุดของพอร์ต
+
+# 📊 ASSET_CONFIG: แยก Parameter อิสระเฉพาะแต่ละสินทรัพย์ (ห้ามใช้ชุดเดียวครอบจักรวาล)
+ASSET_CONFIG = {
+    'R_10': {
+        'multiplier': 100,           # ระดับตัวคูณปลอดภัย (ไม่ใช้ x400 ตามข้อกำหนดความเสี่ยง)
+        'bb_period': 20,
+        'bb_std': 2.0,
+        'rsi_period': 14,
+        'rsi_oversold': 30.0,
+        'rsi_overbought': 70.0,
+        'sl_atr': 1.5,
+        'be_trigger_atr': 1.5,       # ดึง Breakeven เมื่อกำไรแตะ +1.5x ATR
+        'be_lock_atr': 0.15,         # ล็อกกำไรหน้าทุนที่ 0.15x ATR กันสเปรดและ noise
+        'trailing_trigger_atr': 2.2, # Trailing เริ่มทำงานเมื่อกำไรแตะ +2.2x ATR
+        'trailing_dist_atr': 1.4,    # รักษาระยะห่าง Trailing 1.4x ATR
+        'tp_target_atr': 2.5,
+        'max_hold_sec': 14400        # 16 แท่ง (4 ชม.)
+    },
+    'R_25': {
+        'multiplier': 160,           # ค่าขั้นต่ำที่ Deriv อนุญาตสำหรับ R_25
+        'bb_period': 20,
+        'bb_std': 2.0,
+        'rsi_period': 14,
+        'rsi_oversold': 30.0,
+        'rsi_overbought': 70.0,
+        'sl_atr': 1.5,
+        'be_trigger_atr': 1.5,
+        'be_lock_atr': 0.15,
+        'trailing_trigger_atr': 2.2,
+        'trailing_dist_atr': 1.4,
+        'tp_target_atr': 2.5,
+        'max_hold_sec': 12600        # 14 แท่ง (3.5 ชม.)
+    },
+    'R_50': {
+        'multiplier': 100,
+        'bb_period': 20,
+        'bb_std': 2.3,               # BB กว้างขึ้นเล็กน้อยเพื่อรองรับความผันผวน 50%
+        'rsi_period': 10,
+        'rsi_oversold': 25.0,
+        'rsi_overbought': 75.0,
+        'sl_atr': 1.4,
+        'be_trigger_atr': 1.6,
+        'be_lock_atr': 0.15,
+        'trailing_trigger_atr': 2.2,
+        'trailing_dist_atr': 1.5,
+        'tp_target_atr': 2.5,
+        'max_hold_sec': 10800        # 12 แท่ง (3 ชม.)
+    },
+    'R_75': {
+        'multiplier': 100,           # ระดับปลอดภัย (Deriv มักอนุญาต 100 สำหรับ R_75)
+        'bb_period': 20,
+        'bb_std': 2.4,               # BB ขยายกว้างเพื่อกัน Spike 75%
+        'rsi_period': 10,
+        'rsi_oversold': 25.0,
+        'rsi_overbought': 75.0,
+        'sl_atr': 1.2,
+        'be_trigger_atr': 1.8,       # ไม่ดึง Breakeven เร็วเกินไปบน R_75 เพื่อลด Breakeven Churn
+        'be_lock_atr': 0.15,
+        'trailing_trigger_atr': 2.5,
+        'trailing_dist_atr': 1.6,
+        'tp_target_atr': 2.5,
+        'max_hold_sec': 9000         # 10 แท่ง (2.5 ชม.)
+    }
+}
+
+DEFAULT_CONFIG = ASSET_CONFIG['R_25']
+DEFAULT_MULTIPLIER = 100
+BREAKEVEN_PIPS = 10.0   # fallback
+TRAILING_PIPS = 20.0    # fallback
+INITIAL_SL_PIPS = -20.0 # fallback
 
 MEMORY_FILE = "synthetic_memory.json"
 STATUS_FILE = "status_log_synthetic.txt"
@@ -168,8 +240,8 @@ def print_highlight_box(title, items, icon="⚡"):
     except Exception:
         pass
 
-def print_quant_table(thai_time, rows, account_info, memory, active_trade=None):
-    """ตารางสรุปสถานะ Deriv Synthetic 24/7 สไตล์ Quant Terminal ไม่สแปมซ้ำซ้อน"""
+def print_quant_table(thai_time, rows, account_info, memory, active_trade=None, risk_guard_status="ACTIVE 🛡️"):
+    """ตารางสรุปสถานะ Deriv Synthetic 24/7 สไตล์ Quant Terminal ตามมาตรฐาน BOT_RESEARCH_AND_RISK_SPEC_V1"""
     curr = account_info.get("currency", "USD")
     bal = float(account_info.get("balance", 0.0))
     bal_thb = bal * usd_thb_rate
@@ -180,34 +252,43 @@ def print_quant_table(thai_time, rows, account_info, memory, active_trade=None):
     losses = memory.get("losses", 0)
     be_count = memory.get("breakevens", 0)
     decisive_trades = wins + losses
-    win_rate = (wins / decisive_trades * 100) if decisive_trades > 0 else (100.0 if wins > 0 else 0.0)
+    decisive_wr = (wins / decisive_trades * 100) if decisive_trades > 0 else (100.0 if wins > 0 else 0.0)
+    all_wr = (wins / total_trades * 100) if total_trades > 0 else 0.0
+    net_pnl = float(memory.get("net_profit_usd", 0.0))
+    expectancy = (net_pnl / total_trades) if total_trades > 0 else 0.0
 
     initial_demo_bal = 10000.0
     account_profit_usd = round(bal - initial_demo_bal, 2)
     account_profit_thb = round(account_profit_usd * usd_thb_rate, 1)
 
     lines = [
-        "╔═════════════════════════════════════════════════════════════════════════════════════════╗",
-        f"║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: {TARGET_DEMO_ACCOUNT:<21})     ║",
-        f"║  🕒 {thai_time} | โหมด: DERIV LIVE DUAL-DIRECTION (MULTUP & MULTDOWN 24/7)            ║",
-        "╠════════════╦══════════════╦══════╦══════════╦═══════════════════╦═════════════════╦════╣",
-        "║ Symbol     ║ Last Price   ║ RSI  ║ BB-Width ║ Candle Pattern    ║ Position / PnL  ║ St ║",
-        "╠════════════╬══════════════╬══════╬══════════╬═══════════════════╬═════════════════╬════╣"
+        "╔═════════════════════════════════════════════════════════════════════════════════════════════════╗",
+        f"║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO ONLY: {TARGET_DEMO_ACCOUNT:<19})     ║",
+        f"║  🕒 {thai_time} | SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 (CSPRNG Brownian Motion)           ║",
+        f"║  🛡️ RISK GUARD: {risk_guard_status:<18} | Max 1 Pos | 0.25% Risk | 1.0% Daily Cap | Max 3 Loss Streak ║",
+        "╠════════════╦══════════════╦══════╦══════════════╦════════╦═══════════════════╦═════════════════╦════╣",
+        "║ Symbol     ║ Last Price   ║ RSI  ║ ATR(14)      ║ Trend  ║ Feature / Pattern ║ Position / PnL  ║ St ║",
+        "╠════════════╬══════════════╬══════╬══════════════╬════════╬═══════════════════╬═════════════════╬════╣"
     ]
     for r in rows:
+        atr_str = r.get('atr', '-')
+        trend_str = r.get('trend', '-')
         lines.append(
-            f"║ {r['symbol']:<10} ║ {r['price']:>12} ║ {r['rsi']:>4} ║ {r['bb_w']:>8} ║ {r['pattern']:<17} ║ {r['pos']:<15} ║ {r['st']:<2} ║"
+            f"║ {r['symbol']:<10} ║ {r['price']:>12} ║ {r['rsi']:>4} ║ {atr_str:>12} ║ {trend_str:<6} ║ {r['pattern']:<17} ║ {r['pos']:<15} ║ {r['st']:<2} ║"
         )
-    lines.append("╠════════════╩══════════════╩══════╩══════════╩═══════════════════╩═════════════════╩════╣")
-    lines.append(f"║ 👤 บัญชี Demo: {loginid:<14} 💰 Balance: ${bal:>10,.2f} USD (~{bal_thb:,.0f} ฿)                   ║")
-    stat_str = f"สถิติ AI: {total_trades} ไม้ (ชนะ {wins} | เซฟ {be_count} | แพ้ {losses} | WR: {win_rate:4.1f}%)"
-    lines.append(f"║ 📈 กำไรพอร์ตรวม: ${account_profit_usd:+,.2f} USD ({account_profit_thb:+,.1f} ฿) | {stat_str:<39} ║")
+    lines.append("╠════════════╩══════════════╩══════╩══════════════╩════════╩═══════════════════╩═════════════════╩════╣")
+    lines.append(f"║ 👤 Demo: {loginid:<14} 💰 Balance: ${bal:>10,.2f} USD (~{bal_thb:,.0f} ฿) | PnL: ${account_profit_usd:+,.2f} USD       ║")
+    stat_line = f"Decisive WR: {decisive_wr:4.1f}% | True WR (All): {all_wr:4.1f}% | E(Trade): ${expectancy:+.2f} USD"
+    counts_line = f"Trades: {total_trades} (Win {wins} | BE {be_count} | Loss {losses}) | Net: ${net_pnl:+,.2f} USD"
+    lines.append(f"║ 📊 สถิติ: {counts_line:<83} ║")
+    lines.append(f"║ 📈 ประสิทธิภาพ: {stat_line:<80} ║")
     if active_trade and active_trade.get("contract_id"):
         pattern_str = active_trade.get('pattern', 'None')
         rr_val = active_trade.get('estimated_rr', 1.0)
         c_type = active_trade.get('contract_type', active_trade.get('type', 'MULTUP'))
-        lines.append(f"║ 🎫 Active: #{str(active_trade.get('contract_id')):<12} {active_trade.get('symbol'):<5} {c_type:<8} x{active_trade.get('multiplier', DEFAULT_MULTIPLIER):<3} | {pattern_str:<14} | R:R 1:{rr_val:<4.1f} ║")
-    lines.append("╚═════════════════════════════════════════════════════════════════════════════════════════╝")
+        mult_str = f"x{active_trade.get('multiplier', DEFAULT_MULTIPLIER)}"
+        lines.append(f"║ 🎫 Active: #{str(active_trade.get('contract_id')):<12} {active_trade.get('symbol'):<5} {c_type:<8} {mult_str:<4} | {pattern_str:<18} | R:R 1:{rr_val:<4.1f} ║")
+    lines.append("╚═════════════════════════════════════════════════════════════════════════════════════════════════╝")
 
     full_text = "\n".join(lines)
     print(full_text, flush=True)
@@ -350,7 +431,14 @@ memory = load_memory()
 # 📊 TECHNICAL INDICATORS (BRAD GOH SMC + MEAN REVERSION)
 # ==========================================
 def calculate_bb_rsi(candles, symbol="R_75", period=20, std_dev=2.0, rsi_period=14):
-    """คำนวณ Bollinger Bands, BandWidth, EMA50, RSI และตรวจสอบ Price Action Reversals ผ่าน Candlestick Engine"""
+    """
+    คำนวณ Technical & Quantitative Features ตามมาตรฐาน BOT_RESEARCH_AND_RISK_SPEC_V1:
+    - Bollinger Bands (period, std_dev)
+    - RSI (rsi_period)
+    - ATR (14) แท้จริงเพื่อ Normalize ความผันผวน
+    - EMA 200 (Macro Trend Filter)
+    - Failed Breakout & Rejection Patterns ผ่าน Candlestick Engine
+    """
     closes = [float(c['close']) for c in candles]
     if len(closes) < max(period, rsi_period, 50) + 2:
         return None
@@ -363,11 +451,20 @@ def calculate_bb_rsi(candles, symbol="R_75", period=20, std_dev=2.0, rsi_period=
     lower_bb = sma - (std * std_dev)
     bb_width = (upper_bb - lower_bb) / sma if sma > 0 else 0.0
 
+    # EMA 50 (Short/Mid Trend)
     alpha = 2.0 / (50 + 1)
     ema50 = closes[0]
     for p in closes[1:]:
         ema50 = (p * alpha) + (ema50 * (1 - alpha))
 
+    # EMA 200 (Higher Timeframe Macro Trend Filter)
+    alpha_200 = 2.0 / (min(len(closes), 200) + 1)
+    ema200 = closes[0]
+    for p in closes[1:]:
+        ema200 = (p * alpha_200) + (ema200 * (1 - alpha_200))
+    macro_trend = "BULL 🐂" if closes[-1] > ema200 else "BEAR 🐻"
+
+    # RSI
     deltas = [closes[i] - closes[i - 1] for i in range(1, len(closes))]
     gains = [d if d > 0 else 0 for d in deltas[-rsi_period:]]
     losses = [-d if d < 0 else 0 for d in deltas[-rsi_period:]]
@@ -390,31 +487,43 @@ def calculate_bb_rsi(candles, symbol="R_75", period=20, std_dev=2.0, rsi_period=
     prev_body = abs(prev['close'] - prev['open'])
     prev2_body = abs(prev2['close'] - prev2['open'])
 
-    # 1. แท่งเทียน Hammer (หางล่างยาว >= 2 เท่าของตัวเทียน, หางบนสั้น)
+    # คำนวณ True Range และ ATR(14)
+    tr_list = []
+    for i in range(1, len(candles)):
+        h = float(candles[i]['high'])
+        l = float(candles[i]['low'])
+        prev_c = float(candles[i - 1]['close'])
+        tr = max(h - l, abs(h - prev_c), abs(l - prev_c))
+        tr_list.append(tr)
+    atr = (sum(tr_list[-14:]) / 14.0) if len(tr_list) >= 14 else (candle_range if candle_range > 0 else 1.0)
+
+    # 1. แท่งเทียน Hammer
     is_hammer = (lower_wick >= 2 * body) and (upper_wick <= candle_range * 0.15) and (body > 0)
 
-    # 2. แท่งเทียน Pin Bar Rejection (หางล่างปฏิเสธราคาต่ำ >= 55% ของความยาวแท่ง)
+    # 2. แท่งเทียน Pin Bar Rejection
     is_pin_bar = (lower_wick >= 0.55 * candle_range) and (upper_wick <= 0.25 * candle_range) and (candle_range > 0)
 
     # 3. Bullish Engulfing & Morning Star
     is_bullish_engulfing = (prev['close'] < prev['open']) and (curr['close'] > curr['open']) and (curr['open'] <= prev['close']) and (curr['close'] >= prev['open']) and (body > prev_body)
     is_morning_star = (prev2['close'] < prev2['open']) and (prev_body < (prev2_body * 0.3)) and (curr['close'] > curr['open']) and (curr['close'] > (prev2['close'] + prev2['open']) / 2)
 
-    # 4. Brad Goh SMC Step 4: Liquidity Sweep (High & Low)
+    # 4. Failed Breakout Pattern (กวาดกรอบ 10 แท่งแล้วเด้งกลับ)
     prior_lows = [c['low'] for c in candles[-11:-1]]
     prior_swing_low = min(prior_lows) if prior_lows else curr['low']
-    is_liquidity_sweep = (curr['low'] < prior_swing_low) and (curr['close'] > prior_swing_low)
+    is_failed_breakout = (curr['low'] < prior_swing_low) and (curr['close'] > prior_swing_low)
+    is_liquidity_sweep = is_failed_breakout  # compatibility alias
 
     prior_highs = [c['high'] for c in candles[-11:-1]]
     prior_swing_high = max(prior_highs) if prior_highs else curr['high']
-    is_bearish_sweep = (curr['high'] > prior_swing_high) and (curr['close'] < prior_swing_high)
+    is_failed_breakout_high = (curr['high'] > prior_swing_high) and (curr['close'] < prior_swing_high)
+    is_bearish_sweep = is_failed_breakout_high  # compatibility alias
 
-    # 5. วิเคราะห์เชิงลึกผ่านโมดูล synthetic_candlestick (Dual-Direction 2 ทิศทาง)
+    # 5. วิเคราะห์เชิงลึกผ่านโมดูล synthetic_candlestick (ส่ง ATR ไปช่วยคำนวณ)
     c_setup = None
     if sc is not None:
         try:
             sym_pip_size = get_pip_size(symbol, closes[-1])
-            c_setup = sc.analyze_candlestick_setup(candles, lower_bb, upper_bb, sym_pip_size, rsi=rsi)
+            c_setup = sc.analyze_candlestick_setup(candles, lower_bb, upper_bb, sym_pip_size, rsi=rsi, atr=atr)
         except Exception:
             c_setup = None
 
@@ -425,6 +534,7 @@ def calculate_bb_rsi(candles, symbol="R_75", period=20, std_dev=2.0, rsi_period=
         pattern_name = c_setup.get('pattern_name', 'None')
         quality_score = c_setup.get('quality_score', 0.0)
         dynamic_sl_pips = c_setup.get('dynamic_sl_pips', 20.0)
+        dynamic_sl_dist = c_setup.get('dynamic_sl_dist', atr * 1.5)
         estimated_rr = c_setup.get('estimated_rr', 1.5)
         bearish_exit = c_setup.get('bearish_exit', False)
         bullish_exit = c_setup.get('bullish_exit', False)
@@ -438,13 +548,13 @@ def calculate_bb_rsi(candles, symbol="R_75", period=20, std_dev=2.0, rsi_period=
         bearish_rr = c_setup.get('bearish_rr', 1.5)
         is_pin_bar = c_setup.get('details', {}).get('is_pin_bar', is_pin_bar)
         is_hammer = c_setup.get('details', {}).get('is_hammer', is_hammer)
-        is_liquidity_sweep = c_setup.get('details', {}).get('is_liquidity_sweep', is_liquidity_sweep)
+        is_failed_breakout = c_setup.get('details', {}).get('is_failed_breakout', is_failed_breakout)
     else:
-        has_bullish_pattern = is_hammer or is_pin_bar or is_bullish_engulfing or is_morning_star or is_liquidity_sweep
-        has_bearish_pattern = is_bearish_sweep
+        has_bullish_pattern = is_hammer or is_pin_bar or is_bullish_engulfing or is_morning_star or is_failed_breakout
+        has_bearish_pattern = is_failed_breakout_high
         setup_direction = 'BUY' if has_bullish_pattern else ('SELL' if has_bearish_pattern else 'NONE')
-        pattern_name = "Sweep+Rej" if (is_liquidity_sweep and (is_pin_bar or is_hammer)) else (
-            "LiqSweep" if is_liquidity_sweep else (
+        pattern_name = "FailedBrk+Rej" if (is_failed_breakout and (is_pin_bar or is_hammer)) else (
+            "FailedBrk" if is_failed_breakout else (
                 "Hammer" if is_hammer else (
                     "PinBar" if is_pin_bar else (
                         "Engulf" if is_bullish_engulfing else (
@@ -456,6 +566,7 @@ def calculate_bb_rsi(candles, symbol="R_75", period=20, std_dev=2.0, rsi_period=
         )
         quality_score = 75.0 if has_bullish_pattern else 0.0
         dynamic_sl_pips = 20.0
+        dynamic_sl_dist = atr * 1.5
         estimated_rr = 1.5
         bearish_exit = False
         bullish_exit = False
@@ -481,6 +592,7 @@ def calculate_bb_rsi(candles, symbol="R_75", period=20, std_dev=2.0, rsi_period=
         'bullish_name': bullish_name,
         'bearish_name': bearish_name,
         'dynamic_sl_pips': dynamic_sl_pips,
+        'dynamic_sl_dist': dynamic_sl_dist,
         'bullish_sl_pips': bullish_sl_pips,
         'bearish_sl_pips': bearish_sl_pips,
         'estimated_rr': estimated_rr,
@@ -488,14 +600,19 @@ def calculate_bb_rsi(candles, symbol="R_75", period=20, std_dev=2.0, rsi_period=
         'bearish_rr': bearish_rr,
         'bearish_exit': bearish_exit,
         'bullish_exit': bullish_exit,
-        'is_liquidity_sweep': is_liquidity_sweep,
-        'is_bearish_sweep': is_bearish_sweep,
+        'is_failed_breakout': is_failed_breakout,
+        'is_failed_breakout_high': is_failed_breakout_high,
+        'is_liquidity_sweep': is_failed_breakout,
+        'is_bearish_sweep': is_failed_breakout_high,
         'is_pin_bar': is_pin_bar,
         'is_hammer': is_hammer,
         'upper_bb': upper_bb,
         'lower_bb': lower_bb,
         'bb_width': bb_width,
         'ema50': ema50,
+        'ema200': ema200,
+        'macro_trend': macro_trend,
+        'atr': atr,
         'rsi': rsi
     }
 
@@ -530,19 +647,19 @@ async def ask_groq_ai_sentiment(symbol, price, rsi, pattern_name, bb_width, dire
         headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
 
         condition_desc = "Oversold bounce condition" if direction == "BUY" else "Overbought rejection condition"
-        prompt = f"""You are an ultra-precise quantitative analyst evaluating Synthetic Volatility Indices (Deriv 24/7).
-Asset: {symbol} (Simulated Volatility Index)
+        prompt = f"""You are a quantitative risk analyst evaluating Synthetic Volatility Indices (Deriv 24/7).
+Asset: {symbol} (Simulated CSPRNG Brownian Motion Index)
 Current Price: {price:.4f}
-RSI(14): {rsi:.1f} ({condition_desc})
-Pattern: {pattern_name}
+RSI: {rsi:.1f} ({condition_desc})
+Feature: {pattern_name}
 Bollinger BandWidth: {bb_width:.5f}
 Timeframe: 15m
 Direction Proposed: {direction}
 
-Setup: Brad Goh SMC Liquidity Sweep & Mean Reversion {direction} strategy.
-Synthetics are not affected by economic news, only pure statistical volatility and mean-reversion mechanics.
+Setup: Technical Failed Breakout & Mean Reversion Rejection {direction} test feature.
+Synthetics are generated by CSPRNG with constant volatility (no real order book, no macro news).
 
-Is this {direction} setup statistically sound and safe to execute on a Demo micro-account?
+Is this {direction} test setup within acceptable statistical parameters to execute on a Demo micro-account?
 Reply ONLY with YES or NO."""
 
         data = {
@@ -559,10 +676,10 @@ Reply ONLY with YES or NO."""
             status_text = f"APPROVED ({direction} YES)" if is_approved else f"REJECTED ({direction} NO)"
 
             print_highlight_box(
-                f"GROQ AI SYNTHETIC EVALUATION ({direction}) - {symbol}",
+                f"GROQ AI SYNTHETIC SCORE ({direction}) - {symbol}",
                 [
-                    ("Decision", status_text),
-                    ("Strategy", f"Price: {price:.4f} | RSI: {rsi:.1f} | {pattern_name}"),
+                    ("AI Decision", f"{status_text} (Uncalibrated Score)"),
+                    ("Feature Set", f"Price: {price:.4f} | RSI: {rsi:.1f} | {pattern_name}"),
                     ("Volatility Width", f"{bb_width:.5f}")
                 ],
                 icon="🧠"
@@ -725,19 +842,43 @@ SYMBOL_MULTIPLIER_MAP = {
     'R_100': [200, 400, 600, 800, 1000]
 }
 
-async def get_valid_multiplier(ws, symbol):
+async def fetch_active_symbols_specs(ws):
+    """
+    ตรวจสอบ active_symbols และ contract specification จาก Deriv API ทุก Session
+    ตามข้อกำหนด BOT_RESEARCH_AND_RISK_SPEC_V1 เพื่อดึง pip_size และสถานะการซื้อขายจริง
+    """
+    specs = {}
+    try:
+        req = {
+            "active_symbols": "brief",
+            "product_type": "basic"
+        }
+        res = await deriv_send_recv(ws, req, expected_key="active_symbols", timeout=6)
+        symbols_list = res.get("active_symbols", [])
+        for item in symbols_list:
+            sym = item.get("symbol")
+            if sym in SYMBOLS:
+                specs[sym] = {
+                    "display_name": item.get("display_name", sym),
+                    "pip": float(item.get("pip", 0.001)),
+                    "is_trading_suspended": bool(item.get("is_trading_suspended", 0)),
+                    "market_closed": bool(item.get("market_closed", 0))
+                }
+        if specs:
+            log(f"📋 [ACTIVE_SYMBOLS] ตรวจสอบสเปกสินทรัพย์จาก Deriv สำเร็จ: {list(specs.keys())}")
+    except Exception as e:
+        log(f"⚠️ [ACTIVE_SYMBOLS] ไม่สามารถดึง active_symbols ได้: {e}")
+    return specs
+
+async def get_valid_multiplier(ws, symbol, preferred=None):
     """
     ตรวจสอบค่า Multiplier ที่ Deriv อนุญาตสำหรับ Symbol
-    ส่งคำขอ contracts_for และเลือกค่าตัวคูณที่ปลอดภัย เช่น 160 สำหรับ R_25 หรือ 100 สำหรับ R_75
+    ส่งคำขอ contracts_for และเลือกค่าตัวคูณที่ปลอดภัยตาม ASSET_CONFIG (ห้ามใช้ x400)
     """
-    default_map = {
-        'R_10': 100,
-        'R_25': 160,  # Deriv บังคับใช้ 160, 400, 800, 1200, 1600 สำหรับ R_25
-        'R_50': 100,
-        'R_75': 100,
-        'R_100': 200
-    }
-    fallback_mult = default_map.get(symbol, DEFAULT_MULTIPLIER)
+    if preferred is not None:
+        target_mult = int(preferred)
+    else:
+        target_mult = int(ASSET_CONFIG.get(symbol, {}).get('multiplier', DEFAULT_MULTIPLIER))
 
     try:
         req = {
@@ -755,14 +896,14 @@ async def get_valid_multiplier(ws, symbol):
                 c = mult_contracts[0]
                 ranges = c.get("multiplier_range") or c.get("multipliers") or c.get("available_multipliers") or []
                 if ranges:
-                    if fallback_mult in ranges:
-                        return int(fallback_mult)
-                    closest = min(ranges, key=lambda x: abs(x - fallback_mult))
+                    if target_mult in ranges:
+                        return int(target_mult)
+                    closest = min(ranges, key=lambda x: abs(x - target_mult))
                     return int(closest)
     except Exception as e:
-        log(f"⚠️ [CONTRACTS_FOR] ตรวจสอบ multiplier ของ {symbol} ไม่สำเร็จ: {e} -> ใช้ค่าเริ่มต้น {fallback_mult}")
+        log(f"⚠️ [CONTRACTS_FOR] ตรวจสอบ multiplier ของ {symbol} ไม่สำเร็จ: {e} -> ใช้ค่าเริ่มต้น {target_mult}")
 
-    return fallback_mult
+    return target_mult
 
 async def request_multiplier_proposal(ws, symbol, stake, multiplier, contract_type="MULTUP"):
     """
@@ -1039,6 +1180,16 @@ async def deriv_synthetic_engine():
             async with websockets.connect(target_ws_url, ssl=ssl_context, ping_interval=None, close_timeout=10) as ws:
                 log(f"🔌 เชื่อมต่อ Deriv WebSocket สำเร็จ! (บัญชี: {account_info['loginid']})")
 
+                # ตรวจสอบ active_symbols และ contract specifications ประจำ session (BOT_RESEARCH_AND_RISK_SPEC_V1)
+                active_specs = await fetch_active_symbols_specs(ws)
+
+                # ติดตามความเสี่ยงระดับพอร์ต (Risk Guard Session Tracking)
+                session_start_balance = float(account_info.get("balance", 10000.0))
+                peak_equity = max(session_start_balance, float(account_info.get("balance", 10000.0)))
+                consecutive_losses = 0
+                is_risk_paused = False
+                risk_pause_reason = ""
+
                 # 2. กู้คืนสถานะไม้ค้างและเช็คกับ Deriv เมื่อรีสตาร์ทบอท
                 if active_trade:
                     active_trade = await recover_active_position(ws, active_trade, memory)
@@ -1053,7 +1204,7 @@ async def deriv_synthetic_engine():
                             candle_req = {
                                 "ticks_history": sym,
                                 "adjust_start_time": 1,
-                                "count": 100,
+                                "count": CANDLE_COUNT,
                                 "end": "latest",
                                 "style": "candles",
                                 "granularity": TIMEFRAME_SEC
@@ -1061,11 +1212,13 @@ async def deriv_synthetic_engine():
                             candle_res = await deriv_send_recv(ws, candle_req, expected_key="candles", timeout=6)
                             candles = candle_res.get("candles", [])
 
+                            cfg = ASSET_CONFIG.get(sym, DEFAULT_CONFIG)
                             inds = calculate_bb_rsi(
                                 candles,
                                 symbol=sym,
-                                period=memory.get("learned_params", {}).get("bb_period", 20),
-                                std_dev=memory.get("learned_params", {}).get("bb_std", 2.0)
+                                period=cfg['bb_period'],
+                                std_dev=cfg['bb_std'],
+                                rsi_period=cfg['rsi_period']
                             )
 
                             if inds:
@@ -1075,17 +1228,23 @@ async def deriv_synthetic_engine():
                                 st_str = "OK"
                                 if active_trade and active_trade.get('symbol') == sym:
                                     cur_p = inds['price']
-                                    ent = active_trade['entry_price']
+                                    ent = float(active_trade.get('entry_price', cur_p))
                                     sym_pip_size = get_pip_size(sym, ent)
-                                    pips = (cur_p - ent) / sym_pip_size
-                                    pos_str = f"🟢 {pips:+.1f} pips"
+                                    c_tp = active_trade.get('contract_type', active_trade.get('type', 'MULTUP'))
+                                    pips = (ent - cur_p) / sym_pip_size if c_tp == 'MULTDOWN' else (cur_p - ent) / sym_pip_size
+                                    pos_str = f"🟢 {pips:+.1f} pips" if pips >= 0 else f"🔴 {pips:+.1f} pips"
                                     st_str = "BE" if active_trade.get('be_locked') else "IN"
+
+                                atr_val = inds.get('atr', 0.0)
+                                sym_pip = get_pip_size(sym, inds['price'])
+                                atr_pips = (atr_val / sym_pip) if sym_pip > 0 else 0.0
 
                                 scan_rows.append({
                                     'symbol': sym,
                                     'price': f"{inds['price']:.4f}",
                                     'rsi': f"{inds['rsi']:.1f}",
-                                    'bb_w': f"{inds['bb_width']:.5f}",
+                                    'atr': f"{atr_pips:.1f}p ({atr_val:.2f})",
+                                    'trend': inds.get('macro_trend', 'FLAT'),
                                     'pattern': inds['pattern_name'],
                                     'pos': pos_str,
                                     'st': st_str
@@ -1151,24 +1310,34 @@ async def deriv_synthetic_engine():
                                 save_state(None) # ล้างสถานะไม้ใน active_state_synthetic.json แบบ Atomic
 
                             else:
-                                # 2.3 สัญญายังเปิดอยู่ -> เฝ้าไม้และบริหารความเสี่ยง (Breakeven & Trailing & Exit)
+                                # 2.3 สัญญายังเปิดอยู่ -> เฝ้าไม้และบริหารความเสี่ยงแบบ ATR-Normalized (BOT_RESEARCH_AND_RISK_SPEC_V1)
                                 inds = symbol_indicators.get(curr_sym)
                                 cur_price = current_spot
                                 entry = float(active_trade.get('entry_price', cur_price))
                                 sym_pip_size = get_pip_size(curr_sym, entry)
                                 c_type = active_trade.get('contract_type', active_trade.get('type', 'MULTUP'))
+                                cfg = ASSET_CONFIG.get(curr_sym, DEFAULT_CONFIG)
+
+                                trade_atr = float(active_trade.get('atr', inds.get('atr', sym_pip_size * 20) if inds else sym_pip_size * 20))
+                                if trade_atr <= 0:
+                                    trade_atr = sym_pip_size * 20
 
                                 if c_type == 'MULTDOWN':
-                                    diff_pips = (entry - cur_price) / sym_pip_size
+                                    diff_price = entry - cur_price
                                 else:
-                                    diff_pips = (cur_price - entry) / sym_pip_size
+                                    diff_price = cur_price - entry
 
+                                diff_pips = diff_price / sym_pip_size
+                                diff_atr = diff_price / trade_atr
                                 trailing_sl_pips = active_trade.get('trailing_sl_pips', INITIAL_SL_PIPS)
 
-                                # Auto-Breakeven เมื่อกำไรแตะ +10 pips
-                                if diff_pips >= BREAKEVEN_PIPS and not active_trade.get('be_locked', False):
+                                # Auto-Breakeven เมื่อกำไรแตะเกณฑ์ ATR เฉพาะสินทรัพย์ (เช่น +1.5x ถึง 1.8x ATR)
+                                be_trigger_dist = cfg['be_trigger_atr'] * trade_atr
+                                if diff_price >= be_trigger_dist and not active_trade.get('be_locked', False):
                                     active_trade['be_locked'] = True
-                                    trailing_sl_pips = 1.0 # ล็อกกำไรบังหน้าทุน +1 pip
+                                    # ล็อกกำไรบังหน้าทุน entry ± 0.15 * trade_atr เพื่อกันค่าสเปรดและ random noise
+                                    be_lock_dist = cfg['be_lock_atr'] * trade_atr
+                                    trailing_sl_pips = round(be_lock_dist / sym_pip_size, 1)
                                     active_trade['trailing_sl_pips'] = trailing_sl_pips
                                     save_state(active_trade)
 
@@ -1179,23 +1348,25 @@ async def deriv_synthetic_engine():
                                             ("Contract ID", str(contract_id)),
                                             ("Direction", c_type),
                                             ("Current Spot", f"{cur_price:.4f}"),
-                                            ("Profit Pips", f"+{diff_pips:.1f} pips"),
-                                            ("New Trailing SL", "+1.0 pip (ล็อกหน้าทุน 100% ไร้ความเสี่ยง)")
+                                            ("Profit Progress", f"+{diff_atr:.2f} ATR (+{diff_pips:.1f} pips)"),
+                                            ("BE Lock Buffer", f"+{trailing_sl_pips:.1f} pips ({cfg['be_lock_atr']:.2f}x ATR กัน Noise)")
                                         ],
                                         icon="🛡️"
                                     )
                                     if notifier:
                                         try:
-                                            be_price = (entry - 1.0 * sym_pip_size) if c_type == 'MULTDOWN' else (entry + 1.0 * sym_pip_size)
+                                            be_price = (entry - be_lock_dist) if c_type == 'MULTDOWN' else (entry + be_lock_dist)
                                             notifier.notify_breakeven("Deriv Synthetic", f"{curr_sym} ({c_type})", cur_price, be_price, diff_pips, contract_id=contract_id)
                                         except Exception:
                                             pass
 
-                                # Dynamic Trailing Stop เมื่อกำไรแตะ +20 pips
-                                if diff_pips >= TRAILING_PIPS:
-                                    new_trailing_sl = diff_pips - 10.0 # รักษาระยะห่าง trailing 10 pips
-                                    if new_trailing_sl > trailing_sl_pips:
-                                        trailing_sl_pips = new_trailing_sl
+                                # Dynamic Trailing Stop เมื่อกำไรแตะเกณฑ์ ATR (เช่น +2.2x ถึง 2.5x ATR)
+                                trailing_trigger_dist = cfg['trailing_trigger_atr'] * trade_atr
+                                if diff_price >= trailing_trigger_dist:
+                                    trail_buffer_dist = cfg['trailing_dist_atr'] * trade_atr
+                                    new_trailing_sl_pips = round((diff_price - trail_buffer_dist) / sym_pip_size, 1)
+                                    if new_trailing_sl_pips > trailing_sl_pips:
+                                        trailing_sl_pips = new_trailing_sl_pips
                                         active_trade['trailing_sl_pips'] = trailing_sl_pips
                                         save_state(active_trade)
 
@@ -1205,14 +1376,14 @@ async def deriv_synthetic_engine():
                                                 ("Contract ID", str(contract_id)),
                                                 ("Direction", c_type),
                                                 ("Current Spot", f"{cur_price:.4f}"),
-                                                ("Profit Pips", f"+{diff_pips:.1f} pips"),
+                                                ("Profit ATR", f"+{diff_atr:.2f} ATR (+{diff_pips:.1f} pips)"),
                                                 ("Trailing SL", f"+{trailing_sl_pips:.1f} pips (Let Profit Run!)")
                                             ],
                                             icon="🚀"
                                         )
                                         if notifier:
                                             try:
-                                                sl_spot = (cur_price + 10.0 * sym_pip_size) if c_type == 'MULTDOWN' else (cur_price - 10.0 * sym_pip_size)
+                                                sl_spot = (cur_price + trail_buffer_dist) if c_type == 'MULTDOWN' else (cur_price - trail_buffer_dist)
                                                 notifier.notify_trailing("Deriv Synthetic", f"{curr_sym} ({c_type})", cur_price, sl_spot, diff_pips, contract_id=contract_id)
                                             except Exception:
                                                 pass
@@ -1223,22 +1394,25 @@ async def deriv_synthetic_engine():
 
                                 if c_type == 'MULTDOWN':
                                     target_bb = inds['lower_bb'] if inds else cur_price * 0.95
-                                    is_bb_target = (cur_price <= target_bb) and (diff_pips >= 5.0)
-                                    is_reversal_exit = (inds.get('bullish_exit', False) if inds else False) and (diff_pips >= 6.0)
+                                    is_bb_target = (cur_price <= target_bb) and (diff_atr >= 0.8)
+                                    is_reversal_exit = (inds.get('bullish_exit', False) if inds else False) and (diff_atr >= 1.0)
                                 else:
                                     target_bb = inds['upper_bb'] if inds else cur_price * 1.05
-                                    is_bb_target = (cur_price >= target_bb) and (diff_pips >= 5.0)
-                                    is_reversal_exit = (inds.get('bearish_exit', False) if inds else False) and (diff_pips >= 6.0)
+                                    is_bb_target = (cur_price >= target_bb) and (diff_atr >= 0.8)
+                                    is_reversal_exit = (inds.get('bearish_exit', False) if inds else False) and (diff_atr >= 1.0)
 
-                                is_timeout = hold_sec >= 2700 and not (diff_pips >= 15.0)
+                                is_tp_target = diff_atr >= cfg.get('tp_target_atr', 2.5)
+                                is_timeout = hold_sec >= cfg.get('max_hold_sec', 10800) and (diff_atr < 0.8)
                                 is_be_hit = is_sl and active_trade.get('be_locked', False)
 
-                                if is_be_hit or is_sl or is_bb_target or is_reversal_exit or is_timeout:
+                                if is_be_hit or is_sl or is_bb_target or is_tp_target or is_reversal_exit or is_timeout:
                                     close_reason = (
                                         f"{'Bullish' if c_type == 'MULTDOWN' else 'Bearish'} Reversal TP" if is_reversal_exit else (
-                                            f"{'Lower' if c_type == 'MULTDOWN' else 'Upper'} BB TP" if is_bb_target else (
-                                                "BE Hit" if is_be_hit else (
-                                                    "Trailing SL" if is_sl else "Timeout"
+                                            f"Target TP ({cfg.get('tp_target_atr', 2.5)}x ATR)" if is_tp_target else (
+                                                f"{'Lower' if c_type == 'MULTDOWN' else 'Upper'} BB TP" if is_bb_target else (
+                                                    "BE Hit" if is_be_hit else (
+                                                        "Trailing SL" if is_sl else "Timeout"
+                                                    )
                                                 )
                                             )
                                         )
@@ -1260,8 +1434,8 @@ async def deriv_synthetic_engine():
                                         elif is_reversal_exit:
                                             status_title = f"EARLY TAKE PROFIT ({c_type} REVERSAL)"
                                             icon_str = "🎯"
-                                        elif is_bb_target:
-                                            status_title = f"TAKE PROFIT ({c_type} BB TARGET)"
+                                        elif is_bb_target or is_tp_target:
+                                            status_title = f"TAKE PROFIT ({c_type} TARGET)"
                                             icon_str = "🎯"
                                         elif profit_usd > 0.05:
                                             status_title = f"TAKE PROFIT ({c_type} WIN)"
@@ -1277,7 +1451,7 @@ async def deriv_synthetic_engine():
                                                 ("Contract ID", str(contract_id)),
                                                 ("Direction", c_type),
                                                 ("Exit Price", f"{cur_price:.4f}"),
-                                                ("Result Pips", f"{diff_pips:+.1f} pips"),
+                                                ("Result ATR", f"{diff_atr:+.2f} ATR ({diff_pips:+.1f} pips)"),
                                                 ("Net Profit", f"${profit_usd:+,.2f} USD (≈ {profit_thb:+,.1f} THB)"),
                                                 ("Account Balance", f"${balance_after:,.2f} USD")
                                             ],
@@ -1285,6 +1459,28 @@ async def deriv_synthetic_engine():
                                         )
 
                                         record_trade_result(memory, profit_usd, profit_thb, active_trade, cur_price, reason=close_reason)
+
+                                        # อัปเดตสถิติความเสี่ยงสถาบัน (Risk Guard State Tracking)
+                                        if profit_usd > 0.05:
+                                            consecutive_losses = 0
+                                        elif not is_safe_be:
+                                            consecutive_losses += 1
+
+                                        peak_equity = max(peak_equity, balance_after)
+                                        daily_pnl = balance_after - session_start_balance
+
+                                        if consecutive_losses >= CONSECUTIVE_LOSS_PAUSE:
+                                            is_risk_paused = True
+                                            risk_pause_reason = f"Consecutive Losses reached {consecutive_losses} (Max: {CONSECUTIVE_LOSS_PAUSE})"
+                                            log(f"🛑 [RISK PAUSE] {risk_pause_reason} -> หยุดพักการเทรดอัตโนมัติ")
+                                        elif session_start_balance > 0 and (daily_pnl / session_start_balance) <= -DAILY_LOSS_LIMIT_PCT:
+                                            is_risk_paused = True
+                                            risk_pause_reason = f"Daily Loss limit hit: ${daily_pnl:.2f} (<= -{DAILY_LOSS_LIMIT_PCT*100:.1f}%)"
+                                            log(f"🛑 [RISK PAUSE] {risk_pause_reason} -> หยุดเทรดประจำวัน")
+                                        elif peak_equity > 0 and (balance_after - peak_equity) / peak_equity <= -PEAK_DRAWDOWN_PAUSE_PCT:
+                                            is_risk_paused = True
+                                            risk_pause_reason = f"Peak Drawdown hit: -{PEAK_DRAWDOWN_PAUSE_PCT*100:.1f}% from ${peak_equity:.2f}"
+                                            log(f"🛑 [RISK PAUSE] {risk_pause_reason} -> พักการเทรดเพื่อควบคุม Drawdown")
 
                                         if notifier:
                                             try:
@@ -1314,6 +1510,10 @@ async def deriv_synthetic_engine():
                     # 1. ในขั้นตอนเปิดออเดอร์ (Entry Execution)
                     # ----------------------------------------------------
                     elif not active_trade:
+                        if is_risk_paused:
+                            # 🛡️ BOT_RESEARCH_AND_RISK_SPEC_V1: ระบบหยุดพักอัตโนมัติเมื่อชนเพดานความเสี่ยง
+                            continue
+
                         sorted_symbols = sorted(
                             symbol_indicators.keys(),
                             key=lambda s: 0 if s in PRIMARY_SYMBOLS else 1
@@ -1327,13 +1527,17 @@ async def deriv_synthetic_engine():
                             upper_bb = inds['upper_bb']
                             bb_width = inds.get('bb_width', 0.001)
                             ema50 = inds.get('ema50', price)
+                            ema200 = inds.get('ema200', price)
+                            macro_trend = inds.get('macro_trend', 'FLAT')
+                            atr = inds.get('atr', 1.0)
+                            cfg = ASSET_CONFIG.get(sym, DEFAULT_CONFIG)
                             is_squeezed = bb_width < 0.0004
 
                             if is_squeezed:
                                 continue
 
                             # ----------------------------------------------------
-                            # 🎯 SNIPER DUAL-DIRECTION SELECTION (MULTUP & MULTDOWN)
+                            # 🎯 DUAL-DIRECTION WITH HTF EMA200 TREND & ASSET SPEC
                             # ----------------------------------------------------
                             is_buy_signal = False
                             is_sell_signal = False
@@ -1344,25 +1548,23 @@ async def deriv_synthetic_engine():
                             bear_score = float(inds.get('bearish_score', 0.0))
 
                             # 🟢 1. ประเมินฝั่ง BUY (MULTUP)
-                            # กฎ Anti-Falling Knife: ถ้าราคาอยู่ใต้ EMA50 (Downtrend) บังคับเงื่อนไขเข้มข้นสูงสุด
-                            if price < ema50 * 0.999:
-                                # ขาลง -> เข้า Buy เมื่อ Oversold สุดขีด (<= 32) + Reversal คุณภาพสูงลิ่ว (Score >= 70)
-                                if (rsi <= 32.0) and (price <= lower_bb * 1.002) and has_bull and (bull_score >= 70.0):
+                            # หากราคาอยู่เหนือ EMA200 (Macro Bullish) -> มีแต้มต่อตามทิศทางใหญ่
+                            if price >= ema200:
+                                if (rsi <= cfg['rsi_oversold'] + 10.0) and (price <= lower_bb * 1.003) and has_bull and (bull_score >= 60.0):
                                     is_buy_signal = True
                             else:
-                                # ขาขึ้นหรือไซด์เวย์ -> ย่อตัวแตะ Lower BB
-                                if (rsi <= 45.0) and (price <= lower_bb * 1.003) and has_bull and (bull_score >= 60.0):
+                                # สวนเทรนด์ใหญ่ (ราคาใต้ EMA200) -> ต้อง Extreme Oversold + ป้องกัน Falling Knife
+                                if (rsi <= cfg['rsi_oversold'] - 2.0) and (price <= lower_bb * 1.001) and has_bull and (bull_score >= 75.0):
                                     is_buy_signal = True
 
                             # 🔴 2. ประเมินฝั่ง SELL (MULTDOWN)
-                            # กฎ Anti-Rocket Chasing: ถ้าราคาอยู่เหนือ EMA50 (Uptrend) บังคับเงื่อนไขเข้มข้นสูงสุด
-                            if price > ema50 * 1.001:
-                                # ขาขึ้น -> เข้า Sell เมื่อ Overbought สุดขีด (>= 68) + Reversal คุณภาพสูงลิ่ว (Score >= 70)
-                                if (rsi >= 68.0) and (price >= upper_bb * 0.998) and has_bear and (bear_score >= 70.0):
+                            # หากราคาอยู่ใต้ EMA200 (Macro Bearish) -> มีแต้มต่อตามทิศทางใหญ่
+                            if price <= ema200:
+                                if (rsi >= cfg['rsi_overbought'] - 10.0) and (price >= upper_bb * 0.997) and has_bear and (bear_score >= 60.0):
                                     is_sell_signal = True
                             else:
-                                # ขาลงหรือไซด์เวย์ -> เด้งขึ้นไปชน Upper BB
-                                if (rsi >= 55.0) and (price >= upper_bb * 0.997) and has_bear and (bear_score >= 60.0):
+                                # สวนเทรนด์ใหญ่ (ราคาเหนือ EMA200) -> ต้อง Extreme Overbought + ป้องกัน Rocket Chasing
+                                if (rsi >= cfg['rsi_overbought'] + 2.0) and (price >= upper_bb * 0.999) and has_bear and (bear_score >= 75.0):
                                     is_sell_signal = True
 
                             if not is_buy_signal and not is_sell_signal:
@@ -1382,7 +1584,7 @@ async def deriv_synthetic_engine():
                             dynamic_sl_pips = float(inds.get('bullish_sl_pips', 20.0) if chosen_dir == "BUY" else inds.get('bearish_sl_pips', 20.0))
                             estimated_rr = float(inds.get('bullish_rr', 1.5) if chosen_dir == "BUY" else inds.get('bearish_rr', 1.5))
 
-                            trigger_name = f"{chosen_dir} {chosen_pattern_name} (Score: {chosen_score:.0f}/100 | R:R 1:{estimated_rr:.1f})"
+                            trigger_name = f"{chosen_dir} {chosen_pattern_name} (AI Score: {chosen_score:.0f}/100 | R:R 1:{estimated_rr:.1f})"
 
                             spread_pips, ask_p, bid_p = await get_live_spread(ws, sym)
                             max_allowed_spread = 5.0
@@ -1399,8 +1601,9 @@ async def deriv_synthetic_engine():
                                 log(f"🚨 [SAFETY LOCK] บัญชี ({account_info.get('loginid')}) ไม่ตรงกับ Demo {TARGET_DEMO_ACCOUNT} -> บล็อกการเปิดไม้")
                                 break
 
-                            # ตรวจสอบค่าตัวคูณที่ Deriv อนุญาตสำหรับ Symbol
-                            valid_multiplier = await get_valid_multiplier(ws, sym)
+                            # ตรวจสอบค่าตัวคูณที่ Deriv อนุญาตตาม ASSET_CONFIG (ห้ามใช้ x400)
+                            target_mult = cfg.get('multiplier', DEFAULT_MULTIPLIER)
+                            valid_multiplier = await get_valid_multiplier(ws, sym, preferred=target_mult)
                             log(f"📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers ({sym} {chosen_contract_type}, Stake: ${STAKE_USD}, Multiplier: x{valid_multiplier})...")
 
                             prop_data, chosen_multiplier = await request_multiplier_proposal(ws, sym, STAKE_USD, valid_multiplier, contract_type=chosen_contract_type)
@@ -1438,6 +1641,7 @@ async def deriv_synthetic_engine():
                                 "be_locked": False,
                                 "initial_sl_pips": dynamic_sl_pips,
                                 "trailing_sl_pips": -abs(dynamic_sl_pips),
+                                "atr": atr,
                                 "pattern": f"{chosen_dir} {chosen_pattern_name}",
                                 "pattern_score": chosen_score,
                                 "estimated_rr": estimated_rr,
@@ -1457,7 +1661,9 @@ async def deriv_synthetic_engine():
                                     ("Entry Price", f"{spot_price:.4f}"),
                                     ("Live Spread", spread_str),
                                     ("Stake", f"${actual_buy_price:.2f} USD"),
-                                    ("Candle Pattern", f"{chosen_pattern_name} (Score: {chosen_score:.0f}/100)"),
+                                    ("Feature Pattern", f"{chosen_pattern_name} (Score: {chosen_score:.0f}/100)"),
+                                    ("Macro Trend", f"{macro_trend} (EMA200: {ema200:.2f})"),
+                                    ("ATR Volatility", f"{atr:.4f}"),
                                     ("Dynamic SL / R:R", f"-{dynamic_sl_pips:.1f} pips | Est R:R 1:{estimated_rr:.1f}"),
                                     ("RSI / BB-Width", f"{rsi:.1f} / {bb_width:.5f}"),
                                     ("Account Balance", f"${balance_after:,.2f} USD")
@@ -1489,7 +1695,8 @@ async def deriv_synthetic_engine():
 
                     # พิมพ์ตารางสถานะ Quant Terminal
                     if scan_rows:
-                        print_quant_table(get_thai_time(), scan_rows, account_info, memory, active_trade=active_trade)
+                        guard_str = f"PAUSED ⏸️ ({risk_pause_reason})" if is_risk_paused else "ACTIVE 🛡️"
+                        print_quant_table(get_thai_time(), scan_rows, account_info, memory, active_trade=active_trade, risk_guard_status=guard_str)
 
                     gc.collect()
 
@@ -1508,11 +1715,12 @@ async def deriv_synthetic_engine():
             await asyncio.sleep(3)
 
 if __name__ == "__main__":
-    print("=" * 75)
+    print("=" * 78)
     print(f"🏛️ DERIV SYNTHETIC 24/7 LIVE MULTIPLIERS ENGINE (DEMO: {TARGET_DEMO_ACCOUNT})")
-    print(f"🎯 ASSETS: {SYMBOLS} (Focus: {PRIMARY_SYMBOLS})")
-    print(f"⚙️ RISK: Stake ${STAKE_USD:.2f} USD | BE +{BREAKEVEN_PIPS} pips | Trailing +{TRAILING_PIPS} pips")
+    print(f"🎯 SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 | Assets: {SYMBOLS}")
+    print(f"⚙️ RISK GUARD: Max 1 Pos | 0.25% Risk | 1.0% Daily Cap | Max 3 Loss Streak")
+    print(f"📊 DYNAMICS: Per-Symbol ATR-Normalized Profiles & HTF EMA200 Macro Trend Filter")
     ai_status = "🟢 พร้อมใช้งาน (Groq Synthetic Quant Advisor)" if GROQ_API_KEY else "⚪ ไม่ได้เปิดใช้งาน (ข้ามไปใช้ Pure Quant)"
     print(f"🧠 AI ADVISOR : {ai_status}")
-    print("=" * 75)
+    print("=" * 78)
     asyncio.run(deriv_synthetic_engine())
