@@ -50,11 +50,11 @@
     "cooldown_until": null
   },
   "VET/USDT": {
-    "in_position": false,
-    "entry_price": 0.007862,
-    "position_size": 1082.9,
-    "tp": 0.008080214285714284,
-    "sl": 0.007731071428571428,
+    "in_position": true,
+    "entry_price": 0.007772,
+    "position_size": 1093.9,
+    "tp": 0.007836642857142858,
+    "sl": 0.007733214285714286,
     "be_set": false,
     "consecutive_losses": 1,
     "cooldown_until": null
