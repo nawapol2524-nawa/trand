@@ -7,18 +7,19 @@
 📊 [24H DAILY EXECUTIVE RECAP]
 ──────────────────────────────────────────────────────────────────────────────────
 • 🕒 รอบเวลาวิเคราะห์ (24H Cycle) : 2026-09-14 09:00:00 -> 2026-09-15 09:00:00 (เวลาไทย UTC+7)
-• 🕒 อัปเดตข้อมูลล่าสุด (Last Sync) : 2026-09-15 00:18:11 (เวลาไทย)
+• 🕒 อัปเดตข้อมูลล่าสุด (Last Sync) : 2026-09-15 00:58:13 (เวลาไทย)
 • 💰 ยอด PnL รวมรอบ 24 ชม.        : -0.0814 USDT | +0.00 USD (≈ -2.77 บาท)
 • 🎯 สถิติการเทรดรอบวัน (Stats)     : ทั้งหมด 1 ไม้ (ชนะ 0 | แพ้ 1 | Breakeven 1) | Win Rate: 0.0%
 • ⚡ สถานะเครื่องยนต์ (Engines)    : BinanceEngine (🟢 ONLINE) | WebDashboard (🟢 ONLINE) | DerivSyntheticEngine (🟢 ONLINE) | DerivForexEngine (🟢 ONLINE)
-• 🪙 สถานะพอร์ตปัจจุบัน (Positions) : VET/USDT (Entry: $0.0078, Size: 1093.9), R_10 [Synthetic] (Entry: 4905.474)
+• 🪙 สถานะพอร์ตปัจจุบัน (Positions) : VET/USDT (Entry: $0.0078, Size: 1093.9), R_10 [Synthetic] (Entry: 4908.834)
 • 🔴 มาตรการความเสี่ยงข่าว CPI (Risk Window) : ⚪ NORMAL - ไม่มีมาตรการ Red Folder Freeze เฉพาะกิจในวันนี้
 ══════════════════════════════════════════════════════════════════════════════════
 
 🚨 [24H SYSTEM HEALTH & ERRORS]
 ──────────────────────────────────────────────────────────────────────────────────
-🚨 ตรวจพบสัญญาณแจ้งเตือนล่าสุด 1 รายการ:
-  • ║ 🎫 Active: #12944226779  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (85%) | R:R 1:2.5  ║
+🚨 ตรวจพบสัญญาณแจ้งเตือนล่าสุด 2 รายการ:
+  • ║ 🎫 Active: #12949768039  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (78%) | R:R 1:2.5  ║
+  • [2026-09-15 00:53:28] [SUPERVISOR] ⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: HTTPSConnectionPool(host='script.google.com', port=443): Read timed out. (read timeout=15)
 ══════════════════════════════════════════════════════════════════════════════════
 
 📋 [24H TRADE LEDGER]
@@ -300,6 +301,7 @@
 ║  • Stop Loss (SL)        : $0.007733 (-1.5 ATR)
 ║  • Strategy Reason       : [Breakout] ยืนยันครบ | RSI:52.0 ADX:22.0 Vol:3.28x
 ╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-15 00:22:12] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
 
 --- DERIV FOREX TRADES (24H) ---
 [2026-09-14 12:35:41] [DERIV-FOREX] 🚀 กำลังตรวจสอบและเชื่อมต่อ Deriv Engine...
@@ -1125,335 +1127,405 @@
 ║  • RSI / BB-Width        : 79.8 / 0.00468
 ║  • Account Balance       : $10,004.82 USD
 ╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-15 00:34:52] [DERIV-SYNTHETIC] ⚡ [EXIT TRIGGER] Trailing SL สำหรับสัญญา #12944226779 (R_10 MULTDOWN) -> ส่งคำสั่งขาย sell...
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛑 STOP LOSS (MULTDOWN LOSS) - R_10
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine / Account      : Deriv Synthetic (Demo: DOT94482469)
+║  • Contract ID           : 12944226779
+║  • Direction             : MULTDOWN
+║  • Exit Price            : 4909.4650
+║  • Result ATR            : -1.02 ATR (-8.1 pips)
+║  • Net Profit            : $-0.36 USD (≈ -12.2 THB)
+║  • Account Balance       : $10,005.46 USD
+╚══════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🧠 GROQ AI SYNTHETIC SCORE (SELL) - R_10
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • AI Decision           : APPROVED (SELL YES) (Uncalibrated Score)
+║  • Feature Set           : Price: 4908.5470 | RSI: 92.3 | SELL BearFailedBrk+Pin (78%) (AI Score: 78/100 | R:R 1:2.5)
+║  • Volatility Width      : 0.00615
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-15 00:39:06] [DERIV-SYNTHETIC] 🧠 [GROQ AI] อนุมัติการเปิดไม้ R_10 (SELL) (AI คอนเฟิร์มสัญญาณ Mean Reversion)
+[2026-09-15 00:39:06] [DERIV-SYNTHETIC] 📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers (R_10 MULTDOWN, Stake: $1.0, Multiplier: x100)...
+[2026-09-15 00:39:07] [DERIV-SYNTHETIC] 💡 [AUTO-DETECT MULTIPLIER] เพิ่มตัวคูณที่ยอมรับได้สำหรับ R_10: x400
+[2026-09-15 00:39:07] [DERIV-SYNTHETIC] 💡 [AUTO-DETECT MULTIPLIER] เพิ่มตัวคูณที่ยอมรับได้สำหรับ R_10: x1000
+[2026-09-15 00:39:07] [DERIV-SYNTHETIC] 💡 [AUTO-DETECT MULTIPLIER] เพิ่มตัวคูณที่ยอมรับได้สำหรับ R_10: x2000
+[2026-09-15 00:39:07] [DERIV-SYNTHETIC] 💡 [AUTO-DETECT MULTIPLIER] เพิ่มตัวคูณที่ยอมรับได้สำหรับ R_10: x3000
+[2026-09-15 00:39:07] [DERIV-SYNTHETIC] 💡 [AUTO-DETECT MULTIPLIER] เพิ่มตัวคูณที่ยอมรับได้สำหรับ R_10: x4000
+[2026-09-15 00:39:07] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 (MULTDOWN) multiplier x100 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+[2026-09-15 00:39:07] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 (MULTDOWN) multiplier x40 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+[2026-09-15 00:39:07] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 (MULTDOWN) multiplier x20 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+[2026-09-15 00:39:07] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 (MULTDOWN) multiplier x160 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+[2026-09-15 00:39:08] [DERIV-SYNTHETIC] ⚠️ Proposal R_10 (MULTDOWN) multiplier x200 ไม่ผ่าน (ContractBuyValidationError): Multiplier is not in acceptable range. Accepts 400,1000,2000,3000,4000.
+[2026-09-15 00:39:08] [DERIV-SYNTHETIC] ✅ [PROPOSAL OK] Proposal ID: c664958f-3f24-6a8f-3f0a-a172698afef6 | Spot: 4908.834 | Multiplier: x400 (MULTDOWN)
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔴 LIVE MULTIPLIER ORDER EXECUTED (MULTDOWN) - R_10
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine / Account      : Deriv Synthetic 24/7 (Demo: DOT94482469)
+║  • Contract ID           : 12949768039
+║  • Contract Type         : MULTDOWN (x400)
+║  • Symbol                : R_10
+║  • Entry Price           : 4908.8340
+║  • Live Spread           : 0.4 pips
+║  • Stake                 : $1.00 USD
+║  • Feature Pattern       : BearFailedBrk+Pin (78%) (Score: 78/100)
+║  • Macro Trend           : BULL 🐂 (EMA200: 4869.84)
+║  • ATR Volatility        : 3.8785
+║  • Dynamic SL / R:R      : -6.3 pips | Est R:R 1:2.5
+║  • RSI / BB-Width        : 92.3 / 0.00615
+║  • Account Balance       : $10,004.46 USD
+╚══════════════════════════════════════════════════════════════════════════════╝
 ══════════════════════════════════════════════════════════════════════════════════
 
 📜 [FULL 24H CONSOLE STREAM]
 ──────────────────────────────────────────────────────────────────────────────────
-║ SOL/USDT    ║      $102.64 ║ 66.5 ║ 24.1 ║  1.78x ║ ⚪ FLAT          ║ Standby    ║
-║ BTC/USDT    ║   $78,804.01 ║ 67.8 ║ 55.7 ║  0.55x ║ ⚪ FLAT          ║ Standby    ║
-║ NEAR/USDT   ║        $2.52 ║ 78.9 ║ 24.0 ║  7.89x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
-║ AVAX/USDT   ║        $7.58 ║ 69.1 ║ 37.6 ║  0.71x ║ ⚪ FLAT          ║ Standby    ║
-║ GALA/USDT   ║    $0.001736 ║ 62.5 ║ 17.5 ║  1.54x ║ ⚪ FLAT          ║ Standby    ║
-║ VET/USDT    ║    $0.007769 ║ 51.8 ║ 23.0 ║  0.13x ║ 🔴 -0.04%        ║ Holding    ║
-╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
-╔═════════════════════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO ONLY: DOT94482469        )     ║
-║  🕒 2026-09-15 00:10:31 | SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 (CSPRNG Brownian Motion)           ║
-║  🛡️ RISK GUARD: ACTIVE 🛡️          | Max 1 Pos | 0.25% Risk | 1.0% Daily Cap | Max 3 Loss Streak ║
-╠════════════╦══════════════╦══════╦══════════════╦════════╦═══════════════════╦═════════════════╦════╣
-║ Symbol     ║ Last Price   ║ RSI  ║ ATR(14)      ║ Trend  ║ Feature / Pattern ║ Position / PnL  ║ St ║
-╠════════════╬══════════════╬══════╬══════════════╬════════╬═══════════════════╬═════════════════╬════╣
-║ R_75       ║   48669.7220 ║ 53.0 ║ 59.6p (290.15) ║ BEAR 🐻 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_25       ║    2709.7470 ║ 32.7 ║ 19.5p (5.29) ║ BEAR 🐻 ║ ShootStar (52%)   ║ ⚪ FLAT          ║ OK ║
-║ R_50       ║      92.7295 ║ 77.4 ║ 35.2p (0.33) ║ BULL 🐂 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_10       ║    4907.9560 ║ 80.1 ║  8.2p (4.05) ║ BULL 🐂 ║ None              ║ 🔴 -5.1 pips     ║ IN ║
-╠════════════╩══════════════╩══════╩══════════════╩════════╩═══════════════════╩═════════════════╩════╣
-║ 👤 Demo: DOT94482469    💰 Balance: $ 10,004.82 USD (~340,164 ฿) | PnL: $+4.82 USD       ║
-║ 📊 สถิติ: Trades: 79 (Win 36 | BE 17 | Loss 26) | Net: $+1.19 USD                             ║
-║ 📈 ประสิทธิภาพ: Decisive WR: 58.1% | True WR (All): 45.6% | E(Trade): $+0.02 USD                 ║
-║ 🎫 Active: #12944226779  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (85%) | R:R 1:2.5  ║
-╚═════════════════════════════════════════════════════════════════════════════════════════════════╝
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
-║  🕒 2026-09-15 00:11:26 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
-╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
-║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
-╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
-║ frxEURUSD   ║      1.15602 ║ 71.1 ║  0.00339 ║ None       ║ ⚪ FLAT          ║ OK ║
-║ frxGBPUSD   ║      1.35085 ║ 76.2 ║  0.00348 ║ None       ║ ⚪ FLAT          ║ OK ║
-║ frxUSDJPY   ║    154.33800 ║ 23.4 ║  0.00533 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxEURUSD   ║      1.15559 ║ 77.2 ║  0.00357 ║ Hammer     ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35075 ║ 86.9 ║  0.00401 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.40300 ║ 22.3 ║  0.00537 ║ None       ║ ⚪ FLAT          ║ OK ║
 ╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
 ║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.25 USD (~340,144 ฿)          ║
 ║ 📈 กำไรพอร์ตรวม: $+4.25 USD (+144.5 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ╔═════════════════════════════════════════════════════════════════════════════════════════════════╗
 ║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO ONLY: DOT94482469        )     ║
-║  🕒 2026-09-15 00:11:34 | SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 (CSPRNG Brownian Motion)           ║
+║  🕒 2026-09-15 00:50:46 | SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 (CSPRNG Brownian Motion)           ║
 ║  🛡️ RISK GUARD: ACTIVE 🛡️          | Max 1 Pos | 0.25% Risk | 1.0% Daily Cap | Max 3 Loss Streak ║
 ╠════════════╦══════════════╦══════╦══════════════╦════════╦═══════════════════╦═════════════════╦════╣
 ║ Symbol     ║ Last Price   ║ RSI  ║ ATR(14)      ║ Trend  ║ Feature / Pattern ║ Position / PnL  ║ St ║
 ╠════════════╬══════════════╬══════╬══════════════╬════════╬═══════════════════╬═════════════════╬════╣
-║ R_75       ║   48627.6523 ║ 51.3 ║ 59.7p (290.15) ║ BEAR 🐻 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_25       ║    2710.8730 ║ 33.7 ║ 19.5p (5.29) ║ BEAR 🐻 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_50       ║      92.7065 ║ 76.3 ║ 35.2p (0.33) ║ BULL 🐂 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_10       ║    4907.3580 ║ 79.7 ║  8.2p (4.05) ║ BULL 🐂 ║ BearPin (80%)     ║ 🔴 -3.8 pips     ║ IN ║
+║ R_75       ║   48388.8764 ║ 45.3 ║ 59.6p (288.43) ║ BEAR 🐻 ║ BearEngulf (24%)  ║ ⚪ FLAT          ║ OK ║
+║ R_25       ║    2720.4270 ║ 56.5 ║ 20.8p (5.66) ║ BEAR 🐻 ║ Engulf (24%)      ║ ⚪ FLAT          ║ OK ║
+║ R_50       ║      92.1859 ║ 46.3 ║ 35.8p (0.33) ║ BULL 🐂 ║ FailedBrk (40%)   ║ ⚪ FLAT          ║ OK ║
+║ R_10       ║    4907.1020 ║ 84.4 ║  7.4p (3.65) ║ BULL 🐂 ║ BearEngulf (52%)  ║ 🟢 +3.5 pips     ║ IN ║
 ╠════════════╩══════════════╩══════╩══════════════╩════════╩═══════════════════╩═════════════════╩════╣
-║ 👤 Demo: DOT94482469    💰 Balance: $ 10,004.82 USD (~340,164 ฿) | PnL: $+4.82 USD       ║
-║ 📊 สถิติ: Trades: 79 (Win 36 | BE 17 | Loss 26) | Net: $+1.19 USD                             ║
-║ 📈 ประสิทธิภาพ: Decisive WR: 58.1% | True WR (All): 45.6% | E(Trade): $+0.02 USD                 ║
-║ 🎫 Active: #12944226779  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (85%) | R:R 1:2.5  ║
+║ 👤 Demo: DOT94482469    💰 Balance: $ 10,004.46 USD (~340,152 ฿) | PnL: $+4.46 USD       ║
+║ 📊 สถิติ: Trades: 80 (Win 36 | BE 17 | Loss 27) | Net: $+0.83 USD                             ║
+║ 📈 ประสิทธิภาพ: Decisive WR: 57.1% | True WR (All): 45.0% | E(Trade): $+0.01 USD                 ║
+║ 🎫 Active: #12949768039  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (78%) | R:R 1:2.5  ║
 ╚═════════════════════════════════════════════════════════════════════════════════════════════════╝
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
-║  🕒 เวลาไทย: 2026-09-15 00:12:01 | แนวโน้ม BTC: 🟢 BULLISH (> 1h EMA200)              ║
+║  🕒 เวลาไทย: 2026-09-15 00:50:55 | แนวโน้ม BTC: 🟢 BULLISH (> 1h EMA200)              ║
 ╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
 ║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
 ╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
-║ SOL/USDT    ║      $102.74 ║ 67.8 ║ 24.1 ║  1.83x ║ ⚪ FLAT          ║ Standby    ║
-║ BTC/USDT    ║   $78,830.88 ║ 68.3 ║ 55.7 ║  0.65x ║ ⚪ FLAT          ║ Standby    ║
-║ NEAR/USDT   ║        $2.54 ║ 80.8 ║ 24.2 ║ 12.79x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
-║ AVAX/USDT   ║        $7.59 ║ 70.1 ║ 37.7 ║  0.81x ║ ⚪ FLAT          ║ Standby    ║
-║ GALA/USDT   ║    $0.001736 ║ 62.5 ║ 17.5 ║  1.54x ║ ⚪ FLAT          ║ Standby    ║
-║ VET/USDT    ║    $0.007780 ║ 53.5 ║ 23.0 ║  0.58x ║ 🟢 +0.10%        ║ Holding    ║
+║ SOL/USDT    ║      $103.00 ║ 69.9 ║ 27.0 ║  1.05x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $78,945.36 ║ 70.6 ║ 56.2 ║  0.52x ║ ⚪ FLAT          ║ Standby    ║
+║ NEAR/USDT   ║        $2.58 ║ 85.0 ║ 33.0 ║  0.87x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.60 ║ 71.3 ║ 41.1 ║  1.36x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001735 ║ 60.7 ║ 21.0 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007796 ║ 56.2 ║ 25.2 ║  0.77x ║ 🟢 +0.31%        ║ Holding    ║
 ╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
-║  🕒 2026-09-15 00:12:29 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
+║  🕒 2026-09-15 00:51:20 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
 ╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
 ║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
 ╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
-║ frxEURUSD   ║      1.15600 ║ 70.8 ║  0.00338 ║ None       ║ ⚪ FLAT          ║ OK ║
-║ frxGBPUSD   ║      1.35083 ║ 76.1 ║  0.00348 ║ None       ║ ⚪ FLAT          ║ OK ║
-║ frxUSDJPY   ║    154.33200 ║ 22.9 ║  0.00534 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxEURUSD   ║      1.15556 ║ 77.0 ║  0.00356 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35073 ║ 86.8 ║  0.00400 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.40200 ║ 22.3 ║  0.00538 ║ None       ║ ⚪ FLAT          ║ OK ║
 ╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
 ║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.25 USD (~340,144 ฿)          ║
 ║ 📈 กำไรพอร์ตรวม: $+4.25 USD (+144.5 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ╔═════════════════════════════════════════════════════════════════════════════════════════════════╗
 ║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO ONLY: DOT94482469        )     ║
-║  🕒 2026-09-15 00:12:38 | SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 (CSPRNG Brownian Motion)           ║
+║  🕒 2026-09-15 00:51:50 | SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 (CSPRNG Brownian Motion)           ║
 ║  🛡️ RISK GUARD: ACTIVE 🛡️          | Max 1 Pos | 0.25% Risk | 1.0% Daily Cap | Max 3 Loss Streak ║
 ╠════════════╦══════════════╦══════╦══════════════╦════════╦═══════════════════╦═════════════════╦════╣
 ║ Symbol     ║ Last Price   ║ RSI  ║ ATR(14)      ║ Trend  ║ Feature / Pattern ║ Position / PnL  ║ St ║
 ╠════════════╬══════════════╬══════╬══════════════╬════════╬═══════════════════╬═════════════════╬════╣
-║ R_75       ║   48717.7506 ║ 55.1 ║ 59.6p (290.15) ║ BEAR 🐻 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_25       ║    2710.5510 ║ 33.4 ║ 19.5p (5.29) ║ BEAR 🐻 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_50       ║      92.7892 ║ 80.6 ║ 35.2p (0.33) ║ BULL 🐂 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_10       ║    4907.1880 ║ 79.6 ║  8.2p (4.05) ║ BULL 🐂 ║ ShootStar (92%)   ║ 🔴 -3.5 pips     ║ IN ║
+║ R_75       ║   48285.1896 ║ 42.6 ║ 61.2p (295.44) ║ BEAR 🐻 ║ BearEngulf (24%)  ║ ⚪ FLAT          ║ OK ║
+║ R_25       ║    2720.9540 ║ 57.0 ║ 20.8p (5.66) ║ BEAR 🐻 ║ Engulf (24%)      ║ ⚪ FLAT          ║ OK ║
+║ R_50       ║      92.1493 ║ 45.3 ║ 35.9p (0.33) ║ BULL 🐂 ║ FailedBrk (40%)   ║ ⚪ FLAT          ║ OK ║
+║ R_10       ║    4906.7130 ║ 83.1 ║  7.4p (3.65) ║ BULL 🐂 ║ BearEngulf (52%)  ║ 🟢 +4.3 pips     ║ IN ║
 ╠════════════╩══════════════╩══════╩══════════════╩════════╩═══════════════════╩═════════════════╩════╣
-║ 👤 Demo: DOT94482469    💰 Balance: $ 10,004.82 USD (~340,164 ฿) | PnL: $+4.82 USD       ║
-║ 📊 สถิติ: Trades: 79 (Win 36 | BE 17 | Loss 26) | Net: $+1.19 USD                             ║
-║ 📈 ประสิทธิภาพ: Decisive WR: 58.1% | True WR (All): 45.6% | E(Trade): $+0.02 USD                 ║
-║ 🎫 Active: #12944226779  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (85%) | R:R 1:2.5  ║
+║ 👤 Demo: DOT94482469    💰 Balance: $ 10,004.46 USD (~340,152 ฿) | PnL: $+4.46 USD       ║
+║ 📊 สถิติ: Trades: 80 (Win 36 | BE 17 | Loss 27) | Net: $+0.83 USD                             ║
+║ 📈 ประสิทธิภาพ: Decisive WR: 57.1% | True WR (All): 45.0% | E(Trade): $+0.01 USD                 ║
+║ 🎫 Active: #12949768039  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (78%) | R:R 1:2.5  ║
+╚═════════════════════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 2026-09-15 00:52:23 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.15556 ║ 77.0 ║  0.00356 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35068 ║ 86.7 ║  0.00399 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.40000 ║ 22.3 ║  0.00538 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.25 USD (~340,144 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.25 USD (+144.5 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-15 00:52:24 | แนวโน้ม BTC: 🟢 BULLISH (> 1h EMA200)              ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $103.02 ║ 70.2 ║ 27.0 ║  1.09x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $78,957.65 ║ 70.9 ║ 56.2 ║  0.54x ║ ⚪ FLAT          ║ Standby    ║
+║ NEAR/USDT   ║        $2.59 ║ 85.5 ║ 33.1 ║  1.12x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.60 ║ 70.9 ║ 41.1 ║  1.87x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001735 ║ 60.7 ║ 21.0 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007796 ║ 56.2 ║ 25.2 ║  0.77x ║ 🟢 +0.31%        ║ Holding    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔═════════════════════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO ONLY: DOT94482469        )     ║
+║  🕒 2026-09-15 00:52:53 | SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 (CSPRNG Brownian Motion)           ║
+║  🛡️ RISK GUARD: ACTIVE 🛡️          | Max 1 Pos | 0.25% Risk | 1.0% Daily Cap | Max 3 Loss Streak ║
+╠════════════╦══════════════╦══════╦══════════════╦════════╦═══════════════════╦═════════════════╦════╣
+║ Symbol     ║ Last Price   ║ RSI  ║ ATR(14)      ║ Trend  ║ Feature / Pattern ║ Position / PnL  ║ St ║
+╠════════════╬══════════════╬══════╬══════════════╬════════╬═══════════════════╬═════════════════╬════╣
+║ R_75       ║   48358.3114 ║ 44.5 ║ 61.1p (295.44) ║ BEAR 🐻 ║ FailedBrk (28%)   ║ ⚪ FLAT          ║ OK ║
+║ R_25       ║    2719.6700 ║ 55.8 ║ 20.8p (5.66) ║ BEAR 🐻 ║ Engulf (24%)      ║ ⚪ FLAT          ║ OK ║
+║ R_50       ║      92.1637 ║ 45.7 ║ 35.9p (0.33) ║ BULL 🐂 ║ FailedBrk (40%)   ║ ⚪ FLAT          ║ OK ║
+║ R_10       ║    4906.2930 ║ 81.7 ║  7.5p (3.68) ║ BULL 🐂 ║ BearEngulf (52%)  ║ 🟢 +5.2 pips     ║ IN ║
+╠════════════╩══════════════╩══════╩══════════════╩════════╩═══════════════════╩═════════════════╩════╣
+║ 👤 Demo: DOT94482469    💰 Balance: $ 10,004.46 USD (~340,152 ฿) | PnL: $+4.46 USD       ║
+║ 📊 สถิติ: Trades: 80 (Win 36 | BE 17 | Loss 27) | Net: $+0.83 USD                             ║
+║ 📈 ประสิทธิภาพ: Decisive WR: 57.1% | True WR (All): 45.0% | E(Trade): $+0.01 USD                 ║
+║ 🎫 Active: #12949768039  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (78%) | R:R 1:2.5  ║
+╚═════════════════════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 2026-09-15 00:53:26 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.15565 ║ 77.5 ║  0.00358 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35076 ║ 86.9 ║  0.00401 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.39100 ║ 22.0 ║  0.00539 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.25 USD (~340,144 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.25 USD (+144.5 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-15 00:53:28] [SUPERVISOR] ⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: HTTPSConnectionPool(host='script.google.com', port=443): Read timed out. (read timeout=15)
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-15 00:53:55 | แนวโน้ม BTC: 🟢 BULLISH (> 1h EMA200)              ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $102.98 ║ 69.7 ║ 27.0 ║  1.11x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $78,902.80 ║ 69.7 ║ 56.2 ║  0.58x ║ ⚪ FLAT          ║ Standby    ║
+║ NEAR/USDT   ║        $2.57 ║ 84.2 ║ 33.1 ║  1.21x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.60 ║ 70.9 ║ 41.1 ║  1.89x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001735 ║ 60.7 ║ 21.0 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007771 ║ 51.6 ║ 25.2 ║  1.77x ║ 🔴 -0.01%        ║ Holding    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔═════════════════════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO ONLY: DOT94482469        )     ║
+║  🕒 2026-09-15 00:53:56 | SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 (CSPRNG Brownian Motion)           ║
+║  🛡️ RISK GUARD: ACTIVE 🛡️          | Max 1 Pos | 0.25% Risk | 1.0% Daily Cap | Max 3 Loss Streak ║
+╠════════════╦══════════════╦══════╦══════════════╦════════╦═══════════════════╦═════════════════╦════╣
+║ Symbol     ║ Last Price   ║ RSI  ║ ATR(14)      ║ Trend  ║ Feature / Pattern ║ Position / PnL  ║ St ║
+╠════════════╬══════════════╬══════╬══════════════╬════════╬═══════════════════╬═════════════════╬════╣
+║ R_75       ║   48342.5175 ║ 44.1 ║ 61.1p (295.44) ║ BEAR 🐻 ║ BearEngulf (24%)  ║ ⚪ FLAT          ║ OK ║
+║ R_25       ║    2720.3640 ║ 56.4 ║ 20.8p (5.66) ║ BEAR 🐻 ║ Engulf (24%)      ║ ⚪ FLAT          ║ OK ║
+║ R_50       ║      92.2187 ║ 47.3 ║ 36.0p (0.33) ║ BULL 🐂 ║ FailedBrk (40%)   ║ ⚪ FLAT          ║ OK ║
+║ R_10       ║    4906.0180 ║ 80.8 ║  7.6p (3.72) ║ BULL 🐂 ║ BearEngulf (52%)  ║ 🟢 +5.7 pips     ║ IN ║
+╠════════════╩══════════════╩══════╩══════════════╩════════╩═══════════════════╩═════════════════╩════╣
+║ 👤 Demo: DOT94482469    💰 Balance: $ 10,004.46 USD (~340,152 ฿) | PnL: $+4.46 USD       ║
+║ 📊 สถิติ: Trades: 80 (Win 36 | BE 17 | Loss 27) | Net: $+0.83 USD                             ║
+║ 📈 ประสิทธิภาพ: Decisive WR: 57.1% | True WR (All): 45.0% | E(Trade): $+0.01 USD                 ║
+║ 🎫 Active: #12949768039  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (78%) | R:R 1:2.5  ║
+╚═════════════════════════════════════════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 2026-09-15 00:54:29 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.15576 ║ 78.0 ║  0.00360 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35087 ║ 87.2 ║  0.00403 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.36600 ║ 21.4 ║  0.00542 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.25 USD (~340,144 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+4.25 USD (+144.5 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+╔═════════════════════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO ONLY: DOT94482469        )     ║
+║  🕒 2026-09-15 00:54:59 | SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 (CSPRNG Brownian Motion)           ║
+║  🛡️ RISK GUARD: ACTIVE 🛡️          | Max 1 Pos | 0.25% Risk | 1.0% Daily Cap | Max 3 Loss Streak ║
+╠════════════╦══════════════╦══════╦══════════════╦════════╦═══════════════════╦═════════════════╦════╣
+║ Symbol     ║ Last Price   ║ RSI  ║ ATR(14)      ║ Trend  ║ Feature / Pattern ║ Position / PnL  ║ St ║
+╠════════════╬══════════════╬══════╬══════════════╬════════╬═══════════════════╬═════════════════╬════╣
+║ R_75       ║   48366.9956 ║ 44.7 ║ 61.1p (295.44) ║ BEAR 🐻 ║ FailedBrk (40%)   ║ ⚪ FLAT          ║ OK ║
+║ R_25       ║    2720.9040 ║ 56.9 ║ 20.8p (5.66) ║ BEAR 🐻 ║ Engulf (24%)      ║ ⚪ FLAT          ║ OK ║
+║ R_50       ║      92.2566 ║ 48.3 ║ 36.5p (0.34) ║ BULL 🐂 ║ FailedBrk (20%)   ║ ⚪ FLAT          ║ OK ║
+║ R_10       ║    4905.7240 ║ 79.9 ║  7.6p (3.72) ║ BULL 🐂 ║ BearEngulf (52%)  ║ 🟢 +6.3 pips     ║ IN ║
+╠════════════╩══════════════╩══════╩══════════════╩════════╩═══════════════════╩═════════════════╩════╣
+║ 👤 Demo: DOT94482469    💰 Balance: $ 10,004.46 USD (~340,152 ฿) | PnL: $+4.46 USD       ║
+║ 📊 สถิติ: Trades: 80 (Win 36 | BE 17 | Loss 27) | Net: $+0.83 USD                             ║
+║ 📈 ประสิทธิภาพ: Decisive WR: 57.1% | True WR (All): 45.0% | E(Trade): $+0.01 USD                 ║
+║ 🎫 Active: #12949768039  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (78%) | R:R 1:2.5  ║
 ╚═════════════════════════════════════════════════════════════════════════════════════════════════╝
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
-║  🕒 เวลาไทย: 2026-09-15 00:13:30 | แนวโน้ม BTC: 🟢 BULLISH (> 1h EMA200)              ║
+║  🕒 เวลาไทย: 2026-09-15 00:55:24 | แนวโน้ม BTC: 🟢 BULLISH (> 1h EMA200)              ║
 ╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
 ║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
 ╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
-║ SOL/USDT    ║      $102.79 ║ 68.4 ║ 24.1 ║  2.60x ║ ⚪ FLAT          ║ Standby    ║
-║ BTC/USDT    ║   $78,826.01 ║ 68.2 ║ 55.7 ║  0.85x ║ ⚪ FLAT          ║ Standby    ║
-║ NEAR/USDT   ║        $2.54 ║ 80.7 ║ 24.3 ║ 13.54x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
-║ AVAX/USDT   ║        $7.59 ║ 70.0 ║ 37.7 ║  0.83x ║ ⚪ FLAT          ║ Standby    ║
-║ GALA/USDT   ║    $0.001736 ║ 62.5 ║ 17.5 ║  1.54x ║ ⚪ FLAT          ║ Standby    ║
-║ VET/USDT    ║    $0.007780 ║ 53.5 ║ 23.0 ║  0.58x ║ 🟢 +0.10%        ║ Holding    ║
+║ SOL/USDT    ║      $103.16 ║ 71.8 ║ 27.1 ║  1.16x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $78,995.76 ║ 71.7 ║ 56.2 ║  0.76x ║ ⚪ FLAT          ║ Standby    ║
+║ NEAR/USDT   ║        $2.57 ║ 84.3 ║ 33.1 ║  1.24x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.61 ║ 71.9 ║ 41.1 ║  1.92x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001735 ║ 60.7 ║ 21.0 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007772 ║ 51.8 ║ 25.2 ║  2.74x ║ 🟢 +0.00%        ║ Holding    ║
 ╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
-║  🕒 2026-09-15 00:13:32 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
+║  🕒 2026-09-15 00:55:32 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
 ╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
 ║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
 ╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
-║ frxEURUSD   ║      1.15601 ║ 70.9 ║  0.00339 ║ None       ║ ⚪ FLAT          ║ OK ║
-║ frxGBPUSD   ║      1.35083 ║ 76.1 ║  0.00348 ║ None       ║ ⚪ FLAT          ║ OK ║
-║ frxUSDJPY   ║    154.35700 ║ 24.8 ║  0.00530 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxEURUSD   ║      1.15571 ║ 77.8 ║  0.00359 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35082 ║ 87.1 ║  0.00402 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.37400 ║ 21.6 ║  0.00541 ║ None       ║ ⚪ FLAT          ║ OK ║
 ╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
 ║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.25 USD (~340,144 ฿)          ║
 ║ 📈 กำไรพอร์ตรวม: $+4.25 USD (+144.5 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ╔═════════════════════════════════════════════════════════════════════════════════════════════════╗
 ║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO ONLY: DOT94482469        )     ║
-║  🕒 2026-09-15 00:13:41 | SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 (CSPRNG Brownian Motion)           ║
+║  🕒 2026-09-15 00:56:03 | SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 (CSPRNG Brownian Motion)           ║
 ║  🛡️ RISK GUARD: ACTIVE 🛡️          | Max 1 Pos | 0.25% Risk | 1.0% Daily Cap | Max 3 Loss Streak ║
 ╠════════════╦══════════════╦══════╦══════════════╦════════╦═══════════════════╦═════════════════╦════╣
 ║ Symbol     ║ Last Price   ║ RSI  ║ ATR(14)      ║ Trend  ║ Feature / Pattern ║ Position / PnL  ║ St ║
 ╠════════════╬══════════════╬══════╬══════════════╬════════╬═══════════════════╬═════════════════╬════╣
-║ R_75       ║   48735.3078 ║ 55.9 ║ 59.5p (290.15) ║ BEAR 🐻 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_25       ║    2709.9450 ║ 32.9 ║ 19.5p (5.29) ║ BEAR 🐻 ║ BearPin (50%)     ║ ⚪ FLAT          ║ OK ║
-║ R_50       ║      92.7427 ║ 78.1 ║ 35.2p (0.33) ║ BULL 🐂 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_10       ║    4907.8570 ║ 80.0 ║  8.2p (4.05) ║ BULL 🐂 ║ None              ║ 🔴 -4.9 pips     ║ IN ║
+║ R_75       ║   48318.9488 ║ 43.5 ║ 61.1p (295.44) ║ BEAR 🐻 ║ BearEngulf (24%)  ║ ⚪ FLAT          ║ OK ║
+║ R_25       ║    2719.4150 ║ 55.5 ║ 20.8p (5.66) ║ BEAR 🐻 ║ Engulf (24%)      ║ ⚪ FLAT          ║ OK ║
+║ R_50       ║      92.2157 ║ 47.2 ║ 36.5p (0.34) ║ BULL 🐂 ║ FailedBrk (20%)   ║ ⚪ FLAT          ║ OK ║
+║ R_10       ║    4905.2540 ║ 78.5 ║  7.7p (3.77) ║ BULL 🐂 ║ BearEngulf (52%)  ║ 🟢 +7.3 pips     ║ IN ║
 ╠════════════╩══════════════╩══════╩══════════════╩════════╩═══════════════════╩═════════════════╩════╣
-║ 👤 Demo: DOT94482469    💰 Balance: $ 10,004.82 USD (~340,164 ฿) | PnL: $+4.82 USD       ║
-║ 📊 สถิติ: Trades: 79 (Win 36 | BE 17 | Loss 26) | Net: $+1.19 USD                             ║
-║ 📈 ประสิทธิภาพ: Decisive WR: 58.1% | True WR (All): 45.6% | E(Trade): $+0.02 USD                 ║
-║ 🎫 Active: #12944226779  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (85%) | R:R 1:2.5  ║
+║ 👤 Demo: DOT94482469    💰 Balance: $ 10,004.46 USD (~340,152 ฿) | PnL: $+4.46 USD       ║
+║ 📊 สถิติ: Trades: 80 (Win 36 | BE 17 | Loss 27) | Net: $+0.83 USD                             ║
+║ 📈 ประสิทธิภาพ: Decisive WR: 57.1% | True WR (All): 45.0% | E(Trade): $+0.01 USD                 ║
+║ 🎫 Active: #12949768039  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (78%) | R:R 1:2.5  ║
 ╚═════════════════════════════════════════════════════════════════════════════════════════════════╝
-[2026-09-15 00:13:45] [SUPERVISOR] ☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream ขึ้น Google Drive สำเร็จ!
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
-║  🕒 2026-09-15 00:14:35 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
+║  🕒 2026-09-15 00:56:35 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
 ╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
 ║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
 ╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
-║ frxEURUSD   ║      1.15591 ║ 69.8 ║  0.00336 ║ None       ║ ⚪ FLAT          ║ OK ║
-║ frxGBPUSD   ║      1.35074 ║ 75.8 ║  0.00345 ║ None       ║ ⚪ FLAT          ║ OK ║
-║ frxUSDJPY   ║    154.36100 ║ 25.1 ║  0.00529 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxEURUSD   ║      1.15575 ║ 78.0 ║  0.00360 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35086 ║ 87.2 ║  0.00403 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.37500 ║ 21.6 ║  0.00541 ║ None       ║ ⚪ FLAT          ║ OK ║
 ╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
 ║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.25 USD (~340,144 ฿)          ║
 ║ 📈 กำไรพอร์ตรวม: $+4.25 USD (+144.5 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
-╔═════════════════════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO ONLY: DOT94482469        )     ║
-║  🕒 2026-09-15 00:14:45 | SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 (CSPRNG Brownian Motion)           ║
-║  🛡️ RISK GUARD: ACTIVE 🛡️          | Max 1 Pos | 0.25% Risk | 1.0% Daily Cap | Max 3 Loss Streak ║
-╠════════════╦══════════════╦══════╦══════════════╦════════╦═══════════════════╦═════════════════╦════╣
-║ Symbol     ║ Last Price   ║ RSI  ║ ATR(14)      ║ Trend  ║ Feature / Pattern ║ Position / PnL  ║ St ║
-╠════════════╬══════════════╬══════╬══════════════╬════════╬═══════════════════╬═════════════════╬════╣
-║ R_75       ║   48786.9712 ║ 58.5 ║ 59.5p (290.15) ║ BEAR 🐻 ║ PinBar (45%)      ║ ⚪ FLAT          ║ OK ║
-║ R_25       ║    2710.2060 ║ 33.1 ║ 19.5p (5.29) ║ BEAR 🐻 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_50       ║      92.6414 ║ 73.2 ║ 35.3p (0.33) ║ BULL 🐂 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_10       ║    4908.1060 ║ 80.2 ║  8.3p (4.05) ║ BULL 🐂 ║ None              ║ 🔴 -5.4 pips     ║ IN ║
-╠════════════╩══════════════╩══════╩══════════════╩════════╩═══════════════════╩═════════════════╩════╣
-║ 👤 Demo: DOT94482469    💰 Balance: $ 10,004.82 USD (~340,164 ฿) | PnL: $+4.82 USD       ║
-║ 📊 สถิติ: Trades: 79 (Win 36 | BE 17 | Loss 26) | Net: $+1.19 USD                             ║
-║ 📈 ประสิทธิภาพ: Decisive WR: 58.1% | True WR (All): 45.6% | E(Trade): $+0.02 USD                 ║
-║ 🎫 Active: #12944226779  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (85%) | R:R 1:2.5  ║
-╚═════════════════════════════════════════════════════════════════════════════════════════════════╝
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
-║  🕒 เวลาไทย: 2026-09-15 00:14:58 | แนวโน้ม BTC: 🟢 BULLISH (> 1h EMA200)              ║
+║  🕒 เวลาไทย: 2026-09-15 00:56:53 | แนวโน้ม BTC: 🟢 BULLISH (> 1h EMA200)              ║
 ╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
 ║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
 ╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
-║ SOL/USDT    ║      $102.94 ║ 70.1 ║ 24.4 ║  2.65x ║ ⚪ FLAT          ║ Standby    ║
-║ BTC/USDT    ║   $78,829.99 ║ 68.3 ║ 55.7 ║  0.95x ║ ⚪ FLAT          ║ Standby    ║
-║ NEAR/USDT   ║        $2.53 ║ 79.8 ║ 24.3 ║ 17.20x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
-║ AVAX/USDT   ║        $7.59 ║ 70.1 ║ 37.7 ║  0.84x ║ ⚪ FLAT          ║ Standby    ║
-║ GALA/USDT   ║    $0.001736 ║ 62.5 ║ 17.5 ║  1.54x ║ ⚪ FLAT          ║ Standby    ║
-║ VET/USDT    ║    $0.007780 ║ 53.5 ║ 23.0 ║  0.58x ║ 🟢 +0.10%        ║ Holding    ║
+║ SOL/USDT    ║      $103.19 ║ 72.1 ║ 27.3 ║  1.20x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $78,954.01 ║ 70.8 ║ 56.2 ║  0.92x ║ ⚪ FLAT          ║ Standby    ║
+║ NEAR/USDT   ║        $2.57 ║ 84.3 ║ 33.1 ║  1.24x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.61 ║ 71.6 ║ 41.1 ║  1.95x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001735 ║ 60.7 ║ 21.0 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007772 ║ 51.8 ║ 25.2 ║  2.74x ║ 🟢 +0.00%        ║ Holding    ║
 ╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+╔═════════════════════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO ONLY: DOT94482469        )     ║
+║  🕒 2026-09-15 00:57:06 | SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 (CSPRNG Brownian Motion)           ║
+║  🛡️ RISK GUARD: ACTIVE 🛡️          | Max 1 Pos | 0.25% Risk | 1.0% Daily Cap | Max 3 Loss Streak ║
+╠════════════╦══════════════╦══════╦══════════════╦════════╦═══════════════════╦═════════════════╦════╣
+║ Symbol     ║ Last Price   ║ RSI  ║ ATR(14)      ║ Trend  ║ Feature / Pattern ║ Position / PnL  ║ St ║
+╠════════════╬══════════════╬══════╬══════════════╬════════╬═══════════════════╬═════════════════╬════╣
+║ R_75       ║   48235.9899 ║ 41.5 ║ 62.0p (299.20) ║ BEAR 🐻 ║ BearEngulf (24%)  ║ ⚪ FLAT          ║ OK ║
+║ R_25       ║    2720.3400 ║ 56.4 ║ 20.8p (5.66) ║ BEAR 🐻 ║ Engulf (24%)      ║ ⚪ FLAT          ║ OK ║
+║ R_50       ║      92.1754 ║ 46.0 ║ 36.5p (0.34) ║ BULL 🐂 ║ FailedBrk (20%)   ║ ⚪ FLAT          ║ OK ║
+║ R_10       ║    4905.3040 ║ 78.6 ║  7.7p (3.77) ║ BULL 🐂 ║ BearEngulf (52%)  ║ 🟢 +7.2 pips     ║ IN ║
+╠════════════╩══════════════╩══════╩══════════════╩════════╩═══════════════════╩═════════════════╩════╣
+║ 👤 Demo: DOT94482469    💰 Balance: $ 10,004.46 USD (~340,152 ฿) | PnL: $+4.46 USD       ║
+║ 📊 สถิติ: Trades: 80 (Win 36 | BE 17 | Loss 27) | Net: $+0.83 USD                             ║
+║ 📈 ประสิทธิภาพ: Decisive WR: 57.1% | True WR (All): 45.0% | E(Trade): $+0.01 USD                 ║
+║ 🎫 Active: #12949768039  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (78%) | R:R 1:2.5  ║
+╚═════════════════════════════════════════════════════════════════════════════════════════════════╝
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
-║  🕒 2026-09-15 00:15:38 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
+║  🕒 2026-09-15 00:57:38 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
 ╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
 ║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
 ╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
-║ frxEURUSD   ║      1.15585 ║ 80.6 ║  0.00356 ║ None       ║ ⚪ FLAT          ║ OK ║
-║ frxGBPUSD   ║      1.35061 ║ 84.5 ║  0.00371 ║ None       ║ ⚪ FLAT          ║ OK ║
-║ frxUSDJPY   ║    154.38000 ║ 23.0 ║  0.00545 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxEURUSD   ║      1.15572 ║ 77.9 ║  0.00359 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.35086 ║ 87.2 ║  0.00403 ║ Engulf     ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.37400 ║ 21.6 ║  0.00541 ║ None       ║ ⚪ FLAT          ║ OK ║
 ╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
 ║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.25 USD (~340,144 ฿)          ║
 ║ 📈 กำไรพอร์ตรวม: $+4.25 USD (+144.5 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ╔═════════════════════════════════════════════════════════════════════════════════════════════════╗
 ║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO ONLY: DOT94482469        )     ║
-║  🕒 2026-09-15 00:15:48 | SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 (CSPRNG Brownian Motion)           ║
+║  🕒 2026-09-15 00:58:09 | SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 (CSPRNG Brownian Motion)           ║
 ║  🛡️ RISK GUARD: ACTIVE 🛡️          | Max 1 Pos | 0.25% Risk | 1.0% Daily Cap | Max 3 Loss Streak ║
 ╠════════════╦══════════════╦══════╦══════════════╦════════╦═══════════════════╦═════════════════╦════╣
 ║ Symbol     ║ Last Price   ║ RSI  ║ ATR(14)      ║ Trend  ║ Feature / Pattern ║ Position / PnL  ║ St ║
 ╠════════════╬══════════════╬══════╬══════════════╬════════╬═══════════════════╬═════════════════╬════╣
-║ R_75       ║   48723.1146 ║ 57.0 ║ 57.6p (280.58) ║ BEAR 🐻 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_25       ║    2710.4670 ║ 35.9 ║ 18.6p (5.04) ║ BEAR 🐻 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_50       ║      92.5636 ║ 66.6 ║ 33.8p (0.31) ║ BULL 🐂 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_10       ║    4906.8310 ║ 91.0 ║  7.4p (3.65) ║ BULL 🐂 ║ Hammer (47%)      ║ 🔴 -2.8 pips     ║ IN ║
+║ R_75       ║   48217.9916 ║ 41.1 ║ 62.5p (301.14) ║ BEAR 🐻 ║ BearEngulf (24%)  ║ ⚪ FLAT          ║ OK ║
+║ R_25       ║    2720.8390 ║ 56.9 ║ 20.9p (5.67) ║ BEAR 🐻 ║ Engulf (24%)      ║ ⚪ FLAT          ║ OK ║
+║ R_50       ║      92.2144 ║ 47.1 ║ 36.5p (0.34) ║ BULL 🐂 ║ FailedBrk (20%)   ║ ⚪ FLAT          ║ OK ║
+║ R_10       ║    4903.9200 ║ 74.7 ║  7.9p (3.85) ║ BULL 🐂 ║ BearEngulf (52%)  ║ 🟢 +10.0 pips    ║ IN ║
 ╠════════════╩══════════════╩══════╩══════════════╩════════╩═══════════════════╩═════════════════╩════╣
-║ 👤 Demo: DOT94482469    💰 Balance: $ 10,004.82 USD (~340,164 ฿) | PnL: $+4.82 USD       ║
-║ 📊 สถิติ: Trades: 79 (Win 36 | BE 17 | Loss 26) | Net: $+1.19 USD                             ║
-║ 📈 ประสิทธิภาพ: Decisive WR: 58.1% | True WR (All): 45.6% | E(Trade): $+0.02 USD                 ║
-║ 🎫 Active: #12944226779  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (85%) | R:R 1:2.5  ║
+║ 👤 Demo: DOT94482469    💰 Balance: $ 10,004.46 USD (~340,152 ฿) | PnL: $+4.46 USD       ║
+║ 📊 สถิติ: Trades: 80 (Win 36 | BE 17 | Loss 27) | Net: $+0.83 USD                             ║
+║ 📈 ประสิทธิภาพ: Decisive WR: 57.1% | True WR (All): 45.0% | E(Trade): $+0.01 USD                 ║
+║ 🎫 Active: #12949768039  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (78%) | R:R 1:2.5  ║
 ╚═════════════════════════════════════════════════════════════════════════════════════════════════╝
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
-║  🕒 เวลาไทย: 2026-09-15 00:16:27 | แนวโน้ม BTC: 🟢 BULLISH (> 1h EMA200)              ║
-╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
-║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
-╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
-║ SOL/USDT    ║      $103.04 ║ 71.1 ║ 25.7 ║  0.76x ║ ⚪ FLAT          ║ Standby    ║
-║ BTC/USDT    ║   $78,824.53 ║ 68.0 ║ 55.9 ║  0.02x ║ ⚪ FLAT          ║ Standby    ║
-║ NEAR/USDT   ║        $2.52 ║ 78.9 ║ 27.1 ║  0.10x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
-║ AVAX/USDT   ║        $7.58 ║ 68.6 ║ 39.1 ║  0.04x ║ ⚪ FLAT          ║ Standby    ║
-║ GALA/USDT   ║    $0.001743 ║ 66.1 ║ 19.1 ║  0.28x ║ ⚪ FLAT          ║ Standby    ║
-║ VET/USDT    ║    $0.007780 ║ 53.5 ║ 23.7 ║  0.00x ║ 🟢 +0.10%        ║ Holding    ║
-╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
-║  🕒 2026-09-15 00:16:41 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
-╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
-║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
-╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
-║ frxEURUSD   ║      1.15590 ║ 80.9 ║  0.00357 ║ None       ║ ⚪ FLAT          ║ OK ║
-║ frxGBPUSD   ║      1.35068 ║ 85.2 ║  0.00373 ║ Hammer     ║ ⚪ FLAT          ║ OK ║
-║ frxUSDJPY   ║    154.37300 ║ 22.4 ║  0.00546 ║ None       ║ ⚪ FLAT          ║ OK ║
-╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
-║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.25 USD (~340,144 ฿)          ║
-║ 📈 กำไรพอร์ตรวม: $+4.25 USD (+144.5 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-╔═════════════════════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO ONLY: DOT94482469        )     ║
-║  🕒 2026-09-15 00:16:52 | SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 (CSPRNG Brownian Motion)           ║
-║  🛡️ RISK GUARD: ACTIVE 🛡️          | Max 1 Pos | 0.25% Risk | 1.0% Daily Cap | Max 3 Loss Streak ║
-╠════════════╦══════════════╦══════╦══════════════╦════════╦═══════════════════╦═════════════════╦════╣
-║ Symbol     ║ Last Price   ║ RSI  ║ ATR(14)      ║ Trend  ║ Feature / Pattern ║ Position / PnL  ║ St ║
-╠════════════╬══════════════╬══════╬══════════════╬════════╬═══════════════════╬═════════════════╬════╣
-║ R_75       ║   48679.4953 ║ 54.9 ║ 58.3p (283.66) ║ BEAR 🐻 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_25       ║    2709.7760 ║ 34.8 ║ 18.7p (5.07) ║ BEAR 🐻 ║ BearPin (50%)     ║ ⚪ FLAT          ║ OK ║
-║ R_50       ║      92.5105 ║ 64.3 ║ 34.6p (0.32) ║ BULL 🐂 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_10       ║    4906.2640 ║ 89.1 ║  7.6p (3.71) ║ BULL 🐂 ║ BearEngulf (52%)  ║ 🔴 -1.6 pips     ║ IN ║
-╠════════════╩══════════════╩══════╩══════════════╩════════╩═══════════════════╩═════════════════╩════╣
-║ 👤 Demo: DOT94482469    💰 Balance: $ 10,004.82 USD (~340,164 ฿) | PnL: $+4.82 USD       ║
-║ 📊 สถิติ: Trades: 79 (Win 36 | BE 17 | Loss 26) | Net: $+1.19 USD                             ║
-║ 📈 ประสิทธิภาพ: Decisive WR: 58.1% | True WR (All): 45.6% | E(Trade): $+0.02 USD                 ║
-║ 🎫 Active: #12944226779  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (85%) | R:R 1:2.5  ║
-╚═════════════════════════════════════════════════════════════════════════════════════════════════╝
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
-║  🕒 2026-09-15 00:17:44 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
-╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
-║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
-╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
-║ frxEURUSD   ║      1.15591 ║ 81.0 ║  0.00357 ║ None       ║ ⚪ FLAT          ║ OK ║
-║ frxGBPUSD   ║      1.35073 ║ 85.3 ║  0.00374 ║ PinBar     ║ ⚪ FLAT          ║ OK ║
-║ frxUSDJPY   ║    154.36500 ║ 22.2 ║  0.00548 ║ None       ║ ⚪ FLAT          ║ OK ║
-╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
-║ 👤 บัญชี Demo: DOT94482469    💰 Balance: $ 10,004.25 USD (~340,144 ฿)          ║
-║ 📈 กำไรพอร์ตรวม: $+4.25 USD (+144.5 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-╔═════════════════════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO ONLY: DOT94482469        )     ║
-║  🕒 2026-09-15 00:17:55 | SPEC: BOT_RESEARCH_AND_RISK_SPEC_V1 (CSPRNG Brownian Motion)           ║
-║  🛡️ RISK GUARD: ACTIVE 🛡️          | Max 1 Pos | 0.25% Risk | 1.0% Daily Cap | Max 3 Loss Streak ║
-╠════════════╦══════════════╦══════╦══════════════╦════════╦═══════════════════╦═════════════════╦════╣
-║ Symbol     ║ Last Price   ║ RSI  ║ ATR(14)      ║ Trend  ║ Feature / Pattern ║ Position / PnL  ║ St ║
-╠════════════╬══════════════╬══════╬══════════════╬════════╬═══════════════════╬═════════════════╬════╣
-║ R_75       ║   48676.5796 ║ 54.8 ║ 58.3p (283.66) ║ BEAR 🐻 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_25       ║    2712.0210 ║ 38.3 ║ 19.0p (5.15) ║ BEAR 🐻 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_50       ║      92.4945 ║ 63.7 ║ 34.7p (0.32) ║ BULL 🐂 ║ None              ║ ⚪ FLAT          ║ OK ║
-║ R_10       ║    4905.8170 ║ 87.6 ║  7.6p (3.71) ║ BULL 🐂 ║ BearEngulf (52%)  ║ 🔴 -0.7 pips     ║ IN ║
-╠════════════╩══════════════╩══════╩══════════════╩════════╩═══════════════════╩═════════════════╩════╣
-║ 👤 Demo: DOT94482469    💰 Balance: $ 10,004.82 USD (~340,164 ฿) | PnL: $+4.82 USD       ║
-║ 📊 สถิติ: Trades: 79 (Win 36 | BE 17 | Loss 26) | Net: $+1.19 USD                             ║
-║ 📈 ประสิทธิภาพ: Decisive WR: 58.1% | True WR (All): 45.6% | E(Trade): $+0.02 USD                 ║
-║ 🎫 Active: #12944226779  R_10  MULTDOWN x400 | SELL BearFailedBrk+Pin (85%) | R:R 1:2.5  ║
-╚═════════════════════════════════════════════════════════════════════════════════════════════════╝
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
-║  🕒 เวลาไทย: 2026-09-15 00:17:59 | แนวโน้ม BTC: 🟢 BULLISH (> 1h EMA200)              ║
-╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
-║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
-╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
-║ SOL/USDT    ║      $103.05 ║ 71.2 ║ 25.7 ║  0.82x ║ ⚪ FLAT          ║ Standby    ║
-║ BTC/USDT    ║   $78,873.60 ║ 69.2 ║ 55.9 ║  0.10x ║ ⚪ FLAT          ║ Standby    ║
-║ NEAR/USDT   ║        $2.54 ║ 81.1 ║ 27.1 ║  0.23x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
-║ AVAX/USDT   ║        $7.59 ║ 70.4 ║ 39.1 ║  0.07x ║ ⚪ FLAT          ║ Standby    ║
-║ GALA/USDT   ║    $0.001741 ║ 65.1 ║ 19.1 ║  0.55x ║ ⚪ FLAT          ║ Standby    ║
-║ VET/USDT    ║    $0.007780 ║ 53.5 ║ 23.7 ║  0.00x ║ 🟢 +0.10%        ║ Holding    ║
-╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
 
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
-║  🕒 เวลาไทย: 2026-09-15 00:19:28 | แนวโน้ม BTC: 🟢 BULLISH (> 1h EMA200)              ║
+║  🕒 เวลาไทย: 2026-09-15 00:58:21 | แนวโน้ม BTC: 🟢 BULLISH (> 1h EMA200)              ║
 ╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
 ║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
 ╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
-║ SOL/USDT    ║      $102.86 ║ 67.4 ║ 25.7 ║  0.89x ║ ⚪ FLAT          ║ Standby    ║
-║ BTC/USDT    ║   $78,807.11 ║ 67.2 ║ 55.9 ║  0.13x ║ ⚪ FLAT          ║ Standby    ║
-║ NEAR/USDT   ║        $2.54 ║ 81.7 ║ 27.2 ║ 12.02x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
-║ AVAX/USDT   ║        $7.58 ║ 68.6 ║ 39.2 ║  0.60x ║ ⚪ FLAT          ║ Standby    ║
-║ GALA/USDT   ║    $0.001741 ║ 65.1 ║ 19.1 ║  0.55x ║ ⚪ FLAT          ║ Standby    ║
-║ VET/USDT    ║    $0.007780 ║ 53.5 ║ 23.7 ║  0.00x ║ 🟢 +0.10%        ║ Holding    ║
+║ SOL/USDT    ║      $103.09 ║ 71.0 ║ 27.3 ║  1.22x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $78,903.04 ║ 69.7 ║ 56.2 ║  0.97x ║ ⚪ FLAT          ║ Standby    ║
+║ NEAR/USDT   ║        $2.58 ║ 85.2 ║ 33.1 ║  1.30x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
+║ AVAX/USDT   ║        $7.61 ║ 71.8 ║ 41.1 ║  2.69x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001735 ║ 60.7 ║ 21.0 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007772 ║ 51.8 ║ 25.2 ║  2.74x ║ 🟢 +0.00%        ║ Holding    ║
 ╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
-║  🕒 เวลาไทย: 2026-09-15 00:20:57 | แนวโน้ม BTC: 🟢 BULLISH (> 1h EMA200)              ║
+║  🕒 เวลาไทย: 2026-09-15 00:59:53 | แนวโน้ม BTC: 🟢 BULLISH (> 1h EMA200)              ║
 ╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
 ║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
 ╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
-║ SOL/USDT    ║      $103.02 ║ 70.9 ║ 25.7 ║  1.10x ║ ⚪ FLAT          ║ Standby    ║
-║ BTC/USDT    ║   $78,885.88 ║ 69.5 ║ 55.9 ║  0.22x ║ ⚪ FLAT          ║ Standby    ║
-║ NEAR/USDT   ║        $2.54 ║ 81.7 ║ 27.2 ║ 12.02x ║ 🛑 COOLDOWN      ║ CircuitBrk ║
-║ AVAX/USDT   ║        $7.59 ║ 69.1 ║ 39.2 ║  0.62x ║ ⚪ FLAT          ║ Standby    ║
-║ GALA/USDT   ║    $0.001741 ║ 65.1 ║ 19.1 ║  0.55x ║ ⚪ FLAT          ║ Standby    ║
-║ VET/USDT    ║    $0.007780 ║ 53.5 ║ 23.7 ║  0.00x ║ 🟢 +0.10%        ║ Holding    ║
+║ SOL/USDT    ║      $103.02 ║ 70.2 ║ 27.3 ║  1.25x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $78,916.08 ║ 70.0 ║ 56.2 ║  1.10x ║ ⚪ FLAT          ║ Standby    ║
+║ NEAR/USDT   ║        $2.58 ║ 84.8 ║ 33.1 ║  1.33x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.61 ║ 72.1 ║ 41.1 ║  2.75x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001735 ║ 60.7 ║ 21.0 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007785 ║ 54.3 ║ 25.2 ║  4.69x ║ 🟢 +0.17%        ║ Holding    ║
 ╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
-[2026-09-15 00:22:12] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║
+║  🕒 เวลาไทย: 2026-09-15 01:01:22 | แนวโน้ม BTC: 🟢 BULLISH (> 1h EMA200)              ║
+╠═════════════╦══════════════╦══════╦══════╦════════╦═════════════════╦════════════╣
+║ Symbol      ║ Last Price   ║ RSI  ║ ADX  ║ Vol    ║ Position / PnL  ║ Engine     ║
+╠═════════════╬══════════════╬══════╬══════╬════════╬═════════════════╬════════════╣
+║ SOL/USDT    ║      $102.97 ║ 68.3 ║ 28.3 ║  0.03x ║ ⚪ FLAT          ║ Standby    ║
+║ BTC/USDT    ║   $78,903.77 ║ 68.6 ║ 56.3 ║  0.03x ║ ⚪ FLAT          ║ Standby    ║
+║ NEAR/USDT   ║        $2.59 ║ 85.3 ║ 35.9 ║  0.01x ║ ⚪ FLAT          ║ Standby    ║
+║ AVAX/USDT   ║        $7.61 ║ 72.4 ║ 42.1 ║  0.59x ║ ⚪ FLAT          ║ Standby    ║
+║ GALA/USDT   ║    $0.001735 ║ 60.7 ║ 21.8 ║  0.00x ║ ⚪ FLAT          ║ Standby    ║
+║ VET/USDT    ║    $0.007785 ║ 54.3 ║ 26.1 ║  0.00x ║ 🟢 +0.17%        ║ Holding    ║
+╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝
+[2026-09-15 01:02:49] 🛑 [CIRCUIT BREAKER VET/USDT] แพ้ติดกัน 2 ไม้ -> พักเทรดเหรียญนี้ 4 ชั่วโมง
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🛑 STOP LOSS EXECUTED - VET/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Exit Price            : $0.007730
+║  • Net Return            : -0.54%
+║  • Net Loss              : -$0.0459 USDT (-1.56 บาท)
+║  • AI Reflection         : Loss (False Break): เพิ่มเกณฑ์ Vol->1.4x, ADX->15.0
+╚══════════════════════════════════════════════════════════════════════════════╝
