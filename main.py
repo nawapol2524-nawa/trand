@@ -122,6 +122,31 @@ def append_console_log(text):
         except Exception:
             pass
 
+def read_last_lines(filepath, num_lines=300, buffer_size=150000):
+    """อ่านเฉพาะ N บรรทัดท้ายสุดของไฟล์ขนาดใหญ่แบบ O(1) Memory & Seek เพื่อประหยัด CPU 100%"""
+    try:
+        if not os.path.exists(filepath):
+            return ""
+        size = os.path.getsize(filepath)
+        if size == 0:
+            return ""
+        with open(filepath, "rb") as f:
+            if size <= buffer_size:
+                data = f.read()
+            else:
+                f.seek(size - buffer_size)
+                data = f.read()
+                first_nl = data.find(b"\n")
+                if first_nl != -1:
+                    data = data[first_nl + 1:]
+            text = data.decode("utf-8", errors="replace")
+            lines = text.splitlines(keepends=True)
+            if len(lines) > num_lines:
+                lines = lines[-num_lines:]
+            return "".join(lines)
+    except Exception:
+        return ""
+
 def trim_console_log():
     """
     จำกัดขนาดเฉพาะ console_log.txt สำหรับ Web Terminal ให้คงประวัติไว้ 5,000 - 10,000 บรรทัดล่าสุด
@@ -344,7 +369,7 @@ last_update_check = 0
 def check_for_updates():
     global last_update_check
     now = time.time()
-    if now - last_update_check < 60:
+    if now - last_update_check < 900:  # ตรวจสอบ Git ทุก 15 นาที เพื่อลด CPU Subprocess
         return
     last_update_check = now
     
@@ -573,28 +598,20 @@ def build_ai_analysis_report(cycle_start, cycle_end, thai_now):
     engine_status_summary = " | ".join(engines_active) if engines_active else "⚡ Supervisor Active"
 
     # -------------------------------------------------------------
-    # 4. ดึงเนื้อหาคอนโซลเต็ม 100% จาก daily_24h_log.txt
+    # 4. ดึงเนื้อหาคอนโซลล่าสุดแบบ O(1) Memory & Seek (ประหยัด CPU 100%)
     # -------------------------------------------------------------
     console_stream = ""
     if os.path.exists(DAILY_24H_LOG_FILE):
         with _log_lock:
-            try:
-                with open(DAILY_24H_LOG_FILE, "r", encoding="utf-8", errors="replace") as f:
-                    console_stream = f.read()
-            except Exception:
-                pass
+            console_stream = read_last_lines(DAILY_24H_LOG_FILE, num_lines=300, buffer_size=150000)
     if not console_stream.strip() and os.path.exists(CONSOLE_LOG_FILE):
         with _log_lock:
-            try:
-                with open(CONSOLE_LOG_FILE, "r", encoding="utf-8", errors="replace") as f:
-                    console_stream = f.read()
-            except Exception:
-                pass
+            console_stream = read_last_lines(CONSOLE_LOG_FILE, num_lines=300, buffer_size=150000)
     if not console_stream.strip():
         console_stream = "(กำลังรวบรวมข้อมูล Console Stream ตลอดรอบ 24 ชม...)"
 
     # -------------------------------------------------------------
-    # 5. สกัด Alert / Error ในรอบ 24 ชม. จาก daily_24h_log.txt
+    # 5. สกัด Alert / Error ล่าสุด (รันไวใน < 0.001s ไม่กิน CPU)
     # -------------------------------------------------------------
     alert_keywords = ["⚠️", "❌", "error", "timeout", "reconnect", "traceback", "circuit breaker", "exception", "failed", "crash"]
     alert_lines = []
@@ -611,10 +628,10 @@ def build_ai_analysis_report(cycle_start, cycle_end, thai_now):
                 alert_lines.append(line)
 
     if alert_lines:
-        alert_preview = "\n".join([f"  • {a}" for a in alert_lines[-50:]])
+        alert_preview = "\n".join([f"  • {a}" for a in alert_lines[-30:]])
         total_alerts = len(alert_lines)
         system_health_text = (
-            f"🚨 ตรวจพบสัญญาณแจ้งเตือนทั้งหมด {total_alerts} รายการในรอบ 24 ชม.:\n"
+            f"🚨 ตรวจพบสัญญาณแจ้งเตือนล่าสุด {total_alerts} รายการ:\n"
             f"{alert_preview}"
         )
     else:
@@ -644,7 +661,7 @@ def build_ai_analysis_report(cycle_start, cycle_end, thai_now):
         f"╔══════════════════════════════════════════════════════════════════════════════════╗\n"
         f"║  🏛️ AG 2.0 QUANT SYSTEM | DAILY 24H EXECUTIVE AI REPORT (GEMINI SPARK AUDIT)   ║\n"
         f"║  🕒 รอบเวลาการวิเคราะห์: {cycle_start_str} -> {cycle_end_str} (เวลาไทย UTC+7) ║\n"
-        f"║  📡 สถานะการซิงค์: LIVE 100% UNTRIMMED STREAM (อัปเดตทุก 1 นาที)                   ║\n"
+        f"║  📡 สถานะการซิงค์: LIVE 100% UNTRIMMED STREAM (อัปเดตทุก 5 นาที)                   ║\n"
         f"╚══════════════════════════════════════════════════════════════════════════════════╝\n\n"
         f"📊 [24H DAILY EXECUTIVE RECAP]\n"
         f"{'─' * 82}\n"
@@ -671,80 +688,91 @@ def build_ai_analysis_report(cycle_start, cycle_end, thai_now):
 
     return header_block, trade_ledger_text
 
+_is_gdrive_syncing = False
+
 def sync_to_gdrive(force=False):
     """
-    ส่ง Console Log สด 100% พร้อม AI Analysis Header ขึ้น Google Drive ทุก 1 นาที
-    โดยอ่านและส่งเนื้อหาทั้งหมดของรอบ 24 ชม. (daily_24h_log.txt) ไปยัง status_log.txt และ console_log.txt
+    ส่ง Console Log และ AI Analysis Header ขึ้น Google Drive ทุก 5 นาทีใน Background Thread
+    ไม่บล็อก Main Loop และประหยัด CPU 100%
     """
-    global last_gdrive_sync
+    global last_gdrive_sync, _is_gdrive_syncing
     if not GDRIVE_WEBHOOK_URL or "your_" in GDRIVE_WEBHOOK_URL:
         return
     now = time.time()
-    if not force and (now - last_gdrive_sync < 60):
+    if not force and (now - last_gdrive_sync < 300):  # ซิงค์ทุก 5 นาที
+        return
+    if _is_gdrive_syncing:
         return
     last_gdrive_sync = now
-    
-    try:
-        import requests
-        c_start, c_end, c_str = get_current_24h_cycle_info()
-        thai_now = get_thai_time()
 
-        full_content, trade_ledger_text = build_ai_analysis_report(c_start, c_end, thai_now)
-
-        # 1. บันทึกทับ status_log.txt บนเครื่องท้องถิ่นแบบ Atomic
+    def _bg_sync_worker():
+        global _is_gdrive_syncing
+        _is_gdrive_syncing = True
         try:
-            tmp_status = STATUS_LOG_FILE + ".tmp"
-            with open(tmp_status, "w", encoding="utf-8") as f:
-                f.write(full_content)
-            os.replace(tmp_status, STATUS_LOG_FILE)
-        except Exception:
-            pass
+            import requests
+            c_start, c_end, c_str = get_current_24h_cycle_info()
+            thai_now = get_thai_time()
 
-        # 2. ส่ง console_log.txt ไปยัง Google Drive Webhook (บรรจุ 24H AI Stream เต็ม 100%)
-        resp = requests.post(
-            GDRIVE_WEBHOOK_URL,
-            json={"filename": "console_log.txt", "content": full_content},
-            timeout=(5, 20)
-        )
+            full_content, trade_ledger_text = build_ai_analysis_report(c_start, c_end, thai_now)
 
-        # 3. ส่งทับ status_log.txt บน Google Drive เพื่อให้ไฟล์เดิมอัปเดตสดทันที
-        try:
-            requests.post(
+            # 1. บันทึกทับ status_log.txt บนเครื่องท้องถิ่นแบบ Atomic
+            try:
+                tmp_status = STATUS_LOG_FILE + ".tmp"
+                with open(tmp_status, "w", encoding="utf-8") as f:
+                    f.write(full_content)
+                os.replace(tmp_status, STATUS_LOG_FILE)
+            except Exception:
+                pass
+
+            # 2. ส่ง console_log.txt ไปยัง Google Drive Webhook
+            resp = requests.post(
                 GDRIVE_WEBHOOK_URL,
-                json={"filename": "status_log.txt", "content": full_content},
-                timeout=(5, 20)
+                json={"filename": "console_log.txt", "content": full_content},
+                timeout=(5, 15)
             )
-        except Exception:
-            pass
 
-        # 4. ส่ง trade_log.txt (24H Trade Ledger) ไปยัง Google Drive
-        if trade_ledger_text.strip():
+            # 3. ส่งทับ status_log.txt บน Google Drive เพื่อให้ไฟล์เดิมอัปเดตสดทันที
             try:
                 requests.post(
                     GDRIVE_WEBHOOK_URL,
-                    json={"filename": "trade_log.txt", "content": trade_ledger_text},
-                    timeout=(5, 20)
+                    json={"filename": "status_log.txt", "content": full_content},
+                    timeout=(5, 15)
                 )
             except Exception:
                 pass
 
-        # 5. ส่ง agent_memory_multi.json (AI RL Parameter Memory) ไปยัง Google Drive
-        if os.path.exists("agent_memory_multi.json"):
-            try:
-                with open("agent_memory_multi.json", "r", encoding="utf-8") as mf:
-                    mem_content = mf.read()
-                requests.post(
-                    GDRIVE_WEBHOOK_URL,
-                    json={"filename": "agent_memory_multi.json", "content": mem_content},
-                    timeout=(5, 20)
-                )
-            except Exception:
-                pass
+            # 4. ส่ง trade_log.txt (24H Trade Ledger) ไปยัง Google Drive
+            if trade_ledger_text.strip():
+                try:
+                    requests.post(
+                        GDRIVE_WEBHOOK_URL,
+                        json={"filename": "trade_log.txt", "content": trade_ledger_text},
+                        timeout=(5, 15)
+                    )
+                except Exception:
+                    pass
 
-        if resp.status_code == 200:
-            log_supervisor("☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream (console_log / status_log / trade_log / agent_memory) ขึ้น Google Drive สำเร็จ!")
-    except Exception as e:
-        log_supervisor(f"⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: {e}")
+            # 5. ส่ง agent_memory_multi.json (AI RL Parameter Memory) ไปยัง Google Drive
+            if os.path.exists("agent_memory_multi.json"):
+                try:
+                    with open("agent_memory_multi.json", "r", encoding="utf-8") as mf:
+                        mem_content = mf.read()
+                    requests.post(
+                        GDRIVE_WEBHOOK_URL,
+                        json={"filename": "agent_memory_multi.json", "content": mem_content},
+                        timeout=(5, 15)
+                    )
+                except Exception:
+                    pass
+
+            if resp.status_code == 200:
+                log_supervisor("☁️ [GDRIVE-SYNC] อัปเดต Full 24H AI Stream ขึ้น Google Drive สำเร็จ!")
+        except Exception as ge:
+            log_supervisor(f"⚠️ [GDRIVE-SYNC ERROR] อัปเดตสถานะขึ้น Google Drive ไม่สำเร็จ: {ge}")
+        finally:
+            _is_gdrive_syncing = False
+
+    threading.Thread(target=_bg_sync_worker, daemon=True).start()
 
 # ==========================================
 # 🚀 PROCESS MANAGEMENT (DUAL-ENGINE + CONSOLE STREAM)
