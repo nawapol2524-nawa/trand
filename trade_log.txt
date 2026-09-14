@@ -536,3 +536,19 @@
 [2026-09-14 14:50:32] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
 [2026-09-14 14:50:32] 🧠 [GROQ AI ENGINE] สถานะ: 🟢 พร้อมใช้งาน (v3 News-Aware)
 [2026-09-14 14:50:32] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔄 RECOVERED ACTIVE POSITION - AVAX/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine                : Binance Testnet Spot
+║  • Symbol                : AVAX/USDT
+║  • Entry Price           : $7.297000
+║  • Position Size         : 1.16
+║  • Take Profit (TP)      : $11.061000
+║  • Stop Loss (SL)        : $7.364610
+║  • Breakeven Locked      : True
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-14 14:52:15] 🔄 [RECOVER] กู้คืนสถานะการถือครอง AVAX/USDT @ $7.297000 (TP: $11.061000 | SL: $7.364610)
+[2026-09-14 14:52:18] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9986.29 USDT)
+[2026-09-14 14:52:18] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-14 14:52:18] 🧠 [GROQ AI ENGINE] สถานะ: 🟢 พร้อมใช้งาน (v3 News-Aware)
+[2026-09-14 14:52:18] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
