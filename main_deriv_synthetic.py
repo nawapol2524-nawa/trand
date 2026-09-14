@@ -178,7 +178,9 @@ def print_quant_table(thai_time, rows, account_info, memory, active_trade=None):
     total_trades = memory.get("total_trades", 0)
     wins = memory.get("wins", 0)
     losses = memory.get("losses", 0)
-    win_rate = (wins / total_trades * 100) if total_trades > 0 else 0.0
+    be_count = memory.get("breakevens", 0)
+    decisive_trades = wins + losses
+    win_rate = (wins / decisive_trades * 100) if decisive_trades > 0 else (100.0 if wins > 0 else 0.0)
 
     initial_demo_bal = 10000.0
     account_profit_usd = round(bal - initial_demo_bal, 2)
@@ -187,7 +189,7 @@ def print_quant_table(thai_time, rows, account_info, memory, active_trade=None):
     lines = [
         "╔═════════════════════════════════════════════════════════════════════════════════════════╗",
         f"║  ⚡ AG 2.0 QUANT TERMINAL | DERIV SYNTHETIC 24/7 (DEMO: {TARGET_DEMO_ACCOUNT:<21})     ║",
-        f"║  🕒 {thai_time} | โหมด: DERIV LIVE DEMO MULTIPLIERS (CFDs 24/7)                     ║",
+        f"║  🕒 {thai_time} | โหมด: DERIV LIVE DUAL-DIRECTION (MULTUP & MULTDOWN 24/7)            ║",
         "╠════════════╦══════════════╦══════╦══════════╦═══════════════════╦═════════════════╦════╣",
         "║ Symbol     ║ Last Price   ║ RSI  ║ BB-Width ║ Candle Pattern    ║ Position / PnL  ║ St ║",
         "╠════════════╬══════════════╬══════╬══════════╬═══════════════════╬═════════════════╬════╣"
@@ -198,11 +200,13 @@ def print_quant_table(thai_time, rows, account_info, memory, active_trade=None):
         )
     lines.append("╠════════════╩══════════════╩══════╩══════════╩═══════════════════╩═════════════════╩════╣")
     lines.append(f"║ 👤 บัญชี Demo: {loginid:<14} 💰 Balance: ${bal:>10,.2f} USD (~{bal_thb:,.0f} ฿)                   ║")
-    lines.append(f"║ 📈 กำไรพอร์ตรวม: ${account_profit_usd:+,.2f} USD ({account_profit_thb:+,.1f} ฿) | สถิติ AI: {total_trades} ไม้ (ชนะ {wins} | แพ้ {losses} | WR: {win_rate:4.1f}%) ║")
+    stat_str = f"สถิติ AI: {total_trades} ไม้ (ชนะ {wins} | เซฟ {be_count} | แพ้ {losses} | WR: {win_rate:4.1f}%)"
+    lines.append(f"║ 📈 กำไรพอร์ตรวม: ${account_profit_usd:+,.2f} USD ({account_profit_thb:+,.1f} ฿) | {stat_str:<39} ║")
     if active_trade and active_trade.get("contract_id"):
         pattern_str = active_trade.get('pattern', 'None')
         rr_val = active_trade.get('estimated_rr', 1.0)
-        lines.append(f"║ 🎫 Active: #{str(active_trade.get('contract_id')):<12} {active_trade.get('symbol'):<6} x{active_trade.get('multiplier', DEFAULT_MULTIPLIER):<3} | {pattern_str:<16} | Est R:R 1:{rr_val:<4.1f} ║")
+        c_type = active_trade.get('contract_type', active_trade.get('type', 'MULTUP'))
+        lines.append(f"║ 🎫 Active: #{str(active_trade.get('contract_id')):<12} {active_trade.get('symbol'):<5} {c_type:<8} x{active_trade.get('multiplier', DEFAULT_MULTIPLIER):<3} | {pattern_str:<14} | R:R 1:{rr_val:<4.1f} ║")
     lines.append("╚═════════════════════════════════════════════════════════════════════════════════════════╝")
 
     full_text = "\n".join(lines)
@@ -259,10 +263,15 @@ def save_memory(mem):
                 pass
 
 def record_trade_result(mem, profit_usd, profit_thb, trade, exit_price, reason=""):
-    """บันทึกผลการเทรด PnL ลง synthetic_memory.json แบบ Atomic"""
+    """บันทึกผลการเทรด PnL ลง synthetic_memory.json แบบ Atomic พร้อมแยกหมวดเซฟทุน (Breakeven)"""
     mem["total_trades"] = mem.get("total_trades", 0) + 1
-    if profit_usd >= 0:
+    
+    # วินัยเชิงปริมาณ: แยกกำไรแท้จริง vs ล็อกหน้าทุนเสมอตัว vs ขาดทุน
+    is_be = (abs(profit_usd) <= 0.06) or ("BE" in reason) or ("Breakeven" in reason)
+    if profit_usd > 0.05:
         mem["wins"] = mem.get("wins", 0) + 1
+    elif is_be:
+        mem["breakevens"] = mem.get("breakevens", 0) + 1
     else:
         mem["losses"] = mem.get("losses", 0) + 1
         current_oversold = mem.get("learned_params", {}).get("rsi_oversold", 35.0)
@@ -275,10 +284,12 @@ def record_trade_result(mem, profit_usd, profit_thb, trade, exit_price, reason="
     if "history" not in mem:
         mem["history"] = []
 
+    c_type = trade.get("contract_type", trade.get("type", "MULTUP")) if trade else "MULTUP"
     mem["history"].append({
         "contract_id": trade.get("contract_id") if trade else None,
         "symbol": trade.get("symbol") if trade else "N/A",
-        "type": trade.get("type", "MULTUP") if trade else "MULTUP",
+        "type": c_type,
+        "contract_type": c_type,
         "multiplier": trade.get("multiplier", DEFAULT_MULTIPLIER) if trade else DEFAULT_MULTIPLIER,
         "entry_price": trade.get("entry_price") if trade else 0.0,
         "exit_price": exit_price,
@@ -389,12 +400,16 @@ def calculate_bb_rsi(candles, symbol="R_75", period=20, std_dev=2.0, rsi_period=
     is_bullish_engulfing = (prev['close'] < prev['open']) and (curr['close'] > curr['open']) and (curr['open'] <= prev['close']) and (curr['close'] >= prev['open']) and (body > prev_body)
     is_morning_star = (prev2['close'] < prev2['open']) and (prev_body < (prev2_body * 0.3)) and (curr['close'] > curr['open']) and (curr['close'] > (prev2['close'] + prev2['open']) / 2)
 
-    # 4. Brad Goh SMC Step 4: Liquidity Sweep (ราคากวาด Low แท่งก่อนหน้าแล้วดีดกลับขึ้นมาปิดเหนือ Low เดิม)
+    # 4. Brad Goh SMC Step 4: Liquidity Sweep (High & Low)
     prior_lows = [c['low'] for c in candles[-11:-1]]
     prior_swing_low = min(prior_lows) if prior_lows else curr['low']
     is_liquidity_sweep = (curr['low'] < prior_swing_low) and (curr['close'] > prior_swing_low)
 
-    # 5. วิเคราะห์เชิงลึกผ่านโมดูล synthetic_candlestick
+    prior_highs = [c['high'] for c in candles[-11:-1]]
+    prior_swing_high = max(prior_highs) if prior_highs else curr['high']
+    is_bearish_sweep = (curr['high'] > prior_swing_high) and (curr['close'] < prior_swing_high)
+
+    # 5. วิเคราะห์เชิงลึกผ่านโมดูล synthetic_candlestick (Dual-Direction 2 ทิศทาง)
     c_setup = None
     if sc is not None:
         try:
@@ -404,17 +419,30 @@ def calculate_bb_rsi(candles, symbol="R_75", period=20, std_dev=2.0, rsi_period=
             c_setup = None
 
     if c_setup:
-        has_bullish_pattern = c_setup['has_setup']
-        pattern_name = c_setup['pattern_name']
-        quality_score = c_setup['quality_score']
-        dynamic_sl_pips = c_setup['dynamic_sl_pips']
-        estimated_rr = c_setup['estimated_rr']
-        bearish_exit = c_setup['bearish_exit']
-        is_pin_bar = c_setup['details'].get('is_pin_bar', is_pin_bar)
-        is_hammer = c_setup['details'].get('is_hammer', is_hammer)
-        is_liquidity_sweep = c_setup['details'].get('is_liquidity_sweep', is_liquidity_sweep)
+        has_bullish_pattern = c_setup.get('has_bullish_setup', False)
+        has_bearish_pattern = c_setup.get('has_bearish_setup', False)
+        setup_direction = c_setup.get('setup_direction', 'NONE')
+        pattern_name = c_setup.get('pattern_name', 'None')
+        quality_score = c_setup.get('quality_score', 0.0)
+        dynamic_sl_pips = c_setup.get('dynamic_sl_pips', 20.0)
+        estimated_rr = c_setup.get('estimated_rr', 1.5)
+        bearish_exit = c_setup.get('bearish_exit', False)
+        bullish_exit = c_setup.get('bullish_exit', False)
+        bullish_score = c_setup.get('bullish_score', 0.0)
+        bearish_score = c_setup.get('bearish_score', 0.0)
+        bullish_name = c_setup.get('bullish_name', 'None')
+        bearish_name = c_setup.get('bearish_name', 'None')
+        bullish_sl_pips = c_setup.get('bullish_sl_pips', 20.0)
+        bearish_sl_pips = c_setup.get('bearish_sl_pips', 20.0)
+        bullish_rr = c_setup.get('bullish_rr', 1.5)
+        bearish_rr = c_setup.get('bearish_rr', 1.5)
+        is_pin_bar = c_setup.get('details', {}).get('is_pin_bar', is_pin_bar)
+        is_hammer = c_setup.get('details', {}).get('is_hammer', is_hammer)
+        is_liquidity_sweep = c_setup.get('details', {}).get('is_liquidity_sweep', is_liquidity_sweep)
     else:
         has_bullish_pattern = is_hammer or is_pin_bar or is_bullish_engulfing or is_morning_star or is_liquidity_sweep
+        has_bearish_pattern = is_bearish_sweep
+        setup_direction = 'BUY' if has_bullish_pattern else ('SELL' if has_bearish_pattern else 'NONE')
         pattern_name = "Sweep+Rej" if (is_liquidity_sweep and (is_pin_bar or is_hammer)) else (
             "LiqSweep" if is_liquidity_sweep else (
                 "Hammer" if is_hammer else (
@@ -430,17 +458,38 @@ def calculate_bb_rsi(candles, symbol="R_75", period=20, std_dev=2.0, rsi_period=
         dynamic_sl_pips = 20.0
         estimated_rr = 1.5
         bearish_exit = False
+        bullish_exit = False
+        bullish_score = quality_score
+        bearish_score = 0.0
+        bullish_name = pattern_name
+        bearish_name = "None"
+        bullish_sl_pips = 20.0
+        bearish_sl_pips = 20.0
+        bullish_rr = 1.5
+        bearish_rr = 1.0
 
     return {
         'price': closes[-1],
         'sma': sma,
         'has_bullish_pattern': has_bullish_pattern,
+        'has_bearish_pattern': has_bearish_pattern,
+        'setup_direction': setup_direction,
         'pattern_name': pattern_name,
         'quality_score': quality_score,
+        'bullish_score': bullish_score,
+        'bearish_score': bearish_score,
+        'bullish_name': bullish_name,
+        'bearish_name': bearish_name,
         'dynamic_sl_pips': dynamic_sl_pips,
+        'bullish_sl_pips': bullish_sl_pips,
+        'bearish_sl_pips': bearish_sl_pips,
         'estimated_rr': estimated_rr,
+        'bullish_rr': bullish_rr,
+        'bearish_rr': bearish_rr,
         'bearish_exit': bearish_exit,
+        'bullish_exit': bullish_exit,
         'is_liquidity_sweep': is_liquidity_sweep,
+        'is_bearish_sweep': is_bearish_sweep,
         'is_pin_bar': is_pin_bar,
         'is_hammer': is_hammer,
         'upper_bb': upper_bb,
@@ -471,8 +520,8 @@ def _query_groq_api_sync(url, headers, data):
         with urllib.request.urlopen(req, timeout=10) as r:
             return MockResp(r.status, r.read().decode("utf-8"))
 
-async def ask_groq_ai_sentiment(symbol, price, rsi, pattern_name, bb_width):
-    """ประเมินความปลอดภัยของสัญญาณ BUY ด้วย Groq AI แบบ Non-blocking"""
+async def ask_groq_ai_sentiment(symbol, price, rsi, pattern_name, bb_width, direction="BUY"):
+    """ประเมินความปลอดภัยของสัญญาณ (BUY หรือ SELL) ด้วย Groq AI แบบ Non-blocking"""
     if not GROQ_API_KEY:
         return True
 
@@ -480,18 +529,20 @@ async def ask_groq_ai_sentiment(symbol, price, rsi, pattern_name, bb_width):
         url = "https://api.groq.com/openai/v1/chat/completions"
         headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
 
+        condition_desc = "Oversold bounce condition" if direction == "BUY" else "Overbought rejection condition"
         prompt = f"""You are an ultra-precise quantitative analyst evaluating Synthetic Volatility Indices (Deriv 24/7).
 Asset: {symbol} (Simulated Volatility Index)
 Current Price: {price:.4f}
-RSI(14): {rsi:.1f} (Oversold condition)
+RSI(14): {rsi:.1f} ({condition_desc})
 Pattern: {pattern_name}
 Bollinger BandWidth: {bb_width:.5f}
 Timeframe: 15m
+Direction Proposed: {direction}
 
-Setup: Brad Goh SMC Liquidity Sweep & Mean Reversion BUY strategy.
+Setup: Brad Goh SMC Liquidity Sweep & Mean Reversion {direction} strategy.
 Synthetics are not affected by economic news, only pure statistical volatility and mean-reversion mechanics.
 
-Is this BUY setup statistically sound and safe to execute on a Demo micro-account?
+Is this {direction} setup statistically sound and safe to execute on a Demo micro-account?
 Reply ONLY with YES or NO."""
 
         data = {
@@ -505,10 +556,10 @@ Reply ONLY with YES or NO."""
         if res.status_code == 200:
             content = res.json()["choices"][0]["message"]["content"].strip().upper()
             is_approved = "NO" not in content
-            status_text = "APPROVED (YES)" if is_approved else "REJECTED (NO)"
+            status_text = f"APPROVED ({direction} YES)" if is_approved else f"REJECTED ({direction} NO)"
 
             print_highlight_box(
-                f"GROQ AI SYNTHETIC EVALUATION - {symbol}",
+                f"GROQ AI SYNTHETIC EVALUATION ({direction}) - {symbol}",
                 [
                     ("Decision", status_text),
                     ("Strategy", f"Price: {price:.4f} | RSI: {rsi:.1f} | {pattern_name}"),
@@ -519,14 +570,14 @@ Reply ONLY with YES or NO."""
 
             if notifier:
                 try:
-                    notifier.notify_ai_evaluation("Deriv Synthetic", symbol, status_text, f"Price: {price:.4f}, RSI: {rsi:.1f}, Pattern: {pattern_name}")
+                    notifier.notify_ai_evaluation("Deriv Synthetic", symbol, status_text, f"{direction} | Price: {price:.4f}, RSI: {rsi:.1f}, Pattern: {pattern_name}")
                 except Exception:
                     pass
 
             if not is_approved:
-                log(f"🧠 [GROQ AI] ปฏิเสธการเปิดไม้ {symbol} (AI ประเมินว่าความผันผวนยังไม่เหมาะสม)")
+                log(f"🧠 [GROQ AI] ปฏิเสธการเปิดไม้ {symbol} ({direction}) (AI ประเมินว่าความผันผวนยังไม่เหมาะสม)")
                 return False
-            log(f"🧠 [GROQ AI] อนุมัติการเปิดไม้ {symbol} (AI คอนเฟิร์มสัญญาณ Mean Reversion)")
+            log(f"🧠 [GROQ AI] อนุมัติการเปิดไม้ {symbol} ({direction}) (AI คอนเฟิร์มสัญญาณ Mean Reversion)")
             return True
         else:
             return True
@@ -698,7 +749,7 @@ async def get_valid_multiplier(ws, symbol):
             available = res["contracts_for"]["available"]
             mult_contracts = [
                 c for c in available
-                if c.get("contract_type") == "MULTUP" or c.get("contract_category") == "multiplier"
+                if c.get("contract_type") in ("MULTUP", "MULTDOWN") or c.get("contract_category") == "multiplier"
             ]
             if mult_contracts:
                 c = mult_contracts[0]
@@ -713,10 +764,10 @@ async def get_valid_multiplier(ws, symbol):
 
     return fallback_mult
 
-async def request_multiplier_proposal(ws, symbol, stake, multiplier):
+async def request_multiplier_proposal(ws, symbol, stake, multiplier, contract_type="MULTUP"):
     """
     ส่งคำขอ Proposal สัญญา Multipliers ไปยัง Deriv WebSocket:
-    {"proposal": 1, "amount": STAKE_USD, "basis": "stake", "contract_type": "MULTUP", "currency": "USD", "multiplier": multiplier, "underlying_symbol": symbol}
+    {"proposal": 1, "amount": STAKE_USD, "basis": "stake", "contract_type": contract_type, "currency": "USD", "multiplier": multiplier, "underlying_symbol": symbol}
     พร้อมกลไก Fallback และ Auto-Healing จากข้อความ Error ของ Deriv
     """
     symbol_alts = SYMBOL_MULTIPLIER_MAP.get(symbol, [multiplier, 100, 50, 40, 20, 160])
@@ -730,7 +781,7 @@ async def request_multiplier_proposal(ws, symbol, stake, multiplier):
             "proposal": 1,
             "amount": float(stake),
             "basis": "stake",
-            "contract_type": "MULTUP",
+            "contract_type": contract_type,
             "currency": "USD",
             "multiplier": int(mult),
             "underlying_symbol": symbol
@@ -746,7 +797,7 @@ async def request_multiplier_proposal(ws, symbol, stake, multiplier):
 
                 # กรณีเงินไม่พอ (InsufficientBalance) บล็อกการลูปต่อทันที
                 if code == "InsufficientBalance":
-                    log(f"⚠️ [INSUFFICIENT BALANCE] ยอดเงินคงเหลือไม่พอเปิดสัญญา {symbol} (Stake: ${stake}): {msg}")
+                    log(f"⚠️ [INSUFFICIENT BALANCE] ยอดเงินคงเหลือไม่พอเปิดสัญญา {symbol} ({contract_type}, Stake: ${stake}): {msg}")
                     return None, None
 
                 # กรณีตลาดปิดทำการ (MarketClosed)
@@ -775,7 +826,7 @@ async def request_multiplier_proposal(ws, symbol, stake, multiplier):
                         "proposal": 1,
                         "amount": float(stake),
                         "basis": "stake",
-                        "contract_type": "MULTUP",
+                        "contract_type": contract_type,
                         "currency": "USD",
                         "multiplier": int(mult),
                         "symbol": symbol
@@ -787,7 +838,7 @@ async def request_multiplier_proposal(ws, symbol, stake, multiplier):
                     except Exception:
                         pass
 
-                log(f"⚠️ Proposal {symbol} multiplier x{mult} ไม่ผ่าน ({code}): {msg}")
+                log(f"⚠️ Proposal {symbol} ({contract_type}) multiplier x{mult} ไม่ผ่าน ({code}): {msg}")
         except Exception as e:
             log(f"⚠️ Proposal {symbol} x{mult} ขัดข้อง: {e}")
 
@@ -882,10 +933,11 @@ async def recover_active_position(ws, saved_trade, memory_ref):
             try:
                 stake = float(saved_trade.get("stake", STAKE_USD))
                 pnl_pct = (profit_usd / stake * 100) if stake > 0 else 0.0
-                if profit_usd >= 0:
-                    notifier.notify_tp("Deriv Synthetic", sym, exit_price, pnl_pct=pnl_pct, pnl_amount=profit_usd, currency="USD", lesson=f"Offline Closed", contract_id=contract_id)
+                is_be = (abs(profit_usd) <= 0.06) or saved_trade.get('be_locked', False)
+                if profit_usd > 0.05:
+                    notifier.notify_tp("Deriv Synthetic", sym, exit_price, pnl_pct=pnl_pct, pnl_amount=profit_usd, currency="USD", lesson="Offline Closed", contract_id=contract_id)
                 else:
-                    notifier.notify_sl("Deriv Synthetic", sym, exit_price, pnl_pct=pnl_pct, pnl_amount=profit_usd, currency="USD", lesson=f"Offline Closed", contract_id=contract_id)
+                    notifier.notify_sl("Deriv Synthetic", sym, exit_price, pnl_pct=pnl_pct, pnl_amount=profit_usd, currency="USD", is_breakeven=is_be, lesson="Offline Closed", contract_id=contract_id)
             except Exception:
                 pass
 
@@ -895,6 +947,7 @@ async def recover_active_position(ws, saved_trade, memory_ref):
         cur_spot = float(poc.get("current_spot", saved_trade.get("entry_price", 0.0)))
         saved_trade["current_spot"] = cur_spot
         saved_trade["current_profit"] = profit_usd
+        c_type = saved_trade.get('contract_type', saved_trade.get('type', 'MULTUP'))
 
         print_highlight_box(
             f"DERIV SYNTHETIC LIVE POSITION RECOVERED - {sym}",
@@ -902,7 +955,7 @@ async def recover_active_position(ws, saved_trade, memory_ref):
                 ("Demo Account", TARGET_DEMO_ACCOUNT),
                 ("Contract ID", str(contract_id)),
                 ("Symbol", sym),
-                ("Contract Type", f"MULTUP (x{saved_trade.get('multiplier', DEFAULT_MULTIPLIER)})"),
+                ("Contract Type", f"{c_type} (x{saved_trade.get('multiplier', DEFAULT_MULTIPLIER)})"),
                 ("Entry Spot", f"{float(poc.get('entry_spot', saved_trade.get('entry_price', 0))):.4f}"),
                 ("Current Spot", f"{cur_spot:.4f}"),
                 ("Unrealized Profit", f"${profit_usd:+.2f} USD (≈ {profit_thb:+.1f} THB)"),
@@ -910,7 +963,7 @@ async def recover_active_position(ws, saved_trade, memory_ref):
             ],
             icon="🔄"
         )
-        log(f"✅ [RECOVERY] กู้คืนสัญญาจริง #{contract_id} สำเร็จ! เข้าสู่โหมดเฝ้าไม้ต่อทันที")
+        log(f"✅ [RECOVERY] กู้คืนสัญญาจริง #{contract_id} ({c_type}) สำเร็จ! เข้าสู่โหมดเฝ้าไม้ต่อทันที")
         return saved_trade
 
 # ==========================================
@@ -1103,7 +1156,13 @@ async def deriv_synthetic_engine():
                                 cur_price = current_spot
                                 entry = float(active_trade.get('entry_price', cur_price))
                                 sym_pip_size = get_pip_size(curr_sym, entry)
-                                diff_pips = (cur_price - entry) / sym_pip_size
+                                c_type = active_trade.get('contract_type', active_trade.get('type', 'MULTUP'))
+
+                                if c_type == 'MULTDOWN':
+                                    diff_pips = (entry - cur_price) / sym_pip_size
+                                else:
+                                    diff_pips = (cur_price - entry) / sym_pip_size
+
                                 trailing_sl_pips = active_trade.get('trailing_sl_pips', INITIAL_SL_PIPS)
 
                                 # Auto-Breakeven เมื่อกำไรแตะ +10 pips
@@ -1114,10 +1173,11 @@ async def deriv_synthetic_engine():
                                     save_state(active_trade)
 
                                     print_highlight_box(
-                                        f"AUTO-BREAKEVEN ACTIVATED - {curr_sym}",
+                                        f"AUTO-BREAKEVEN ACTIVATED ({c_type}) - {curr_sym}",
                                         [
                                             ("Engine", "Deriv Synthetic 24/7"),
                                             ("Contract ID", str(contract_id)),
+                                            ("Direction", c_type),
                                             ("Current Spot", f"{cur_price:.4f}"),
                                             ("Profit Pips", f"+{diff_pips:.1f} pips"),
                                             ("New Trailing SL", "+1.0 pip (ล็อกหน้าทุน 100% ไร้ความเสี่ยง)")
@@ -1126,7 +1186,8 @@ async def deriv_synthetic_engine():
                                     )
                                     if notifier:
                                         try:
-                                            notifier.notify_breakeven("Deriv Synthetic", curr_sym, cur_price, entry + (1.0 * sym_pip_size), diff_pips, contract_id=contract_id)
+                                            be_price = (entry - 1.0 * sym_pip_size) if c_type == 'MULTDOWN' else (entry + 1.0 * sym_pip_size)
+                                            notifier.notify_breakeven("Deriv Synthetic", f"{curr_sym} ({c_type})", cur_price, be_price, diff_pips, contract_id=contract_id)
                                         except Exception:
                                             pass
 
@@ -1139,9 +1200,10 @@ async def deriv_synthetic_engine():
                                         save_state(active_trade)
 
                                         print_highlight_box(
-                                            f"DYNAMIC TRAILING RUN - {curr_sym}",
+                                            f"DYNAMIC TRAILING RUN ({c_type}) - {curr_sym}",
                                             [
                                                 ("Contract ID", str(contract_id)),
+                                                ("Direction", c_type),
                                                 ("Current Spot", f"{cur_price:.4f}"),
                                                 ("Profit Pips", f"+{diff_pips:.1f} pips"),
                                                 ("Trailing SL", f"+{trailing_sl_pips:.1f} pips (Let Profit Run!)")
@@ -1150,31 +1212,38 @@ async def deriv_synthetic_engine():
                                         )
                                         if notifier:
                                             try:
-                                                notifier.notify_trailing("Deriv Synthetic", curr_sym, cur_price, cur_price - (10.0 * sym_pip_size), diff_pips, contract_id=contract_id)
+                                                sl_spot = (cur_price + 10.0 * sym_pip_size) if c_type == 'MULTDOWN' else (cur_price - 10.0 * sym_pip_size)
+                                                notifier.notify_trailing("Deriv Synthetic", f"{curr_sym} ({c_type})", cur_price, sl_spot, diff_pips, contract_id=contract_id)
                                             except Exception:
                                                 pass
 
-                                # ตรวจสอบเงื่อนไขการปิดสัญญา:
-                                # - ปิดสัญญาด้วย {"sell": contract_id, "price": 0} เมื่อราคาแตะ Upper Bollinger Band, เกิด Bearish Reversal, หรือแตะ Trailing Stop
+                                # ตรวจสอบเงื่อนไขการปิดสัญญา
                                 hold_sec = time.time() - active_trade.get('start_time', time.time())
                                 is_sl = diff_pips <= trailing_sl_pips
-                                upper_bb = inds['upper_bb'] if inds else cur_price * 1.05
-                                is_bb_target = (cur_price >= upper_bb) and (diff_pips >= 5.0)
-                                is_bearish_exit = (inds.get('bearish_exit', False) if inds else False) and (diff_pips >= 6.0)
+
+                                if c_type == 'MULTDOWN':
+                                    target_bb = inds['lower_bb'] if inds else cur_price * 0.95
+                                    is_bb_target = (cur_price <= target_bb) and (diff_pips >= 5.0)
+                                    is_reversal_exit = (inds.get('bullish_exit', False) if inds else False) and (diff_pips >= 6.0)
+                                else:
+                                    target_bb = inds['upper_bb'] if inds else cur_price * 1.05
+                                    is_bb_target = (cur_price >= target_bb) and (diff_pips >= 5.0)
+                                    is_reversal_exit = (inds.get('bearish_exit', False) if inds else False) and (diff_pips >= 6.0)
+
                                 is_timeout = hold_sec >= 2700 and not (diff_pips >= 15.0)
                                 is_be_hit = is_sl and active_trade.get('be_locked', False)
 
-                                if is_be_hit or is_sl or is_bb_target or is_bearish_exit or is_timeout:
+                                if is_be_hit or is_sl or is_bb_target or is_reversal_exit or is_timeout:
                                     close_reason = (
-                                        "Bearish Reversal TP" if is_bearish_exit else (
-                                            "Upper BB TP" if is_bb_target else (
+                                        f"{'Bullish' if c_type == 'MULTDOWN' else 'Bearish'} Reversal TP" if is_reversal_exit else (
+                                            f"{'Lower' if c_type == 'MULTDOWN' else 'Upper'} BB TP" if is_bb_target else (
                                                 "BE Hit" if is_be_hit else (
                                                     "Trailing SL" if is_sl else "Timeout"
                                                 )
                                             )
                                         )
                                     )
-                                    log(f"⚡ [EXIT TRIGGER] {close_reason} สำหรับสัญญา #{contract_id} ({curr_sym}) -> ส่งคำสั่งขาย sell...")
+                                    log(f"⚡ [EXIT TRIGGER] {close_reason} สำหรับสัญญา #{contract_id} ({curr_sym} {c_type}) -> ส่งคำสั่งขาย sell...")
 
                                     sell_res = await execute_multiplier_sell(ws, contract_id)
                                     if sell_res:
@@ -1184,20 +1253,21 @@ async def deriv_synthetic_engine():
                                         balance_after = float(sell_res.get("balance_after", account_info["balance"] + profit_usd))
                                         account_info["balance"] = balance_after
 
-                                        if is_be_hit:
-                                            status_title = "SL-BREAKEVEN CLOSED"
+                                        is_safe_be = is_be_hit or (abs(profit_usd) <= 0.06)
+                                        if is_safe_be:
+                                            status_title = "SL-BREAKEVEN CLOSED (CAPITAL SAFE 🛡️)"
                                             icon_str = "🛡️"
-                                        elif is_bearish_exit:
-                                            status_title = "EARLY TAKE PROFIT (BEARISH REVERSAL ON UPPER BB)"
+                                        elif is_reversal_exit:
+                                            status_title = f"EARLY TAKE PROFIT ({c_type} REVERSAL)"
                                             icon_str = "🎯"
                                         elif is_bb_target:
-                                            status_title = "TAKE PROFIT (UPPER BB - BRAD GOH เข้าไวออกไวกว่า)"
+                                            status_title = f"TAKE PROFIT ({c_type} BB TARGET)"
                                             icon_str = "🎯"
-                                        elif profit_usd >= 0:
-                                            status_title = "TAKE PROFIT (WIN)"
+                                        elif profit_usd > 0.05:
+                                            status_title = f"TAKE PROFIT ({c_type} WIN)"
                                             icon_str = "🎯"
                                         else:
-                                            status_title = "STOP LOSS (LOSS)"
+                                            status_title = f"STOP LOSS ({c_type} LOSS)"
                                             icon_str = "🛑"
 
                                         print_highlight_box(
@@ -1205,6 +1275,7 @@ async def deriv_synthetic_engine():
                                             [
                                                 ("Engine / Account", f"Deriv Synthetic (Demo: {TARGET_DEMO_ACCOUNT})"),
                                                 ("Contract ID", str(contract_id)),
+                                                ("Direction", c_type),
                                                 ("Exit Price", f"{cur_price:.4f}"),
                                                 ("Result Pips", f"{diff_pips:+.1f} pips"),
                                                 ("Net Profit", f"${profit_usd:+,.2f} USD (≈ {profit_thb:+,.1f} THB)"),
@@ -1218,10 +1289,10 @@ async def deriv_synthetic_engine():
                                         if notifier:
                                             try:
                                                 pnl_pct = (profit_usd / buy_price * 100) if buy_price > 0 else 0.0
-                                                if profit_usd >= 0:
-                                                    notifier.notify_tp("Deriv Synthetic", curr_sym, cur_price, pnl_pct, profit_usd, "USD", lesson=close_reason, contract_id=contract_id)
+                                                if profit_usd > 0.05:
+                                                    notifier.notify_tp("Deriv Synthetic", f"{curr_sym} ({c_type})", cur_price, pnl_pct, profit_usd, "USD", lesson=close_reason, contract_id=contract_id)
                                                 else:
-                                                    notifier.notify_sl("Deriv Synthetic", curr_sym, cur_price, pnl_pct, profit_usd, "USD", is_breakeven=is_be_hit, lesson=close_reason, contract_id=contract_id)
+                                                    notifier.notify_sl("Deriv Synthetic", f"{curr_sym} ({c_type})", cur_price, pnl_pct, profit_usd, "USD", is_breakeven=is_safe_be, lesson=close_reason, contract_id=contract_id)
                                             except Exception:
                                                 pass
 
@@ -1253,136 +1324,168 @@ async def deriv_synthetic_engine():
                             price = inds['price']
                             rsi = inds['rsi']
                             lower_bb = inds['lower_bb']
+                            upper_bb = inds['upper_bb']
                             bb_width = inds.get('bb_width', 0.001)
                             ema50 = inds.get('ema50', price)
-                            learned_oversold = memory.get("learned_params", {}).get("rsi_oversold", 35.0)
-
-                            if price < ema50 * 0.998:
-                                effective_oversold = min(learned_oversold, 28.0)
-                            else:
-                                effective_oversold = learned_oversold
-
                             is_squeezed = bb_width < 0.0004
-                            has_candle_setup = inds.get('has_bullish_pattern', False)
-                            pattern_score = float(inds.get('quality_score', 0.0))
-                            dynamic_sl_pips = float(inds.get('dynamic_sl_pips', 20.0))
-                            estimated_rr = float(inds.get('estimated_rr', 1.5))
-                            pattern_name = inds.get('pattern_name', 'None')
-                            is_sweep = inds.get('is_liquidity_sweep', False)
-                            is_pin_bar = inds.get('is_pin_bar', False)
-                            is_hammer = inds.get('is_hammer', False)
 
-                            # 🕯️ เงื่อนไขการเปิดไม้ด้วย Candlestick Intelligence:
-                            # 1. ไม่เปิดในช่วง Squeeze แคบผิดปกติ
-                            # 2. ต้องมีสัญญาณแท่งเทียนยืนยัน (has_candle_setup หรือ Score >= 60 หรือ Liquidity Sweep)
-                            # 3. ป้องกัน Falling Knives: ถ้า Pattern Score < 50 ห้ามเปิดเด็ดขาด!
-                            # 4. RSI ต้องอยู่ในโซน Oversold (<= 45.0)
-                            # 5. ราคาต้องอยู่ใกล้ Lower BB (<= lower_bb * 1.002)
-                            is_candlestick_confirmed = (has_candle_setup or pattern_score >= 60.0 or is_sweep) and (pattern_score >= 50.0)
-                            is_oversold_zone = (rsi <= 45.0) and (price <= lower_bb * 1.002)
+                            if is_squeezed:
+                                continue
 
-                            if not is_squeezed and is_candlestick_confirmed and is_oversold_zone:
-                                trigger_name = f"{pattern_name} (Score: {pattern_score:.0f}/100 | R:R 1:{estimated_rr:.1f})"
+                            # ----------------------------------------------------
+                            # 🎯 SNIPER DUAL-DIRECTION SELECTION (MULTUP & MULTDOWN)
+                            # ----------------------------------------------------
+                            is_buy_signal = False
+                            is_sell_signal = False
 
-                                spread_pips, ask_p, bid_p = await get_live_spread(ws, sym)
-                                max_allowed_spread = 5.0
-                                if spread_pips is not None and spread_pips > max_allowed_spread:
-                                    log(f"⚠️ [SPREAD FILTER] สเปรดสด {sym} ถ่างเกินปกติ: {spread_pips:.1f} pips > {max_allowed_spread} pips -> ข้ามจังหวะเพื่อความปลอดภัย")
-                                    continue
+                            has_bull = inds.get('has_bullish_pattern', False)
+                            bull_score = float(inds.get('bullish_score', 0.0))
+                            has_bear = inds.get('has_bearish_pattern', False)
+                            bear_score = float(inds.get('bearish_score', 0.0))
 
-                                is_ai_approved = await ask_groq_ai_sentiment(sym, price, rsi, trigger_name, bb_width)
-                                if not is_ai_approved:
-                                    continue
+                            # 🟢 1. ประเมินฝั่ง BUY (MULTUP)
+                            # กฎ Anti-Falling Knife: ถ้าราคาอยู่ใต้ EMA50 (Downtrend) บังคับเงื่อนไขเข้มข้นสูงสุด
+                            if price < ema50 * 0.999:
+                                # ขาลง -> เข้า Buy เมื่อ Oversold สุดขีด (<= 32) + Reversal คุณภาพสูงลิ่ว (Score >= 70)
+                                if (rsi <= 32.0) and (price <= lower_bb * 1.002) and has_bull and (bull_score >= 70.0):
+                                    is_buy_signal = True
+                            else:
+                                # ขาขึ้นหรือไซด์เวย์ -> ย่อตัวแตะ Lower BB
+                                if (rsi <= 45.0) and (price <= lower_bb * 1.003) and has_bull and (bull_score >= 60.0):
+                                    is_buy_signal = True
 
-                                # ตรวจสอบความปลอดภัยบัญชี Demo ก่อนเปิดไม้
-                                if account_info.get("loginid") != TARGET_DEMO_ACCOUNT and not account_info.get("loginid", "").startswith("DOT"):
-                                    log(f"🚨 [SAFETY LOCK] บัญชี ({account_info.get('loginid')}) ไม่ตรงกับ Demo {TARGET_DEMO_ACCOUNT} -> บล็อกการเปิดไม้")
-                                    break
+                            # 🔴 2. ประเมินฝั่ง SELL (MULTDOWN)
+                            # กฎ Anti-Rocket Chasing: ถ้าราคาอยู่เหนือ EMA50 (Uptrend) บังคับเงื่อนไขเข้มข้นสูงสุด
+                            if price > ema50 * 1.001:
+                                # ขาขึ้น -> เข้า Sell เมื่อ Overbought สุดขีด (>= 68) + Reversal คุณภาพสูงลิ่ว (Score >= 70)
+                                if (rsi >= 68.0) and (price >= upper_bb * 0.998) and has_bear and (bear_score >= 70.0):
+                                    is_sell_signal = True
+                            else:
+                                # ขาลงหรือไซด์เวย์ -> เด้งขึ้นไปชน Upper BB
+                                if (rsi >= 55.0) and (price >= upper_bb * 0.997) and has_bear and (bear_score >= 60.0):
+                                    is_sell_signal = True
 
-                                # ตรวจสอบค่าตัวคูณที่ Deriv อนุญาตสำหรับ Symbol
-                                valid_multiplier = await get_valid_multiplier(ws, sym)
-                                log(f"📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers ({sym}, Stake: ${STAKE_USD}, Multiplier: x{valid_multiplier})...")
+                            if not is_buy_signal and not is_sell_signal:
+                                continue
 
-                                # ส่งคำขอ Proposal สัญญา Multipliers ไปยัง Deriv WebSocket:
-                                # {"proposal": 1, "amount": STAKE_USD, "basis": "stake", "contract_type": "MULTUP", "currency": "USD", "multiplier": multiplier, "underlying_symbol": symbol}
-                                prop_data, chosen_multiplier = await request_multiplier_proposal(ws, sym, STAKE_USD, valid_multiplier)
-                                if not prop_data:
-                                    log(f"⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ {sym} ได้")
-                                    continue
+                            # เลือกลำดับสัญญาณที่เด่นชัดกว่า
+                            if is_buy_signal and is_sell_signal:
+                                chosen_dir = "BUY" if bull_score >= bear_score else "SELL"
+                            elif is_buy_signal:
+                                chosen_dir = "BUY"
+                            else:
+                                chosen_dir = "SELL"
 
-                                proposal_id = prop_data.get("id")
-                                spot_price = float(prop_data.get("spot", price))
-                                log(f"✅ [PROPOSAL OK] Proposal ID: {proposal_id} | Spot: {spot_price} | Multiplier: x{chosen_multiplier}")
+                            chosen_contract_type = "MULTUP" if chosen_dir == "BUY" else "MULTDOWN"
+                            chosen_pattern_name = inds.get('bullish_name', 'Bullish') if chosen_dir == "BUY" else inds.get('bearish_name', 'Bearish')
+                            chosen_score = bull_score if chosen_dir == "BUY" else bear_score
+                            dynamic_sl_pips = float(inds.get('bullish_sl_pips', 20.0) if chosen_dir == "BUY" else inds.get('bearish_sl_pips', 20.0))
+                            estimated_rr = float(inds.get('bullish_rr', 1.5) if chosen_dir == "BUY" else inds.get('bearish_rr', 1.5))
 
-                                # ส่งคำสั่ง {"buy": proposal_id, "price": STAKE_USD}
-                                buy_result = await execute_multiplier_buy(ws, proposal_id, STAKE_USD)
-                                if not buy_result:
-                                    log(f"❌ [BUY FAILED] การซื้อสัญญา {sym} ล้มเหลว")
-                                    continue
+                            trigger_name = f"{chosen_dir} {chosen_pattern_name} (Score: {chosen_score:.0f}/100 | R:R 1:{estimated_rr:.1f})"
 
-                                real_contract_id = buy_result.get("contract_id")
-                                actual_buy_price = float(buy_result.get("buy_price", STAKE_USD))
-                                balance_after = float(buy_result.get("balance_after", account_info["balance"] - actual_buy_price))
-                                account_info["balance"] = balance_after
-                                order_start_time = float(buy_result.get("start_time", time.time()))
+                            spread_pips, ask_p, bid_p = await get_live_spread(ws, sym)
+                            max_allowed_spread = 5.0
+                            if spread_pips is not None and spread_pips > max_allowed_spread:
+                                log(f"⚠️ [SPREAD FILTER] สเปรดสด {sym} ถ่างเกินปกติ: {spread_pips:.1f} pips > {max_allowed_spread} pips -> ข้ามจังหวะเพื่อความปลอดภัย")
+                                continue
 
-                                # ดึง contract_id จริงจากผลลัพธ์ Deriv บันทึกลง active_state_synthetic.json แบบ Atomic Write (.tmp + replace)
-                                active_trade = {
-                                    "contract_id": real_contract_id,
-                                    "symbol": sym,
-                                    "type": "MULTUP",
-                                    "entry_price": spot_price,
-                                    "stake": actual_buy_price,
-                                    "multiplier": chosen_multiplier,
-                                    "proposal_id": proposal_id,
-                                    "entry_time": get_thai_time(),
-                                    "start_time": order_start_time,
-                                    "be_locked": False,
-                                    "initial_sl_pips": dynamic_sl_pips,
-                                    "trailing_sl_pips": -abs(dynamic_sl_pips),
-                                    "pattern": pattern_name,
-                                    "pattern_score": pattern_score,
-                                    "estimated_rr": estimated_rr,
-                                    "account_id": TARGET_DEMO_ACCOUNT
-                                }
-                                save_state(active_trade)
+                            is_ai_approved = await ask_groq_ai_sentiment(sym, price, rsi, trigger_name, bb_width, direction=chosen_dir)
+                            if not is_ai_approved:
+                                continue
 
-                                spread_str = f"{spread_pips:.1f} pips" if spread_pips is not None else "Normal"
-                                print_highlight_box(
-                                    f"LIVE MULTIPLIER ORDER EXECUTED - {sym}",
-                                    [
-                                        ("Engine / Account", f"Deriv Synthetic 24/7 (Demo: {TARGET_DEMO_ACCOUNT})"),
-                                        ("Contract ID", str(real_contract_id)),
-                                        ("Contract Type", f"MULTUP (x{chosen_multiplier})"),
-                                        ("Symbol", sym),
-                                        ("Entry Price", f"{spot_price:.4f}"),
-                                        ("Live Spread", spread_str),
-                                        ("Stake", f"${actual_buy_price:.2f} USD"),
-                                        ("Candle Pattern", f"{pattern_name} (Score: {pattern_score:.0f}/100)"),
-                                        ("Dynamic SL / R:R", f"-{dynamic_sl_pips:.1f} pips | Est R:R 1:{estimated_rr:.1f}"),
-                                        ("RSI / BB-Width", f"{rsi:.1f} / {bb_width:.5f}"),
-                                        ("Account Balance", f"${balance_after:,.2f} USD")
-                                    ],
-                                    icon="🟢"
-                                )
-
-                                # แจ้งเตือนเข้า LINE ด้วย Contract ID จริง
-                                if notifier:
-                                    try:
-                                        sym_pip_size = get_pip_size(sym, spot_price)
-                                        tp_est = inds['upper_bb']
-                                        sl_est = spot_price - (abs(INITIAL_SL_PIPS) * sym_pip_size)
-                                        notifier.notify_buy(
-                                            "Deriv Synthetic", sym, spot_price, actual_buy_price,
-                                            tp_est, sl_est,
-                                            reason=f"{trigger_name}",
-                                            extra_info=f"บัญชี Demo: {TARGET_DEMO_ACCOUNT} | Multiplier: x{chosen_multiplier} | 24/7 Non-Stop",
-                                            contract_id=real_contract_id
-                                        )
-                                    except Exception as ne:
-                                        log(f"⚠️ LINE Notification error: {ne}")
-
+                            # ตรวจสอบความปลอดภัยบัญชี Demo ก่อนเปิดไม้
+                            if account_info.get("loginid") != TARGET_DEMO_ACCOUNT and not account_info.get("loginid", "").startswith("DOT"):
+                                log(f"🚨 [SAFETY LOCK] บัญชี ({account_info.get('loginid')}) ไม่ตรงกับ Demo {TARGET_DEMO_ACCOUNT} -> บล็อกการเปิดไม้")
                                 break
+
+                            # ตรวจสอบค่าตัวคูณที่ Deriv อนุญาตสำหรับ Symbol
+                            valid_multiplier = await get_valid_multiplier(ws, sym)
+                            log(f"📊 [PROPOSAL] ส่งคำขอ Proposal สัญญา Multipliers ({sym} {chosen_contract_type}, Stake: ${STAKE_USD}, Multiplier: x{valid_multiplier})...")
+
+                            prop_data, chosen_multiplier = await request_multiplier_proposal(ws, sym, STAKE_USD, valid_multiplier, contract_type=chosen_contract_type)
+                            if not prop_data:
+                                log(f"⚠️ [PROPOSAL FAILED] ไม่สามารถขอ Proposal สำหรับ {sym} ({chosen_contract_type}) ได้")
+                                continue
+
+                            proposal_id = prop_data.get("id")
+                            spot_price = float(prop_data.get("spot", price))
+                            log(f"✅ [PROPOSAL OK] Proposal ID: {proposal_id} | Spot: {spot_price} | Multiplier: x{chosen_multiplier} ({chosen_contract_type})")
+
+                            # ส่งคำสั่ง {"buy": proposal_id, "price": STAKE_USD}
+                            buy_result = await execute_multiplier_buy(ws, proposal_id, STAKE_USD)
+                            if not buy_result:
+                                log(f"❌ [BUY FAILED] การซื้อสัญญา {sym} {chosen_contract_type} ล้มเหลว")
+                                continue
+
+                            real_contract_id = buy_result.get("contract_id")
+                            actual_buy_price = float(buy_result.get("buy_price", STAKE_USD))
+                            balance_after = float(buy_result.get("balance_after", account_info["balance"] - actual_buy_price))
+                            account_info["balance"] = balance_after
+                            order_start_time = float(buy_result.get("start_time", time.time()))
+
+                            active_trade = {
+                                "contract_id": real_contract_id,
+                                "symbol": sym,
+                                "type": chosen_contract_type,
+                                "contract_type": chosen_contract_type,
+                                "entry_price": spot_price,
+                                "stake": actual_buy_price,
+                                "multiplier": chosen_multiplier,
+                                "proposal_id": proposal_id,
+                                "entry_time": get_thai_time(),
+                                "start_time": order_start_time,
+                                "be_locked": False,
+                                "initial_sl_pips": dynamic_sl_pips,
+                                "trailing_sl_pips": -abs(dynamic_sl_pips),
+                                "pattern": f"{chosen_dir} {chosen_pattern_name}",
+                                "pattern_score": chosen_score,
+                                "estimated_rr": estimated_rr,
+                                "account_id": TARGET_DEMO_ACCOUNT
+                            }
+                            save_state(active_trade)
+
+                            spread_str = f"{spread_pips:.1f} pips" if spread_pips is not None else "Normal"
+                            icon_choice = "🟢" if chosen_dir == "BUY" else "🔴"
+                            print_highlight_box(
+                                f"LIVE MULTIPLIER ORDER EXECUTED ({chosen_contract_type}) - {sym}",
+                                [
+                                    ("Engine / Account", f"Deriv Synthetic 24/7 (Demo: {TARGET_DEMO_ACCOUNT})"),
+                                    ("Contract ID", str(real_contract_id)),
+                                    ("Contract Type", f"{chosen_contract_type} (x{chosen_multiplier})"),
+                                    ("Symbol", sym),
+                                    ("Entry Price", f"{spot_price:.4f}"),
+                                    ("Live Spread", spread_str),
+                                    ("Stake", f"${actual_buy_price:.2f} USD"),
+                                    ("Candle Pattern", f"{chosen_pattern_name} (Score: {chosen_score:.0f}/100)"),
+                                    ("Dynamic SL / R:R", f"-{dynamic_sl_pips:.1f} pips | Est R:R 1:{estimated_rr:.1f}"),
+                                    ("RSI / BB-Width", f"{rsi:.1f} / {bb_width:.5f}"),
+                                    ("Account Balance", f"${balance_after:,.2f} USD")
+                                ],
+                                icon=icon_choice
+                            )
+
+                            if notifier:
+                                try:
+                                    sym_pip_size = get_pip_size(sym, spot_price)
+                                    if chosen_contract_type == "MULTDOWN":
+                                        tp_est = inds['lower_bb']
+                                        sl_est = spot_price + (dynamic_sl_pips * sym_pip_size)
+                                    else:
+                                        tp_est = inds['upper_bb']
+                                        sl_est = spot_price - (dynamic_sl_pips * sym_pip_size)
+
+                                    notifier.notify_buy(
+                                        "Deriv Synthetic", f"{sym} ({chosen_contract_type})", spot_price, actual_buy_price,
+                                        tp_est, sl_est,
+                                        reason=f"{trigger_name}",
+                                        extra_info=f"บัญชี Demo: {TARGET_DEMO_ACCOUNT} | Multiplier: x{chosen_multiplier} ({chosen_contract_type}) | 24/7 Dual-Direction Sniper",
+                                        contract_id=real_contract_id
+                                    )
+                                except Exception as ne:
+                                    log(f"⚠️ Notification error: {ne}")
+
+                            break
 
                     # พิมพ์ตารางสถานะ Quant Terminal
                     if scan_rows:
