@@ -24,6 +24,7 @@ CONSOLE_LOG_FILE = os.path.join(BASE_DIR, "console_log.txt")
 STATUS_LOG_FILE = os.path.join(BASE_DIR, "status_log.txt")
 ENGINE_CONFIG_FILE = os.path.join(BASE_DIR, "engine_config.json")
 RESTART_FLAG_FILE = os.path.join(BASE_DIR, "restart.flag")
+RELOAD_ENGINES_FLAG_FILE = os.path.join(BASE_DIR, "reload_engines.flag")
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 
 # Bot State Files (for fallback status detection)
@@ -211,10 +212,18 @@ def save_engine_config(cfg):
     except Exception:
         return False
 
-def trigger_supervisor_update(reason="Engine update"):
-    """สร้างหรืออัปเดตไฟล์ restart.flag เพื่อแจ้งเตือน Supervisor ให้ซิงค์ Worker ทันที"""
+def trigger_supervisor_update(reason="System restart"):
+    """สร้างหรืออัปเดตไฟล์ restart.flag เพื่อแจ้งเตือน Supervisor ให้ Full Restart (ใช้เฉพาะคำสั่ง restart จริงๆ เท่านั้น)"""
     try:
         with open(RESTART_FLAG_FILE, "w", encoding="utf-8") as f:
+            f.write(f"{reason} at {get_thai_time()}")
+    except Exception:
+        pass
+
+def trigger_engine_reload(reason="Engine hot reload"):
+    """สร้างหรืออัปเดตไฟล์ reload_engines.flag เพื่อให้ Supervisor สลับ Worker ทันทีแบบ Hot-swap ไร้รอยต่อ โดยไม่รีสตาร์ททั้งระบบและไม่เกิด CPU Spike"""
+    try:
+        with open(RELOAD_ENGINES_FLAG_FILE, "w", encoding="utf-8") as f:
             f.write(f"{reason} at {get_thai_time()}")
     except Exception:
         pass
@@ -222,7 +231,7 @@ def trigger_supervisor_update(reason="Engine update"):
 def set_engine_mode_config(mode: str):
     """
     ตั้งค่าโหมดเครื่องยนต์: 'synthetic' | 'all' | 'forex' | 'auto'
-    บันทึกลง engine_config.json และส่งสัญญาณ Supervisor
+    บันทึกลง engine_config.json และส่งสัญญาณ reload_engines.flag ให้ Supervisor สลับ Worker ทันที
     """
     mode = str(mode).lower().strip()
     if mode not in ("synthetic", "all", "forex", "auto"):
@@ -252,11 +261,11 @@ def set_engine_mode_config(mode: str):
 
         save_engine_config(cfg)
 
-    trigger_supervisor_update(f"Engine mode set to {mode}")
+    trigger_engine_reload(f"Engine mode set to {mode}")
     return True, cfg
 
 def toggle_engine_config(engine_name: str):
-    """สลับเปิด/ปิดเครื่องยนต์เดี่ยว (binance, forex, synthetic)"""
+    """สลับเปิด/ปิดเครื่องยนต์เดี่ยว (binance, forex, synthetic) แบบ Hot-swap"""
     engine_name = str(engine_name).lower().strip()
     with _engine_lock:
         cfg = load_engine_config()
@@ -274,7 +283,7 @@ def toggle_engine_config(engine_name: str):
 
         save_engine_config(cfg)
 
-    trigger_supervisor_update(f"Toggled {engine_name} to {val}")
+    trigger_engine_reload(f"Toggled {engine_name} to {val}")
     return True, val
 
 def detect_active_engines():
@@ -974,9 +983,12 @@ HTML_PAGE = """<!DOCTYPE html>
             } catch (err) {}
         }
 
+        let isSwitchingMode = false;
         async function setEngineMode(mode) {
+            if (isSwitchingMode) return;
+            isSwitchingMode = true;
             cmdStatus.className = 'cmd-status running';
-            cmdStatus.textContent = '⏳ กำลังสลับโหมดเป็น ' + mode + '...';
+            cmdStatus.textContent = '⏳ กำลังสลับโหมดเป็น ' + mode + ' (Hot-swap)...';
 
             try {
                 const res = await fetch('/api/set_engine_mode', {
@@ -991,8 +1003,8 @@ HTML_PAGE = """<!DOCTYPE html>
                 if (res.ok && (data.status === 'success' || data.mode)) {
                     updateEngineStatusUI(data);
                     cmdStatus.className = 'cmd-status success';
-                    cmdStatus.textContent = '✅ สลับโหมดเป็น [' + mode.toUpperCase() + '] สำเร็จ! ส่งสัญญาณรีสตาร์ท Supervisor เรียบร้อย';
-                    consoleEl.textContent += `\\n[WEB-TERMINAL] ⚙️ สลับโหมดเครื่องยนต์เป็น '${mode}' สำเร็จ (บันทึกลง engine_config.json)\\n`;
+                    cmdStatus.textContent = '✅ สลับโหมดเป็น [' + mode.toUpperCase() + '] สำเร็จ! (Hot-swap ไร้รอยต่อ ไม่รีสตาร์ทเซิร์ฟเวอร์)';
+                    consoleEl.textContent += `\\n[WEB-TERMINAL] ⚡ สลับโหมดเครื่องยนต์เป็น '${mode}' สำเร็จ (Hot-swap ไร้รอยต่อ)\\n`;
                     if (chkAutoScroll.checked) consoleEl.scrollTop = consoleEl.scrollHeight;
                 } else {
                     cmdStatus.className = 'cmd-status error';
@@ -1001,6 +1013,8 @@ HTML_PAGE = """<!DOCTYPE html>
             } catch (err) {
                 cmdStatus.className = 'cmd-status error';
                 cmdStatus.textContent = '❌ ไม่สามารถเชื่อมต่อได้: ' + err.message;
+            } finally {
+                isSwitchingMode = false;
             }
         }
 
@@ -1188,12 +1202,34 @@ HTML_PAGE = """<!DOCTYPE html>
         }
 
         // =====================================================================
-        // 🚀 BOOTSTRAP TIMERS
+        // 🚀 BOOTSTRAP TIMERS & WISPBYTE LOW-CPU POLLING
         // =====================================================================
+        let logIntervalId = null;
+        let statusIntervalId = null;
+
+        function startPolling(logMs = 3500, statusMs = 5000) {
+            if (logIntervalId) clearInterval(logIntervalId);
+            if (statusIntervalId) clearInterval(statusIntervalId);
+            logIntervalId = setInterval(fetchConsoleLogs, logMs);
+            statusIntervalId = setInterval(fetchEngineStatus, statusMs);
+        }
+
+        // เมื่อสลับแท็บไปหน้าอื่น ชะลอความถี่เพื่อประหยัด CPU เซิร์ฟเวอร์สูงสุด
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // แท็บอยู่เบื้องหลัง: ดึงทุก 12 วินาที / 15 วินาที
+                startPolling(12000, 15000);
+            } else {
+                // แท็บกลับมาโฟกัส: ดึงทันทีและคืนรอบปกติ
+                fetchConsoleLogs();
+                fetchEngineStatus();
+                startPolling(3500, 5000);
+            }
+        });
+
         fetchConsoleLogs();
         fetchEngineStatus();
-        setInterval(fetchConsoleLogs, 2000);
-        setInterval(fetchEngineStatus, 3000);
+        startPolling(3500, 5000);
         if (cmdInput) cmdInput.focus();
     </script>
 </body>
@@ -1409,7 +1445,7 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
                         "⚡ [ENGINE MODE CHANGED]\n"
                         "โหมดถูกเปลี่ยนเป็น: Synthetic 24/7 (Deriv Volatility Indices 24 ชม.)\n"
                         f"สถานะคอนฟิก: Binance={'ON 🟢' if cfg.get('binance') else 'OFF ⚪'} | Synthetic=ON 🟢 | Forex=OFF ⚪\n"
-                        "บันทึกลง engine_config.json และส่งสัญญาณ restart.flag ให้ Supervisor เรียบร้อย"
+                        "บันทึกลง engine_config.json และส่งสัญญาณ reload_engines.flag ให้ Supervisor เรียบร้อย (Hot-swap ไร้รอยต่อ ไม่รีสตาร์ทเซิร์ฟเวอร์)"
                     )
                     append_to_console_log(f"\n[{get_thai_time()}] [MODE-SWITCH] $ {cmd}\n{output}\n")
                     self._send_json({"status": "success", "cmd": cmd, "output": output, "elapsed_sec": 0.05})
@@ -1421,7 +1457,7 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
                         "🤖 [ENGINE MODE CHANGED]\n"
                         "โหมดถูกเปลี่ยนเป็น: All (3 Engines: Binance Spot + Deriv Forex + Deriv Synthetic)\n"
                         "สถานะคอนฟิก: รันพร้อมกันทุกเครื่องยนต์ (Binance=ON 🟢 | Synthetic=ON 🟢 | Forex=ON 🟢)\n"
-                        "บันทึกลง engine_config.json และส่งสัญญาณ restart.flag ให้ Supervisor เรียบร้อย"
+                        "บันทึกลง engine_config.json และส่งสัญญาณ reload_engines.flag ให้ Supervisor เรียบร้อย (Hot-swap ไร้รอยต่อ ไม่รีสตาร์ทเซิร์ฟเวอร์)"
                     )
                     append_to_console_log(f"\n[{get_thai_time()}] [MODE-SWITCH] $ {cmd}\n{output}\n")
                     self._send_json({"status": "success", "cmd": cmd, "output": output, "elapsed_sec": 0.05})
@@ -1433,7 +1469,7 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
                         "📈 [ENGINE MODE CHANGED]\n"
                         "โหมดถูกเปลี่ยนเป็น: Forex Only (EURUSD, GBPUSD, USDJPY)\n"
                         f"สถานะคอนฟิก: Binance={'ON 🟢' if cfg.get('binance') else 'OFF ⚪'} | Synthetic=OFF ⚪ | Forex=ON 🟢\n"
-                        "บันทึกลง engine_config.json และส่งสัญญาณ restart.flag ให้ Supervisor เรียบร้อย"
+                        "บันทึกลง engine_config.json และส่งสัญญาณ reload_engines.flag ให้ Supervisor เรียบร้อย (Hot-swap ไร้รอยต่อ ไม่รีสตาร์ทเซิร์ฟเวอร์)"
                     )
                     append_to_console_log(f"\n[{get_thai_time()}] [MODE-SWITCH] $ {cmd}\n{output}\n")
                     self._send_json({"status": "success", "cmd": cmd, "output": output, "elapsed_sec": 0.05})
@@ -1447,7 +1483,7 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
                         "🔄 [ENGINE MODE CHANGED]\n"
                         f"โหมดถูกเปลี่ยนเป็น: Auto-Switch (ปัจจุบันคือ: {target_now})\n"
                         "ระบบจะสลับระหว่าง Forex (จันทร์-ศุกร์) และ Synthetic (เสาร์-อาทิตย์) อัตโนมัติ 100%\n"
-                        "บันทึกลง engine_config.json และส่งสัญญาณ restart.flag ให้ Supervisor เรียบร้อย"
+                        "บันทึกลง engine_config.json และส่งสัญญาณ reload_engines.flag ให้ Supervisor เรียบร้อย (Hot-swap ไร้รอยต่อ ไม่รีสตาร์ทเซิร์ฟเวอร์)"
                     )
                     append_to_console_log(f"\n[{get_thai_time()}] [MODE-SWITCH] $ {cmd}\n{output}\n")
                     self._send_json({"status": "success", "cmd": cmd, "output": output, "elapsed_sec": 0.05})
@@ -1457,7 +1493,7 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
                 elif cmd_lower in ("toggle binance", "toggle:binance", "/toggle binance"):
                     success, val = toggle_engine_config("binance")
                     state_str = "เปิดทำงาน 🟢 (ON)" if val else "ปิดทำงาน ⚪ (OFF)"
-                    output = f"🔄 [TOGGLE ENGINE]\nBinance Engine: {state_str}\nบันทึก engine_config.json และส่งสัญญาณ Supervisor เรียบร้อย"
+                    output = f"🔄 [TOGGLE ENGINE]\nBinance Engine: {state_str}\nบันทึก engine_config.json และส่งสัญญาณ reload_engines.flag เรียบร้อย (Hot-swap ไม่รีสตาร์ทเซิร์ฟเวอร์)"
                     append_to_console_log(f"\n[{get_thai_time()}] [TOGGLE] $ {cmd}\n{output}\n")
                     self._send_json({"status": "success", "cmd": cmd, "output": output, "elapsed_sec": 0.05})
                     return
@@ -1465,7 +1501,7 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
                 elif cmd_lower in ("toggle forex", "toggle:forex", "/toggle forex"):
                     success, val = toggle_engine_config("forex")
                     state_str = "เปิดทำงาน 🟢 (ON)" if val else "ปิดทำงาน ⚪ (OFF)"
-                    output = f"🔄 [TOGGLE ENGINE]\nDeriv Forex Engine: {state_str}\nบันทึก engine_config.json และส่งสัญญาณ Supervisor เรียบร้อย"
+                    output = f"🔄 [TOGGLE ENGINE]\nDeriv Forex Engine: {state_str}\nบันทึก engine_config.json และส่งสัญญาณ reload_engines.flag เรียบร้อย (Hot-swap ไม่รีสตาร์ทเซิร์ฟเวอร์)"
                     append_to_console_log(f"\n[{get_thai_time()}] [TOGGLE] $ {cmd}\n{output}\n")
                     self._send_json({"status": "success", "cmd": cmd, "output": output, "elapsed_sec": 0.05})
                     return
@@ -1473,7 +1509,7 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
                 elif cmd_lower in ("toggle synthetic", "toggle:synthetic", "/toggle synthetic"):
                     success, val = toggle_engine_config("synthetic")
                     state_str = "เปิดทำงาน 🟢 (ON)" if val else "ปิดทำงาน ⚪ (OFF)"
-                    output = f"🔄 [TOGGLE ENGINE]\nDeriv Synthetic Engine: {state_str}\nบันทึก engine_config.json และส่งสัญญาณ Supervisor เรียบร้อย"
+                    output = f"🔄 [TOGGLE ENGINE]\nDeriv Synthetic Engine: {state_str}\nบันทึก engine_config.json และส่งสัญญาณ reload_engines.flag เรียบร้อย (Hot-swap ไม่รีสตาร์ทเซิร์ฟเวอร์)"
                     append_to_console_log(f"\n[{get_thai_time()}] [TOGGLE] $ {cmd}\n{output}\n")
                     self._send_json({"status": "success", "cmd": cmd, "output": output, "elapsed_sec": 0.05})
                     return

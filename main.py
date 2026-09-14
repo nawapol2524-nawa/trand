@@ -55,6 +55,8 @@ DAILY_24H_LOG_FILE = "daily_24h_log.txt"
 DAILY_CYCLE_STATE_FILE = ".daily_cycle.json"
 ARCHIVE_DIR = os.path.join("archive", "logs")
 ENGINE_CONFIG_FILE = "engine_config.json"
+RESTART_FLAG_FILE = "restart.flag"
+RELOAD_ENGINES_FLAG_FILE = "reload_engines.flag"
 
 ENABLE_DERIV = os.getenv("ENABLE_DERIV", "true").lower() in ("true", "1", "yes")
 ENABLE_MT5 = os.getenv("ENABLE_MT5", "false").lower() in ("true", "1", "yes")
@@ -1350,14 +1352,23 @@ if __name__ == '__main__':
         try:
             supervisor_pulse()
 
-            # 1. ตรวจสอบว่ามีคำสั่ง Restart จาก Web Terminal หรือไม่ (ตอบสนองใน 1-2 วินาที)
-            if os.path.exists("restart.flag"):
-                log_supervisor("🔄 [COMMAND RESTART] ตรวจพบคำสั่ง Restart จาก Web Terminal!")
+            # 1. ตรวจสอบว่ามีคำสั่ง Full Restart จาก Web Terminal หรือไม่ (ตอบสนองใน 1-2 วินาที)
+            if os.path.exists(RESTART_FLAG_FILE):
+                log_supervisor("🔄 [COMMAND RESTART] ตรวจพบคำสั่ง Full Restart จาก Web Terminal...")
                 try:
-                    os.remove("restart.flag")
+                    os.remove(RESTART_FLAG_FILE)
                 except Exception:
                     pass
                 restart_entire_system()
+
+            # 2. ตรวจสอบว่ามีคำสั่ง Hot-Swap / สลับโหมดเครื่องยนต์หรือไม่ (ไร้การ Restart, ไร้ CPU Spike)
+            if os.path.exists(RELOAD_ENGINES_FLAG_FILE):
+                log_supervisor("🎛️ [HOT RELOAD] ตรวจพบคำสั่งสลับโหมดเครื่องยนต์ (Hot-swap dynamically without restart)...")
+                try:
+                    os.remove(RELOAD_ENGINES_FLAG_FILE)
+                except Exception:
+                    pass
+                manage_market_engines()
 
             manage_market_engines()
             check_weekend_ai_optimization()
@@ -1367,11 +1378,18 @@ if __name__ == '__main__':
             trim_console_log()
             monitor_workers()
 
-            # วนลูปพัก 20 วินาที โดยตรวจ restart.flag ทุกๆ 1 วินาที เพื่อให้ตอบสนองคำสั่งทันที
+            # วนลูปพัก 20 วินาที โดยตรวจ flag ทุกๆ 1 วินาที เพื่อให้ตอบสนองทันทีใน 1 วินาที
             for _ in range(20):
                 supervisor_pulse()
-                if os.path.exists("restart.flag"):
+                if os.path.exists(RESTART_FLAG_FILE):
                     break
+                if os.path.exists(RELOAD_ENGINES_FLAG_FILE):
+                    try:
+                        os.remove(RELOAD_ENGINES_FLAG_FILE)
+                    except Exception:
+                        pass
+                    log_supervisor("🎛️ [HOT RELOAD] สลับโหมดเครื่องยนต์ทันทีใน 1 วินาที (Zero CPU Spike)...")
+                    manage_market_engines()
                 time.sleep(1)
 
         except (KeyboardInterrupt, SystemExit):
