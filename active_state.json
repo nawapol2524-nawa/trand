@@ -30,7 +30,7 @@
     "cooldown_until": "2026-09-12T03:16:05.870955"
   },
   "AVAX/USDT": {
-    "in_position": true,
+    "in_position": false,
     "entry_price": 7.297,
     "position_size": 1.16,
     "tp": 11.061,
