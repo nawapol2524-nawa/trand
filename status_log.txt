@@ -7,7 +7,7 @@
 📊 [24H DAILY EXECUTIVE RECAP]
 ──────────────────────────────────────────────────────────────────────────────────
 • 🕒 รอบเวลาวิเคราะห์ (24H Cycle) : 2026-09-14 09:00:00 -> 2026-09-15 09:00:00 (เวลาไทย UTC+7)
-• 🕒 อัปเดตข้อมูลล่าสุด (Last Sync) : 2026-09-14 14:52:56 (เวลาไทย)
+• 🕒 อัปเดตข้อมูลล่าสุด (Last Sync) : 2026-09-14 15:03:35 (เวลาไทย)
 • 💰 ยอด PnL รวมรอบ 24 ชม.        : +0.0000 USDT | +0.00 USD (≈ +0.00 บาท)
 • 🎯 สถิติการเทรดรอบวัน (Stats)     : ทั้งหมด 0 ไม้ (ชนะ 0 | แพ้ 0 | Breakeven 0) | Win Rate: 0.0%
 • ⚡ สถานะเครื่องยนต์ (Engines)    : BinanceEngine (🟢 ONLINE) | WebDashboard (🟢 ONLINE) | DerivSyntheticEngine (🟢 ONLINE) | DerivForexEngine (🟢 ONLINE)
@@ -17,8 +17,28 @@
 
 🚨 [24H SYSTEM HEALTH & ERRORS]
 ──────────────────────────────────────────────────────────────────────────────────
-🚨 ตรวจพบสัญญาณแจ้งเตือนล่าสุด 1 รายการ:
-  • [2026-09-14 14:52:56] [SUPERVISOR] ⚠️ [AUTO-PATCH ERROR] ตรวจสอบอัปเดตไม่สำเร็จ: Command '['git', 'fetch', 'origin', 'main']' returned non-zero exit status 128.
+🚨 ตรวจพบสัญญาณแจ้งเตือนล่าสุด 21 รายการ:
+  • [2026-09-14 15:02:36] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+  • ⚠️ เซิร์ฟเวอร์ Binance Testnet ขัดข้องชั่วคราว (binance requires "apiKey" credential) -> เข้าสู่โหมด Standby รอเชื่อมต่อใหม่ใน 30 วินาที...
+  • [2026-09-14 15:02:39] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+  • [2026-09-14 15:02:42] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+  • [2026-09-14 15:02:46] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+  • [2026-09-14 15:02:49] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+  • [2026-09-14 15:02:53] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+  • [2026-09-14 15:02:56] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+  • [2026-09-14 15:02:59] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+  • [2026-09-14 15:03:03] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+  • [2026-09-14 15:03:06] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+  • [2026-09-14 15:03:10] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+  • [2026-09-14 15:03:13] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+  • [2026-09-14 15:03:17] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+  • [2026-09-14 15:03:20] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+  • [2026-09-14 15:03:23] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+  • Traceback (most recent call last):
+  • async with websockets.connect(target_ws_url, ssl=ssl_context, ping_interval=None, close_timeout=10) as ws:
+  • websockets.exceptions.InvalidStatus: server rejected WebSocket connection: HTTP 401
+  • During handling of the above exception, another exception occurred:
+  • asyncio.exceptions.CancelledError
 ══════════════════════════════════════════════════════════════════════════════════
 
 📋 [24H TRADE LEDGER]
@@ -67,37 +87,6 @@
 [2026-09-14 14:50:32] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
 [2026-09-14 14:50:32] 🧠 [GROQ AI ENGINE] สถานะ: 🟢 พร้อมใช้งาน (v3 News-Aware)
 [2026-09-14 14:50:32] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
-══════════════════════════════════════════════════════════════════════════════════
-
-📜 [FULL 24H CONSOLE STREAM]
-──────────────────────────────────────────────────────────────────────────────────
-[2026-09-14 14:52:53] [SUPERVISOR] ╔══════════════════════════════════════════════════════════════════════════════════╗
-[2026-09-14 14:52:53] [SUPERVISOR] ║  🏛️ AG 2.0 QUANT TERMINAL | DUAL-ENGINE SUPERVISOR (QUANT SHIELD)                 ║
-[2026-09-14 14:52:53] [SUPERVISOR] ║  ⚡ Binance Engine : Spot Sandbox Testnet (100% Demo / 24/7 Weekend Guard)       ║
-[2026-09-14 14:52:53] [SUPERVISOR] ║  ⚡ Deriv Engine   : Auto-Switching Forex Demo / Weekend Synthetic (24/7)         ║
-[2026-09-14 14:52:53] [SUPERVISOR] ║  🧪 AI Retraining  : Brad Goh SMC + Weekend Optimization Lab (Sat 09:15)         ║
-[2026-09-14 14:52:53] [SUPERVISOR] ║  📡 Console Logger : Streamed to console_log.txt & synced as status_log.txt      ║
-[2026-09-14 14:52:53] [SUPERVISOR] ║  🔔 LINE Notify    : Active for BUY, TP, SL, Breakeven & Trailing Run             ║
-[2026-09-14 14:52:53] [SUPERVISOR] ║  🛡️ Watchdog Shield: Independent Sentinel Active (Auto-Revive on Any Freeze)     ║
-[2026-09-14 14:52:53] [SUPERVISOR] ╚══════════════════════════════════════════════════════════════════════════════════╝
-[2026-09-14 14:52:53] [SUPERVISOR] 📂 ไดเรกทอรีทำงาน: /opt/render/project/src
-[2026-09-14 14:52:53] [SUPERVISOR] 🛡️ [WATCHDOG SENTINEL] เธรดตรวจจับอาการค้างอิสระเริ่มทำงาน (Auto-Recovery < 120s)
-[2026-09-14 14:52:53] [SUPERVISOR] 📋 [24H LOG SYSTEM] ประจำการรอบ 24 ชม.: 2026-09-14 09:00 -> 2026-09-15 09:00 (รอบ ID: 20260914)
-[2026-09-14 14:52:53] [SUPERVISOR] 🎛️ [ENGINE CONTROLLER] การตั้งค่า: Mode=ALL | Binance=ON | ตลาดสุดสัปดาห์=False
-[2026-09-14 14:52:53] [SUPERVISOR] 🚀 [ENGINE CONTROLLER] เริ่มต้น BinanceEngine (Spot Sandbox Testnet)...
-[2026-09-14 14:52:53] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: BinanceEngine (main_binance.py)...
-[2026-09-14 14:52:53] [SUPERVISOR] ✅ BinanceEngine ทำงานสำเร็จ (PID: 61)
-[2026-09-14 14:52:53] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: WebDashboard (dashboard.py)...
-[2026-09-14 14:52:54] [SUPERVISOR] ✅ WebDashboard ทำงานสำเร็จ (PID: 63)
-[2026-09-14 14:52:54] [SUPERVISOR] 🚀 [MODE: ALL] เริ่มต้น DerivSyntheticEngine (เทรด Synthetic Indices 24/7)...
-[2026-09-14 14:52:54] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: DerivSyntheticEngine (main_deriv_synthetic.py)...
-[2026-09-14 14:52:54] [SUPERVISOR] ✅ DerivSyntheticEngine ทำงานสำเร็จ (PID: 65)
-[2026-09-14 14:52:54] [SUPERVISOR] 🚀 [MODE: ALL] ตลาด Forex เปิดทำการ -> เริ่มต้น DerivForexEngine...
-[2026-09-14 14:52:54] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: DerivForexEngine (main_forex.py)...
-[2026-09-14 14:52:54] [SUPERVISOR] ✅ DerivForexEngine ทำงานสำเร็จ (PID: 67)
-[2026-09-14 14:52:54] [SUPERVISOR] 👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers, Weekend Switching และ AI Lab...
-[2026-09-14 14:52:56] [SUPERVISOR] ⚠️ [AUTO-PATCH ERROR] ตรวจสอบอัปเดตไม่สำเร็จ: Command '['git', 'fetch', 'origin', 'main']' returned non-zero exit status 128.
-
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║ 🔄 RECOVERED ACTIVE POSITION - AVAX/USDT
 ╠──────────────────────────────────────────────────────────────────────────────╣
@@ -114,3 +103,286 @@
 [2026-09-14 14:53:26] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
 [2026-09-14 14:53:26] 🧠 [GROQ AI ENGINE] สถานะ: 🟢 พร้อมใช้งาน (v3 News-Aware)
 [2026-09-14 14:53:26] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔄 RECOVERED ACTIVE POSITION - AVAX/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine                : Binance Testnet Spot
+║  • Symbol                : AVAX/USDT
+║  • Entry Price           : $7.297000
+║  • Position Size         : 1.16
+║  • Take Profit (TP)      : $11.061000
+║  • Stop Loss (SL)        : $7.364610
+║  • Breakeven Locked      : True
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-14 15:02:37] 🔄 [RECOVER] กู้คืนสถานะการถือครอง AVAX/USDT @ $7.297000 (TP: $11.061000 | SL: $7.364610)
+
+--- DERIV FOREX TRADES (24H) ---
+[2026-09-14 15:02:35] [DERIV-FOREX] 🚀 กำลังตรวจสอบและเชื่อมต่อ Deriv Engine...
+[2026-09-14 15:02:35] [DERIV-FOREX] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:02:36] [DERIV-FOREX] 🔌 เชื่อมต่อ Deriv WebSocket สำเร็จ! (บัญชี: DOT94482469 (Demo Training))
+
+--- DERIV SYNTHETIC TRADES (24H) ---
+[2026-09-14 15:02:35] [DERIV-SYNTHETIC] 🚀 กำลังเริ่มต้น AG 2.0 Deriv Synthetic Volatility Engine (24/7 Non-Stop Live Demo)...
+[2026-09-14 15:02:35] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:02:36] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:02:39] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:02:39] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:02:42] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:02:42] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:02:45] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:02:46] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:02:49] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:02:49] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:02:52] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:02:53] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:02:56] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:02:56] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:02:59] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:02:59] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:03:02] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:03:03] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:03:06] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:03:06] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:03:09] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:03:10] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:03:13] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:03:13] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:03:16] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:03:17] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:03:20] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:03:20] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:03:23] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:03:23] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+══════════════════════════════════════════════════════════════════════════════════
+
+📜 [FULL 24H CONSOLE STREAM]
+──────────────────────────────────────────────────────────────────────────────────
+[2026-09-14 15:02:30] [SUPERVISOR] ╔══════════════════════════════════════════════════════════════════════════════════╗
+[2026-09-14 15:02:30] [SUPERVISOR] ║  🏛️ AG 2.0 QUANT TERMINAL | DUAL-ENGINE SUPERVISOR (QUANT SHIELD)                 ║
+[2026-09-14 15:02:30] [SUPERVISOR] ║  ⚡ Binance Engine : Spot Sandbox Testnet (100% Demo / 24/7 Weekend Guard)       ║
+[2026-09-14 15:02:30] [SUPERVISOR] ║  ⚡ Deriv Engine   : Auto-Switching Forex Demo / Weekend Synthetic (24/7)         ║
+[2026-09-14 15:02:30] [SUPERVISOR] ║  🧪 AI Retraining  : Brad Goh SMC + Weekend Optimization Lab (Sat 09:15)         ║
+[2026-09-14 15:02:30] [SUPERVISOR] ║  📡 Console Logger : Streamed to console_log.txt & synced as status_log.txt      ║
+[2026-09-14 15:02:30] [SUPERVISOR] ║  🔔 LINE Notify    : Active for BUY, TP, SL, Breakeven & Trailing Run             ║
+[2026-09-14 15:02:30] [SUPERVISOR] ║  🛡️ Watchdog Shield: Independent Sentinel Active (Auto-Revive on Any Freeze)     ║
+[2026-09-14 15:02:30] [SUPERVISOR] ╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-14 15:02:30] [SUPERVISOR] 📂 ไดเรกทอรีทำงาน: /home/container
+[2026-09-14 15:02:30] [SUPERVISOR] 🛡️ [WATCHDOG SENTINEL] เธรดตรวจจับอาการค้างอิสระเริ่มทำงาน (Auto-Recovery < 120s)
+[2026-09-14 15:02:30] [SUPERVISOR] 📋 [24H LOG SYSTEM] ประจำการรอบ 24 ชม.: 2026-09-14 09:00 -> 2026-09-15 09:00 (รอบ ID: 20260914)
+[2026-09-14 15:02:30] [SUPERVISOR] 🎛️ [ENGINE CONTROLLER] การตั้งค่า: Mode=ALL | Binance=ON | ตลาดสุดสัปดาห์=False
+[2026-09-14 15:02:30] [SUPERVISOR] 🚀 [ENGINE CONTROLLER] เริ่มต้น BinanceEngine (Spot Sandbox Testnet)...
+[2026-09-14 15:02:30] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: BinanceEngine (main_binance.py)...
+[2026-09-14 15:02:30] [SUPERVISOR] ✅ BinanceEngine ทำงานสำเร็จ (PID: 48)
+[2026-09-14 15:02:30] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: WebDashboard (dashboard.py)...
+[2026-09-14 15:02:30] [SUPERVISOR] ✅ WebDashboard ทำงานสำเร็จ (PID: 50)
+[2026-09-14 15:02:30] [SUPERVISOR] 🚀 [MODE: ALL] เริ่มต้น DerivSyntheticEngine (เทรด Synthetic Indices 24/7)...
+[2026-09-14 15:02:30] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: DerivSyntheticEngine (main_deriv_synthetic.py)...
+[2026-09-14 15:02:30] [SUPERVISOR] ✅ DerivSyntheticEngine ทำงานสำเร็จ (PID: 52)
+[2026-09-14 15:02:30] [SUPERVISOR] 🚀 [MODE: ALL] ตลาด Forex เปิดทำการ -> เริ่มต้น DerivForexEngine...
+[2026-09-14 15:02:30] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: DerivForexEngine (main_forex.py)...
+[2026-09-14 15:02:30] [SUPERVISOR] ✅ DerivForexEngine ทำงานสำเร็จ (PID: 54)
+[2026-09-14 15:02:30] [SUPERVISOR] 👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers, Weekend Switching และ AI Lab...
+🚀 เริ่มต้นระบบ AG 2.0 Live Quant Terminal Server ที่พอร์ต 9848...
+🌐 ใช้งานผ่าน URL: http://0.0.0.0:9848
+🔓 โหมดความปลอดภัย: เข้าถึงได้ทันที (Direct Access - No PIN Required)
+===========================================================================
+🏛️ DERIV SYNTHETIC 24/7 LIVE MULTIPLIERS ENGINE (DEMO: DOT94482469)
+🎯 ASSETS: ['R_75', 'R_25', 'R_50', 'R_10'] (Focus: ['R_75', 'R_25'])
+⚙️ RISK: Stake $1.00 USD | BE +10.0 pips | Trailing +20.0 pips
+🧠 AI ADVISOR : ⚪ ไม่ได้เปิดใช้งาน (ข้ามไปใช้ Pure Quant)
+===========================================================================
+[2026-09-14 15:02:35] [DERIV-SYNTHETIC] 🚀 กำลังเริ่มต้น AG 2.0 Deriv Synthetic Volatility Engine (24/7 Non-Stop Live Demo)...
+=================================================================
+🏛️ DERIV FOREX QUANT ENGINE STARTING (DEMO: DOT94482469)
+🧠 GROQ AI ENGINE : ⚪ ไม่ได้เปิดใช้งาน (ข้ามไปใช้ Pure Quant)
+=================================================================
+[2026-09-14 15:02:35] [DERIV-FOREX] 🚀 กำลังตรวจสอบและเชื่อมต่อ Deriv Engine...
+[2026-09-14 15:02:35] [DERIV-FOREX] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:02:35] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:02:36] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:02:36] [DERIV-FOREX] 🔌 เชื่อมต่อ Deriv WebSocket สำเร็จ! (บัญชี: DOT94482469 (Demo Training))
+🧠 [MEMORY] กู้คืน agent_memory_multi.json สำเร็จ (เทรดรวม: 3 ไม้ | ชนะ 0 | แพ้ 3)
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔄 RECOVERED ACTIVE POSITION - AVAX/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine                : Binance Testnet Spot
+║  • Symbol                : AVAX/USDT
+║  • Entry Price           : $7.297000
+║  • Position Size         : 1.16
+║  • Take Profit (TP)      : $11.061000
+║  • Stop Loss (SL)        : $7.364610
+║  • Breakeven Locked      : True
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-14 15:02:37] 🔄 [RECOVER] กู้คืนสถานะการถือครอง AVAX/USDT @ $7.297000 (TP: $11.061000 | SL: $7.364610)
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: DOT94482469             )║
+║  🕒 2026-09-14 15:02:38 | H1 Trend: 🔴 BEARISH | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║
+╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣
+║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║
+╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣
+║ frxEURUSD   ║      1.15417 ║ 30.4 ║  0.00309 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxGBPUSD   ║      1.34885 ║ 37.1 ║  0.00179 ║ None       ║ ⚪ FLAT          ║ OK ║
+║ frxUSDJPY   ║    154.40200 ║ 76.7 ║  0.00371 ║ None       ║ ⚪ FLAT          ║ OK ║
+╠═════════════╩══════════════╩══════╩══════════╩════════════╩═════════════════╩════╣
+║ 👤 บัญชี Demo: DOT94482469 (Demo Training) 💰 Balance: $ 10,000.00 USD (~340,000 ฿)          ║
+║ 📈 กำไรพอร์ตรวม: $+0.00 USD (+0.0 ฿) | สถิติ AI: 0 ไม้ (ชนะ 0 | แพ้ 0 | WR:  0.0%) ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-14 15:02:39] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+⚠️ เซิร์ฟเวอร์ Binance Testnet ขัดข้องชั่วคราว (binance requires "apiKey" credential) -> เข้าสู่โหมด Standby รอเชื่อมต่อใหม่ใน 30 วินาที...
+[2026-09-14 15:02:39] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:02:42] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:02:42] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:02:45] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:02:46] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:02:49] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:02:49] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:02:52] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:02:53] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:02:56] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:02:56] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:02:59] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:02:59] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:03:02] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:03:03] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:03:06] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:03:06] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+⚠️ เซิร์ฟเวอร์ Binance Testnet ขัดข้องชั่วคราว (binance requires "apiKey" credential) -> เข้าสู่โหมด Standby รอเชื่อมต่อใหม่ใน 30 วินาที...
+[2026-09-14 15:03:09] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:03:10] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:03:13] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:03:13] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:03:16] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:03:17] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:03:20] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:03:20] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+[2026-09-14 15:03:23] [DERIV-SYNTHETIC] 💡 รันในโหมด [Demo Training Engine: DOT94482469] (จำลองการเทรดบนกราฟจริง 100% ปลอดภัย ไร้ความเสี่ยง)
+[2026-09-14 15:03:23] [DERIV-SYNTHETIC] ⚠️ การเชื่อมต่อ Deriv WebSocket สิ้นสุด: server rejected WebSocket connection: HTTP 401. กำลังเชื่อมต่อใหม่ใน 3 วินาที...
+
+[2026-09-14 15:03:24] [SUPERVISOR] 🛑 ได้รับสัญญาณหยุดระบบ! กำลังปิด Workers ทั้งหมดอย่างปลอดภัย...
+Traceback (most recent call last):
+🛑 ได้รับสัญญาณ (2) กำลังปิด Terminal Server อย่างปลอดภัย...
+  File "/home/container/main_binance.py", line 66, in connect_and_check_balance
+[2026-09-14 15:03:24] [SUPERVISOR] ⏳ กำลังส่งคำสั่งปิด BinanceEngine (PID: 48)...
+🛑 กำลังหยุดการทำงานของ HTTP Server...
+    bal = exchange.fetch_balance()
+Traceback (most recent call last):
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/container/main_deriv_synthetic.py", line 985, in deriv_synthetic_engine
+  File "/home/container/.local/lib/python3.11/site-packages/ccxt/binance.py", line 4067, in fetch_balance
+    async with websockets.connect(target_ws_url, ssl=ssl_context, ping_interval=None, close_timeout=10) as ws:
+  File "/home/container/.local/lib/python3.11/site-packages/websockets/asyncio/client.py", line 576, in __aenter__
+    self.connection = await self
+                      ^^^^^^^^^^
+  File "/home/container/.local/lib/python3.11/site-packages/websockets/asyncio/client.py", line 526, in connect
+    await connection.handshake(
+  File "/home/container/.local/lib/python3.11/site-packages/websockets/asyncio/client.py", line 113, in handshake
+    raise self.protocol.handshake_exc
+  File "/home/container/.local/lib/python3.11/site-packages/websockets/client.py", line 334, in parse
+    self.process_response(response)
+  File "/home/container/.local/lib/python3.11/site-packages/websockets/client.py", line 145, in process_response
+    raise InvalidStatus(response)
+websockets.exceptions.InvalidStatus: server rejected WebSocket connection: HTTP 401
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/container/main_deriv_synthetic.py", line 1402, in deriv_synthetic_engine
+    await asyncio.sleep(3)
+  File "/usr/local/lib/python3.11/asyncio/tasks.py", line 649, in sleep
+    return await future
+           ^^^^^^^^^^^^
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/container/main_deriv_synthetic.py", line 1412, in <module>
+    asyncio.run(deriv_synthetic_engine())
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 123, in run
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+[2026-09-14 15:03:24] [SUPERVISOR] ✅ BinanceEngine ปิดเรียบร้อยแล้ว
+[2026-09-14 15:03:24] [SUPERVISOR] ⏳ กำลังส่งคำสั่งปิด WebDashboard (PID: 50)...
+
+🛑 ได้รับสัญญาณ (15) กำลังปิด Terminal Server อย่างปลอดภัย...
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/container/main_forex.py", line 1309, in deriv_engine
+    await asyncio.sleep(20)
+  File "/usr/local/lib/python3.11/asyncio/tasks.py", line 649, in sleep
+    return await future
+           ^^^^^^^^^^^^
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/container/main_forex.py", line 1327, in <module>
+    asyncio.run(deriv_engine())
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 123, in run
+    raise KeyboardInterrupt()
+KeyboardInterrupt
+👋 ปิด Terminal Server เรียบร้อยสมบูรณ์
+[2026-09-14 15:03:24] [SUPERVISOR] ✅ WebDashboard ปิดเรียบร้อยแล้ว
+[2026-09-14 15:03:24] [SUPERVISOR] 👋 ระบบ Supervisor ปิดตัวเองเรียบร้อย
+[2026-09-14 15:03:24] [SUPERVISOR] 🛑 ได้รับสัญญาณหยุดระบบ! กำลังปิด Workers ทั้งหมดอย่างปลอดภัย...
+[2026-09-14 15:03:24] [SUPERVISOR] 👋 ระบบ Supervisor ปิดตัวเองเรียบร้อย
+[2026-09-14 15:03:33] [SUPERVISOR] ╔══════════════════════════════════════════════════════════════════════════════════╗
+[2026-09-14 15:03:33] [SUPERVISOR] ║  🏛️ AG 2.0 QUANT TERMINAL | DUAL-ENGINE SUPERVISOR (QUANT SHIELD)                 ║
+[2026-09-14 15:03:33] [SUPERVISOR] ║  ⚡ Binance Engine : Spot Sandbox Testnet (100% Demo / 24/7 Weekend Guard)       ║
+[2026-09-14 15:03:33] [SUPERVISOR] ║  ⚡ Deriv Engine   : Auto-Switching Forex Demo / Weekend Synthetic (24/7)         ║
+[2026-09-14 15:03:33] [SUPERVISOR] ║  🧪 AI Retraining  : Brad Goh SMC + Weekend Optimization Lab (Sat 09:15)         ║
+[2026-09-14 15:03:33] [SUPERVISOR] ║  📡 Console Logger : Streamed to console_log.txt & synced as status_log.txt      ║
+[2026-09-14 15:03:33] [SUPERVISOR] ║  🔔 LINE Notify    : Active for BUY, TP, SL, Breakeven & Trailing Run             ║
+[2026-09-14 15:03:33] [SUPERVISOR] ║  🛡️ Watchdog Shield: Independent Sentinel Active (Auto-Revive on Any Freeze)     ║
+[2026-09-14 15:03:33] [SUPERVISOR] ╚══════════════════════════════════════════════════════════════════════════════════╝
+[2026-09-14 15:03:33] [SUPERVISOR] 📂 ไดเรกทอรีทำงาน: /home/container
+[2026-09-14 15:03:33] [SUPERVISOR] 🛡️ [WATCHDOG SENTINEL] เธรดตรวจจับอาการค้างอิสระเริ่มทำงาน (Auto-Recovery < 120s)
+[2026-09-14 15:03:33] [SUPERVISOR] 📋 [24H LOG SYSTEM] ประจำการรอบ 24 ชม.: 2026-09-14 09:00 -> 2026-09-15 09:00 (รอบ ID: 20260914)
+[2026-09-14 15:03:33] [SUPERVISOR] 🎛️ [ENGINE CONTROLLER] การตั้งค่า: Mode=ALL | Binance=ON | ตลาดสุดสัปดาห์=False
+[2026-09-14 15:03:33] [SUPERVISOR] 🚀 [ENGINE CONTROLLER] เริ่มต้น BinanceEngine (Spot Sandbox Testnet)...
+[2026-09-14 15:03:33] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: BinanceEngine (main_binance.py)...
+[2026-09-14 15:03:33] [SUPERVISOR] ✅ BinanceEngine ทำงานสำเร็จ (PID: 20)
+[2026-09-14 15:03:33] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: WebDashboard (dashboard.py)...
+[2026-09-14 15:03:33] [SUPERVISOR] ✅ WebDashboard ทำงานสำเร็จ (PID: 22)
+[2026-09-14 15:03:33] [SUPERVISOR] 🚀 [MODE: ALL] เริ่มต้น DerivSyntheticEngine (เทรด Synthetic Indices 24/7)...
+[2026-09-14 15:03:33] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: DerivSyntheticEngine (main_deriv_synthetic.py)...
+[2026-09-14 15:03:33] [SUPERVISOR] ✅ DerivSyntheticEngine ทำงานสำเร็จ (PID: 24)
+[2026-09-14 15:03:33] [SUPERVISOR] 🚀 [MODE: ALL] ตลาด Forex เปิดทำการ -> เริ่มต้น DerivForexEngine...
+[2026-09-14 15:03:33] [SUPERVISOR] 🚀 กำลังเปิดการทำงาน: DerivForexEngine (main_forex.py)...
+[2026-09-14 15:03:33] [SUPERVISOR] ✅ DerivForexEngine ทำงานสำเร็จ (PID: 26)
+[2026-09-14 15:03:33] [SUPERVISOR] 👀 Supervisor เข้าสู่โหมดเฝ้าระวัง Workers, Weekend Switching และ AI Lab...
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║ 🔄 RECOVERED ACTIVE POSITION - AVAX/USDT
+╠──────────────────────────────────────────────────────────────────────────────╣
+║  • Engine                : Binance Testnet Spot
+║  • Symbol                : AVAX/USDT
+║  • Entry Price           : $7.297000
+║  • Position Size         : 1.16
+║  • Take Profit (TP)      : $11.061000
+║  • Stop Loss (SL)        : $7.364610
+║  • Breakeven Locked      : True
+╚══════════════════════════════════════════════════════════════════════════════╝
+[2026-09-14 15:03:41] 🔄 [RECOVER] กู้คืนสถานะการถือครอง AVAX/USDT @ $7.297000 (TP: $11.061000 | SL: $7.364610)
+[2026-09-14 15:03:43] 🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: $9986.29 USDT)
+[2026-09-14 15:03:43] 🪙 เหรียญที่เฝ้าเทรด: SOL/USDT, BTC/USDT, NEAR/USDT, AVAX/USDT, GALA/USDT, VET/USDT
+[2026-09-14 15:03:43] 🧠 [GROQ AI ENGINE] สถานะ: 🟢 พร้อมใช้งาน (v3 News-Aware)
+[2026-09-14 15:03:43] 🕒 [SYNC] อัปโหลดข้อมูล Log ล่าสุดขึ้น GitHub (รอบ 1 ชม.)
