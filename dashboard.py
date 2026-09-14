@@ -20,7 +20,7 @@ warnings.filterwarnings("ignore")
 # ⚙️ CONFIGURATION & PATHS
 # ==============================================================================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PORT = int(os.getenv("PORT", 9848))
+PORT = int(os.getenv("PORT", os.getenv("SERVER_PORT", 9848)))
 
 CONSOLE_LOG_FILE = os.path.join(BASE_DIR, "console_log.txt")
 STATUS_LOG_FILE = os.path.join(BASE_DIR, "status_log.txt")
