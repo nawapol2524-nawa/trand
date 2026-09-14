@@ -275,9 +275,21 @@ def toggle_engine_config(engine_name: str):
         elif engine_name in ("forex", "deriv_forex"):
             cfg["forex"] = not cfg.get("forex", False)
             val = cfg["forex"]
+            if cfg["forex"] and cfg.get("synthetic"):
+                cfg["mode"] = "all"
+            elif cfg["forex"]:
+                cfg["mode"] = "forex"
+            else:
+                cfg["mode"] = "synthetic"
         elif engine_name in ("synthetic", "deriv_synthetic"):
             cfg["synthetic"] = not cfg.get("synthetic", True)
             val = cfg["synthetic"]
+            if cfg["synthetic"] and cfg.get("forex"):
+                cfg["mode"] = "all"
+            elif cfg["synthetic"]:
+                cfg["mode"] = "synthetic"
+            else:
+                cfg["mode"] = "forex"
         else:
             return False, f"Unknown engine '{engine_name}'"
 
