@@ -4,6 +4,7 @@ import time
 import json
 import ssl
 import asyncio
+import gc
 import urllib.request
 import urllib.error
 import warnings
@@ -1303,6 +1304,8 @@ async def deriv_engine():
                     # 5. พิมพ์ตารางสถานะ Quant Terminal
                     if scan_rows:
                         print_quant_table(get_thai_time(), scan_rows, account_info, memory, h1_bull=getattr(deriv_engine, "_cached_h1_bull", True))
+
+                    gc.collect()
 
                     # วนพัก 60 วินาที โดยส่ง Keepalive Ping {"ping": 1} ทุกๆ 20 วินาที เพื่อรักษาการเชื่อมต่อ
                     for _ in range(3):

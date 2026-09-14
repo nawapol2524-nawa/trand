@@ -22,6 +22,7 @@ import json
 import ssl
 import re
 import asyncio
+import gc
 import warnings
 warnings.filterwarnings("ignore")
 from datetime import datetime, timedelta, timezone
@@ -1386,6 +1387,8 @@ async def deriv_synthetic_engine():
                     # พิมพ์ตารางสถานะ Quant Terminal
                     if scan_rows:
                         print_quant_table(get_thai_time(), scan_rows, account_info, memory, active_trade=active_trade)
+
+                    gc.collect()
 
                     # วนพัก 60 วินาที โดยส่ง Ping {"ping": 1} ทุกๆ 20 วินาที
                     for _ in range(3):

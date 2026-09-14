@@ -7,6 +7,7 @@ import threading
 import json
 import re
 import shutil
+import gc
 import warnings
 warnings.filterwarnings("ignore")
 from datetime import datetime, timedelta, timezone
@@ -1410,6 +1411,7 @@ if __name__ == '__main__':
             sync_to_gdrive()
             trim_console_log()
             monitor_workers()
+            gc.collect()
 
             # วนลูปพัก 20 วินาที โดยตรวจ flag ทุกๆ 1 วินาที เพื่อให้ตอบสนองทันทีใน 1 วินาที
             for _ in range(20):

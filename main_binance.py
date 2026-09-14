@@ -6,6 +6,7 @@ import uuid
 from decimal import Decimal
 import ccxt
 import pandas as pd
+import gc
 import warnings
 warnings.filterwarnings("ignore")
 from datetime import datetime, timedelta, timezone
@@ -1191,4 +1192,5 @@ if __name__ == '__main__':
         # พิมพ์ตารางสถานะเหรียญแบบ Quant Terminal รวมในที่เดียว ไม่สแปมซ้ำซ้อน
         print_quant_table(get_thai_time(), btc_bullish, scan_results)
         trim_status_log_if_needed()
+        gc.collect()
         time.sleep(75) # พัก 75 วินาทีเพื่อ Low-CPU 100%
