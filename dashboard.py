@@ -1323,12 +1323,9 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
             parsed = urllib.parse.urlparse(self.path)
             path = parsed.path
 
-            # 1. API: ตรวจสอบสถานะ Authentication
-            if path in ("/api/auth", "/api/auth/verify"):
-                if self.is_authenticated():
-                    self._send_json({"status": "ok", "authenticated": True}, 200)
-                else:
-                    self.send_unauthorized()
+            # 1. API: ตรวจสอบสถานะ Authentication & Health Check (Render, Cloud, Docker)
+            if path in ("/api/auth", "/api/auth/verify", "/healthz", "/ping"):
+                self._send_json({"status": "ok", "healthy": True}, 200)
                 return
 
             # 2. API: Engine Status (อ่าน engine_config.json และ active processes)
