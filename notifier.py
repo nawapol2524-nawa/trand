@@ -32,9 +32,10 @@ if not logger.handlers:
     logger.setLevel(logging.INFO)
 
 # Configuration
-LINE_PUSH_URL = "https://api.line.me/v2/bot/message/push"
-LINE_NOTIFY_URL = "https://notify-api.line.me/api/notify"
-DEFAULT_TIMEOUT_SEC = 5  # Timeout สูงสุด 5 วินาที ป้องกันบอทค้าง
+GDRIVE_WEBHOOK_URL = os.getenv("GDRIVE_WEBHOOK_URL", "https://script.google.com/macros/s/AKfycbwuEpWM7wxVRxfDHM2IC0z0S605XfNCTBxIIn8tXmrCZ7BKCBPiLp-BWHC9x1zkYwilrw/exec").strip()
+NOTIFICATIONS_FILE = "trade_notifications.txt"
+DEFAULT_TIMEOUT_SEC = 15  # Timeout สำหรับ Google Drive Webhook
+_notif_lock = threading.Lock()
 
 
 def get_thai_time() -> str:
@@ -43,85 +44,76 @@ def get_thai_time() -> str:
     return datetime.now(tz_thai).strftime("%Y-%m-%d %H:%M:%S")
 
 
-def _get_credentials():
-    """ดึง credentials จาก environment"""
-    messaging_token = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", "").strip()
-    user_id = os.getenv("LINE_USER_ID", "").strip()
-    notify_token = (os.getenv("LINE_NOTIFY_TOKEN") or os.getenv("LINE_TOKEN") or "").strip()
-    return messaging_token, user_id, notify_token
-
-
-def _post_to_line_sync(message: str, timeout: int = DEFAULT_TIMEOUT_SEC) -> bool:
-    """ฟังก์ชันส่งข้อความแบบ synchronous รองรับทั้ง Notify และ Messaging API"""
+def _post_to_gdrive_sync(message: str, timeout: int = DEFAULT_TIMEOUT_SEC) -> bool:
+    """
+    ฟังก์ชันบันทึกข้อความแจ้งเตือนลงไฟล์ trade_notifications.txt
+    และส่งซิงค์ขึ้น Google Drive ทันทีแบบ 100% Real-Time
+    (แทนที่ LINE Bot ถาวรเพื่อตัดปัญหา Rate Limit 429 และเก็บสถิติยาวนาน)
+    """
     if not message:
         return False
 
-    if len(message) > 4900:
-        message = message[:4900] + "\n... (ข้อความถูกตัดเนื่องจากยาวเกินไป)"
+    timestamp = get_thai_time()
+    header_line = "═" * 60
+    entry = f"[{timestamp}]\n{message.strip()}\n{header_line}\n\n"
 
-    messaging_token, user_id, notify_token = _get_credentials()
-    success = False
-
-    # 1. พยายามส่งผ่าน LINE Notify ก่อน (หากมี Token)
-    if notify_token and "your_" not in notify_token:
+    # 1. เขียนต่อท้ายลงไฟล์ท้องถิ่น trade_notifications.txt
+    with _notif_lock:
         try:
-            headers = {
-                "Authorization": f"Bearer {notify_token}",
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-            res = requests.post(LINE_NOTIFY_URL, headers=headers, data={"message": f"\n{message}"}, timeout=timeout)
-            if res.status_code == 200:
-                logger.info("✅ [LINE-NOTIFY] ส่งข้อความสำเร็จ")
-                success = True
-            else:
-                logger.warning(f"⚠️ [LINE-NOTIFY] ส่งไม่สำเร็จ: Status {res.status_code}")
-        except Exception as e:
-            logger.warning(f"⚠️ [LINE-NOTIFY ERROR] {e}")
+            with open(NOTIFICATIONS_FILE, "a", encoding="utf-8") as f:
+                f.write(entry)
 
-    # 2. หากยังไม่สำเร็จ และมี LINE Messaging API ให้ส่งผ่าน Messaging API
-    if not success and messaging_token and user_id and "your_" not in messaging_token:
+            # ควบคุมขนาดไฟล์ไม่ให้เกิน 2,000 บรรทัดล่าสุดเพื่อความเบาเร็ว
+            with open(NOTIFICATIONS_FILE, "r", encoding="utf-8", errors="replace") as f:
+                lines = f.readlines()
+            if len(lines) > 2000:
+                lines = lines[-2000:]
+                with open(NOTIFICATIONS_FILE, "w", encoding="utf-8") as f:
+                    f.writelines(lines)
+            content_to_send = "".join(lines)
+        except Exception as e:
+            logger.warning(f"⚠️ [GDRIVE-NOTIFIER FILE ERROR] {e}")
+            content_to_send = entry
+
+    # 2. ส่งเนื้อหาข้อความแจ้งเตือนขึ้น Google Drive ผ่าน Webhook
+    if GDRIVE_WEBHOOK_URL and "your_" not in GDRIVE_WEBHOOK_URL:
         try:
-            headers = {
-                "Authorization": f"Bearer {messaging_token}",
-                "Content-Type": "application/json"
-            }
-            payload = {
-                "to": user_id,
-                "messages": [{"type": "text", "text": message}]
-            }
-            res = requests.post(LINE_PUSH_URL, headers=headers, json=payload, timeout=timeout)
-            if res.status_code == 200:
-                logger.info("✅ [LINE-BOT] ส่งข้อความสำเร็จ")
-                success = True
+            resp = requests.post(
+                GDRIVE_WEBHOOK_URL,
+                json={"filename": "trade_notifications.txt", "content": content_to_send},
+                timeout=timeout
+            )
+            if resp.status_code == 200:
+                logger.info("☁️ [GDRIVE-NOTIFIER] บันทึกแจ้งเตือนลง trade_notifications.txt บน Google Drive สำเร็จ!")
+                return True
             else:
-                logger.warning(f"⚠️ [LINE-BOT] ส่งไม่สำเร็จ: Status {res.status_code}")
+                logger.warning(f"⚠️ [GDRIVE-NOTIFIER] Google Drive ตอบกลับ Status {resp.status_code}")
         except Exception as e:
-            logger.warning(f"⚠️ [LINE-BOT ERROR] {e}")
+            logger.warning(f"⚠️ [GDRIVE-NOTIFIER ERROR] ส่งขึ้น Google Drive ขัดข้อง: {e}")
 
-    return success
+    return False
 
 
 def send_line(message: str, async_send: bool = True, timeout: int = DEFAULT_TIMEOUT_SEC) -> bool:
     """
-    ฟังก์ชันหลักสำหรับส่งข้อความไปยัง LINE ผู้ใช้
-    :param message: ข้อความที่ต้องการส่ง
-    :param async_send: เริ่มต้นเป็น True ส่งแบบ background thread (non-blocking 100%)
-    :param timeout: timeout ไม่เกิน 5 วินาที
+    ฟังก์ชันหลักสำหรับส่งข้อความแจ้งเตือน (ส่งตรงเข้า Google Drive: trade_notifications.txt)
+    :param message: ข้อความที่ต้องการแจ้งเตือน
+    :param async_send: ส่งแบบ background thread (non-blocking 100%)
+    :param timeout: timeout สูงสุด
     """
-    messaging_token, user_id, notify_token = _get_credentials()
-    if not notify_token and (not messaging_token or not user_id):
+    if not message:
         return False
 
     if async_send:
-        t = threading.Thread(target=_post_to_line_sync, args=(message, timeout), daemon=True)
+        t = threading.Thread(target=_post_to_gdrive_sync, args=(message, timeout), daemon=True)
         t.start()
         return True
     else:
-        return _post_to_line_sync(message, timeout=timeout)
+        return _post_to_gdrive_sync(message, timeout=timeout)
 
 
 def send_line_message(message: str, async_send: bool = True) -> bool:
-    """Alias for send_line"""
+    """Alias for send_line -> บันทึกขึ้น Google Drive"""
     return send_line(message, async_send=async_send)
 
 
