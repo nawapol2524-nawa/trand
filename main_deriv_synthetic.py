@@ -177,8 +177,36 @@ MEMORY_FILE = "synthetic_memory.json"
 STATUS_FILE = "status_log_synthetic.txt"
 TRADE_LOG_FILE = "trade_log_synthetic.txt"
 STATE_FILE = "active_state_synthetic.json"
+ENGINE_CONFIG_FILE = "engine_config.json"
 
 usd_thb_rate = 34.00
+last_fx_update_time = 0
+
+def load_engine_config():
+    """โหลดการตั้งค่าระบบและ Micro-Capital Sandbox จาก engine_config.json"""
+    if os.path.exists(ENGINE_CONFIG_FILE):
+        try:
+            with open(ENGINE_CONFIG_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {
+        "virtual_sandbox": {
+            "enabled": True,
+            "starting_balance_usd": 5.98,
+            "current_balance_usd": 5.98,
+            "micro_sl_usd": -0.38,
+            "be_trigger_usd": 0.25
+        }
+    }
+
+def save_engine_config(cfg):
+    """บันทึกการตั้งค่าระบบและ Micro-Capital Sandbox ลง engine_config.json"""
+    try:
+        with open(ENGINE_CONFIG_FILE, "w", encoding="utf-8") as f:
+            json.dump(cfg, f, indent=2)
+    except Exception:
+        pass
 
 def get_thai_time():
     """เวลาปัจจุบันในเขตเวลาประเทศไทย (UTC+7)"""
@@ -277,10 +305,32 @@ def print_quant_table(thai_time, rows, account_info, memory, active_trade=None, 
             f"║ {r['symbol']:<10} ║ {r['price']:>12} ║ {r['rsi']:>4} ║ {atr_str:>12} ║ {trend_str:<6} ║ {r['pattern']:<17} ║ {r['pos']:<15} ║ {r['st']:<2} ║"
         )
     lines.append("╠════════════╩══════════════╩══════╩══════════════╩════════╩═══════════════════╩═════════════════╩════╣")
-    lines.append(f"║ 👤 Demo: {loginid:<14} 💰 Balance: ${bal:>10,.2f} USD (~{bal_thb:,.0f} ฿) | PnL: ${account_profit_usd:+,.2f} USD       ║")
+    v_chal = memory.get("virtual_challenge", {})
+    if v_chal and v_chal.get("active", True):
+        v_bal = float(v_chal.get("current_balance", 5.98))
+        v_bal_thb = v_bal * usd_thb_rate
+        v_start = float(v_chal.get("starting_balance", 5.98))
+        v_pnl = float(v_chal.get("net_profit_usd", round(v_bal - v_start, 2)))
+        v_pnl_thb = v_pnl * usd_thb_rate
+        v_trades = v_chal.get("total_trades", 0)
+        v_wins = v_chal.get("wins", 0)
+        v_losses = v_chal.get("losses", 0)
+        v_be = v_chal.get("breakevens", 0)
+        v_peak = float(v_chal.get("peak_balance", v_bal))
+        v_dd = float(v_chal.get("max_drawdown_pct", 0.0))
+
+        line_micro = f"💰 Micro-Capital: ${v_bal:,.2f} USD (~{v_bal_thb:,.2f} ฿) | PnL: ${v_pnl:+,.2f} USD (~{v_pnl_thb:+,.2f} ฿) [Start: ${v_start:.2f}]"
+        line_chal = f"🎯 Micro Challenge: {v_trades} Trades (Win {v_wins} | BE {v_be} | Loss {v_losses}) | Peak: ${v_peak:,.2f} | Max DD: {v_dd:.1f}%"
+        demo_line = f"👤 Demo: {loginid:<14} 💰 Balance: ${bal:>10,.2f} USD (~{bal_thb:,.0f} ฿) | Demo PnL: ${account_profit_usd:+,.2f} USD"
+        lines.append(f"║ {line_micro:<95} ║")
+        lines.append(f"║ {line_chal:<95} ║")
+        lines.append(f"║ {demo_line:<95} ║")
+    else:
+        lines.append(f"║ 👤 Demo: {loginid:<14} 💰 Balance: ${bal:>10,.2f} USD (~{bal_thb:,.0f} ฿) | PnL: ${account_profit_usd:+,.2f} USD       ║")
+
     stat_line = f"Decisive WR: {decisive_wr:4.1f}% | True WR (All): {all_wr:4.1f}% | E(Trade): ${expectancy:+.2f} USD"
     counts_line = f"Trades: {total_trades} (Win {wins} | BE {be_count} | Loss {losses}) | Net: ${net_pnl:+,.2f} USD"
-    lines.append(f"║ 📊 สถิติ: {counts_line:<83} ║")
+    lines.append(f"║ 📊 สถิติตลอดชีพ: {counts_line:<78} ║")
     lines.append(f"║ 📈 ประสิทธิภาพ: {stat_line:<80} ║")
     if active_trade and active_trade.get("contract_id"):
         pattern_str = active_trade.get('pattern', 'None')
@@ -361,6 +411,53 @@ def record_trade_result(mem, profit_usd, profit_thb, trade, exit_price, reason="
 
     mem["net_profit_usd"] = round(mem.get("net_profit_usd", 0.0) + profit_usd, 2)
     mem["net_profit_thb"] = round(mem.get("net_profit_thb", 0.0) + profit_thb, 1)
+
+    # อัปเดตสถิติ Micro-Capital Challenge ($5.98) ถ้าเปิดใช้งาน
+    if "virtual_challenge" not in mem:
+        mem["virtual_challenge"] = {
+            "active": True,
+            "starting_balance": 5.98,
+            "current_balance": 5.98,
+            "total_trades": 0,
+            "wins": 0,
+            "losses": 0,
+            "breakevens": 0,
+            "net_profit_usd": 0.0,
+            "net_profit_thb": 0.0,
+            "peak_balance": 5.98,
+            "max_drawdown_pct": 0.0,
+            "started_at": get_thai_time()
+        }
+    vc = mem["virtual_challenge"]
+    if vc.get("active", True):
+        vc["total_trades"] = vc.get("total_trades", 0) + 1
+        if profit_usd > 0.05:
+            vc["wins"] = vc.get("wins", 0) + 1
+        elif is_be:
+            vc["breakevens"] = vc.get("breakevens", 0) + 1
+        else:
+            vc["losses"] = vc.get("losses", 0) + 1
+
+        cur_bal = float(vc.get("current_balance", 5.98))
+        new_bal = round(cur_bal + profit_usd, 2)
+        vc["current_balance"] = new_bal
+        vc["net_profit_usd"] = round(new_bal - float(vc.get("starting_balance", 5.98)), 2)
+        vc["net_profit_thb"] = round(vc["net_profit_usd"] * usd_thb_rate, 1)
+        peak = max(float(vc.get("peak_balance", 5.98)), new_bal)
+        vc["peak_balance"] = peak
+        if peak > 0:
+            dd = round((peak - new_bal) / peak * 100, 2)
+            vc["max_drawdown_pct"] = max(float(vc.get("max_drawdown_pct", 0.0)), dd)
+
+        # ซิงก์ยอดเงินเสมือนลง engine_config.json
+        try:
+            cfg = load_engine_config()
+            if "virtual_sandbox" in cfg:
+                cfg["virtual_sandbox"]["current_balance_usd"] = new_bal
+                cfg["updated_at"] = get_thai_time()
+                save_engine_config(cfg)
+        except Exception:
+            pass
 
     if "history" not in mem:
         mem["history"] = []
@@ -805,6 +902,48 @@ async def deriv_send_recv(ws, req, expected_key=None, timeout=10):
 
     raise TimeoutError(f"หมดเวลารอรับการตอบกลับคำขอ {expected_key or req}")
 
+async def update_live_usd_thb_rate(ws=None):
+    """ดึงอัตราแลกเปลี่ยน USD/THB ปรับตามตลาดสดจาก Deriv WebSocket API หรือ Open API สำรอง"""
+    global usd_thb_rate, last_fx_update_time
+    now = time.time()
+    if now - last_fx_update_time < 900 and last_fx_update_time > 0:
+        return usd_thb_rate
+
+    if ws:
+        try:
+            req = {"exchange_rates": 1, "base_currency": "USD"}
+            res = await deriv_send_recv(ws, req, expected_key="exchange_rates", timeout=5)
+            rates = res.get("exchange_rates", {}).get("rates", {})
+            thb = rates.get("THB")
+            if thb:
+                val = float(thb)
+                if 25.0 < val < 50.0:
+                    usd_thb_rate = round(val, 2)
+                    last_fx_update_time = now
+                    log(f"💱 [LIVE FX UPDATE] อัตราแลกเปลี่ยนตลาดสด: 1 USD = {usd_thb_rate:.2f} ฿ (Deriv FX API)")
+                    return usd_thb_rate
+        except Exception:
+            pass
+
+    try:
+        import urllib.request, ssl
+        ctx = ssl._create_unverified_context()
+        req_http = urllib.request.Request("https://open.er-api.com/v6/latest/USD", headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req_http, context=ctx, timeout=3) as resp:
+            data = json.loads(resp.read().decode())
+            thb = data.get("rates", {}).get("THB")
+            if thb:
+                val = float(thb)
+                if 25.0 < val < 50.0:
+                    usd_thb_rate = round(val, 2)
+                    last_fx_update_time = now
+                    log(f"💱 [LIVE FX UPDATE] อัตราแลกเปลี่ยนตลาดสด: 1 USD = {usd_thb_rate:.2f} ฿ (Open API)")
+                    return usd_thb_rate
+    except Exception:
+        pass
+
+    return usd_thb_rate
+
 async def authorize_deriv_account(ws, token):
     """
     ส่งคำสั่ง authorize ไปยัง Deriv WebSocket และตรวจสอบความปลอดภัย 100%:
@@ -1200,6 +1339,9 @@ async def deriv_synthetic_engine():
             async with websockets.connect(target_ws_url, ssl=ssl_context, ping_interval=None, close_timeout=10) as ws:
                 log(f"🔌 เชื่อมต่อ Deriv WebSocket สำเร็จ! (บัญชี: {account_info['loginid']})")
 
+                # ดึงอัตราแลกเปลี่ยน USD/THB ตลาดสดรอบแรก
+                await update_live_usd_thb_rate(ws)
+
                 # ตรวจสอบ active_symbols และ contract specifications ประจำ session (BOT_RESEARCH_AND_RISK_SPEC_V1)
                 active_specs = await fetch_active_symbols_specs(ws)
 
@@ -1300,6 +1442,12 @@ async def deriv_synthetic_engine():
                                 exit_price = float(poc.get("sell_price", current_spot))
                                 status_desc = poc.get("status", "sold")
 
+                                account_info['balance'] = round(account_info['balance'] + profit_usd, 2)
+                                record_trade_result(memory, profit_usd, profit_thb, active_trade, exit_price, reason=f"Deriv Auto-Closed ({status_desc})")
+
+                                v_chal_curr = memory.get("virtual_challenge", {})
+                                v_bal_now = float(v_chal_curr.get("current_balance", 5.98))
+
                                 print_highlight_box(
                                     f"CONTRACT AUTO-CLOSED (DERIV) - {curr_sym}",
                                     [
@@ -1307,14 +1455,12 @@ async def deriv_synthetic_engine():
                                         ("Contract ID", str(contract_id)),
                                         ("Exit Price", f"{exit_price:.4f}"),
                                         ("Status", status_desc),
-                                        ("Net Profit", f"${profit_usd:+,.2f} USD (≈ {profit_thb:+,.1f} THB)"),
-                                        ("Account Balance", f"${account_info['balance'] + profit_usd:,.2f} USD")
+                                        ("Net Profit", f"${profit_usd:+,.2f} USD (~{profit_thb:+,.1f} ฿)"),
+                                        ("Micro-Capital", f"${v_bal_now:,.2f} USD (~{v_bal_now * usd_thb_rate:,.2f} ฿)"),
+                                        ("Demo Balance", f"${account_info['balance']:,.2f} USD (~{account_info['balance'] * usd_thb_rate:,.0f} ฿)")
                                     ],
                                     icon="🎯" if profit_usd >= 0 else "🛑"
                                 )
-
-                                account_info['balance'] = round(account_info['balance'] + profit_usd, 2)
-                                record_trade_result(memory, profit_usd, profit_thb, active_trade, exit_price, reason=f"Deriv Auto-Closed ({status_desc})")
 
                                 if notifier:
                                     try:
@@ -1350,6 +1496,36 @@ async def deriv_synthetic_engine():
                                 diff_pips = diff_price / sym_pip_size
                                 diff_atr = diff_price / trade_atr
                                 trailing_sl_pips = active_trade.get('trailing_sl_pips', INITIAL_SL_PIPS)
+
+                                # Micro-Capital Sandbox: หากกำไรเป็นเงินดอลลาร์ถึงเกณฑ์ (เช่น +$0.25 USD) ให้ล็อก BE ทันทีเพื่อรักษาทุน $5.98
+                                engine_cfg = load_engine_config()
+                                vs_cfg = engine_cfg.get("virtual_sandbox", {})
+                                if vs_cfg.get("enabled", True) and not active_trade.get('be_locked', False):
+                                    be_usd_target = float(vs_cfg.get("be_trigger_usd", 0.25))
+                                    if current_profit >= be_usd_target:
+                                        active_trade['be_locked'] = True
+                                        be_lock_dist = cfg['be_lock_atr'] * trade_atr
+                                        trailing_sl_pips = round(be_lock_dist / sym_pip_size, 1)
+                                        active_trade['trailing_sl_pips'] = trailing_sl_pips
+                                        save_state(active_trade)
+
+                                        print_highlight_box(
+                                            f"MICRO-CAPITAL EARLY BE LOCKED ({c_type}) - {curr_sym}",
+                                            [
+                                                ("Contract ID", str(contract_id)),
+                                                ("Direction", c_type),
+                                                ("Current Spot", f"{cur_price:.4f}"),
+                                                ("Floating Profit", f"+${current_profit:.2f} USD (~+{current_profit * usd_thb_rate:.2f} ฿)"),
+                                                ("Action", f"Capital Safe Locked! (+{trailing_sl_pips:.1f} pips)")
+                                            ],
+                                            icon="🛡️"
+                                        )
+                                        if notifier:
+                                            try:
+                                                be_price = (entry - be_lock_dist) if c_type == 'MULTDOWN' else (entry + be_lock_dist)
+                                                notifier.notify_breakeven("Deriv Synthetic", f"{curr_sym} ({c_type}) [Micro-Sandbox]", cur_price, be_price, diff_pips, contract_id=contract_id)
+                                            except Exception:
+                                                pass
 
                                 # Auto-Breakeven เมื่อกำไรแตะเกณฑ์ ATR เฉพาะสินทรัพย์ (เช่น +1.5x ถึง 1.8x ATR)
                                 be_trigger_dist = cfg['be_trigger_atr'] * trade_atr
@@ -1412,6 +1588,13 @@ async def deriv_synthetic_engine():
                                 hold_sec = time.time() - active_trade.get('start_time', time.time())
                                 is_sl = diff_pips <= trailing_sl_pips
 
+                                # Micro-Capital Hard SL Guard: ตัดขาดทุนเมื่อติดลบถึงเกณฑ์ (เช่น -$0.38 USD) เพื่อรักษาทุน $5.98 ให้อยู่รอดได้ 15-17 ไม้
+                                is_micro_sl = False
+                                if vs_cfg.get("enabled", True):
+                                    micro_sl_limit = float(vs_cfg.get("micro_sl_usd", -0.38))
+                                    if current_profit <= micro_sl_limit:
+                                        is_micro_sl = True
+
                                 if c_type == 'MULTDOWN':
                                     target_bb = inds['lower_bb'] if inds else cur_price * 0.95
                                     is_bb_target = (cur_price <= target_bb) and (diff_atr >= 0.8)
@@ -1425,13 +1608,15 @@ async def deriv_synthetic_engine():
                                 is_timeout = hold_sec >= cfg.get('max_hold_sec', 10800) and (diff_atr < 0.8)
                                 is_be_hit = is_sl and active_trade.get('be_locked', False)
 
-                                if is_be_hit or is_sl or is_bb_target or is_tp_target or is_reversal_exit or is_timeout:
+                                if is_micro_sl or is_be_hit or is_sl or is_bb_target or is_tp_target or is_reversal_exit or is_timeout:
                                     close_reason = (
-                                        f"{'Bullish' if c_type == 'MULTDOWN' else 'Bearish'} Reversal TP" if is_reversal_exit else (
-                                            f"Target TP ({cfg.get('tp_target_atr', 2.5)}x ATR)" if is_tp_target else (
-                                                f"{'Lower' if c_type == 'MULTDOWN' else 'Upper'} BB TP" if is_bb_target else (
-                                                    "BE Hit" if is_be_hit else (
-                                                        "Trailing SL" if is_sl else "Timeout"
+                                        f"Micro-Capital Hard SL Guard (${current_profit:.2f} USD)" if is_micro_sl else (
+                                            f"{'Bullish' if c_type == 'MULTDOWN' else 'Bearish'} Reversal TP" if is_reversal_exit else (
+                                                f"Target TP ({cfg.get('tp_target_atr', 2.5)}x ATR)" if is_tp_target else (
+                                                    f"{'Lower' if c_type == 'MULTDOWN' else 'Upper'} BB TP" if is_bb_target else (
+                                                        "BE Hit" if is_be_hit else (
+                                                            "Trailing SL" if is_sl else "Timeout"
+                                                        )
                                                     )
                                                 )
                                             )
@@ -1447,9 +1632,16 @@ async def deriv_synthetic_engine():
                                         balance_after = float(sell_res.get("balance_after", account_info["balance"] + profit_usd))
                                         account_info["balance"] = balance_after
 
+                                        record_trade_result(memory, profit_usd, profit_thb, active_trade, cur_price, reason=close_reason)
+                                        v_chal_curr = memory.get("virtual_challenge", {})
+                                        v_bal_now = float(v_chal_curr.get("current_balance", 5.98))
+
                                         is_safe_be = is_be_hit or (abs(profit_usd) <= 0.06)
                                         if is_safe_be:
                                             status_title = "SL-BREAKEVEN CLOSED (CAPITAL SAFE 🛡️)"
+                                            icon_str = "🛡️"
+                                        elif is_micro_sl:
+                                            status_title = "MICRO-CAPITAL HARD SL CUT (CAPITAL SHIELD 🛡️)"
                                             icon_str = "🛡️"
                                         elif is_reversal_exit:
                                             status_title = f"EARLY TAKE PROFIT ({c_type} REVERSAL)"
@@ -1472,13 +1664,12 @@ async def deriv_synthetic_engine():
                                                 ("Direction", c_type),
                                                 ("Exit Price", f"{cur_price:.4f}"),
                                                 ("Result ATR", f"{diff_atr:+.2f} ATR ({diff_pips:+.1f} pips)"),
-                                                ("Net Profit", f"${profit_usd:+,.2f} USD (≈ {profit_thb:+,.1f} THB)"),
-                                                ("Account Balance", f"${balance_after:,.2f} USD")
+                                                ("Net Profit", f"${profit_usd:+,.2f} USD (~{profit_thb:+,.1f} ฿)"),
+                                                ("Micro-Capital", f"${v_bal_now:,.2f} USD (~{v_bal_now * usd_thb_rate:,.2f} ฿)"),
+                                                ("Demo Balance", f"${balance_after:,.2f} USD (~{balance_after * usd_thb_rate:,.0f} ฿)")
                                             ],
                                             icon=icon_str
                                         )
-
-                                        record_trade_result(memory, profit_usd, profit_thb, active_trade, cur_price, reason=close_reason)
 
                                         # อัปเดตสถิติความเสี่ยงสถาบัน (Risk Guard State Tracking)
                                         if profit_usd > 0.05:
@@ -1715,6 +1906,7 @@ async def deriv_synthetic_engine():
 
                     # พิมพ์ตารางสถานะ Quant Terminal
                     if scan_rows:
+                        await update_live_usd_thb_rate(ws)
                         guard_str = f"PAUSED ⏸️ ({risk_pause_reason})" if is_risk_paused else "ACTIVE 🛡️"
                         print_quant_table(get_thai_time(), scan_rows, account_info, memory, active_trade=active_trade, risk_guard_status=guard_str)
 

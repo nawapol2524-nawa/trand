@@ -1,1 +1,15 @@
-{"mode": "all", "binance": true, "synthetic": true, "forex": true, "red_folder_freeze": false, "updated_at": "2026-09-15 09:35:00"}
+{
+  "mode": "all",
+  "binance": true,
+  "synthetic": true,
+  "forex": true,
+  "red_folder_freeze": false,
+  "virtual_sandbox": {
+    "enabled": true,
+    "starting_balance_usd": 5.98,
+    "current_balance_usd": 5.92,
+    "micro_sl_usd": -0.38,
+    "be_trigger_usd": 0.25
+  },
+  "updated_at": "2026-09-15 13:57:04"
+}
