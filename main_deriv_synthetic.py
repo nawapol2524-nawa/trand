@@ -180,7 +180,7 @@ STATE_FILE = "active_state_synthetic.json"
 ENGINE_CONFIG_FILE = "engine_config.json"
 
 usd_thb_rate = 34.00
-last_fx_update_time = 0
+last_fx_update_date = ""
 
 def load_engine_config():
     """โหลดการตั้งค่าระบบและ Micro-Capital Sandbox จาก engine_config.json"""
@@ -902,13 +902,27 @@ async def deriv_send_recv(ws, req, expected_key=None, timeout=10):
 
     raise TimeoutError(f"หมดเวลารอรับการตอบกลับคำขอ {expected_key or req}")
 
-async def update_live_usd_thb_rate(ws=None):
-    """ดึงอัตราแลกเปลี่ยน USD/THB ปรับตามตลาดสดจาก Deriv WebSocket API หรือ Open API สำรอง"""
-    global usd_thb_rate, last_fx_update_time
-    now = time.time()
-    if now - last_fx_update_time < 900 and last_fx_update_time > 0:
+async def update_live_usd_thb_rate(ws=None, force=False):
+    """
+    ดึงอัตราแลกเปลี่ยน USD/THB ปรับตามตลาดสดรอบละ 24 ชม. (เวลา 09:30 น. ตามเวลาไทย)
+    เพื่อประหยัดทรัพยากรเครื่องบอทและลดภาระเน็ตเวิร์ก
+    """
+    global usd_thb_rate, last_fx_update_date
+    now_dt = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=7)
+    today_str = now_dt.strftime('%Y-%m-%d')
+    current_hhmm = now_dt.strftime('%H:%M')
+
+    should_update = force
+    if not should_update:
+        if not last_fx_update_date:
+            should_update = True
+        elif last_fx_update_date != today_str and current_hhmm >= "09:30":
+            should_update = True
+
+    if not should_update:
         return usd_thb_rate
 
+    rate_updated = False
     if ws:
         try:
             req = {"exchange_rates": 1, "base_currency": "USD"}
@@ -919,28 +933,34 @@ async def update_live_usd_thb_rate(ws=None):
                 val = float(thb)
                 if 25.0 < val < 50.0:
                     usd_thb_rate = round(val, 2)
-                    last_fx_update_time = now
-                    log(f"💱 [LIVE FX UPDATE] อัตราแลกเปลี่ยนตลาดสด: 1 USD = {usd_thb_rate:.2f} ฿ (Deriv FX API)")
+                    last_fx_update_date = today_str
+                    rate_updated = True
+                    log(f"💱 [DAILY FX UPDATE 09:30] อัตราแลกเปลี่ยนรอบ 24 ชม.: 1 USD = {usd_thb_rate:.2f} ฿ (Deriv FX API)")
                     return usd_thb_rate
         except Exception:
             pass
 
-    try:
-        import urllib.request, ssl
-        ctx = ssl._create_unverified_context()
-        req_http = urllib.request.Request("https://open.er-api.com/v6/latest/USD", headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req_http, context=ctx, timeout=3) as resp:
-            data = json.loads(resp.read().decode())
-            thb = data.get("rates", {}).get("THB")
-            if thb:
-                val = float(thb)
-                if 25.0 < val < 50.0:
-                    usd_thb_rate = round(val, 2)
-                    last_fx_update_time = now
-                    log(f"💱 [LIVE FX UPDATE] อัตราแลกเปลี่ยนตลาดสด: 1 USD = {usd_thb_rate:.2f} ฿ (Open API)")
-                    return usd_thb_rate
-    except Exception:
-        pass
+    if not rate_updated:
+        try:
+            import urllib.request, ssl
+            ctx = ssl._create_unverified_context()
+            req_http = urllib.request.Request("https://open.er-api.com/v6/latest/USD", headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req_http, context=ctx, timeout=3) as resp:
+                data = json.loads(resp.read().decode())
+                thb = data.get("rates", {}).get("THB")
+                if thb:
+                    val = float(thb)
+                    if 25.0 < val < 50.0:
+                        usd_thb_rate = round(val, 2)
+                        last_fx_update_date = today_str
+                        rate_updated = True
+                        log(f"💱 [DAILY FX UPDATE 09:30] อัตราแลกเปลี่ยนรอบ 24 ชม.: 1 USD = {usd_thb_rate:.2f} ฿ (Open API)")
+                        return usd_thb_rate
+        except Exception:
+            pass
+
+    if not rate_updated and not last_fx_update_date:
+        last_fx_update_date = today_str
 
     return usd_thb_rate
 
