@@ -101,15 +101,22 @@
   },
   "virtual_challenge": {
     "active": true,
+    "base_capital": 5.98,
     "starting_balance": 5.98,
+    "active_capital": 5.98,
+    "profit_vault": 0.0,
+    "total_net_worth": 5.98,
     "current_balance": 5.98,
+    "total_swept": 0.0,
+    "last_swept_amount": 0.0,
+    "last_swept_at": null,
     "total_trades": 0,
     "wins": 0,
     "losses": 0,
     "breakevens": 0,
     "net_profit_usdt": 0.0,
     "net_profit_thb": 0.0,
-    "peak_balance": 5.98,
+    "peak_net_worth": 5.98,
     "max_drawdown_pct": 0.0,
     "started_at": "2026-09-15 14:00:00"
   }
