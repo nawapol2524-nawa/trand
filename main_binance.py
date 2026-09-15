@@ -37,6 +37,81 @@ MEMORY_FILE = "agent_memory_multi.json"
 LOG_FILE = "trade_log.txt"
 STATUS_FILE = "status_log.txt"
 STATE_FILE = "active_state.json"
+ENGINE_CONFIG_FILE = "engine_config.json"
+
+usd_thb_rate = 34.00
+last_fx_update_date = ""
+current_testnet_usdt = 0.0
+
+def load_engine_config():
+    """โหลดการตั้งค่าระบบและ Micro-Capital Sandbox จาก engine_config.json"""
+    if os.path.exists(ENGINE_CONFIG_FILE):
+        try:
+            with open(ENGINE_CONFIG_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {
+        "virtual_sandbox_binance": {
+            "enabled": True,
+            "starting_balance_usdt": 5.98,
+            "current_balance_usdt": 5.98,
+            "micro_sl_pct": -0.06,
+            "be_trigger_pct": 0.04
+        }
+    }
+
+def save_engine_config(cfg):
+    """บันทึกการตั้งค่าระบบและ Micro-Capital Sandbox ลง engine_config.json"""
+    try:
+        with open(ENGINE_CONFIG_FILE, "w", encoding="utf-8") as f:
+            json.dump(cfg, f, indent=2)
+    except Exception:
+        pass
+
+def update_live_usd_thb_rate(force=False):
+    """
+    ดึงอัตราแลกเปลี่ยน USD/THB ปรับตามตลาดสดรอบละ 24 ชม. (เวลา 09:30 น. ตามเวลาไทย)
+    เพื่อประหยัดทรัพยากรเครื่องบอทและลดภาระเน็ตเวิร์ก
+    """
+    global usd_thb_rate, last_fx_update_date
+    now_dt = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=7)
+    today_str = now_dt.strftime('%Y-%m-%d')
+    current_hhmm = now_dt.strftime('%H:%M')
+
+    should_update = force
+    if not should_update:
+        if not last_fx_update_date:
+            should_update = True
+        elif last_fx_update_date != today_str and current_hhmm >= "09:30":
+            should_update = True
+
+    if not should_update:
+        return usd_thb_rate
+
+    rate_updated = False
+    try:
+        import urllib.request, ssl
+        ctx = ssl._create_unverified_context()
+        req_http = urllib.request.Request("https://open.er-api.com/v6/latest/USD", headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req_http, context=ctx, timeout=3) as resp:
+            data = json.loads(resp.read().decode())
+            thb = data.get("rates", {}).get("THB")
+            if thb:
+                val = float(thb)
+                if 25.0 < val < 50.0:
+                    usd_thb_rate = round(val, 2)
+                    last_fx_update_date = today_str
+                    rate_updated = True
+                    log_trade(f"💱 [DAILY FX UPDATE 09:30] อัตราแลกเปลี่ยนรอบ 24 ชม.: 1 USD = {usd_thb_rate:.2f} ฿ (Open API)")
+                    return usd_thb_rate
+    except Exception:
+        pass
+
+    if not rate_updated and not last_fx_update_date:
+        last_fx_update_date = today_str
+
+    return usd_thb_rate
 
 # บังคับโหมด DEMO / TESTNET 100% ห้ามใช้เงินจริง
 exchange = ccxt.binance({
@@ -57,6 +132,7 @@ if not is_sandbox:
 
 def connect_and_check_balance():
     """พยายามเชื่อมต่อและตรวจสอบยอดเงิน (พร้อมระบบ Standby Retry ไม่แครช แม้ Testnet จะล่ม 502)"""
+    global current_testnet_usdt
     start_usdt = 0.0
     while True:
         try:
@@ -65,7 +141,8 @@ def connect_and_check_balance():
             except Exception:
                 pass
             bal = exchange.fetch_balance()
-            start_usdt = bal['total'].get('USDT', 0.0)
+            start_usdt = float(bal['total'].get('USDT', 0.0))
+            current_testnet_usdt = start_usdt
             print(f"✅ เชื่อมต่อ Binance Testnet (Sandbox) สำเร็จ! ยอดเงิน: {start_usdt:.2f} USDT", flush=True)
             return start_usdt
         except Exception as e:
@@ -203,9 +280,49 @@ def print_highlight_box(title, items, icon="⚡"):
         pass
 
 def print_quant_table(thai_time, btc_bullish, coin_rows):
-    """ตารางสรุปสถานะเหรียญแบบ Compact อ่านง่าย ไม่สแปมซ้ำซ้อน"""
+    """ตารางสรุปสถานะเหรียญแบบ Compact อ่านง่าย ไม่สแปมซ้ำซ้อน พร้อม Dual-Track Micro-Capital (5.98 USDT)"""
     trend_tag = "🟢 BULLISH (> 1h EMA200)" if btc_bullish else "🔴 BEARISH (<= 1h EMA200)"
     weekend_active = is_weekend_mode()
+
+    # 1. ข้อมูล Micro-Capital Sandbox (5.98 USDT)
+    cfg = load_engine_config()
+    vs_cfg = cfg.get("virtual_sandbox_binance", {})
+    vc = memory.get("virtual_challenge")
+    if not vc:
+        vc = {
+            "active": True,
+            "starting_balance": vs_cfg.get("starting_balance_usdt", 5.98),
+            "current_balance": vs_cfg.get("current_balance_usdt", 5.98),
+            "total_trades": 0,
+            "wins": 0,
+            "losses": 0,
+            "breakevens": 0,
+            "net_profit_usdt": 0.0,
+            "net_profit_thb": 0.0,
+            "peak_balance": vs_cfg.get("starting_balance_usdt", 5.98),
+            "max_drawdown_pct": 0.0,
+            "started_at": get_thai_time()
+        }
+        memory["virtual_challenge"] = vc
+
+    v_bal = vc.get("current_balance", 5.98)
+    v_start = vc.get("starting_balance", 5.98)
+    v_pnl = round(v_bal - v_start, 4)
+    v_bal_thb = v_bal * usd_thb_rate
+    v_pnl_thb = v_pnl * usd_thb_rate
+    v_trades = vc.get("total_trades", 0)
+    v_wins = vc.get("wins", 0)
+    v_be = vc.get("breakevens", 0)
+    v_loss = vc.get("losses", 0)
+    v_peak = vc.get("peak_balance", v_start)
+    v_mdd = vc.get("max_drawdown_pct", 0.0)
+
+    # 2. ข้อมูลสถิติตลอดชีพของระบบ Binance Spot (ทุกเหรียญรวมกัน)
+    total_trades = sum(memory[s].get('total_trades', 0) for s in SYMBOLS if s in memory)
+    total_wins = sum(memory[s].get('wins', 0) for s in SYMBOLS if s in memory)
+    total_losses = sum(memory[s].get('losses', 0) for s in SYMBOLS if s in memory)
+    win_rate = (total_wins / total_trades * 100) if total_trades > 0 else 0.0
+
     lines = [
         "╔══════════════════════════════════════════════════════════════════════════════════╗",
         "║  ⚡ AG 2.0 QUANT TERMINAL | BINANCE SPOT (SANDBOX TESTNET DEMO)                   ║",
@@ -222,7 +339,11 @@ def print_quant_table(thai_time, btc_bullish, coin_rows):
         lines.append(
             f"║ {r['symbol']:<11} ║ {r['price']:>12} ║ {r['rsi']:>4} ║ {r['adx']:>4} ║ {r['vol']:>5}x ║ {r['pos']:<15} ║ {r['status']:<10} ║"
         )
-    lines.append("╚═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╝")
+    lines.append("╠═════════════╩══════════════╩══════╩══════╩════════╩═════════════════╩════════════╣")
+    lines.append(f"║ 💰 Micro-Capital: {v_bal:.4f} USDT (~{v_bal_thb:.2f} ฿) | PnL: {v_pnl:+.4f} USDT (~{v_pnl_thb:+.2f} ฿) [Start: {v_start:.2f}] ║")
+    lines.append(f"║ 🎯 Micro Challenge: {v_trades} Trades (Win {v_wins} | BE {v_be} | Loss {v_loss}) | Peak: {v_peak:.4f} | Max DD: {v_mdd:.1f}% ║")
+    lines.append(f"║ 👤 Testnet Wallet: {current_testnet_usdt:.2f} USDT (~{current_testnet_usdt * usd_thb_rate:,.2f} ฿) | สถิติตลอดชีพ: {total_trades} ไม้ (ชนะ {total_wins} | แพ้ {total_losses} | WR: {win_rate:4.1f}%) ║")
+    lines.append("╚══════════════════════════════════════════════════════════════════════════════════╝")
     full_text = "\n".join(lines)
     if weekend_active:
         print("🛡️ [WEEKEND GUARD ACTIVE] ตลาดสุดสัปดาห์: สถาบันหยุดทำการ เลี่ยง False Breakout (เน้นช้อนแนวรับ Mean-Rev)", flush=True)
@@ -275,6 +396,8 @@ def get_default_memory():
 
 def load_memory():
     """กู้คืนความจำโมเดล AI ทันทีที่สตาร์ท/รีสตาร์ท"""
+    cfg = load_engine_config()
+    vs_cfg = cfg.get("virtual_sandbox_binance", {})
     if os.path.exists(MEMORY_FILE):
         try:
             with open(MEMORY_FILE, 'r', encoding='utf-8') as f:
@@ -282,6 +405,21 @@ def load_memory():
                 for sym in SYMBOLS:
                     if sym not in data:
                         data[sym] = get_default_memory()
+                if "virtual_challenge" not in data:
+                    data["virtual_challenge"] = {
+                        "active": True,
+                        "starting_balance": vs_cfg.get("starting_balance_usdt", 5.98),
+                        "current_balance": vs_cfg.get("current_balance_usdt", 5.98),
+                        "total_trades": 0,
+                        "wins": 0,
+                        "losses": 0,
+                        "breakevens": 0,
+                        "net_profit_usdt": 0.0,
+                        "net_profit_thb": 0.0,
+                        "peak_balance": vs_cfg.get("starting_balance_usdt", 5.98),
+                        "max_drawdown_pct": 0.0,
+                        "started_at": get_thai_time()
+                    }
                 total_trades = sum(data[s].get('total_trades', 0) for s in SYMBOLS)
                 total_wins = sum(data[s].get('wins', 0) for s in SYMBOLS)
                 total_losses = sum(data[s].get('losses', 0) for s in SYMBOLS)
@@ -291,6 +429,20 @@ def load_memory():
             print(f"⚠️ [MEMORY LOAD ERROR] {e}", flush=True)
     
     data = {sym: get_default_memory() for sym in SYMBOLS}
+    data["virtual_challenge"] = {
+        "active": True,
+        "starting_balance": vs_cfg.get("starting_balance_usdt", 5.98),
+        "current_balance": vs_cfg.get("current_balance_usdt", 5.98),
+        "total_trades": 0,
+        "wins": 0,
+        "losses": 0,
+        "breakevens": 0,
+        "net_profit_usdt": 0.0,
+        "net_profit_thb": 0.0,
+        "peak_balance": vs_cfg.get("starting_balance_usdt", 5.98),
+        "max_drawdown_pct": 0.0,
+        "started_at": get_thai_time()
+    }
     return data
 
 memory = load_memory()
@@ -303,6 +455,63 @@ def save_memory(mem):
         os.replace(tmp, MEMORY_FILE)
     except Exception:
         pass
+
+def record_binance_trade_result(sym, real_pnl_pct, net_pnl_usdt, exit_price, reason=""):
+    """บันทึกผลการเทรดของ Binance เข้าสู่ Micro-Capital Challenge (5.98 USDT)"""
+    global memory
+    vc = memory.get("virtual_challenge")
+    if not vc:
+        cfg = load_engine_config()
+        vs_cfg = cfg.get("virtual_sandbox_binance", {})
+        vc = {
+            "active": True,
+            "starting_balance": vs_cfg.get("starting_balance_usdt", 5.98),
+            "current_balance": vs_cfg.get("current_balance_usdt", 5.98),
+            "total_trades": 0,
+            "wins": 0,
+            "losses": 0,
+            "breakevens": 0,
+            "net_profit_usdt": 0.0,
+            "net_profit_thb": 0.0,
+            "peak_balance": vs_cfg.get("starting_balance_usdt", 5.98),
+            "max_drawdown_pct": 0.0,
+            "started_at": get_thai_time()
+        }
+        memory["virtual_challenge"] = vc
+
+    v_start = vc.get("starting_balance", 5.98)
+    micro_pnl_usdt = round(v_start * real_pnl_pct, 4)
+    micro_pnl_thb = round(micro_pnl_usdt * usd_thb_rate, 2)
+    
+    is_be = "BE" in reason or "Breakeven" in reason or (-0.001 <= real_pnl_pct <= 0.002)
+    vc["total_trades"] = vc.get("total_trades", 0) + 1
+    if is_be:
+        vc["breakevens"] = vc.get("breakevens", 0) + 1
+    elif real_pnl_pct > 0:
+        vc["wins"] = vc.get("wins", 0) + 1
+    else:
+        vc["losses"] = vc.get("losses", 0) + 1
+
+    vc["net_profit_usdt"] = round(vc.get("net_profit_usdt", 0.0) + micro_pnl_usdt, 4)
+    vc["net_profit_thb"] = round(vc["net_profit_usdt"] * usd_thb_rate, 2)
+    new_bal = round(v_start + vc["net_profit_usdt"], 4)
+    vc["current_balance"] = new_bal
+    vc["peak_balance"] = max(vc.get("peak_balance", v_start), new_bal)
+
+    if vc["peak_balance"] > 0:
+        dd = ((vc["peak_balance"] - new_bal) / vc["peak_balance"]) * 100
+        vc["max_drawdown_pct"] = round(max(vc.get("max_drawdown_pct", 0.0), dd), 1)
+
+    try:
+        cfg = load_engine_config()
+        if "virtual_sandbox_binance" in cfg:
+            cfg["virtual_sandbox_binance"]["current_balance_usdt"] = new_bal
+            save_engine_config(cfg)
+    except Exception:
+        pass
+
+    save_memory(memory)
+    return micro_pnl_usdt, micro_pnl_thb, new_bal
 
 def save_state():
     """บันทึกสถานะการถือครอง (Active Positions) และ Cooldown ลง active_state.json แบบ Atomic ป้องกันไฟล์ 0 Bytes"""
@@ -885,7 +1094,7 @@ def process_symbol(sym, btc_bullish):
                     save_state()
                     
                     invested_usdt = s['position_size'] * s['entry_price']
-                    invested_thb = invested_usdt * 34.0
+                    invested_thb = invested_usdt * usd_thb_rate
                     
                     # แสดงกรอบเน้นสไตล์ Quant Terminal
                     tp_label = f"${s['tp']:.6f} (+{tp_mult:.1f} ATR - Weekend Guard)" if is_weekend_mode() else f"${s['tp']:.6f} (+2.5 ATR)"
@@ -988,8 +1197,16 @@ def process_symbol(sym, btc_bullish):
             if is_pre_cpi_exit:
                 log_trade(f"🛡️ [PRE-CPI SAFETY EXIT {sym}] ถึงเวลา 18:30 น. (1 ชม. ก่อนข่าว CPI) สั่งปิดไม้เพื่อถือเงินสด 100% ตามแผน Spark!")
 
-            # ปิดออเดอร์เมื่อราคาตัดต่ำกว่าเส้น Stop Loss หรือถึงเวลา Pre-CPI Safety Exit
-            if current_price <= s['sl'] or is_pre_cpi_exit:
+            # 🛡️ Micro-Capital Protection (5.98 USDT Sandbox)
+            cfg = load_engine_config()
+            vs_cfg = cfg.get("virtual_sandbox_binance", {})
+            micro_sl_pct = vs_cfg.get("micro_sl_pct", -0.06)
+            is_micro_sl_hit = pnl_percent <= micro_sl_pct
+            if is_micro_sl_hit:
+                log_trade(f"🛑 [MICRO-CAPITAL SL GUARD {sym}] ขาดทุนแตะ {pnl_percent*100:.2f}% (เกณฑ์ตัดขาดทุน {micro_sl_pct*100:.1f}%) -> สั่งปิดไม้ฉุกเฉินเพื่อรักษาทุนจำลอง 5.98 USDT!")
+
+            # ปิดออเดอร์เมื่อราคาตัดต่ำกว่าเส้น Stop Loss, Pre-CPI Safety Exit, หรือชน Micro-SL Guard
+            if current_price <= s['sl'] or is_pre_cpi_exit or is_micro_sl_hit:
                 try:
                     base_coin = sym.split('/')[0]
                     free_bal = exchange.fetch_free_balance().get(base_coin, 0)
@@ -1053,10 +1270,16 @@ def process_symbol(sym, btc_bullish):
                     invested_usdt = s['position_size'] * s['entry_price']
                     received_usdt = sell_size * exit_price
                     net_pnl_usdt = received_usdt - invested_usdt
-                    net_pnl_thb = net_pnl_usdt * 34.0
+                    net_pnl_thb = net_pnl_usdt * usd_thb_rate
+
+                    global current_testnet_usdt
+                    current_testnet_usdt = round(current_testnet_usdt + net_pnl_usdt, 4)
                     
                     s['in_position'] = False
                     memory[sym]["total_trades"] += 1
+
+                    exit_reason = "Pre-CPI Safety Exit" if is_pre_cpi_exit else ("Micro-SL Guard" if is_micro_sl_hit else ("BE Hit" if (s['be_set'] and real_pnl_pct >= 0) else "Stop Loss"))
+                    micro_pnl, micro_thb, v_bal = record_binance_trade_result(sym, real_pnl_pct, net_pnl_usdt, exit_price, reason=exit_reason)
 
                     if is_pre_cpi_exit:
                         # ปิดไม้เพื่อความปลอดภัยก่อนข่าว CPI
@@ -1069,7 +1292,8 @@ def process_symbol(sym, btc_bullish):
                             [
                                 ("Exit Price", f"${exit_price:.6f}"),
                                 ("Net Return", f"{real_pnl_pct*100:+.2f}%"),
-                                ("Net PnL", f"{net_pnl_usdt:+.4f} USDT ({net_pnl_thb:+.2f} บาท)"),
+                                ("Net PnL", f"{net_pnl_usdt:+.4f} USDT (~{net_pnl_thb:+.2f} ฿)"),
+                                ("Micro-Capital", f"{v_bal:.4f} USDT (~{v_bal * usd_thb_rate:.2f} ฿)"),
                                 ("Status", "🛡️ เคลียร์พอร์ตปลอดภัยก่อนข่าว CPI ตามแผน Spark"),
                                 ("AI Reflection", lesson)
                             ],
@@ -1084,6 +1308,32 @@ def process_symbol(sym, btc_bullish):
                                 )
                             except Exception:
                                 pass
+                    elif is_micro_sl_hit:
+                        # ปิดฉุกเฉินด้วย Micro-SL Guard
+                        s['consecutive_losses'] += 1
+                        memory[sym]["losses"] += 1
+                        lesson = ag_learn_from_trade(sym, "LOSS", real_pnl_pct * 100)
+                        if s['consecutive_losses'] >= 2:
+                            s['cooldown_until'] = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=4)
+                            log_trade(f"🛑 [CIRCUIT BREAKER {sym}] แพ้ติดกัน {s['consecutive_losses']} ไม้ -> พักเทรดเหรียญนี้ 4 ชั่วโมง")
+
+                        print_highlight_box(
+                            f"MICRO-SL GUARD HIT - {sym}",
+                            [
+                                ("Exit Price", f"${exit_price:.6f}"),
+                                ("Net Return", f"{real_pnl_pct*100:+.2f}%"),
+                                ("Net Loss", f"{net_pnl_usdt:+.4f} USDT (~{net_pnl_thb:.2f} ฿)"),
+                                ("Micro-Capital", f"{v_bal:.4f} USDT (~{v_bal * usd_thb_rate:.2f} ฿)"),
+                                ("Protection", "🛑 Micro-SL Guard ตัดขาดทุนจำลองเพื่อรักษาต้นทุน"),
+                                ("AI Reflection", lesson)
+                            ],
+                            icon="🛑"
+                        )
+                        if notifier:
+                            try:
+                                notifier.notify_sl("Binance", sym, exit_price, real_pnl_pct * 100, net_pnl_usdt, "USDT", is_breakeven=False, lesson=lesson)
+                            except Exception:
+                                pass
                     elif s['be_set'] and real_pnl_pct >= 0:
                         # ปิดแบบเสมอตัวหรือกำไร Breakeven/Trailing
                         s['consecutive_losses'] = 0
@@ -1094,7 +1344,8 @@ def process_symbol(sym, btc_bullish):
                             [
                                 ("Exit Price", f"${exit_price:.6f}"),
                                 ("Net Return", f"{real_pnl_pct*100:+.2f}%"),
-                                ("Net Profit", f"{net_pnl_usdt:+.4f} USDT ({net_pnl_thb:+.2f} บาท)"),
+                                ("Net Profit", f"{net_pnl_usdt:+.4f} USDT (~{net_pnl_thb:+.2f} ฿)"),
+                                ("Micro-Capital", f"{v_bal:.4f} USDT (~{v_bal * usd_thb_rate:.2f} ฿)"),
                                 ("Status", "🔒 ล็อกทุนสำเร็จ ไม่ขาดทุน")
                             ],
                             icon="🛡️"
@@ -1120,7 +1371,8 @@ def process_symbol(sym, btc_bullish):
                             [
                                 ("Exit Price", f"${exit_price:.6f}"),
                                 ("Net Return", f"{real_pnl_pct*100:+.2f}%"),
-                                ("Net Loss", f"-${abs(net_pnl_usdt):.4f} USDT ({net_pnl_thb:.2f} บาท)"),
+                                ("Net Loss", f"-${abs(net_pnl_usdt):.4f} USDT (~{net_pnl_thb:.2f} ฿)"),
+                                ("Micro-Capital", f"{v_bal:.4f} USDT (~{v_bal * usd_thb_rate:.2f} ฿)"),
                                 ("AI Reflection", lesson)
                             ],
                             icon="🛑"
@@ -1159,6 +1411,7 @@ def process_symbol(sym, btc_bullish):
 # 🚀 MAIN LOOP
 # ==========================================
 if __name__ == '__main__':
+    update_live_usd_thb_rate()
     start_usdt = connect_and_check_balance()
     log_trade(f"🚀 เริ่มรันระบบ AG 2.0 MULTI-COIN QUANT TERMINAL บน Binance Testnet (Sandbox Demo - ทุน: ${start_usdt:.2f} USDT)")
     log_trade(f"🪙 เหรียญที่เฝ้าเทรด: {', '.join(SYMBOLS)}")
@@ -1169,6 +1422,7 @@ if __name__ == '__main__':
 
     last_github_sync = 0
     while True:
+        update_live_usd_thb_rate()
         # อัปโหลดขึ้น GitHub ทุกๆ 1 ชั่วโมง
         now = time.time()
         if now - last_github_sync > 3600:

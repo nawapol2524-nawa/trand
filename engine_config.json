@@ -7,9 +7,23 @@
   "virtual_sandbox": {
     "enabled": true,
     "starting_balance_usd": 5.98,
-    "current_balance_usd": 5.92,
+    "current_balance_usd": 5.98,
     "micro_sl_usd": -0.38,
     "be_trigger_usd": 0.25
   },
-  "updated_at": "2026-09-15 13:57:04"
+  "virtual_sandbox_forex": {
+    "enabled": true,
+    "starting_balance_usd": 5.98,
+    "current_balance_usd": 5.98,
+    "micro_sl_usd": -0.38,
+    "be_trigger_usd": 0.25
+  },
+  "virtual_sandbox_binance": {
+    "enabled": true,
+    "starting_balance_usdt": 5.98,
+    "current_balance_usdt": 5.98,
+    "micro_sl_pct": -0.06,
+    "be_trigger_pct": 0.04
+  },
+  "updated_at": "2026-09-15 14:05:00"
 }
