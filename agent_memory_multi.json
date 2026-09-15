@@ -10,12 +10,12 @@
     "reflections": []
   },
   "BTC/USDT": {
-    "total_trades": 1,
+    "total_trades": 2,
     "wins": 0,
-    "losses": 1,
+    "losses": 2,
     "learned_params": {
-      "min_volume_ratio": 1.4,
-      "min_adx": 15.0
+      "min_volume_ratio": 1.5,
+      "min_adx": 16.0
     },
     "reflections": [
       {
@@ -23,6 +23,12 @@
         "type": "LOSS",
         "pnl": "-0.07%",
         "lesson": "Loss (False Break): เพิ่มเกณฑ์ Vol->1.4x, ADX->15.0"
+      },
+      {
+        "date": "2026-09-15 21:40:24",
+        "type": "LOSS",
+        "pnl": "-3.51%",
+        "lesson": "Loss (False Break): เพิ่มเกณฑ์ Vol->1.5x, ADX->16.0"
       }
     ]
   },
@@ -103,21 +109,23 @@
     "active": true,
     "base_capital": 5.98,
     "starting_balance": 5.98,
-    "active_capital": 5.98,
+    "active_capital": 5.7699,
     "profit_vault": 0.0,
-    "total_net_worth": 5.98,
-    "current_balance": 5.98,
+    "total_net_worth": 5.7699,
+    "current_balance": 5.7699,
     "total_swept": 0.0,
     "last_swept_amount": 0.0,
     "last_swept_at": null,
-    "total_trades": 0,
+    "total_trades": 1,
     "wins": 0,
-    "losses": 0,
+    "losses": 1,
     "breakevens": 0,
-    "net_profit_usdt": 0.0,
-    "net_profit_thb": 0.0,
+    "net_profit_usdt": -0.2101,
+    "net_profit_thb": -6.98,
     "peak_net_worth": 5.98,
-    "max_drawdown_pct": 0.0,
-    "started_at": "2026-09-15 14:00:00"
+    "max_drawdown_pct": 3.51,
+    "started_at": "2026-09-15 14:00:00",
+    "net_realized_profit": -0.2101,
+    "net_profit_usd": -0.2101
   }
 }
