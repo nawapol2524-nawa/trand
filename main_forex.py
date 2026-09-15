@@ -134,10 +134,17 @@ def print_quant_table(thai_time, rows, account_info, memory, active_trade=None, 
     account_profit_thb = round(account_profit_usd * usd_thb_rate, 1)
 
     h1_str = "🟢 BULLISH" if h1_bull else "🔴 BEARISH"
+    frozen, freeze_reason = is_red_folder_freeze()
+    if frozen:
+        risk_str = f"🛡️ RED FOLDER: ACTIVE ({freeze_reason}) - NO NEW ENTRIES ⏸️"
+    else:
+        risk_str = "🛡️ RED FOLDER: STANDBY (FOMC Freeze: 16 Sep 21:00 -> 17 Sep 04:00 TH)"
+
     lines = [
         "╔══════════════════════════════════════════════════════════════════════════════════╗",
         f"║  ⚡ AG 2.0 QUANT TERMINAL | DERIV FOREX (DEMO: {TARGET_DEMO_ACCOUNT:<24})║",
         f"║  🕒 {thai_time} | H1 Trend: {h1_str} | โหมด: REAL CFDs MULTIPLIERS (MULTUP) ║",
+        f"║  {risk_str:<80}║",
         "╠═════════════╦══════════════╦══════╦══════════╦════════════╦═════════════════╦════╣",
         "║ Symbol      ║ Bid Price    ║ RSI  ║ BB-Width ║ Pattern    ║ Position / PnL  ║ St ║",
         "╠═════════════╬══════════════╬══════╬══════════╬════════════╬═════════════════╬════╣"
@@ -315,17 +322,44 @@ def is_news_freeze():
             return True
     return False
 
-def is_cpi_news_freeze():
+def is_red_folder_freeze():
     """
-    ตัวล็อกงดเปิดไม้ใหม่ช่วงข่าวเงินเฟ้อสหรัฐฯ (US CPI 19:30 น.)
-    ตามแผนกลยุทธ์ของ Gemini Spark: ช่วง 19:00 - 20:30 น. ของวันที่ 11 ก.ย. 2026
-    เมื่อพ้น 20:30:00 น. จะปลดล็อกตัวเองและกลับมาสแกนเทรดอัตโนมัติ 100%
+    ระบบล็อกความเสี่ยง Red Folder Freeze สำหรับคู่เงิน Forex:
+    1. ตรวจสอบ Manual Config Override ผ่าน engine_config.json:
+       - หากมี "red_folder_freeze": true จะสั่งพักการเปิดไม้ทันที
+    2. ปฏิทินข่าว FOMC สัปดาห์สำคัญ (15-17 ก.ย. 2026):
+       - ล็อกช่วงเวลา 16 ก.ย. 2026 เวลา 21:00 น. ถึง 17 ก.ย. 2026 เวลา 04:00 น. (เวลาไทย UTC+7)
+       - ครอบคลุมการแถลงดอกเบี้ย Fed (01:00 น.) และแถลงข่าวของ Powell (01:30 น.)
+    3. ข่าวกล่องแดง High Impact สดจาก ForexFactory (±30 นาที)
+    เมื่อเข้าเงื่อนไข จะงดเปิดไม้ใหม่ 100% แต่ยังคงดูแล Trailing Stop / SL / TP ของไม้ค้างปกติ
     """
+    # 1. Manual Config Override
+    try:
+        if os.path.exists("engine_config.json"):
+            with open("engine_config.json", "r", encoding="utf-8") as f:
+                cfg = json.load(f)
+                if cfg.get("red_folder_freeze", False):
+                    return True, "MANUAL_CONFIG_OVERRIDE"
+    except Exception:
+        pass
+
     now_th = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=7)
-    if now_th.year == 2026 and now_th.month == 9 and now_th.day == 11:
-        if (19, 0) <= (now_th.hour, now_th.minute) < (20, 30):
-            return True
-    return False
+    
+    # 2. FOMC Decision & Powell Conference Window (16 ก.ย. 21:00 - 17 ก.ย. 04:00 น. เวลาไทย)
+    if now_th.year == 2026 and now_th.month == 9:
+        if (now_th.day == 16 and now_th.hour >= 21) or (now_th.day == 17 and now_th.hour < 4):
+            return True, "FOMC_RATE_DECISION_WINDOW"
+
+    # 3. Dynamic ForexFactory Calendar Check
+    if is_news_freeze():
+        return True, "FOREXFACTORY_HIGH_IMPACT_NEWS"
+
+    return False, ""
+
+def is_cpi_news_freeze():
+    """Backward compatibility alias for is_red_folder_freeze"""
+    frozen, _ = is_red_folder_freeze()
+    return frozen
 
 # ==========================================
 # 📊 TECHNICAL INDICATORS
@@ -933,11 +967,12 @@ async def deriv_engine():
                         else:
                             log("⏸️ [ROLLOVER WINDOW 03:45-06:15] เข้าสู่ช่วง Rollover Spread Freeze (งดเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่าง)...")
 
-                    if is_cpi_news_freeze():
+                    frozen, freeze_reason = is_red_folder_freeze()
+                    if frozen:
                         if active_trade:
-                            log("🛡️ [CPI NEWS FREEZE 19:00-20:30] New Entry Freeze (ข่าว US CPI) แต่ยังคงเฝ้าดูแล SL/TP ของไม้ที่ถืออยู่ 100%")
+                            log(f"🛡️ [RED FOLDER FREEZE ({freeze_reason})] New Entry Freeze แต่ยังคงเฝ้าดูแล SL/TP และ Trailing Stop ของไม้ที่ถืออยู่ 100%")
                         else:
-                            log("⏸️ [CPI NEWS FREEZE 19:00-20:30] เข้าสู่ช่วง US CPI Red Folder Freeze (งดเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่างและ Slippage)...")
+                            log(f"⏸️ [RED FOLDER FREEZE ({freeze_reason})] เข้าสู่ช่วง Red Folder News Freeze (งดเปิดไม้ใหม่เพื่อเลี่ยงสเปรดถ่างและ Slippage)...")
 
                     # 1. ขอข้อมูลแท่งเทียน H1 ของ PRIMARY_SYMBOL (แคช 5 นาทีเพื่อ Low-CPU)
                     now_ts = time.time()
@@ -1184,8 +1219,9 @@ async def deriv_engine():
 
                     # 4. สแกนหาจังหวะเปิดไม้ใหม่ (เมื่อไม่มีไม้ค้าง และไม่อยู่ในช่วง Rollover Freeze หรือ CPI Freeze)
                     elif not active_trade and primary_indicators:
-                        if is_rollover or is_cpi_news_freeze():
-                            # New Entry Freeze ในช่วง Rollover 03:45 - 06:15 น. หรือช่วงข่าว CPI 19:00 - 20:30 น.
+                        frozen, _ = is_red_folder_freeze()
+                        if is_rollover or frozen:
+                            # New Entry Freeze ในช่วง Rollover 03:45 - 06:15 น. หรือช่วง Red Folder News Freeze (FOMC)
                             pass
                         else:
                             price = primary_indicators['price']

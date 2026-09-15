@@ -293,6 +293,9 @@ def toggle_engine_config(engine_name: str):
                 cfg["mode"] = "synthetic"
             else:
                 cfg["mode"] = "forex"
+        elif engine_name in ("freeze", "red_folder", "red_folder_freeze"):
+            cfg["red_folder_freeze"] = not cfg.get("red_folder_freeze", False)
+            val = cfg["red_folder_freeze"]
         else:
             return False, f"Unknown engine '{engine_name}'"
 
@@ -401,6 +404,7 @@ def get_engine_status():
         "binance": bool(binance_active),
         "synthetic": bool(synthetic_active),
         "forex": bool(forex_active),
+        "red_folder_freeze": bool(cfg.get("red_folder_freeze", False)),
         "active_engines": active_engines
     }
 
@@ -1526,6 +1530,37 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
                     self._send_json({"status": "success", "cmd": cmd, "output": output, "elapsed_sec": 0.05})
                     return
 
+                # ⚡ คำสั่งพิเศษ: Toggle Red Folder Freeze CLI (toggle freeze | freeze on | freeze off)
+                elif cmd_lower in ("toggle freeze", "toggle:freeze", "/toggle freeze", "freeze", "red_folder"):
+                    success, val = toggle_engine_config("freeze")
+                    state_str = "เปิดใช้งาน 🔴 (FREEZE ON - งดเปิดไม้ใหม่)" if val else "ปิดใช้งาน ⚪ (FREEZE OFF - ปลดล็อกปกติ)"
+                    output = f"🛡️ [RED FOLDER FREEZE TOGGLE]\nRed Folder Freeze: {state_str}\nบันทึก engine_config.json และส่งสัญญาณ reload_engines.flag เรียบร้อย (Hot-swap ไม่รีสตาร์ทเซิร์ฟเวอร์)"
+                    append_to_console_log(f"\n[{get_thai_time()}] [TOGGLE] $ {cmd}\n{output}\n")
+                    self._send_json({"status": "success", "cmd": cmd, "output": output, "elapsed_sec": 0.05})
+                    return
+
+                elif cmd_lower in ("freeze on", "/freeze on"):
+                    with _engine_lock:
+                        cfg = load_engine_config()
+                        cfg["red_folder_freeze"] = True
+                        save_engine_config(cfg)
+                    trigger_engine_reload("Red folder freeze ON")
+                    output = "🛡️ [RED FOLDER FREEZE: ON 🔴]\nงดเปิดไม้ใหม่ทุกตลาดเพื่อเลี่ยงความเสี่ยงข่าวแรง (ไม้เดิมยังดูแล SL/TP/Trailing ปกติ)"
+                    append_to_console_log(f"\n[{get_thai_time()}] [FREEZE] $ {cmd}\n{output}\n")
+                    self._send_json({"status": "success", "cmd": cmd, "output": output, "elapsed_sec": 0.05})
+                    return
+
+                elif cmd_lower in ("freeze off", "/freeze off"):
+                    with _engine_lock:
+                        cfg = load_engine_config()
+                        cfg["red_folder_freeze"] = False
+                        save_engine_config(cfg)
+                    trigger_engine_reload("Red folder freeze OFF")
+                    output = "🛡️ [RED FOLDER FREEZE: OFF 🟢]\nปลดล็อกระบบกลับสู่การสแกนและเปิดไม้ตามกลยุทธ์ปกติ 100%"
+                    append_to_console_log(f"\n[{get_thai_time()}] [FREEZE] $ {cmd}\n{output}\n")
+                    self._send_json({"status": "success", "cmd": cmd, "output": output, "elapsed_sec": 0.05})
+                    return
+
                 # ⚡ คำสั่งพิเศษ: แสดงสถานะเครื่องยนต์ปัจจุบัน
                 elif cmd_lower in ("status", "engine", "engines", "mode", "engine_status"):
                     st = get_engine_status()
@@ -1536,6 +1571,7 @@ class QuantTerminalHandler(http.server.BaseHTTPRequestHandler):
                         f"  • Binance Engine : {'🟢 RUNNING (ON)' if st['binance'] else '⚪ STOPPED (OFF)'}\n"
                         f"  • Synthetic 24/7 : {'🟢 RUNNING (ON)' if st['synthetic'] else '⚪ STOPPED (OFF)'}\n"
                         f"  • Forex Engine   : {'🟢 RUNNING (ON)' if st['forex'] else '⚪ STOPPED (OFF)'}\n"
+                        f"  • Red Folder Frz : {'🔴 ACTIVE (FREEZE ON)' if st.get('red_folder_freeze') else '⚪ STANDBY (OFF)'}\n"
                         f"  • Active Engines : {active_str}\n"
                         f"  • Forex Weekend  : {'YES (Closed)' if is_forex_weekend() else 'NO (Open)'}"
                     )

@@ -646,19 +646,30 @@ def build_ai_analysis_report(cycle_start, cycle_end, thai_now):
     cycle_start_str = cycle_start.strftime("%Y-%m-%d %H:%M:%S")
     cycle_end_str = cycle_end.strftime("%Y-%m-%d %H:%M:%S")
 
-    # คำนวณสถานะความเสี่ยงข่าว CPI (ตามแผนกลยุทธ์ Gemini Spark)
+    # คำนวณสถานะความเสี่ยงข่าว FOMC & Red Folder (ตามแผนกลยุทธ์ Gemini Spark)
     now_th = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=7)
-    if now_th.year == 2026 and now_th.month == 9 and now_th.day == 11:
-        if (19, 0) <= (now_th.hour, now_th.minute) < (20, 30):
-            cpi_status_note = "🔴 ACTIVE (19:00 - 20:30 น.) - งดเปิดไม้ใหม่ทุกตลาดเพื่อเลี่ยงพายุ CPI & Whipsaw"
-        elif (18, 30) <= (now_th.hour, now_th.minute) < (19, 0):
-            cpi_status_note = "⚠️ PRE-NEWS WINDOW (18:30 - 19:00 น.) - เตรียมปิดไม้เสี่ยงก่อนข่าว CPI 19:30 น."
-        elif (now_th.hour, now_th.minute) < (18, 30):
-            cpi_status_note = "⏳ SCHEDULED - เตรียมล็อกระบบ 19:00 - 20:30 น. คืนนี้ (US CPI 19:30 น.)"
-        else:
-            cpi_status_note = "🟢 COMPLETED - พ้นช่วงอันตรายข่าว CPI เรียบร้อยแล้ว ระบบปลดล็อก 100%"
+    
+    manual_freeze = False
+    try:
+        if os.path.exists(ENGINE_CONFIG_FILE):
+            with open(ENGINE_CONFIG_FILE, "r", encoding="utf-8") as f:
+                cfg = json.load(f)
+                manual_freeze = cfg.get("red_folder_freeze", False)
+    except Exception:
+        pass
+
+    if manual_freeze:
+        fomc_status_note = "🔴 ACTIVE (MANUAL OVERRIDE) - บังคับ Red Folder Freeze งดเปิดไม้ใหม่ทุกตลาด"
+    elif now_th.year == 2026 and now_th.month == 9 and ((now_th.day == 16 and now_th.hour >= 21) or (now_th.day == 17 and now_th.hour < 4)):
+        fomc_status_note = "🔴 ACTIVE (FOMC DECISION & POWELL PRESSER) - งดเปิดไม้ใหม่เพื่อเลี่ยง Whipsaw ดอกเบี้ย Fed"
+    elif now_th.year == 2026 and now_th.month == 9 and now_th.day == 16 and now_th.hour >= 18:
+        fomc_status_note = "⚠️ PRE-FOMC WINDOW (18:00 - 21:00 น.) - เตรียมล็อกระบบก่อนแถลงดอกเบี้ย Fed"
+    elif now_th.year == 2026 and now_th.month == 9 and (now_th.day < 16 or (now_th.day == 16 and now_th.hour < 18)):
+        fomc_status_note = "⏳ SCHEDULED - เตรียมล็อกระบบ FOMC วันที่ 16 ก.ย. 21:00 น. -> 17 ก.ย. 04:00 น. (Fed 01:00 น.)"
+    elif now_th.year == 2026 and now_th.month == 9 and (now_th.day == 17 and now_th.hour >= 4):
+        fomc_status_note = "🟢 COMPLETED - พ้นช่วงอันตรายแถลงดอกเบี้ย Fed เรียบร้อยแล้ว ระบบปลดล็อก 100%"
     else:
-        cpi_status_note = "⚪ NORMAL - ไม่มีมาตรการ Red Folder Freeze เฉพาะกิจในวันนี้"
+        fomc_status_note = "⚪ NORMAL - ไม่มีมาตรการ Red Folder Freeze เฉพาะกิจในเวลานี้"
 
     header_block = (
         f"╔══════════════════════════════════════════════════════════════════════════════════╗\n"
@@ -674,7 +685,7 @@ def build_ai_analysis_report(cycle_start, cycle_end, thai_now):
         f"• 🎯 สถิติการเทรดรอบวัน (Stats)     : ทั้งหมด {total_trades} ไม้ (ชนะ {wins} | แพ้ {losses} | Breakeven {be_count}) | Win Rate: {win_rate:.1f}%\n"
         f"• ⚡ สถานะเครื่องยนต์ (Engines)    : {engine_status_summary}\n"
         f"• 🪙 สถานะพอร์ตปัจจุบัน (Positions) : {pos_status}\n"
-        f"• 🔴 มาตรการความเสี่ยงข่าว CPI (Risk Window) : {cpi_status_note}\n"
+        f"• 🔴 มาตรการความเสี่ยงข่าว FOMC (Risk Window) : {fomc_status_note}\n"
         f"{'═' * 82}\n\n"
         f"🚨 [24H SYSTEM HEALTH & ERRORS]\n"
         f"{'─' * 82}\n"
