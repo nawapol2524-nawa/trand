@@ -445,14 +445,25 @@ Reply ONLY with YES or NO."""
         data = {
             "model": "openai/gpt-oss-120b",
             "messages": [{"role": "user", "content": prompt}],
-            "max_tokens": 10,
+            "max_tokens": 150,
             "temperature": 0.1
         }
         
-        res = requests.post(url, headers=headers, json=data, timeout=15)
+        res = requests.post(url, headers=headers, json=data, timeout=20)
         if res.status_code == 200:
-            content = res.json()["choices"][0]["message"]["content"].strip().upper()
-            is_approved = "NO" not in content
+            msg = res.json().get("choices", [{}])[0].get("message", {})
+            content = msg.get("content", "").strip().upper()
+            reasoning = msg.get("reasoning", "")
+            
+            if "NO" in content:
+                is_approved = False
+            elif "YES" in content:
+                is_approved = True
+            elif not content and reasoning:
+                is_approved = ("YES" in reasoning.upper()) and ("NO" not in reasoning.upper())
+            else:
+                is_approved = False
+
             status_text = "APPROVED (YES)" if is_approved else "REJECTED (NO)"
             
             print_highlight_box(
@@ -479,8 +490,10 @@ Reply ONLY with YES or NO."""
             log_trade(f"🧠 [GROQ AI v3] อนุมัติออเดอร์ {symbol}! (AI อ่านข่าวแล้วคอนเฟิร์ม | F&G: {ctx.get('fear_greed','N/A')})")
             return True
         else:
+            log_trade(f"⚠️ [GROQ AI v3 ERROR] HTTP {res.status_code} -> ข้ามการกรอง AI เพื่อความปลอดภัย (Safe Fallback)")
             return True
-    except Exception:
+    except Exception as e:
+        log_trade(f"⚠️ [GROQ AI v3 ERROR] {e} -> ข้ามการกรอง AI เพื่อความปลอดภัย (Safe Fallback)")
         return True
 
 # ==========================================
