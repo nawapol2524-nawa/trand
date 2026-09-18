@@ -35,3 +35,9 @@ system:
   random_seed: 42
   timezone: UTC
   version: 2.0.0-institutional
+research:
+  oos_locked: true
+  oos_evaluation_open: false
+  oos_evaluation_session_id: null
+  oos_consumed: false
+

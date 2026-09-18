@@ -113,3 +113,13 @@ class PurgedTimeSeriesSplitter:
             train_val_leak_free=train_val_leak_free,
             val_test_leak_free=val_test_leak_free
         )
+
+    def get_test_dataframe(self, df: pd.DataFrame, session: Optional[Any] = None) -> pd.DataFrame:
+        """
+        Secure getter for test/OOS partition requiring an active authorized OOSEvaluationSession.
+        Direct programmatic calls without an open session will raise OOSAccessViolation.
+        """
+        from ai_forex_bot.data.oos_guard import OOSGuard
+        bounds = self.get_split_indices(df)
+        return OOSGuard.get_oos_slice(df, bounds.test_indices, session=session)
+

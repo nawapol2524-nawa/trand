@@ -85,15 +85,10 @@ class TrainingPipeline:
         y_val = y[split_bounds.val_indices]
         f_val = f_rets[split_bounds.val_indices]
 
-        X_test = X[split_bounds.test_indices]
-        y_test = y[split_bounds.test_indices]
-        f_test = f_rets[split_bounds.test_indices]
-
         # Preprocessing: StandardScaler fit ONLY on train split
         scaler = StandardScaler()
         X_train_scaled = scaler.fit_transform(X_train)
         X_val_scaled = scaler.transform(X_val)
-        X_test_scaled = scaler.transform(X_test)
 
         # Save scaler
         scaler_path = settings.root_dir / "artifacts" / "scalers" / f"{self.symbol}_{self.timeframe}_scaler.joblib"
@@ -114,14 +109,24 @@ class TrainingPipeline:
         # Probability Calibration on Validation Fold
         model.calibrate(X_val_scaled, y_val, method=settings.calibration_method)
 
-        # Evaluation on Validation and Test
+        # Evaluation on Validation Fold
         val_pred = model.predict(X_val_scaled)
         val_proba = model.predict_proba(X_val_scaled)
         val_metrics = ModelEvaluator.evaluate(y_val, val_pred, val_proba, future_returns=f_val)
 
-        test_pred = model.predict(X_test_scaled)
-        test_proba = model.predict_proba(X_test_scaled)
-        test_metrics = ModelEvaluator.evaluate(y_test, test_pred, test_proba, future_returns=f_test)
+        # Hard OOS Gate: Test set is strictly locked during research phase
+        if settings.oos_locked:
+            test_metrics = {"status": "OOS_LOCKED_FOR_RESEARCH"}
+            test_row_count = 0
+        else:
+            X_test = X[split_bounds.test_indices]
+            y_test = y[split_bounds.test_indices]
+            f_test = f_rets[split_bounds.test_indices]
+            X_test_scaled = scaler.transform(X_test)
+            test_pred = model.predict(X_test_scaled)
+            test_proba = model.predict_proba(X_test_scaled)
+            test_metrics = ModelEvaluator.evaluate(y_test, test_pred, test_proba, future_returns=f_test)
+            test_row_count = len(X_test)
 
         # Register Artifact
         dataset_meta = {
@@ -130,7 +135,7 @@ class TrainingPipeline:
             "total_rows": n,
             "train_rows": len(X_train),
             "val_rows": len(X_val),
-            "test_rows": len(X_test),
+            "test_rows": test_row_count,
             "purged_train_rows": split_bounds.purged_train_count,
             "purged_val_rows": split_bounds.purged_val_count,
             "train_val_leak_free": split_bounds.train_val_leak_free,
@@ -144,6 +149,7 @@ class TrainingPipeline:
             "validation": val_metrics,
             "test_oos": test_metrics
         }
+
 
         run_id = self.registry.register_model(
             model=model,

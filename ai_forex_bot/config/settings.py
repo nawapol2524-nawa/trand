@@ -90,6 +90,13 @@ class Settings:
         self.confidence_threshold: float = float(ai_sec.get("confidence_threshold", 0.55))
         self.calibration_method: str = ai_sec.get("calibration_method", "isotonic")
 
+        # Research & OOS Lock section
+        res_sec = self.raw_system.get("research", {})
+        self.oos_locked: bool = bool(res_sec.get("oos_locked", True))
+        self.oos_evaluation_open: bool = bool(res_sec.get("oos_evaluation_open", False))
+        self.oos_evaluation_session_id: Optional[str] = res_sec.get("oos_evaluation_session_id", None)
+        self.oos_consumed: bool = bool(res_sec.get("oos_consumed", False))
+
     def _load_yaml(self, path: Path) -> Dict[str, Any]:
         if not path.exists():
             return {}
