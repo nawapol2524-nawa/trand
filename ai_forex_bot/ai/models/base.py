@@ -100,6 +100,8 @@ class HistGradientBoostingModel(BaseModel):
             learning_rate=cfg.get("learning_rate", 0.05),
             max_depth=cfg.get("max_depth", 6),
             min_samples_leaf=cfg.get("min_samples_leaf", 30),
+            l2_regularization=cfg.get("l2_regularization", 0.0),
+            class_weight=cfg.get("class_weight", None),
             random_state=cfg.get("random_state", 42)
         )
 

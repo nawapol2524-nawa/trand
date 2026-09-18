@@ -1,0 +1,232 @@
+{
+  "champion_id": "candidate_b_frxEURUSD_M15",
+  "previous_champion_id": null,
+  "last_updated": "2026-09-18T12:15:28.903329+00:00",
+  "models": {
+    "candidate_b_frxEURUSD_M15": {
+      "model_id": "candidate_b_frxEURUSD_M15",
+      "model_type": "HistGradientBoostingClassifier",
+      "version": "2.0.0",
+      "state": "CHAMPION",
+      "artifact_file": "candidate_b_frxEURUSD_M15.joblib",
+      "model_hash": "fac5670661be7f4edc141b8035259385ddcdd9323a68b81fd5df2d47387d4917",
+      "created_at": "2026-09-18T12:14:40.824126+00:00",
+      "updated_at": "2026-09-18T12:14:40.824823+00:00",
+      "train_start_epoch": 1758165300,
+      "train_end_epoch": 1789700400,
+      "train_row_count": 24195,
+      "feature_count": 43,
+      "feature_names": [
+        "f_0",
+        "f_1",
+        "f_2",
+        "f_3",
+        "f_4",
+        "f_5",
+        "f_6",
+        "f_7",
+        "f_8",
+        "f_9",
+        "f_10",
+        "f_11",
+        "f_12",
+        "f_13",
+        "f_14",
+        "f_15",
+        "f_16",
+        "f_17",
+        "f_18",
+        "f_19",
+        "f_20",
+        "f_21",
+        "f_22",
+        "f_23",
+        "f_24",
+        "f_25",
+        "f_26",
+        "f_27",
+        "f_28",
+        "f_29",
+        "f_30",
+        "f_31",
+        "f_32",
+        "f_33",
+        "f_34",
+        "f_35",
+        "f_36",
+        "f_37",
+        "f_38",
+        "f_39",
+        "f_40",
+        "f_41",
+        "f_42"
+      ],
+      "hyperparameters": {
+        "learning_rate": 0.03,
+        "max_iter": 100,
+        "min_samples_leaf": 20,
+        "l2_regularization": 0.0,
+        "class_weight": "balanced",
+        "random_state": 42
+      },
+      "validation_metrics": {
+        "balanced_accuracy": 0.4887,
+        "roundtrip_cost_bps": 1.82,
+        "source": "GATE_22R_VERIFIED_BASELINE"
+      },
+      "state_history": [
+        {
+          "from_state": "NONE",
+          "to_state": "VALIDATED",
+          "timestamp": "2026-09-18T12:14:40.824126+00:00",
+          "reason": "INITIAL_REGISTRATION"
+        },
+        {
+          "from_state": "VALIDATED",
+          "to_state": "CHAMPION",
+          "timestamp": "2026-09-18T12:14:40.824823+00:00",
+          "reason": "INITIAL_CHAMPION_SEED_GATE24"
+        }
+      ],
+      "metadata": {
+        "gate": "GATE_22R_CANDIDATE_B",
+        "governance": {
+          "auto_promotion": false,
+          "live_trading": false
+        }
+      }
+    },
+    "retrained_frxEURUSD_M15_20260918_121528": {
+      "model_id": "retrained_frxEURUSD_M15_20260918_121528",
+      "model_type": "hist_gradient_boosting",
+      "version": "2.0.0",
+      "state": "VALIDATED",
+      "artifact_file": "retrained_frxEURUSD_M15_20260918_121528.joblib",
+      "model_hash": "ca540c7393eba38a7c1db0088928648dc6aab589e3d0e0fac35d8fd8f2dae0ee",
+      "created_at": "2026-09-18T12:15:28.903300+00:00",
+      "updated_at": "2026-09-18T12:15:28.903300+00:00",
+      "train_start_epoch": 1758188700,
+      "train_end_epoch": 1789696800,
+      "train_row_count": 24195,
+      "feature_count": 43,
+      "feature_names": [
+        "open",
+        "high",
+        "low",
+        "close",
+        "ret_1",
+        "ret_5",
+        "ret_15",
+        "realized_vol_20",
+        "ema_20",
+        "ema_50",
+        "dist_ema_20",
+        "dist_ema_50",
+        "dist_ema_200",
+        "ema_spread_20_50",
+        "atr_14",
+        "norm_atr_14",
+        "bb_bandwidth",
+        "bb_pct_b",
+        "rsi_14",
+        "macd_hist",
+        "adx_14",
+        "candle_body_ratio",
+        "candle_upper_wick_ratio",
+        "candle_lower_wick_ratio",
+        "range_pos_20",
+        "regime_code",
+        "is_asian_session",
+        "is_london_session",
+        "is_ny_session",
+        "is_london_ny_overlap",
+        "day_of_week",
+        "hour_of_day",
+        "h1_dist_ema_50",
+        "h1_trend_bull",
+        "econ_is_blackout",
+        "econ_time_to_event_sec",
+        "econ_time_since_event_sec",
+        "econ_importance",
+        "econ_surprise",
+        "news_sentiment",
+        "news_uncertainty",
+        "news_severity",
+        "news_article_count"
+      ],
+      "hyperparameters": {
+        "learning_rate": 0.03,
+        "max_iter": 100,
+        "min_samples_leaf": 20,
+        "l2_regularization": 0.0,
+        "class_weight": "balanced",
+        "random_state": 42
+      },
+      "validation_metrics": {
+        "balanced_accuracy": 0.34081455267895944,
+        "f1_macro": 0.3375274316939891,
+        "brier_score": 0.03673464734830033,
+        "cv_summary": {
+          "n_splits": 4,
+          "all_leak_free": true,
+          "avg_balanced_accuracy": 0.4543938114128385,
+          "avg_f1_macro": 0.38532380524595294,
+          "avg_brier_score": 0.13666811802216633,
+          "cost_hurdle_passed": true,
+          "split_details": [
+            {
+              "split_index": 0,
+              "balanced_accuracy": 0.47461067025754256,
+              "f1_macro": 0.41534890365824956,
+              "leak_free": true
+            },
+            {
+              "split_index": 1,
+              "balanced_accuracy": 0.40977983794379486,
+              "f1_macro": 0.38165535662189637,
+              "leak_free": true
+            },
+            {
+              "split_index": 2,
+              "balanced_accuracy": 0.4354860789153834,
+              "f1_macro": 0.34556077681330005,
+              "leak_free": true
+            },
+            {
+              "split_index": 3,
+              "balanced_accuracy": 0.4976986585346332,
+              "f1_macro": 0.3987301838903659,
+              "leak_free": true
+            }
+          ]
+        }
+      },
+      "state_history": [
+        {
+          "from_state": "NONE",
+          "to_state": "VALIDATED",
+          "timestamp": "2026-09-18T12:15:28.903300+00:00",
+          "reason": "INITIAL_REGISTRATION"
+        }
+      ],
+      "metadata": {
+        "trigger": "MANUAL",
+        "cost_hurdle_passed": true,
+        "preflight": {
+          "passed": false,
+          "reason": "INSUFFICIENT_NEW_DATA: 30 new bars < threshold 200 (prior: 24195, current: 24225)",
+          "metrics": {
+            "current_rows": 24225,
+            "prior_rows": 24195,
+            "new_samples": 30,
+            "min_new_samples": 200
+          }
+        },
+        "governance": {
+          "auto_promotion": false,
+          "live_trading": false
+        }
+      }
+    }
+  }
+}
