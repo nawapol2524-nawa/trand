@@ -23,6 +23,7 @@ artifacts/scalers/*.joblib
 # ==========================================
 data/market/raw/*.parquet
 *.parquet.tmp
+artifacts/state/*.tmp
 
 # ==========================================
 # 📝 LOGS & RUNTIME DATABASES

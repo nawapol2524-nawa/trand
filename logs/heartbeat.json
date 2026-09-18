@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-09-18T12:57:56.270096+00:00",
+  "uptime_seconds": 0.0,
+  "overall_status": "HEALTHY",
+  "governance": {
+    "live_trading": false,
+    "auto_promotion": false
+  },
+  "system_resources": {
+    "pid": 73962,
+    "memory_rss_mb": 81.06,
+    "free_disk_mb": 21040.16
+  },
+  "trading_state": {
+    "champion_model_id": "candidate_b_frxEURUSD_M15",
+    "open_positions_count": 0,
+    "today_pnl_usd": 0.0,
+    "last_candle_epoch": null,
+    "risk_engine_status": "NORMAL",
+    "kill_switch_active": false,
+    "kill_switch_reason": "NORMAL"
+  },
+  "workers": {},
+  "custom": {}
+}

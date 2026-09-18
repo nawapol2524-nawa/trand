@@ -16,6 +16,7 @@ from typing import Dict, List, Optional, Tuple, Any
 import numpy as np
 
 from ai_forex_bot.config.settings import settings, SymbolConfig
+from ai_forex_bot.risk.kill_switch import EmergencyKillSwitch
 
 
 class RiskDecision(str, Enum):
@@ -65,6 +66,7 @@ class RiskEngine:
         self.weekly_realized_loss: float = 0.0
         self.kill_switch_active: bool = False
         self.kill_switch_reason: str = ""
+        self.emergency_kill_switch = EmergencyKillSwitch()
 
     def check_daily_reset(self, current_dt: datetime) -> bool:
         """
@@ -145,6 +147,9 @@ class RiskEngine:
 
         if self.kill_switch_active:
             return RiskDecision.REJECT, "GLOBAL_KILL_SWITCH_ACTIVE", self.kill_switch_reason
+
+        if self.emergency_kill_switch.is_kill_switch_active():
+            return RiskDecision.REJECT, "EMERGENCY_KILL_SWITCH_ACTIVE", self.emergency_kill_switch.reason
 
         if is_news_blackout:
             return RiskDecision.REJECT, "NEWS_BLACKOUT_ACTIVE", "High-impact economic event window active."
