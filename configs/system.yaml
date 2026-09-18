@@ -31,6 +31,8 @@ risk:
   max_weekly_loss_usd: 6.0
 system:
   environment: training
+  live_trading: false
+  auto_promotion: false
   name: AI Forex Autonomous Trading System
   random_seed: 42
   timezone: UTC

@@ -57,6 +57,8 @@ class Settings:
         self.version: str = sys_sec.get("version", "2.0.0")
         self.random_seed: int = int(sys_sec.get("random_seed", 42))
         self.timezone: str = sys_sec.get("timezone", "UTC")
+        self.live_trading: bool = bool(sys_sec.get("live_trading", False))
+        self.auto_promotion: bool = bool(sys_sec.get("auto_promotion", False))
         
         # Risk section
         risk_sec = self.raw_system.get("risk", {})

@@ -1,7 +1,39 @@
+# ==========================================
+# 🔐 SECRETS & CREDENTIALS
+# ==========================================
 .env
-env
 .env.*
 !.env.example
+*.pem
+*.key
+id_rsa*
+*.secret
+credentials.json
+
+# ==========================================
+# 🧠 MODEL BINARIES & CHECKPOINTS
+# ==========================================
+artifacts/models/*.joblib
+!artifacts/models/.gitkeep
+artifacts/scalers/*.joblib
+!artifacts/scalers/.gitkeep
+
+# ==========================================
+# 📊 LARGE DATA & PARQUET
+# ==========================================
+data/market/raw/*.parquet
+*.parquet.tmp
+
+# ==========================================
+# 📝 LOGS & RUNTIME DATABASES
+# ==========================================
+*.log
+logs/*.log
+*.sqlite3
+
+# ==========================================
+# 🐍 PYTHON BUILD & CACHE
+# ==========================================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -29,10 +61,6 @@ htmlcov/
 env/
 venv/
 ENV/
-*.log
-*.sqlite3
 .DS_Store
 .idea/
 .vscode/
-artifacts/models/*.joblib
-!artifacts/models/.gitkeep

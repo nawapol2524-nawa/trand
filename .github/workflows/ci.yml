@@ -1,0 +1,106 @@
+name: AI Forex Bot CI/CD & Security Gate
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-syntax:
+    name: Lint & Python Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Linting Tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+
+      - name: Flake8 Syntax & Critical Error Scan
+        run: |
+          # Stop build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      - name: Python Bytecode Compilation Verification
+        run: |
+          python3 -m compileall ai_forex_bot/ scripts/ tests/
+
+  security-hygiene-scan:
+    name: Security & Secret Leakage Scanner
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Scanner Dependencies
+        run: |
+          pip install pyyaml python-dotenv
+
+      - name: Execute Security & Hygiene Scan
+        run: |
+          python3 scripts/security_scan.py
+
+  test-suite:
+    name: Full Test Suite Execution
+    runs-on: ubuntu-latest
+    needs: [lint-and-syntax, security-hygiene-scan]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install System Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Full Unit & Integration Test Discovery
+        run: |
+          python3 -m unittest discover -s tests -p "test_*.py" -v
+
+  ast-oos-audit:
+    name: Static AST Out-of-Sample Leakage Scan
+    runs-on: ubuntu-latest
+    needs: [test-suite]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Pandas
+        run: |
+          pip install pandas
+
+      - name: Execute AST OOS Scanner
+        run: |
+          python3 scripts/audit_oos_access.py
