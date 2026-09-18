@@ -1,0 +1,5 @@
+session,sample_count,share_pct,unconditional_gross_bps,unconditional_net_bps,top_10pct_gross_bps,top_10pct_net_bps,session_edge_status
+ASIA,1248,34.4,0.25,-1.57,-1.61,-3.43,ERODED_BY_COST
+LONDON,1381,38.1,-0.67,-2.49,-0.72,-2.54,ERODED_BY_COST
+NEW_YORK,1394,38.5,-0.52,-2.34,-0.05,-1.87,ERODED_BY_COST
+LONDON_NY_OVERLAP,614,16.9,-0.74,-2.56,-2.19,-4.01,ERODED_BY_COST

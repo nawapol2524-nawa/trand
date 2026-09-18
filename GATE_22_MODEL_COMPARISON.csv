@@ -1,0 +1,7 @@
+model_architecture,val_balanced_acc,val_macro_f1,val_brier_macro,pred_dist_hold_pct,pred_dist_buy_pct,pred_dist_sell_pct,top_5pct_buy_expectancy_bps,notes
+Logistic_Regression,0.3347,0.3209,0.0600,98.9,1.1,0.0,-2.88,"Standardized features; trained on Train, evaluated on Purged Val"
+Random_Forest,0.3390,0.3281,0.0831,99.4,0.6,0.0,1.16,"Standardized features; trained on Train, evaluated on Purged Val"
+Extra_Trees,0.3344,0.3185,0.0668,99.8,0.2,0.0,-0.00,"Standardized features; trained on Train, evaluated on Purged Val"
+HistGradientBoosting_Baseline,0.3767,0.3717,0.0728,93.8,5.5,0.7,-0.27,"Standardized features; trained on Train, evaluated on Purged Val"
+HistGradientBoosting_Balanced,0.4887,0.3986,0.1146,74.6,23.4,2.0,-0.96,"Standardized features; trained on Train, evaluated on Purged Val"
+MLP_Neural_Net,0.3660,0.3678,0.0645,97.0,2.9,0.1,-0.39,"Standardized features; trained on Train, evaluated on Purged Val"

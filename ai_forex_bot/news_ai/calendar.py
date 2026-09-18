@@ -140,3 +140,33 @@ class EconomicCalendarEngine:
         df["econ_importance"] = importances
         df["econ_surprise"] = surprises
         return df
+
+
+class EconomicReadyInterface:
+    """
+    Formal Gate 22 Interface for Historical Economic Calendar Providers:
+    - Declares current data availability status (ECONOMIC_HISTORY_AVAILABLE = False).
+    - Specifies required ingestion schema for future macro releases (ForexFactory / TradingEconomics).
+    - Prevents unverified macro claims until authenticated archives are loaded into data/economic/.
+    """
+    ECONOMIC_HISTORY_AVAILABLE: bool = False
+    STATUS: str = "INTERFACE_READY_AWAITING_HISTORICAL_ARCHIVE"
+
+    @classmethod
+    def is_historical_data_available(cls) -> bool:
+        return cls.ECONOMIC_HISTORY_AVAILABLE
+
+    @classmethod
+    def get_ingestion_schema(cls) -> Dict[str, str]:
+        return {
+            "event_id": "string",
+            "event_name": "string",
+            "currency": "string (USD, EUR, GBP, JPY)",
+            "scheduled_epoch": "int64 (UTC)",
+            "publication_epoch": "int64 (UTC >= scheduled_epoch)",
+            "importance": "LOW | MEDIUM | HIGH",
+            "forecast": "float64 or null",
+            "previous": "float64 or null",
+            "actual": "float64 or null"
+        }
+

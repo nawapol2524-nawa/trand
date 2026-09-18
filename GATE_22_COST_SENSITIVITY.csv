@@ -1,0 +1,9 @@
+scenario,spread_pips,slippage_pips,commission_pips,total_cost_bps,top_1pct_gross_bps,top_1pct_net_bps,top_1pct_status,top_2pct_gross_bps,top_2pct_net_bps,top_2pct_status,top_5pct_gross_bps,top_5pct_net_bps,top_5pct_status
+1.0X_SPREAD_1.0X_SLIP,1.2,0.2,0.6,1.82,-2.62,-4.44,ERODED,-2.34,-4.16,ERODED,-0.27,-2.09,ERODED
+1.5X_SPREAD_1.0X_SLIP,1.8,0.2,0.6,2.36,-2.62,-4.99,ERODED,-2.34,-4.70,ERODED,-0.27,-2.64,ERODED
+2.0X_SPREAD_1.0X_SLIP,2.4,0.2,0.6,2.91,-2.62,-5.53,ERODED,-2.34,-5.25,ERODED,-0.27,-3.18,ERODED
+3.0X_SPREAD_1.0X_SLIP,3.6,0.2,0.6,4.00,-2.62,-6.62,ERODED,-2.34,-6.34,ERODED,-0.27,-4.27,ERODED
+1.0X_SPREAD_2.0X_SLIP,1.2,0.4,0.6,2.00,-2.62,-4.62,ERODED,-2.34,-4.34,ERODED,-0.27,-2.27,ERODED
+1.0X_SPREAD_3.0X_SLIP,1.2,0.6,0.6,2.18,-2.62,-4.80,ERODED,-2.34,-4.52,ERODED,-0.27,-2.46,ERODED
+2.0X_SPREAD_2.0X_SLIP,2.4,0.4,0.6,3.09,-2.62,-5.71,ERODED,-2.34,-5.43,ERODED,-0.27,-3.36,ERODED
+3.0X_SPREAD_3.0X_SLIP,3.6,0.6,0.6,4.36,-2.62,-6.99,ERODED,-2.34,-6.70,ERODED,-0.27,-4.64,ERODED

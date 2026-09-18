@@ -1,0 +1,4 @@
+label_version,horizon_bars,horizon_minutes,profit_target_pips,stop_loss_pips,total_samples,hold_class_pct,buy_class_pct,sell_class_pct,val_balanced_acc,val_macro_f1
+LABEL_V1_BASELINE,4,60,15.0,15.0,24195,86.4,6.9,6.7,0.3767,0.3717
+LABEL_V2_SHORT_HORIZON,2,30,10.0,10.0,24197,84.9,7.5,7.6,0.3767,0.3709
+LABEL_V3_LONG_HORIZON,8,120,25.0,25.0,24191,90.6,4.9,4.5,0.4019,0.3607

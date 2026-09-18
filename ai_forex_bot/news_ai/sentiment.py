@@ -91,3 +91,32 @@ class NewsContextEngine:
         df["news_severity"] = severities
         df["news_article_count"] = counts
         return df
+
+
+class NewsReadyInterface:
+    """
+    Formal Gate 22 Interface for Historical Financial News Feeds:
+    - Declares current data availability status (NEWS_HISTORY_AVAILABLE = False).
+    - Prevents unverified NLP claims until authenticated archives are loaded into data/news/.
+    - Requires news articles to adhere to causal publication timestamp schemas.
+    """
+    NEWS_HISTORY_AVAILABLE: bool = False
+    STATUS: str = "INTERFACE_READY_AWAITING_HISTORICAL_ARCHIVE"
+
+    @classmethod
+    def is_historical_data_available(cls) -> bool:
+        return cls.NEWS_HISTORY_AVAILABLE
+
+    @classmethod
+    def get_ingestion_schema(cls) -> Dict[str, str]:
+        return {
+            "news_id": "string",
+            "headline": "string",
+            "source": "string (Bloomberg, Reuters, FXStreet)",
+            "publication_epoch": "int64 (UTC)",
+            "currency": "string (USD, EUR, GBP, JPY)",
+            "sentiment_score": "float64 (-1.0 to +1.0)",
+            "uncertainty_score": "float64 (0.0 to 1.0)",
+            "severity_score": "float64 (0.0 to 1.0)"
+        }
+
