@@ -1,0 +1,7 @@
+model_name,balanced_accuracy,f1_macro,brier_score,buy_precision,buy_recall,sell_precision,sell_recall,signals_generated,win_rate_pct,total_gross_return_pct
+Majority Baseline (Always HOLD),0.3333,0.3235,0.0384,0.0,0.0,0.0,0.0,0,0.0,0.0
+Random Baseline (Prior Weighted),0.3289,0.3234,0.042,0.0423,0.0882,0.0139,0.0548,572,44.93,-2.17
+Simple Trend Follower (EMA20/50),0.4198,0.1423,0.541,0.0536,0.5588,0.0242,0.5342,3028,47.23,4.95
+Logistic Regression Baseline,0.3526,0.3596,0.0352,0.6154,0.0588,0.0,0.0,15,66.67,0.58
+Random Forest,0.3333,0.3235,0.0365,0.0,0.0,0.0,0.0,0,0.0,0.0
+AI HistGradientBoosting (Calibrated),0.3333,0.3235,0.0368,0.0,0.0,0.0,0.0,0,0.0,0.0

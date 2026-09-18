@@ -1,0 +1,8 @@
+audit_dimension,items_audited,methodology,leakage_observed,status
+Target Horizon Boundary Purging (Train -> Val),4 purged boundary samples,Strict Max Horizon Cutoff (T_target_max < Val_start),0.0,VERIFIED_CLEAN
+Target Horizon Boundary Purging (Val -> Test),4 purged boundary samples,Strict Max Horizon Cutoff (T_target_max < Test_start),0.0,VERIFIED_CLEAN
+Input Feature Causality (43 Model Columns),"43 quantitative, indicator, and session features",Future Candle Perturbation (T+1 onward -> Max Diff at <= T),0.0,VERIFIED_CLEAN
+Regime Classification Causality,"RegimeClassifier (rolling ATR50, ADX, EMA20/50)",Adversarial Future Candle Perturbation (T+1 onward),0.0,VERIFIED_CLEAN
+HTF Bar Merging (H1 AsOf Alignment),"h1_dist_ema_50, h1_trend_bull",Backward AsOf merge with strict T+3600 availability latency,0.0,VERIFIED_CLEAN
+Feature Preprocessing Scaler Isolation,"StandardScaler (mean, var)",Fit exclusively on Train fold; transform only on Val and Test,0.0,VERIFIED_CLEAN
+Probability Calibration Isolation,CalibratedClassifierCV (Isotonic),Calibrated on Val fold only; 100% invariant under Test mutation,0.0,VERIFIED_CLEAN

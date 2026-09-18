@@ -1,0 +1,5 @@
+symbol,display_name,asset_class,lot_size,pip_size,pip_value_usd,min_lot,max_lot,lot_step,commission_per_lot_usd,commission_model,typical_spread_pips,max_spread_pips,spread_data_source,slippage_model,swap_long_points,swap_short_points
+frxEURUSD,EUR/USD,forex,100000.0,0.0001,10.0,0.01,10.0,0.01,6.0,FIXED_PER_LOT_ROUND_TRIP,1.1,1.8,SIMULATED_TYPICAL_SPREAD,SIMULATED_SLIPPAGE (0.2 pips assumption),-6.5,2.1
+frxGBPUSD,GBP/USD,forex,100000.0,0.0001,10.0,0.01,10.0,0.01,6.0,FIXED_PER_LOT_ROUND_TRIP,1.4,2.2,SIMULATED_TYPICAL_SPREAD,SIMULATED_SLIPPAGE (0.2 pips assumption),-4.2,1.1
+frxUSDJPY,USD/JPY,forex,100000.0,0.01,6.7,0.01,10.0,0.01,6.0,FIXED_PER_LOT_ROUND_TRIP,1.2,2.0,SIMULATED_TYPICAL_SPREAD,SIMULATED_SLIPPAGE (0.2 pips assumption),8.5,-12.4
+frxXAUUSD,Gold / USD,commodity,100.0,0.01,1.0,0.01,5.0,0.01,7.0,FIXED_PER_LOT_ROUND_TRIP,22.0,35.0,SIMULATED_TYPICAL_SPREAD,SIMULATED_SLIPPAGE (0.2 pips assumption),-15.0,5.0

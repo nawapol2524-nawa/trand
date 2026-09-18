@@ -1,0 +1,266 @@
+{
+  "schema_version": "1.0.0",
+  "pipeline_version": "2.0.0-institutional",
+  "symbols": {
+    "frxEURUSD": {
+      "raw_file": "frxEURUSD_M1_20250918_20260918.parquet",
+      "raw_sha256": "e8d8f44f97961cbdfb33a2403fd0bfc8321044fc466e3b5139f49c58de19499a",
+      "m1_rows": 363123,
+      "validation": {
+        "symbol": "frxEURUSD",
+        "timeframe": "M1",
+        "total_rows": 363123,
+        "is_valid": true,
+        "duplicate_timestamps": 0,
+        "out_of_order_count": 0,
+        "invalid_ohlc_inequalities": 0,
+        "non_positive_prices": 0,
+        "nan_or_inf_count": 0,
+        "extreme_price_spikes": 0,
+        "weekday_gaps": 3,
+        "start_time": "2025-09-18 03:15:00+00:00",
+        "end_time": "2026-09-18 03:07:00+00:00",
+        "errors": []
+      },
+      "timeframes": {
+        "M1": {
+          "rows": 363123,
+          "file": "frxEURUSD_M1.parquet",
+          "sha256": "e8d8f44f97961cbdfb33a2403fd0bfc8321044fc466e3b5139f49c58de19499a",
+          "start_time": "2025-09-18 03:15:00+00:00",
+          "end_time": "2026-09-18 03:07:00+00:00"
+        },
+        "M5": {
+          "rows": 72670,
+          "file": "frxEURUSD_M5.parquet",
+          "sha256": "33c061c07360dbac786638d6604df1e7cf868635371f53cac5f3c524afc690a9",
+          "start_time": "2025-09-18 03:15:00+00:00",
+          "end_time": "2026-09-18 03:05:00+00:00"
+        },
+        "M15": {
+          "rows": 24225,
+          "file": "frxEURUSD_M15.parquet",
+          "sha256": "589e88bde33761ff1a426b0430fc8559cc40d41278a30a734b3c8670df6bd801",
+          "start_time": "2025-09-18 03:15:00+00:00",
+          "end_time": "2026-09-18 03:00:00+00:00"
+        },
+        "H1": {
+          "rows": 6059,
+          "file": "frxEURUSD_H1.parquet",
+          "sha256": "63c6953cef559ec6920fab30f508a006664d3f4da71127f4d92c6598faa2045d",
+          "start_time": "2025-09-18 03:00:00+00:00",
+          "end_time": "2026-09-18 03:00:00+00:00"
+        },
+        "H4": {
+          "rows": 1555,
+          "file": "frxEURUSD_H4.parquet",
+          "sha256": "83dcff60a65fb5f0f92ff9847986de5ec1909b2249e0bc1d320b720e3aa6029e",
+          "start_time": "2025-09-18 00:00:00+00:00",
+          "end_time": "2026-09-18 00:00:00+00:00"
+        },
+        "D1": {
+          "rows": 260,
+          "file": "frxEURUSD_D1.parquet",
+          "sha256": "c777c4da3255b1bf85c2e12141ed27a17e0de627ced321e0d7112925f31ee37d",
+          "start_time": "2025-09-18 00:00:00+00:00",
+          "end_time": "2026-09-18 00:00:00+00:00"
+        }
+      }
+    },
+    "frxGBPUSD": {
+      "raw_file": "frxGBPUSD_M1_20250918_20260918.parquet",
+      "raw_sha256": "3f3aa8300f65e6247f8945e969d5cf6b9f3758cff9490cc6c4f5d9f6c3038f6e",
+      "m1_rows": 363123,
+      "validation": {
+        "symbol": "frxGBPUSD",
+        "timeframe": "M1",
+        "total_rows": 363123,
+        "is_valid": true,
+        "duplicate_timestamps": 0,
+        "out_of_order_count": 0,
+        "invalid_ohlc_inequalities": 0,
+        "non_positive_prices": 0,
+        "nan_or_inf_count": 0,
+        "extreme_price_spikes": 0,
+        "weekday_gaps": 3,
+        "start_time": "2025-09-18 03:22:00+00:00",
+        "end_time": "2026-09-18 03:14:00+00:00",
+        "errors": []
+      },
+      "timeframes": {
+        "M1": {
+          "rows": 363123,
+          "file": "frxGBPUSD_M1.parquet",
+          "sha256": "3f3aa8300f65e6247f8945e969d5cf6b9f3758cff9490cc6c4f5d9f6c3038f6e",
+          "start_time": "2025-09-18 03:22:00+00:00",
+          "end_time": "2026-09-18 03:14:00+00:00"
+        },
+        "M5": {
+          "rows": 72670,
+          "file": "frxGBPUSD_M5.parquet",
+          "sha256": "635dee31a65b5b446bb4229f20a14097fe84fca368f7eb9c922648d2cefa6785",
+          "start_time": "2025-09-18 03:20:00+00:00",
+          "end_time": "2026-09-18 03:10:00+00:00"
+        },
+        "M15": {
+          "rows": 24225,
+          "file": "frxGBPUSD_M15.parquet",
+          "sha256": "40600dda987d1b449e1d769fdcc38827d5b5e8a21682c4ca1e0acd898c5eda3e",
+          "start_time": "2025-09-18 03:15:00+00:00",
+          "end_time": "2026-09-18 03:00:00+00:00"
+        },
+        "H1": {
+          "rows": 6059,
+          "file": "frxGBPUSD_H1.parquet",
+          "sha256": "091952e01113fdbd6a1bc49772e24290e930d43f41aea8cbf8994d575e4eb57c",
+          "start_time": "2025-09-18 03:00:00+00:00",
+          "end_time": "2026-09-18 03:00:00+00:00"
+        },
+        "H4": {
+          "rows": 1555,
+          "file": "frxGBPUSD_H4.parquet",
+          "sha256": "50835984734ce29709487414ccd0c34c504c2eb7ad67186cb0d60d35ebf90a6d",
+          "start_time": "2025-09-18 00:00:00+00:00",
+          "end_time": "2026-09-18 00:00:00+00:00"
+        },
+        "D1": {
+          "rows": 260,
+          "file": "frxGBPUSD_D1.parquet",
+          "sha256": "db2472db6199d4b4219eff836a74d36e602a1c2ee12f773ec5258d015809adb8",
+          "start_time": "2025-09-18 00:00:00+00:00",
+          "end_time": "2026-09-18 00:00:00+00:00"
+        }
+      }
+    },
+    "frxUSDJPY": {
+      "raw_file": "frxUSDJPY_M1_20250918_20260918.parquet",
+      "raw_sha256": "8ff85947f80483418fb9dc4b0da5f2cd3d0a442b4c5edc9ff348157b21ce8761",
+      "m1_rows": 363122,
+      "validation": {
+        "symbol": "frxUSDJPY",
+        "timeframe": "M1",
+        "total_rows": 363122,
+        "is_valid": true,
+        "duplicate_timestamps": 0,
+        "out_of_order_count": 0,
+        "invalid_ohlc_inequalities": 0,
+        "non_positive_prices": 0,
+        "nan_or_inf_count": 0,
+        "extreme_price_spikes": 0,
+        "weekday_gaps": 3,
+        "start_time": "2025-09-18 03:30:00+00:00",
+        "end_time": "2026-09-18 03:21:00+00:00",
+        "errors": []
+      },
+      "timeframes": {
+        "M1": {
+          "rows": 363122,
+          "file": "frxUSDJPY_M1.parquet",
+          "sha256": "8ff85947f80483418fb9dc4b0da5f2cd3d0a442b4c5edc9ff348157b21ce8761",
+          "start_time": "2025-09-18 03:30:00+00:00",
+          "end_time": "2026-09-18 03:21:00+00:00"
+        },
+        "M5": {
+          "rows": 72670,
+          "file": "frxUSDJPY_M5.parquet",
+          "sha256": "a92572d6bdb1c87db36d923f7a2ae0a8b56d4c953d330d1acc663fb481dd42de",
+          "start_time": "2025-09-18 03:30:00+00:00",
+          "end_time": "2026-09-18 03:20:00+00:00"
+        },
+        "M15": {
+          "rows": 24225,
+          "file": "frxUSDJPY_M15.parquet",
+          "sha256": "f0cf8c79d0ed48664361a819f5ab5b204a8470118b2f0c082a3e353aafb3351c",
+          "start_time": "2025-09-18 03:30:00+00:00",
+          "end_time": "2026-09-18 03:15:00+00:00"
+        },
+        "H1": {
+          "rows": 6059,
+          "file": "frxUSDJPY_H1.parquet",
+          "sha256": "d6e33c8557db11a3cb852b1098e1dae3873b4709d5ec46fb78b716b147e07eb4",
+          "start_time": "2025-09-18 03:00:00+00:00",
+          "end_time": "2026-09-18 03:00:00+00:00"
+        },
+        "H4": {
+          "rows": 1555,
+          "file": "frxUSDJPY_H4.parquet",
+          "sha256": "8dc9138c068528edd97819cd7196e408c8eb2468dbffd4f89fcaa94c736c0f6a",
+          "start_time": "2025-09-18 00:00:00+00:00",
+          "end_time": "2026-09-18 00:00:00+00:00"
+        },
+        "D1": {
+          "rows": 260,
+          "file": "frxUSDJPY_D1.parquet",
+          "sha256": "5d6fbc4dd697d6ac80a07abcb62fadcb469fdbf92a833e73c63e6ad9bd54594e",
+          "start_time": "2025-09-18 00:00:00+00:00",
+          "end_time": "2026-09-18 00:00:00+00:00"
+        }
+      }
+    },
+    "frxXAUUSD": {
+      "raw_file": "frxXAUUSD_M1_20250918_20260918.parquet",
+      "raw_sha256": "f88e1b52a235081aa223269612b235c3fd72cb64a387d502109f1472a0778523",
+      "m1_rows": 347041,
+      "validation": {
+        "symbol": "frxXAUUSD",
+        "timeframe": "M1",
+        "total_rows": 347041,
+        "is_valid": true,
+        "duplicate_timestamps": 0,
+        "out_of_order_count": 0,
+        "invalid_ohlc_inequalities": 0,
+        "non_positive_prices": 0,
+        "nan_or_inf_count": 0,
+        "extreme_price_spikes": 0,
+        "weekday_gaps": 210,
+        "start_time": "2025-09-18 03:08:00+00:00",
+        "end_time": "2026-09-18 02:59:00+00:00",
+        "errors": []
+      },
+      "timeframes": {
+        "M1": {
+          "rows": 347041,
+          "file": "frxXAUUSD_M1.parquet",
+          "sha256": "f88e1b52a235081aa223269612b235c3fd72cb64a387d502109f1472a0778523",
+          "start_time": "2025-09-18 03:08:00+00:00",
+          "end_time": "2026-09-18 02:59:00+00:00"
+        },
+        "M5": {
+          "rows": 69459,
+          "file": "frxXAUUSD_M5.parquet",
+          "sha256": "68fb60e7ee206ef032fb4ba361c1db7125a05a62c9100c7dd896b3586b231b81",
+          "start_time": "2025-09-18 03:05:00+00:00",
+          "end_time": "2026-09-18 02:55:00+00:00"
+        },
+        "M15": {
+          "rows": 23159,
+          "file": "frxXAUUSD_M15.parquet",
+          "sha256": "1594c08117b1b07880418a06dea4ae307187eec41e3799ddf77dfffcdf4e6a14",
+          "start_time": "2025-09-18 03:00:00+00:00",
+          "end_time": "2026-09-18 02:45:00+00:00"
+        },
+        "H1": {
+          "rows": 5793,
+          "file": "frxXAUUSD_H1.parquet",
+          "sha256": "be0f88a9af7b52a1b75e8d3138733b5297615c3e9a1a5d88f4f459a1f712e8d5",
+          "start_time": "2025-09-18 03:00:00+00:00",
+          "end_time": "2026-09-18 02:00:00+00:00"
+        },
+        "H4": {
+          "rows": 1541,
+          "file": "frxXAUUSD_H4.parquet",
+          "sha256": "612fb3a653d639f46aa8a6495ea511bb6f135247d2ceb966b72f60eea67da7e6",
+          "start_time": "2025-09-18 00:00:00+00:00",
+          "end_time": "2026-09-18 00:00:00+00:00"
+        },
+        "D1": {
+          "rows": 259,
+          "file": "frxXAUUSD_D1.parquet",
+          "sha256": "856ba7515f82ba3b06dfcd9dc8e5a086289f161924c97e050851a7327af95ddf",
+          "start_time": "2025-09-18 00:00:00+00:00",
+          "end_time": "2026-09-18 00:00:00+00:00"
+        }
+      }
+    }
+  }
+}

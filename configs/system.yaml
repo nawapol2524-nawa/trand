@@ -1,0 +1,37 @@
+ai:
+  calibration_method: isotonic
+  confidence_threshold: 0.55
+  fallback_model: random_forest
+  prediction_horizon_bars: 15
+  primary_model: hist_gradient_boosting
+data:
+  base_timeframe: M1
+  clean_dir: data/clean
+  datasets_dir: data/datasets
+  features_dir: data/features
+  labels_dir: data/labels
+  raw_dir: data/market/raw
+  resampled_timeframes:
+  - M5
+  - M15
+  - H1
+  - H4
+  - D1
+economic_calendar:
+  high_impact_only: true
+  post_event_stabilization_minutes: 15
+  pre_event_blackout_minutes: 15
+risk:
+  allow_weekend_holding: false
+  emergency_stop_loss_pct: 15.0
+  max_daily_loss_usd: 2.0
+  max_drawdown_pct: 10.0
+  max_open_positions: 2
+  max_risk_per_trade_pct: 1.0
+  max_weekly_loss_usd: 6.0
+system:
+  environment: training
+  name: AI Forex Autonomous Trading System
+  random_seed: 42
+  timezone: UTC
+  version: 2.0.0-institutional

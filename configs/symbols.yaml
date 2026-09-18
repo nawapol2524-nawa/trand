@@ -1,0 +1,65 @@
+symbols:
+  frxEURUSD:
+    asset_class: forex
+    base_currency: EUR
+    commission_per_lot_usd: 6.0
+    display_name: EUR/USD
+    lot_size: 100000
+    lot_step: 0.01
+    max_lot: 10.0
+    max_spread_pips: 1.8
+    min_lot: 0.01
+    pip_size: 0.0001
+    pip_value_usd: 10.0
+    quote_currency: USD
+    swap_long_points: -6.5
+    swap_short_points: 2.1
+    typical_spread_pips: 1.1
+  frxGBPUSD:
+    asset_class: forex
+    base_currency: GBP
+    commission_per_lot_usd: 6.0
+    display_name: GBP/USD
+    lot_size: 100000
+    lot_step: 0.01
+    max_lot: 10.0
+    max_spread_pips: 2.2
+    min_lot: 0.01
+    pip_size: 0.0001
+    pip_value_usd: 10.0
+    quote_currency: USD
+    swap_long_points: -4.2
+    swap_short_points: 1.1
+    typical_spread_pips: 1.4
+  frxUSDJPY:
+    asset_class: forex
+    base_currency: USD
+    commission_per_lot_usd: 6.0
+    display_name: USD/JPY
+    lot_size: 100000
+    lot_step: 0.01
+    max_lot: 10.0
+    max_spread_pips: 2.0
+    min_lot: 0.01
+    pip_size: 0.01
+    pip_value_usd: 6.7
+    quote_currency: JPY
+    swap_long_points: 8.5
+    swap_short_points: -12.4
+    typical_spread_pips: 1.2
+  frxXAUUSD:
+    asset_class: commodity
+    base_currency: XAU
+    commission_per_lot_usd: 7.0
+    display_name: Gold / USD
+    lot_size: 100
+    lot_step: 0.01
+    max_lot: 5.0
+    max_spread_pips: 35.0
+    min_lot: 0.01
+    pip_size: 0.01
+    pip_value_usd: 1.0
+    quote_currency: USD
+    swap_long_points: -15.0
+    swap_short_points: 5.0
+    typical_spread_pips: 22.0
