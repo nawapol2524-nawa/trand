@@ -1,71 +1,19 @@
 {
-  "saved_at": "2026-09-19T14:25:36.670121+00:00",
+  "saved_at": "2026-09-19T14:55:00.000000+00:00",
   "balance": 6.0,
-  "equity": 5.845114937000015,
-  "used_margin": 2.355006297022,
-  "free_margin": 3.4901086399780152,
-  "positions": [
-    {
-      "position_id": "paper_707ef60f",
-      "symbol": "R_25",
-      "direction": "SELL",
-      "lot_size": 0.5,
-      "entry_price": 2115.91828925,
-      "entry_epoch": 1780665300,
-      "entry_dt": "2026-06-05T13:15:00+00:00",
-      "sl_price": 2121.6836991071427,
-      "tp_price": 2104.3882705357137,
-      "partial_tp_price": 2110.153146392857,
-      "partial_tp_pips": 5765.142857142953,
-      "buffer_pips": 1.0,
-      "atr": 3.843428571428636,
-      "partial_tp_hit": false,
-      "breakeven_locked": false,
-      "slippage_pips": 0.267,
-      "commission_usd": 0.0,
-      "swap_usd": 0.0,
-      "unrealized_pnl": -0.1546349249999821,
-      "bars_held": 1,
-      "max_favorable_excursion_pips": 0.0,
-      "max_adverse_excursion_pips": 527.7107500000966
-    },
-    {
-      "position_id": "paper_aa19a8ea",
-      "symbol": "R_75",
-      "direction": "SELL",
-      "lot_size": 0.001,
-      "entry_price": 119544.003886,
-      "entry_epoch": 1780664460,
-      "entry_dt": "2026-06-05T13:01:00+00:00",
-      "sl_price": 120451.48561885714,
-      "tp_price": 117729.04669028572,
-      "partial_tp_price": 118636.52424314286,
-      "partial_tp_pips": 90747.9642857144,
-      "buffer_pips": 1.0,
-      "atr": 604.9864285714294,
-      "partial_tp_hit": false,
-      "breakeven_locked": false,
-      "slippage_pips": 0.209,
-      "commission_usd": 0.0,
-      "swap_usd": 0.0,
-      "unrealized_pnl": -0.0002501380000030622,
-      "bars_held": 0,
-      "max_favorable_excursion_pips": 0.0,
-      "max_adverse_excursion_pips": 0.0
-    }
-  ],
+  "equity": 6.0,
+  "used_margin": 0.0,
+  "free_margin": 6.0,
+  "positions": [],
   "closed_trade_count": 0,
-  "processed_order_keys": [
-    "R_75_SELL_1780664460",
-    "R_25_SELL_1780665300"
-  ],
+  "processed_order_keys": [],
   "metadata": {
-    "shutdown_reason": "SINGLE_CYCLE_COMPLETED",
+    "shutdown_reason": "CLEAN_INITIAL_STATE",
     "symbols": [
       "R_25",
       "R_10",
       "R_75"
     ],
-    "timestamp": "2026-09-19T14:25:36.670095+00:00"
+    "timestamp": "2026-09-19T14:55:00.000000+00:00"
   }
 }

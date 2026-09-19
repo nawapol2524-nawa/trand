@@ -202,7 +202,7 @@ class ProductionDaemonSupervisor:
         elif self.restore_state:
             restored, msg = self.state_manager.restore_broker_state(self.broker)
             self.log_daemon_event("STATE_RESTORE_ATTEMPT", {"restored": restored, "message": msg})
-            if self.initial_balance <= 10.0 and self.broker.balance > 50.0:
+            if self.broker.balance <= 0 or (self.initial_balance <= 10.0 and self.broker.balance > 50.0):
                 self.broker.balance = self.initial_balance
                 self.broker.equity = self.initial_balance
                 self.broker.free_margin = self.initial_balance

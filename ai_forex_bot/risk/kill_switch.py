@@ -144,13 +144,29 @@ class StateRecoveryManager:
             return False, "No persistent state file found."
 
         try:
-            broker.balance = float(state.get("balance", broker.initial_balance))
+            restored_bal = float(state.get("balance", broker.initial_balance))
+            if restored_bal <= 0:
+                broker.balance = broker.initial_balance
+                broker.equity = broker.initial_balance
+                broker.free_margin = broker.initial_balance
+                broker.used_margin = 0.0
+                broker.positions.clear()
+                return True, f"Sanitized non-positive balance. Reset to initial {broker.initial_balance:.2f} USDT."
+
+            broker.balance = restored_bal
             broker.equity = float(state.get("equity", broker.balance))
             broker.used_margin = float(state.get("used_margin", 0.0))
             broker.free_margin = float(state.get("free_margin", broker.balance))
 
             raw_positions = state.get("positions", [])
-            broker.positions = {p["position_id"]: p for p in raw_positions}
+            # Discard stale positions older than 24 hours
+            now_epoch = int(datetime.now(timezone.utc).timestamp())
+            valid_positions = {}
+            for p in raw_positions:
+                entry_epoch = int(p.get("entry_epoch", 0))
+                if entry_epoch > 0 and (now_epoch - entry_epoch) < 86400:
+                    valid_positions[p["position_id"]] = p
+            broker.positions = valid_positions
             broker._processed_order_keys = set(state.get("processed_order_keys", []))
 
             # Re-sync quotes if available and reconcile

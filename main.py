@@ -136,6 +136,7 @@ def main():
     parser.add_argument(
         "--reset-state",
         action="store_true",
+        default=os.getenv("RESET_STATE", "false").lower() in ("true", "1", "yes"),
         help="Reset portfolio state to clean initial balance"
     )
 
