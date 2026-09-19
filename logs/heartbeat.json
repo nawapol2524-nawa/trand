@@ -1,23 +1,23 @@
 {
-  "timestamp": "2026-09-19T02:20:12.151492+00:00",
-  "uptime_seconds": 0.09,
+  "timestamp": "2026-09-19T09:34:29.557558+00:00",
+  "uptime_seconds": 0.1,
   "overall_status": "BROKER_DISCONNECTED",
-  "symbol": "R_75",
+  "symbol": "R_25",
   "governance": {
     "live_trading": false,
     "auto_promotion": false
   },
   "system_resources": {
-    "pid": 87910,
-    "memory_rss_mb": 161.94,
-    "free_disk_mb": 20121.97
+    "pid": 98443,
+    "memory_rss_mb": 463.56,
+    "free_disk_mb": 21613.91
   },
   "trading_state": {
-    "symbol": "R_75",
-    "champion_model_id": "candidate_b_frxEURUSD_M15",
+    "symbol": "R_25",
+    "champion_model_id": "candidate_r25_M15",
     "open_positions_count": 0,
-    "today_pnl_usd": 0.0,
-    "last_candle_epoch": null,
+    "today_pnl_usd": 0,
+    "last_candle_epoch": 1780665300,
     "risk_engine_status": "SHUTDOWN: SINGLE_CYCLE_COMPLETED",
     "kill_switch_active": false,
     "kill_switch_reason": "NORMAL"
@@ -28,7 +28,18 @@
     "heartbeat_worker": "STOPPED"
   },
   "custom": {
-    "symbol": "R_75",
-    "timeframe": "M15"
+    "symbol": "R_25",
+    "symbols": [
+      "R_25"
+    ],
+    "timeframe": "M15",
+    "strategy": "double_barrel",
+    "trades_count": 0,
+    "open_positions": [],
+    "feed_mode": {
+      "R_25": "SYNTHETIC_OFFLINE"
+    },
+    "broker_equity": 1000.0,
+    "broker_balance": 1000.0
   }
 }

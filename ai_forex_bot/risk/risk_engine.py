@@ -46,6 +46,26 @@ class Position:
     unrealized_pnl: float = 0.0
 
 
+class SignalValidationResult(tuple):
+    """
+    Validation result tuple (decision, reason, detail) supporting property access.
+    """
+    def __new__(cls, decision: RiskDecision, reason: str, detail: str = ""):
+        return super().__new__(cls, (decision, reason, detail))
+
+    @property
+    def decision(self) -> RiskDecision:
+        return self[0]
+
+    @property
+    def reason(self) -> str:
+        return self[1]
+
+    @property
+    def detail(self) -> str:
+        return self[2]
+
+
 class RiskEngine:
     def __init__(
         self,
@@ -53,16 +73,20 @@ class RiskEngine:
         max_currency_exposure: int = 2,
         daily_loss_limit: Optional[float] = None,
         weekly_loss_limit: Optional[float] = None,
-        max_risk_pct: Optional[float] = None
+        max_risk_pct: Optional[float] = None,
+        daily_profit_target_usd: Optional[float] = None
     ):
         self.daily_loss_limit = daily_loss_limit if daily_loss_limit is not None else settings.max_daily_loss_usd
         self.weekly_loss_limit = weekly_loss_limit if weekly_loss_limit is not None else settings.max_weekly_loss_usd
         self.max_open_positions = max_open_positions if max_open_positions is not None else settings.max_open_positions
         self.max_risk_pct = max_risk_pct if max_risk_pct is not None else settings.max_risk_per_trade_pct
         self.max_currency_exposure = max_currency_exposure
+        self.daily_profit_target_usd = daily_profit_target_usd if daily_profit_target_usd is not None else 15.0
 
         self.current_calendar_day: Optional[str] = None
+        self.current_date: str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         self.daily_realized_loss: float = 0.0
+        self.daily_realized_pnl: float = 0.0
         self.weekly_realized_loss: float = 0.0
         self.kill_switch_active: bool = False
         self.kill_switch_reason: str = ""
@@ -71,17 +95,20 @@ class RiskEngine:
     def check_daily_reset(self, current_dt: datetime) -> bool:
         """
         Evaluates UTC calendar boundary.
-        Unlatches kill switch and zeroes daily loss on UTC midnight transition,
+        Unlatches kill switch and zeroes daily loss and daily realized PnL on UTC midnight transition,
         independent of whether any trade events occurred.
         """
         cal_day = current_dt.astimezone(timezone.utc).strftime("%Y-%m-%d")
         if self.current_calendar_day is None:
             self.current_calendar_day = cal_day
+            self.current_date = cal_day
             return False
 
         if cal_day != self.current_calendar_day:
             self.current_calendar_day = cal_day
+            self.current_date = cal_day
             self.daily_realized_loss = 0.0
+            self.daily_realized_pnl = 0.0
             if self.kill_switch_active and "DAILY_LOSS_LIMIT" in self.kill_switch_reason:
                 self.kill_switch_active = False
                 self.kill_switch_reason = ""
@@ -90,6 +117,7 @@ class RiskEngine:
 
     def record_closed_trade(self, pnl_usd: float, close_dt: datetime):
         self.check_daily_reset(close_dt)
+        self.daily_realized_pnl += pnl_usd
         if pnl_usd < 0:
             loss = abs(pnl_usd)
             self.daily_realized_loss += loss
@@ -98,6 +126,55 @@ class RiskEngine:
             if self.daily_realized_loss >= self.daily_loss_limit:
                 self.kill_switch_active = True
                 self.kill_switch_reason = f"DAILY_LOSS_LIMIT_BREACHED: ${self.daily_realized_loss:.2f} >= ${self.daily_loss_limit:.2f}"
+
+    def validate_signal(
+        self,
+        signal: Optional[Dict[str, Any]] = None,
+        current_dt: Optional[datetime] = None,
+        **kwargs
+    ) -> SignalValidationResult:
+        """
+        Validates candidate trading signal against daily limits and circuit breakers.
+        Rejects signal if daily profit target or loss limit is reached.
+        """
+        if current_dt is None and isinstance(signal, dict):
+            if "current_dt" in signal:
+                current_dt = signal["current_dt"]
+            elif "timestamp" in signal:
+                current_dt = datetime.fromtimestamp(signal["timestamp"], tz=timezone.utc)
+            elif "datetime" in signal:
+                current_dt = signal["datetime"]
+
+        if current_dt is not None:
+            self.check_daily_reset(current_dt)
+
+        # 1. Daily Profit Target Check
+        if self.daily_realized_pnl >= self.daily_profit_target_usd:
+            return SignalValidationResult(
+                RiskDecision.REJECT,
+                "DAILY_PROFIT_TARGET_REACHED",
+                f"Daily profit target reached: ${self.daily_realized_pnl:.2f} >= ${self.daily_profit_target_usd:.2f}"
+            )
+
+        # 2. Daily Loss Limit Check
+        if self.daily_realized_pnl <= -self.daily_loss_limit:
+            return SignalValidationResult(
+                RiskDecision.REJECT,
+                "DAILY_LOSS_LIMIT_REACHED",
+                f"Daily loss limit reached: ${self.daily_realized_pnl:.2f} <= -${self.daily_loss_limit:.2f}"
+            )
+
+        if self.kill_switch_active:
+            return SignalValidationResult(
+                RiskDecision.REJECT, "GLOBAL_KILL_SWITCH_ACTIVE", self.kill_switch_reason
+            )
+
+        if self.emergency_kill_switch.is_kill_switch_active():
+            return SignalValidationResult(
+                RiskDecision.REJECT, "EMERGENCY_KILL_SWITCH_ACTIVE", self.emergency_kill_switch.reason
+            )
+
+        return SignalValidationResult(RiskDecision.APPROVE, "APPROVED", "Signal passed risk validation.")
 
     def calculate_position_size(
         self,
@@ -145,6 +222,22 @@ class RiskEngine:
     ) -> Tuple[RiskDecision, str, str]:
         self.check_daily_reset(current_dt)
 
+        # 1. Daily Profit Target Check
+        if self.daily_realized_pnl >= self.daily_profit_target_usd:
+            return (
+                RiskDecision.REJECT,
+                "DAILY_PROFIT_TARGET_REACHED",
+                f"Daily profit target reached: ${self.daily_realized_pnl:.2f} >= ${self.daily_profit_target_usd:.2f}"
+            )
+
+        # 2. Daily Loss Limit Check
+        if self.daily_realized_pnl <= -self.daily_loss_limit:
+            return (
+                RiskDecision.REJECT,
+                "DAILY_LOSS_LIMIT_REACHED",
+                f"Daily loss limit reached: ${self.daily_realized_pnl:.2f} <= -${self.daily_loss_limit:.2f}"
+            )
+
         if self.kill_switch_active:
             return RiskDecision.REJECT, "GLOBAL_KILL_SWITCH_ACTIVE", self.kill_switch_reason
 
@@ -153,6 +246,8 @@ class RiskEngine:
 
         if is_news_blackout:
             return RiskDecision.REJECT, "NEWS_BLACKOUT_ACTIVE", "High-impact economic event window active."
+
+
 
         sym_cfg = settings.get_symbol_config(symbol)
         if sym_cfg is None:

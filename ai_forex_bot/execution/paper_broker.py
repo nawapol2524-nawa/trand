@@ -27,7 +27,9 @@ class PaperBroker(BaseBroker):
         initial_balance: float = 1000.0,
         leverage: float = 100.0,
         time_exit_bars: int = 4,
-        random_seed: Optional[int] = 42
+        random_seed: Optional[int] = None,
+        partial_tp_pips: Optional[float] = None,
+        buffer_pips: float = 1.0
     ):
         self.initial_balance = initial_balance
         self.balance = initial_balance
@@ -36,6 +38,8 @@ class PaperBroker(BaseBroker):
         self.used_margin = 0.0
         self.leverage = leverage
         self.time_exit_bars = time_exit_bars
+        self.partial_tp_pips = partial_tp_pips
+        self.buffer_pips = buffer_pips
 
         self.rng = random.Random(random_seed) if random_seed is not None else random.Random()
         self.positions: Dict[str, Dict[str, Any]] = {}
@@ -154,7 +158,12 @@ class PaperBroker(BaseBroker):
         sl_price: float,
         tp_price: float,
         order_type: str = "MARKET",
-        idempotency_key: Optional[str] = None
+        idempotency_key: Optional[str] = None,
+        partial_tp_price: Optional[float] = None,
+        partial_tp_pips: Optional[float] = None,
+        buffer_pips: Optional[float] = None,
+        atr: Optional[float] = None,
+        **kwargs
     ) -> Dict[str, Any]:
         """
         Places a realistic simulated market order with duplicate prevention and cost simulation.
@@ -209,6 +218,16 @@ class PaperBroker(BaseBroker):
 
         self.balance -= comm_usd
 
+        # Resolve partial TP price if partial_tp_pips given or broker default
+        resolved_partial_pips = partial_tp_pips if partial_tp_pips is not None else self.partial_tp_pips
+        resolved_partial_price = partial_tp_price
+        if resolved_partial_price is None and resolved_partial_pips is not None:
+            resolved_partial_price = (
+                fill_price + (resolved_partial_pips * pip_size)
+                if direction == "BUY"
+                else fill_price - (resolved_partial_pips * pip_size)
+            )
+
         pos_id = f"paper_{uuid.uuid4().hex[:8]}"
         position = {
             "position_id": pos_id,
@@ -220,6 +239,12 @@ class PaperBroker(BaseBroker):
             "entry_dt": datetime.fromtimestamp(epoch, tz=timezone.utc).isoformat(),
             "sl_price": sl_price,
             "tp_price": tp_price,
+            "partial_tp_price": resolved_partial_price,
+            "partial_tp_pips": resolved_partial_pips,
+            "buffer_pips": buffer_pips if buffer_pips is not None else self.buffer_pips,
+            "atr": atr,
+            "partial_tp_hit": False,
+            "breakeven_locked": False,
             "slippage_pips": slippage_pips,
             "commission_usd": comm_usd,
             "swap_usd": 0.0,
@@ -317,13 +342,134 @@ class PaperBroker(BaseBroker):
         return {
             "status": "CLOSED",
             "position_id": position_id,
-            "trade": trade_record
+            "trade": trade_record,
+            "realized_pnl": round(net_pnl, 2)
         }
+
+    def partial_close_position(
+        self,
+        position_id: str,
+        fraction: float = 0.5,
+        exit_price: Optional[float] = None,
+        exit_reason: str = "PARTIAL_TP",
+        exit_epoch: Optional[int] = None
+    ) -> Dict[str, Any]:
+        """
+        Partially closes an open position:
+        - Reduces position lot_size by fraction (e.g., 50%).
+        - Realizes gross & net PnL proportionally into self.balance.
+        - Records partial closed trade into self.closed_trades with exit_reason (e.g. PARTIAL_TP_50%).
+        - Updates position lot_size and recalculates margin.
+        """
+        if position_id not in self.positions:
+            return {"status": "ERROR", "message": f"Position {position_id} not found."}
+
+        pos = self.positions[position_id]
+        sym = pos["symbol"]
+        sym_cfg = settings.get_symbol_config(sym)
+        pip_size = sym_cfg.pip_size if sym_cfg else 0.0001
+        pip_value = sym_cfg.pip_value_usd if sym_cfg else 10.0
+
+        quote = self.get_quote(sym)
+        curr_epoch = exit_epoch or int(quote["timestamp"])
+
+        if exit_price is None:
+            # Dynamic slippage on market exit
+            slippage_pips = self._get_dynamic_slippage_pips(sym)
+            slip_delta = slippage_pips * pip_size
+            if pos["direction"] == "BUY":
+                exit_price = quote["bid"] - slip_delta
+            else:
+                exit_price = quote["ask"] + slip_delta
+
+        # Calculate gross price change
+        if pos["direction"] == "BUY":
+            pips_gain = (exit_price - pos["entry_price"]) / pip_size
+        else:
+            pips_gain = (pos["entry_price"] - exit_price) / pip_size
+
+        fraction = max(0.0, min(1.0, fraction))
+        closed_lot = round(pos["lot_size"] * fraction, 4)
+        remaining_lot = round(pos["lot_size"] - closed_lot, 4)
+
+        gross_pnl = pips_gain * pip_value * closed_lot
+        swap_portion = pos.get("swap_usd", 0.0) * fraction
+        pos["swap_usd"] = pos.get("swap_usd", 0.0) - swap_portion
+
+        comm_portion = pos.get("commission_usd", 0.0) * fraction
+        pos["commission_usd"] = pos.get("commission_usd", 0.0) - comm_portion
+
+        net_pnl = gross_pnl + swap_portion
+
+        self.balance += gross_pnl + swap_portion
+
+        if exit_reason == "PARTIAL_TP":
+            final_exit_reason = f"PARTIAL_TP_{int(fraction * 100)}%"
+        else:
+            final_exit_reason = exit_reason
+
+        trade_record = {
+            "position_id": position_id,
+            "symbol": sym,
+            "direction": pos["direction"],
+            "lot_size": round(closed_lot, 4),
+            "entry_price": round(pos["entry_price"], 5),
+            "exit_price": round(exit_price, 5),
+            "entry_epoch": pos["entry_epoch"],
+            "exit_epoch": curr_epoch,
+            "entry_dt": pos["entry_dt"],
+            "exit_dt": datetime.fromtimestamp(curr_epoch, tz=timezone.utc).isoformat(),
+            "pips_gain": round(pips_gain, 2),
+            "gross_pnl": round(gross_pnl, 2),
+            "commission_usd": round(comm_portion, 2),
+            "swap_usd": round(swap_portion, 2),
+            "net_pnl": round(net_pnl, 2),
+            "slippage_pips": round(pos.get("slippage_pips", 0.0), 3),
+            "bars_held": pos["bars_held"],
+            "exit_reason": final_exit_reason,
+            "mae_pips": round(pos["max_adverse_excursion_pips"], 2),
+            "mfe_pips": round(pos["max_favorable_excursion_pips"], 2),
+            "is_partial": True
+        }
+        self.closed_trades.append(trade_record)
+
+        if remaining_lot <= 0:
+            self.positions.pop(position_id, None)
+        else:
+            pos["lot_size"] = remaining_lot
+
+        self._update_positions_and_margins()
+
+        return {
+            "status": "PARTIALLY_CLOSED" if remaining_lot > 0 else "CLOSED",
+            "position_id": position_id,
+            "trade": trade_record,
+            "realized_pnl": round(net_pnl, 2),
+            "remaining_lot_size": remaining_lot
+        }
+
+    def modify_position(
+        self,
+        position_id: str,
+        sl_price: Optional[float] = None,
+        tp_price: Optional[float] = None
+    ) -> bool:
+        """Updates sl_price and/or tp_price of an open position."""
+        if position_id not in self.positions:
+            return False
+
+        pos = self.positions[position_id]
+        if sl_price is not None:
+            pos["sl_price"] = sl_price
+        if tp_price is not None:
+            pos["tp_price"] = tp_price
+        return True
 
     def on_bar(self, bar: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
         Bar-by-bar lifecycle processor:
         - Evaluates High and Low for SL and TP triggers.
+        - Enforces Double-Barrel Partial TP (+50% close) and Dynamic Breakeven Lock.
         - Enforces Time-Based Exit (4 bars / 60 minutes).
         - Applies Rollover Financing (Swap).
         - Returns list of trades closed on this bar.
@@ -385,16 +531,84 @@ class PaperBroker(BaseBroker):
                 sl_fill_price = max(pos["sl_price"], close)
 
             if sl_triggered:
+                exit_reason = "BREAKEVEN_SL" if pos.get("breakeven_locked", False) else "STOP_LOSS"
                 res = self.close_position(
                     position_id=pid,
                     exit_price=sl_fill_price,
-                    exit_reason="STOP_LOSS",
+                    exit_reason=exit_reason,
                     exit_epoch=epoch
                 )
                 closed_on_bar.append(res["trade"])
                 continue
 
-            # 2. Check Take Profit
+            # 2. Double-Barrel Processor (Partial TP + Dynamic Breakeven Lock)
+            partial_tp_target = pos.get("partial_tp_price")
+            if partial_tp_target is None:
+                if pos.get("partial_tp_pips") is not None:
+                    p_pips = float(pos["partial_tp_pips"])
+                    partial_tp_target = (
+                        pos["entry_price"] + (p_pips * pip_size)
+                        if pos["direction"] == "BUY"
+                        else pos["entry_price"] - (p_pips * pip_size)
+                    )
+                elif hasattr(self, "partial_tp_pips") and self.partial_tp_pips is not None:
+                    p_pips = float(self.partial_tp_pips)
+                    partial_tp_target = (
+                        pos["entry_price"] + (p_pips * pip_size)
+                        if pos["direction"] == "BUY"
+                        else pos["entry_price"] - (p_pips * pip_size)
+                    )
+                elif "atr" in bar and bar["atr"] is not None:
+                    atr_val = float(bar["atr"])
+                    partial_tp_target = (
+                        pos["entry_price"] + atr_val
+                        if pos["direction"] == "BUY"
+                        else pos["entry_price"] - atr_val
+                    )
+                elif pos.get("atr") is not None:
+                    atr_val = float(pos["atr"])
+                    partial_tp_target = (
+                        pos["entry_price"] + atr_val
+                        if pos["direction"] == "BUY"
+                        else pos["entry_price"] - atr_val
+                    )
+
+            if partial_tp_target is not None and not pos.get("partial_tp_hit", False):
+                partial_hit = False
+                if pos["direction"] == "BUY" and high >= partial_tp_target:
+                    partial_hit = True
+                elif pos["direction"] == "SELL" and low <= partial_tp_target:
+                    partial_hit = True
+
+                if partial_hit:
+                    # Execute 50% partial close at partial TP price!
+                    part_res = self.partial_close_position(
+                        position_id=pid,
+                        fraction=0.5,
+                        exit_price=partial_tp_target,
+                        exit_reason="PARTIAL_TP_50%",
+                        exit_epoch=epoch
+                    )
+                    if part_res.get("status") in ("PARTIALLY_CLOSED", "CLOSED"):
+                        closed_on_bar.append(part_res["trade"])
+
+                    pos["partial_tp_hit"] = True
+
+                    # Dynamic Breakeven Lock: Atomically move remaining sl_price
+                    buffer_pips = float(pos.get("buffer_pips", getattr(self, "buffer_pips", 1.0)))
+                    if pos["direction"] == "BUY":
+                        new_sl = pos["entry_price"] + (buffer_pips * pip_size)
+                    else:
+                        new_sl = pos["entry_price"] - (buffer_pips * pip_size)
+
+                    self.modify_position(pid, sl_price=new_sl)
+                    pos["breakeven_locked"] = True
+
+            # If position was fully closed (e.g. fraction=1.0 or remaining_lot=0), skip
+            if pid not in self.positions:
+                continue
+
+            # 3. Check Take Profit
             tp_triggered = False
             tp_fill_price = None
             if pos["direction"] == "BUY" and high >= pos["tp_price"]:
@@ -414,7 +628,7 @@ class PaperBroker(BaseBroker):
                 closed_on_bar.append(res["trade"])
                 continue
 
-            # 3. Check Time-Based Exit (Default 4 bars / 60 minutes)
+            # 4. Check Time-Based Exit (Default 4 bars / 60 minutes)
             if pos["bars_held"] >= self.time_exit_bars:
                 res = self.close_position(
                     position_id=pid,
@@ -427,6 +641,7 @@ class PaperBroker(BaseBroker):
 
         self._update_positions_and_margins()
         return closed_on_bar
+
 
     def get_open_positions(self) -> List[Dict[str, Any]]:
         return list(self.positions.values())

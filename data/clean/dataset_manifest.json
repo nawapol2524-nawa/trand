@@ -298,6 +298,80 @@
           "end_time": "2026-06-05 13:00:00+00:00"
         }
       }
+    },
+    "R_25": {
+      "raw_file": "R_25_M15.parquet",
+      "raw_sha256": "af59b1456215da33216518560a84dc25bfe33d03a5f28dfd0cc50a3908c3a06f",
+      "m1_rows": 0,
+      "validation": {
+        "symbol": "R_25",
+        "timeframe": "M15",
+        "total_rows": 25000,
+        "is_valid": true,
+        "duplicate_timestamps": 0,
+        "out_of_order_count": 0,
+        "invalid_ohlc_inequalities": 0,
+        "non_positive_prices": 0,
+        "nan_or_inf_count": 0,
+        "extreme_price_spikes": 0,
+        "weekday_gaps": 0,
+        "start_time": "2025-09-18 03:15:00+00:00",
+        "end_time": "2026-06-05 13:00:00+00:00",
+        "errors": []
+      },
+      "timeframes": {
+        "M15": {
+          "rows": 25000,
+          "file": "R_25_M15.parquet",
+          "sha256": "af59b1456215da33216518560a84dc25bfe33d03a5f28dfd0cc50a3908c3a06f",
+          "start_time": "2025-09-18 03:15:00+00:00",
+          "end_time": "2026-06-05 13:00:00+00:00"
+        },
+        "H1": {
+          "rows": 6251,
+          "file": "R_25_H1.parquet",
+          "sha256": "8b12c32df6ba9d1c1a38d6c54400e9455aefac5972fde1ece1af35e1e3bc2a81",
+          "start_time": "2025-09-18 03:00:00+00:00",
+          "end_time": "2026-06-05 13:00:00+00:00"
+        }
+      }
+    },
+    "R_10": {
+      "raw_file": "R_10_M15.parquet",
+      "raw_sha256": "bdc2b132ac208edf9ef37be0e2ee173d326ab22f470af573ba638b2d03a99cf6",
+      "m1_rows": 0,
+      "validation": {
+        "symbol": "R_10",
+        "timeframe": "M15",
+        "total_rows": 25000,
+        "is_valid": true,
+        "duplicate_timestamps": 0,
+        "out_of_order_count": 0,
+        "invalid_ohlc_inequalities": 0,
+        "non_positive_prices": 0,
+        "nan_or_inf_count": 0,
+        "extreme_price_spikes": 0,
+        "weekday_gaps": 0,
+        "start_time": "2025-09-18 03:15:00+00:00",
+        "end_time": "2026-06-05 13:00:00+00:00",
+        "errors": []
+      },
+      "timeframes": {
+        "M15": {
+          "rows": 25000,
+          "file": "R_10_M15.parquet",
+          "sha256": "bdc2b132ac208edf9ef37be0e2ee173d326ab22f470af573ba638b2d03a99cf6",
+          "start_time": "2025-09-18 03:15:00+00:00",
+          "end_time": "2026-06-05 13:00:00+00:00"
+        },
+        "H1": {
+          "rows": 6251,
+          "file": "R_10_H1.parquet",
+          "sha256": "8b9cf858a146784271b43276200cda7fd30c29624d833150892bc4dc448f43f7",
+          "start_time": "2025-09-18 03:00:00+00:00",
+          "end_time": "2026-06-05 13:00:00+00:00"
+        }
+      }
     }
   }
 }

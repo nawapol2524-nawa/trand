@@ -47,6 +47,26 @@ class BaseBroker(ABC):
     def close_position(self, position_id: str) -> Dict[str, Any]:
         pass
 
+    def partial_close_position(
+        self,
+        position_id: str,
+        fraction: float = 0.5,
+        exit_price: Optional[float] = None,
+        exit_reason: str = "PARTIAL_TP",
+        exit_epoch: Optional[int] = None
+    ) -> Dict[str, Any]:
+        """Partially closes a position."""
+        raise NotImplementedError
+
+    def modify_position(
+        self,
+        position_id: str,
+        sl_price: Optional[float] = None,
+        tp_price: Optional[float] = None
+    ) -> bool:
+        """Modifies SL and/or TP of an open position."""
+        raise NotImplementedError
+
     @abstractmethod
     def get_open_positions(self) -> List[Dict[str, Any]]:
         pass
@@ -54,3 +74,4 @@ class BaseBroker(ABC):
     @abstractmethod
     def reconcile(self) -> Dict[str, Any]:
         pass
+

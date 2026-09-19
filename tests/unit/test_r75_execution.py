@@ -53,6 +53,20 @@ class TestR75Integration(unittest.TestCase):
         self.assertEqual(r25.get("asset_class"), "synthetic_index")
         self.assertEqual(r25.get("commission_per_lot_usd"), 0.0)
         self.assertEqual(r25.get("lot_size"), 1.0)
+        self.assertEqual(r25.get("pip_size"), 0.001)
+
+        # R_10 checks
+        self.assertIn("R_10", symbols)
+        r10 = symbols["R_10"]
+        self.assertEqual(r10.get("asset_class"), "synthetic_index")
+        self.assertEqual(r10.get("commission_per_lot_usd"), 0.0)
+        self.assertEqual(r10.get("lot_size"), 1.0)
+        self.assertEqual(r10.get("pip_size"), 0.001)
+        self.assertEqual(r10.get("pip_value_usd"), 0.001)
+        self.assertEqual(r10.get("typical_spread_pips"), 2.0)
+        self.assertEqual(r10.get("max_spread_pips"), 5.0)
+        self.assertEqual(r10.get("min_lot"), 0.5)
+        self.assertEqual(r10.get("max_lot"), 50.0)
 
     def test_paper_broker_r75_r25_execution_zero_commission(self):
         """Verify paper broker executes R_75 orders with zero commission and accurate PnL."""
@@ -99,6 +113,18 @@ class TestR75Integration(unittest.TestCase):
         self.assertEqual(r75_reg.get("artifact_file"), "candidate_r75_M15.joblib")
         self.assertEqual(r75_reg.get("model_type"), "HistGradientBoostingClassifier")
 
+        # R_25 candidate check
+        self.assertIn("candidate_r25_M15", reg_data.get("models", {}))
+        r25_reg = reg_data["models"]["candidate_r25_M15"]
+        self.assertEqual(r25_reg.get("state"), "VALIDATED")
+        self.assertEqual(r25_reg.get("artifact_file"), "candidate_r25_M15.joblib")
+
+        # R_10 candidate check
+        self.assertIn("candidate_r10_M15", reg_data.get("models", {}))
+        r10_reg = reg_data["models"]["candidate_r10_M15"]
+        self.assertEqual(r10_reg.get("state"), "VALIDATED")
+        self.assertEqual(r10_reg.get("artifact_file"), "candidate_r10_M15.joblib")
+
         self.assertTrue(self.manifest_file.exists(), "artifacts/manifest.json does not exist")
         with open(self.manifest_file, "r", encoding="utf-8") as f:
             man_data = json.load(f)
@@ -108,6 +134,9 @@ class TestR75Integration(unittest.TestCase):
         self.assertEqual(r75_man.get("symbol"), "R_75")
         self.assertEqual(r75_man.get("timeframe"), "M15")
         self.assertEqual(r75_man.get("state"), "VALIDATED")
+
+        self.assertIn("candidate_r25_M15", man_data.get("models", {}))
+        self.assertIn("candidate_r10_M15", man_data.get("models", {}))
 
     def test_model_artifact_size_and_inference_memory(self):
         """Verify model file size is < 10MB and inference memory is < 50MB."""

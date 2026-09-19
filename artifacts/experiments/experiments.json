@@ -1972,5 +1972,509 @@
         2
       ]
     }
+  },
+  {
+    "run_id": "frxEURUSD_M15_20260919_085500_c6446e",
+    "timestamp": "2026-09-19T08:55:00.725789+00:00",
+    "symbol": "frxEURUSD",
+    "timeframe": "M15",
+    "model_type": "logistic_regression",
+    "random_seed": 42,
+    "artifact_file": "frxEURUSD_M15_20260919_085500_c6446e.joblib",
+    "metrics": {
+      "validation": {
+        "balanced_accuracy": 0.35910932189163086,
+        "f1_macro": 0.3629780962685647,
+        "precision_macro": 0.5176874361264675,
+        "recall_macro": 0.35910932189163086,
+        "precision_class_0": 0.9008883953359245,
+        "recall_class_0": 0.9975407316323394,
+        "precision_class_1": 0.0,
+        "recall_class_1": 0.0,
+        "precision_class_2": 0.6521739130434783,
+        "recall_class_2": 0.0797872340425532,
+        "brier_score": 0.05755369889578859,
+        "total_signals": 23,
+        "signal_rate": 0.006344827586206896,
+        "win_rate": 0.8260869565217391,
+        "avg_return_per_trade": 0.001107702333616993,
+        "profit_factor": 17.672524795942234,
+        "max_drawdown": 0.0007723227607028052,
+        "sharpe_ratio": 85.6953614388836,
+        "sortino_ratio": 339.6938618579159
+      },
+      "test_oos": {
+        "status": "OOS_LOCKED_FOR_RESEARCH"
+      }
+    },
+    "dataset_metadata": {
+      "symbol": "frxEURUSD",
+      "timeframe": "M15",
+      "total_rows": 24195,
+      "train_rows": 16932,
+      "val_rows": 3625,
+      "test_rows": 0,
+      "purged_train_rows": 4,
+      "purged_val_rows": 4,
+      "train_val_leak_free": true,
+      "val_test_leak_free": true,
+      "start_epoch": 1758188700,
+      "end_epoch": 1789696800,
+      "feature_count": 43
+    },
+    "model_metadata": {
+      "model_name": "logistic_regression",
+      "config": {
+        "random_state": 42
+      },
+      "is_calibrated": true,
+      "num_features": 43,
+      "classes": [
+        0,
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "run_id": "frxEURUSD_M15_20260919_085539_49a425",
+    "timestamp": "2026-09-19T08:55:39.874421+00:00",
+    "symbol": "frxEURUSD",
+    "timeframe": "M15",
+    "model_type": "logistic_regression",
+    "random_seed": 42,
+    "artifact_file": "frxEURUSD_M15_20260919_085539_49a425.joblib",
+    "metrics": {
+      "validation": {
+        "balanced_accuracy": 0.35910932189163086,
+        "f1_macro": 0.3629780962685647,
+        "precision_macro": 0.5176874361264675,
+        "recall_macro": 0.35910932189163086,
+        "precision_class_0": 0.9008883953359245,
+        "recall_class_0": 0.9975407316323394,
+        "precision_class_1": 0.0,
+        "recall_class_1": 0.0,
+        "precision_class_2": 0.6521739130434783,
+        "recall_class_2": 0.0797872340425532,
+        "brier_score": 0.05755369889578859,
+        "total_signals": 23,
+        "signal_rate": 0.006344827586206896,
+        "win_rate": 0.8260869565217391,
+        "avg_return_per_trade": 0.001107702333616993,
+        "profit_factor": 17.672524795942234,
+        "max_drawdown": 0.0007723227607028052,
+        "sharpe_ratio": 85.6953614388836,
+        "sortino_ratio": 339.6938618579159
+      },
+      "test_oos": {
+        "status": "OOS_LOCKED_FOR_RESEARCH"
+      }
+    },
+    "dataset_metadata": {
+      "symbol": "frxEURUSD",
+      "timeframe": "M15",
+      "total_rows": 24195,
+      "train_rows": 16932,
+      "val_rows": 3625,
+      "test_rows": 0,
+      "purged_train_rows": 4,
+      "purged_val_rows": 4,
+      "train_val_leak_free": true,
+      "val_test_leak_free": true,
+      "start_epoch": 1758188700,
+      "end_epoch": 1789696800,
+      "feature_count": 43
+    },
+    "model_metadata": {
+      "model_name": "logistic_regression",
+      "config": {
+        "random_state": 42
+      },
+      "is_calibrated": true,
+      "num_features": 43,
+      "classes": [
+        0,
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "run_id": "frxEURUSD_M15_20260919_085838_168224",
+    "timestamp": "2026-09-19T08:58:38.322607+00:00",
+    "symbol": "frxEURUSD",
+    "timeframe": "M15",
+    "model_type": "logistic_regression",
+    "random_seed": 42,
+    "artifact_file": "frxEURUSD_M15_20260919_085838_168224.joblib",
+    "metrics": {
+      "validation": {
+        "balanced_accuracy": 0.35910932189163086,
+        "f1_macro": 0.3629780962685647,
+        "precision_macro": 0.5176874361264675,
+        "recall_macro": 0.35910932189163086,
+        "precision_class_0": 0.9008883953359245,
+        "recall_class_0": 0.9975407316323394,
+        "precision_class_1": 0.0,
+        "recall_class_1": 0.0,
+        "precision_class_2": 0.6521739130434783,
+        "recall_class_2": 0.0797872340425532,
+        "brier_score": 0.05755369889578859,
+        "total_signals": 23,
+        "signal_rate": 0.006344827586206896,
+        "win_rate": 0.8260869565217391,
+        "avg_return_per_trade": 0.001107702333616993,
+        "profit_factor": 17.672524795942234,
+        "max_drawdown": 0.0007723227607028052,
+        "sharpe_ratio": 85.6953614388836,
+        "sortino_ratio": 339.6938618579159
+      },
+      "test_oos": {
+        "status": "OOS_LOCKED_FOR_RESEARCH"
+      }
+    },
+    "dataset_metadata": {
+      "symbol": "frxEURUSD",
+      "timeframe": "M15",
+      "total_rows": 24195,
+      "train_rows": 16932,
+      "val_rows": 3625,
+      "test_rows": 0,
+      "purged_train_rows": 4,
+      "purged_val_rows": 4,
+      "train_val_leak_free": true,
+      "val_test_leak_free": true,
+      "start_epoch": 1758188700,
+      "end_epoch": 1789696800,
+      "feature_count": 43
+    },
+    "model_metadata": {
+      "model_name": "logistic_regression",
+      "config": {
+        "random_state": 42
+      },
+      "is_calibrated": true,
+      "num_features": 43,
+      "classes": [
+        0,
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "run_id": "frxEURUSD_M15_20260919_090427_6374dc",
+    "timestamp": "2026-09-19T09:04:27.919296+00:00",
+    "symbol": "frxEURUSD",
+    "timeframe": "M15",
+    "model_type": "logistic_regression",
+    "random_seed": 42,
+    "artifact_file": "frxEURUSD_M15_20260919_090427_6374dc.joblib",
+    "metrics": {
+      "validation": {
+        "balanced_accuracy": 0.35910932189163086,
+        "f1_macro": 0.3629780962685647,
+        "precision_macro": 0.5176874361264675,
+        "recall_macro": 0.35910932189163086,
+        "precision_class_0": 0.9008883953359245,
+        "recall_class_0": 0.9975407316323394,
+        "precision_class_1": 0.0,
+        "recall_class_1": 0.0,
+        "precision_class_2": 0.6521739130434783,
+        "recall_class_2": 0.0797872340425532,
+        "brier_score": 0.05755369889578859,
+        "total_signals": 23,
+        "signal_rate": 0.006344827586206896,
+        "win_rate": 0.8260869565217391,
+        "avg_return_per_trade": 0.001107702333616993,
+        "profit_factor": 17.672524795942234,
+        "max_drawdown": 0.0007723227607028052,
+        "sharpe_ratio": 85.6953614388836,
+        "sortino_ratio": 339.6938618579159
+      },
+      "test_oos": {
+        "status": "OOS_LOCKED_FOR_RESEARCH"
+      }
+    },
+    "dataset_metadata": {
+      "symbol": "frxEURUSD",
+      "timeframe": "M15",
+      "total_rows": 24195,
+      "train_rows": 16932,
+      "val_rows": 3625,
+      "test_rows": 0,
+      "purged_train_rows": 4,
+      "purged_val_rows": 4,
+      "train_val_leak_free": true,
+      "val_test_leak_free": true,
+      "start_epoch": 1758188700,
+      "end_epoch": 1789696800,
+      "feature_count": 43
+    },
+    "model_metadata": {
+      "model_name": "logistic_regression",
+      "config": {
+        "random_state": 42
+      },
+      "is_calibrated": true,
+      "num_features": 43,
+      "classes": [
+        0,
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "run_id": "frxEURUSD_M15_20260919_091019_8fcbb8",
+    "timestamp": "2026-09-19T09:10:19.172536+00:00",
+    "symbol": "frxEURUSD",
+    "timeframe": "M15",
+    "model_type": "logistic_regression",
+    "random_seed": 42,
+    "artifact_file": "frxEURUSD_M15_20260919_091019_8fcbb8.joblib",
+    "metrics": {
+      "validation": {
+        "balanced_accuracy": 0.35910932189163086,
+        "f1_macro": 0.3629780962685647,
+        "precision_macro": 0.5176874361264675,
+        "recall_macro": 0.35910932189163086,
+        "precision_class_0": 0.9008883953359245,
+        "recall_class_0": 0.9975407316323394,
+        "precision_class_1": 0.0,
+        "recall_class_1": 0.0,
+        "precision_class_2": 0.6521739130434783,
+        "recall_class_2": 0.0797872340425532,
+        "brier_score": 0.05755369889578859,
+        "total_signals": 23,
+        "signal_rate": 0.006344827586206896,
+        "win_rate": 0.8260869565217391,
+        "avg_return_per_trade": 0.001107702333616993,
+        "profit_factor": 17.672524795942234,
+        "max_drawdown": 0.0007723227607028052,
+        "sharpe_ratio": 85.6953614388836,
+        "sortino_ratio": 339.6938618579159
+      },
+      "test_oos": {
+        "status": "OOS_LOCKED_FOR_RESEARCH"
+      }
+    },
+    "dataset_metadata": {
+      "symbol": "frxEURUSD",
+      "timeframe": "M15",
+      "total_rows": 24195,
+      "train_rows": 16932,
+      "val_rows": 3625,
+      "test_rows": 0,
+      "purged_train_rows": 4,
+      "purged_val_rows": 4,
+      "train_val_leak_free": true,
+      "val_test_leak_free": true,
+      "start_epoch": 1758188700,
+      "end_epoch": 1789696800,
+      "feature_count": 43
+    },
+    "model_metadata": {
+      "model_name": "logistic_regression",
+      "config": {
+        "random_state": 42
+      },
+      "is_calibrated": true,
+      "num_features": 43,
+      "classes": [
+        0,
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "run_id": "frxEURUSD_M15_20260919_091354_67b19a",
+    "timestamp": "2026-09-19T09:13:54.644141+00:00",
+    "symbol": "frxEURUSD",
+    "timeframe": "M15",
+    "model_type": "logistic_regression",
+    "random_seed": 42,
+    "artifact_file": "frxEURUSD_M15_20260919_091354_67b19a.joblib",
+    "metrics": {
+      "validation": {
+        "balanced_accuracy": 0.35910932189163086,
+        "f1_macro": 0.3629780962685647,
+        "precision_macro": 0.5176874361264675,
+        "recall_macro": 0.35910932189163086,
+        "precision_class_0": 0.9008883953359245,
+        "recall_class_0": 0.9975407316323394,
+        "precision_class_1": 0.0,
+        "recall_class_1": 0.0,
+        "precision_class_2": 0.6521739130434783,
+        "recall_class_2": 0.0797872340425532,
+        "brier_score": 0.05755369889578859,
+        "total_signals": 23,
+        "signal_rate": 0.006344827586206896,
+        "win_rate": 0.8260869565217391,
+        "avg_return_per_trade": 0.001107702333616993,
+        "profit_factor": 17.672524795942234,
+        "max_drawdown": 0.0007723227607028052,
+        "sharpe_ratio": 85.6953614388836,
+        "sortino_ratio": 339.6938618579159
+      },
+      "test_oos": {
+        "status": "OOS_LOCKED_FOR_RESEARCH"
+      }
+    },
+    "dataset_metadata": {
+      "symbol": "frxEURUSD",
+      "timeframe": "M15",
+      "total_rows": 24195,
+      "train_rows": 16932,
+      "val_rows": 3625,
+      "test_rows": 0,
+      "purged_train_rows": 4,
+      "purged_val_rows": 4,
+      "train_val_leak_free": true,
+      "val_test_leak_free": true,
+      "start_epoch": 1758188700,
+      "end_epoch": 1789696800,
+      "feature_count": 43
+    },
+    "model_metadata": {
+      "model_name": "logistic_regression",
+      "config": {
+        "random_state": 42
+      },
+      "is_calibrated": true,
+      "num_features": 43,
+      "classes": [
+        0,
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "run_id": "frxEURUSD_M15_20260919_093338_766573",
+    "timestamp": "2026-09-19T09:33:38.345625+00:00",
+    "symbol": "frxEURUSD",
+    "timeframe": "M15",
+    "model_type": "logistic_regression",
+    "random_seed": 42,
+    "artifact_file": "frxEURUSD_M15_20260919_093338_766573.joblib",
+    "metrics": {
+      "validation": {
+        "balanced_accuracy": 0.35910932189163086,
+        "f1_macro": 0.3629780962685647,
+        "precision_macro": 0.5176874361264675,
+        "recall_macro": 0.35910932189163086,
+        "precision_class_0": 0.9008883953359245,
+        "recall_class_0": 0.9975407316323394,
+        "precision_class_1": 0.0,
+        "recall_class_1": 0.0,
+        "precision_class_2": 0.6521739130434783,
+        "recall_class_2": 0.0797872340425532,
+        "brier_score": 0.05755369889578859,
+        "total_signals": 23,
+        "signal_rate": 0.006344827586206896,
+        "win_rate": 0.8260869565217391,
+        "avg_return_per_trade": 0.001107702333616993,
+        "profit_factor": 17.672524795942234,
+        "max_drawdown": 0.0007723227607028052,
+        "sharpe_ratio": 85.6953614388836,
+        "sortino_ratio": 339.6938618579159
+      },
+      "test_oos": {
+        "status": "OOS_LOCKED_FOR_RESEARCH"
+      }
+    },
+    "dataset_metadata": {
+      "symbol": "frxEURUSD",
+      "timeframe": "M15",
+      "total_rows": 24195,
+      "train_rows": 16932,
+      "val_rows": 3625,
+      "test_rows": 0,
+      "purged_train_rows": 4,
+      "purged_val_rows": 4,
+      "train_val_leak_free": true,
+      "val_test_leak_free": true,
+      "start_epoch": 1758188700,
+      "end_epoch": 1789696800,
+      "feature_count": 43
+    },
+    "model_metadata": {
+      "model_name": "logistic_regression",
+      "config": {
+        "random_state": 42
+      },
+      "is_calibrated": true,
+      "num_features": 43,
+      "classes": [
+        0,
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "run_id": "frxEURUSD_M15_20260919_093420_547e87",
+    "timestamp": "2026-09-19T09:34:20.576158+00:00",
+    "symbol": "frxEURUSD",
+    "timeframe": "M15",
+    "model_type": "logistic_regression",
+    "random_seed": 42,
+    "artifact_file": "frxEURUSD_M15_20260919_093420_547e87.joblib",
+    "metrics": {
+      "validation": {
+        "balanced_accuracy": 0.35910932189163086,
+        "f1_macro": 0.3629780962685647,
+        "precision_macro": 0.5176874361264675,
+        "recall_macro": 0.35910932189163086,
+        "precision_class_0": 0.9008883953359245,
+        "recall_class_0": 0.9975407316323394,
+        "precision_class_1": 0.0,
+        "recall_class_1": 0.0,
+        "precision_class_2": 0.6521739130434783,
+        "recall_class_2": 0.0797872340425532,
+        "brier_score": 0.05755369889578859,
+        "total_signals": 23,
+        "signal_rate": 0.006344827586206896,
+        "win_rate": 0.8260869565217391,
+        "avg_return_per_trade": 0.001107702333616993,
+        "profit_factor": 17.672524795942234,
+        "max_drawdown": 0.0007723227607028052,
+        "sharpe_ratio": 85.6953614388836,
+        "sortino_ratio": 339.6938618579159
+      },
+      "test_oos": {
+        "status": "OOS_LOCKED_FOR_RESEARCH"
+      }
+    },
+    "dataset_metadata": {
+      "symbol": "frxEURUSD",
+      "timeframe": "M15",
+      "total_rows": 24195,
+      "train_rows": 16932,
+      "val_rows": 3625,
+      "test_rows": 0,
+      "purged_train_rows": 4,
+      "purged_val_rows": 4,
+      "train_val_leak_free": true,
+      "val_test_leak_free": true,
+      "start_epoch": 1758188700,
+      "end_epoch": 1789696800,
+      "feature_count": 43
+    },
+    "model_metadata": {
+      "model_name": "logistic_regression",
+      "config": {
+        "random_state": 42
+      },
+      "is_calibrated": true,
+      "num_features": 43,
+      "classes": [
+        0,
+        1,
+        2
+      ]
+    }
   }
 ]

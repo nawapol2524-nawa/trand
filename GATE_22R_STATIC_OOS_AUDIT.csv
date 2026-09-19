@@ -120,6 +120,7 @@ tests/unit/test_calibration_isolation.py,40,X_test_corrupted = X_test_1 * 1000.0
 tests/unit/test_calibration_isolation.py,41,y_test_corrupted = np.array([1 if x == 0 else 0 for x in y_test_1]),y_test,AUTHORIZED_SECURITY_TEST,True,COMPLIANT_TEST
 tests/unit/test_calibration_isolation.py,61,preds_corrupt = calibrator_2.predict(X_test_corrupted),X_test,AUTHORIZED_SECURITY_TEST,True,COMPLIANT_TEST
 tests/unit/test_calibration_isolation.py,62,"self.assertEqual(len(preds_corrupt), len(X_test_corrupted))",X_test,AUTHORIZED_SECURITY_TEST,True,COMPLIANT_TEST
+tests/unit/test_double_barrel_risk.py,112,"idempotency_key=""db_buy_test""",y_test,AUTHORIZED_SECURITY_TEST,True,COMPLIANT_TEST
 tests/unit/test_oos_guard.py,23,"OOSManifest,",OOSManifest,AUTHORIZED_SECURITY_TEST,True,COMPLIANT_TEST
 tests/unit/test_oos_guard.py,25,"OOSEvaluationSession,",OOSEvaluationSession,AUTHORIZED_SECURITY_TEST,True,COMPLIANT_TEST
 tests/unit/test_oos_guard.py,74,self.oos_manifest = OOSManifest(,OOSManifest,AUTHORIZED_SECURITY_TEST,True,COMPLIANT_TEST
