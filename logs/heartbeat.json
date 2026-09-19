@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-19T09:34:29.557558+00:00",
-  "uptime_seconds": 0.1,
+  "timestamp": "2026-09-19T13:20:00.450700+00:00",
+  "uptime_seconds": 0.05,
   "overall_status": "BROKER_DISCONNECTED",
   "symbol": "R_25",
   "governance": {
@@ -8,14 +8,14 @@
     "auto_promotion": false
   },
   "system_resources": {
-    "pid": 98443,
-    "memory_rss_mb": 463.56,
-    "free_disk_mb": 21613.91
+    "pid": 99666,
+    "memory_rss_mb": 462.75,
+    "free_disk_mb": 21518.79
   },
   "trading_state": {
     "symbol": "R_25",
     "champion_model_id": "candidate_r25_M15",
-    "open_positions_count": 0,
+    "open_positions_count": 1,
     "today_pnl_usd": 0,
     "last_candle_epoch": 1780665300,
     "risk_engine_status": "SHUTDOWN: SINGLE_CYCLE_COMPLETED",
@@ -35,11 +35,18 @@
     "timeframe": "M15",
     "strategy": "double_barrel",
     "trades_count": 0,
-    "open_positions": [],
+    "open_positions": [
+      {
+        "id": "paper_d75e8a96",
+        "symbol": "R_25",
+        "dir": "SELL",
+        "lot": 1.73
+      }
+    ],
     "feed_mode": {
       "R_25": "SYNTHETIC_OFFLINE"
     },
-    "broker_equity": 1000.0,
+    "broker_equity": 999.99,
     "broker_balance": 1000.0
   }
 }

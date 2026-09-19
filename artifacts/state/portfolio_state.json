@@ -1,17 +1,44 @@
 {
-  "saved_at": "2026-09-19T09:34:29.556943+00:00",
+  "saved_at": "2026-09-19T13:20:00.450182+00:00",
   "balance": 1000.0,
-  "equity": 1000.0,
-  "used_margin": 0.0,
-  "free_margin": 1000.0,
-  "positions": [],
+  "equity": 999.9910827149998,
+  "used_margin": 36.605386404025,
+  "free_margin": 963.3856963109748,
+  "positions": [
+    {
+      "position_id": "paper_d75e8a96",
+      "symbol": "R_25",
+      "direction": "SELL",
+      "lot_size": 1.73,
+      "entry_price": 2115.91828925,
+      "entry_epoch": 1780665300,
+      "entry_dt": "2026-06-05T13:15:00+00:00",
+      "sl_price": 2121.6836991071427,
+      "tp_price": 2104.3882705357137,
+      "partial_tp_price": 2110.153146392857,
+      "partial_tp_pips": 5765.142857142953,
+      "buffer_pips": 1.0,
+      "atr": 3.843428571428636,
+      "partial_tp_hit": false,
+      "breakeven_locked": false,
+      "slippage_pips": 0.267,
+      "commission_usd": 0.0,
+      "swap_usd": 0.0,
+      "unrealized_pnl": -0.008917285000202354,
+      "bars_held": 0,
+      "max_favorable_excursion_pips": 0.0,
+      "max_adverse_excursion_pips": 0.0
+    }
+  ],
   "closed_trade_count": 0,
-  "processed_order_keys": [],
+  "processed_order_keys": [
+    "R_25_SELL_1780665300"
+  ],
   "metadata": {
     "shutdown_reason": "SINGLE_CYCLE_COMPLETED",
     "symbols": [
       "R_25"
     ],
-    "timestamp": "2026-09-19T09:34:29.556921+00:00"
+    "timestamp": "2026-09-19T13:20:00.450164+00:00"
   }
 }

@@ -42,9 +42,9 @@ from ai_forex_bot.data.market.live_feeder import LiveMarketFeeder
 
 class FallbackTechnicalModel:
     """
-    Causal quantitative heuristic model used when machine learning checkpoints
-    are not yet registered or present on disk for a new trading instrument.
-    Emits well-calibrated probabilities [p_hold, p_buy, p_sell].
+    Active Quantitative Trend & Momentum Scalper Heuristic.
+    Generates high-conviction trades when trend and momentum align (EMA, RSI, MACD, Donchian),
+    protected by Double-Barrel risk engine.
     """
     def __init__(self, symbol: str):
         self.symbol = symbol
@@ -59,15 +59,24 @@ class FallbackTechnicalModel:
             dist_ema = float(row.get("dist_ema_20", 0.0))
             rsi = float(row.get("rsi_14", 50.0))
             macd = float(row.get("macd_hist", 0.0))
+            range_pos = float(row.get("range_pos_20", 0.5))
 
-            if dist_ema > 0.0005 and rsi > 52.0 and macd > 0.0:
-                p_buy = min(0.85, 0.55 + min(0.25, abs(dist_ema) * 50))
-                p_sell = max(0.05, 0.15)
-                p_hold = max(0.10, 1.0 - p_buy - p_sell)
-            elif dist_ema < -0.0005 and rsi < 48.0 and macd < 0.0:
-                p_sell = min(0.85, 0.55 + min(0.25, abs(dist_ema) * 50))
-                p_buy = max(0.05, 0.15)
-                p_hold = max(0.10, 1.0 - p_buy - p_sell)
+            # Bullish Momentum: Price above EMA, RSI > 50, MACD positive, or high breakout
+            if (dist_ema > 0.0002 and rsi > 50.5 and macd > 0.0) or range_pos > 0.80:
+                conviction = min(0.85, 0.56 + max(0.0, (rsi - 50.0) / 100.0) + min(0.20, abs(dist_ema) * 50))
+                p_buy = conviction
+                p_sell = 0.10
+                p_hold = max(0.05, 1.0 - p_buy - p_sell)
+            # Bearish Momentum: Price below EMA, RSI < 50, MACD negative, or low breakdown
+            elif (dist_ema < -0.0002 and rsi < 49.5 and macd < 0.0) or range_pos < 0.20:
+                conviction = min(0.85, 0.56 + max(0.0, (50.0 - rsi) / 100.0) + min(0.20, abs(dist_ema) * 50))
+                p_sell = conviction
+                p_buy = 0.10
+                p_hold = max(0.05, 1.0 - p_buy - p_sell)
+            else:
+                p_hold = 0.60
+                p_buy = 0.20
+                p_sell = 0.20
         except Exception:
             pass
 
@@ -233,6 +242,14 @@ class ProductionDaemonSupervisor:
         latest_row = features_df.iloc[-1:].copy()
         regime_str = str(latest_row["regime"].values[0]) if "regime" in latest_row else "RANGE"
 
+        # 1. Active Quantitative Trend Scalper Check
+        if self.strategy in ("double_barrel", "scalper", "supertrend", "active", "technical"):
+            fallback = FallbackTechnicalModel(sym)
+            tech_proba = fallback.predict_proba(features_df)
+            if tech_proba[0][1] >= 0.55 or tech_proba[0][2] >= 0.55:
+                return tech_proba[0], regime_str
+
+        # 2. Check machine learning model artifact
         mdata = self.models_data.get(sym, {})
         artifact = mdata.get("artifact")
 
@@ -254,12 +271,13 @@ class ProductionDaemonSupervisor:
                     X = scaler.transform(X)
 
                 proba = model_obj.predict_proba(X)
-                return proba[0], regime_str
+                if proba[0][1] >= 0.40 or proba[0][2] >= 0.40:
+                    return proba[0], regime_str
             except Exception as e:
                 self.log_daemon_event("MODEL_INFERENCE_FALLBACK", {"error": str(e), "symbol": sym})
 
         fallback = mdata.get("fallback") or FallbackTechnicalModel(sym)
-        proba = fallback.predict_proba(latest_row)
+        proba = fallback.predict_proba(features_df)
         return proba[0], regime_str
 
     def _log_signal(
@@ -346,7 +364,12 @@ class ProductionDaemonSupervisor:
                 "strategy": self.strategy,
                 "trades_count": len(self.broker.closed_trades),
                 "open_positions": [
-                    {"id": p.position_id, "symbol": p.symbol, "dir": p.direction, "lot": p.lot_size}
+                    {
+                        "id": p.get("position_id") if isinstance(p, dict) else getattr(p, "position_id", ""),
+                        "symbol": p.get("symbol") if isinstance(p, dict) else getattr(p, "symbol", ""),
+                        "dir": p.get("direction") if isinstance(p, dict) else getattr(p, "direction", ""),
+                        "lot": p.get("lot_size") if isinstance(p, dict) else getattr(p, "lot_size", 0.0)
+                    }
                     for p in self.broker.positions.values()
                 ],
                 "feed_mode": {sym: getattr(feeder, "mode", "UNKNOWN") for sym, feeder in self.feeders.items()},
@@ -376,7 +399,12 @@ class ProductionDaemonSupervisor:
                     "strategy": self.strategy,
                     "trades_count": len(self.broker.closed_trades),
                     "open_positions": [
-                        {"id": p.position_id, "symbol": p.symbol, "dir": p.direction, "lot": p.lot_size}
+                        {
+                            "id": p.get("position_id") if isinstance(p, dict) else getattr(p, "position_id", ""),
+                            "symbol": p.get("symbol") if isinstance(p, dict) else getattr(p, "symbol", ""),
+                            "dir": p.get("direction") if isinstance(p, dict) else getattr(p, "direction", ""),
+                            "lot": p.get("lot_size") if isinstance(p, dict) else getattr(p, "lot_size", 0.0)
+                        }
                         for p in self.broker.positions.values()
                     ],
                     "feed_mode": {sym: getattr(feeder, "mode", "UNKNOWN") for sym, feeder in self.feeders.items()},
@@ -673,7 +701,7 @@ class ProductionDaemonSupervisor:
 
 def main():
     default_symbol = os.getenv("SYMBOL", "R_25,R_10,R_75")
-    default_timeframe = os.getenv("TIMEFRAME", "M15")
+    default_timeframe = os.getenv("TIMEFRAME", "M1")
     default_strategy = os.getenv("STRATEGY", "double_barrel")
 
     parser = argparse.ArgumentParser(description="24/7 Autonomous Production Daemon Supervisor")

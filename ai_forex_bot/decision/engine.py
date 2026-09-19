@@ -67,8 +67,8 @@ class MetaDecisionEngine:
                 reason="High-impact news blackout window active."
             )
 
-        # 2. Extreme volatility regime check
-        if regime in {"HIGH_VOLATILITY", "UNCERTAIN"}:
+        # 2. Extreme volatility regime check (applies to fiat forex, synthetic indices are designed for volatility)
+        if not symbol.startswith("R_") and regime in {"HIGH_VOLATILITY", "UNCERTAIN"}:
             return DecisionPayload(
                 symbol=symbol,
                 epoch=epoch,
