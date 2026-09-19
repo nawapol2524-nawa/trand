@@ -19,17 +19,19 @@ artifacts/scalers/*.joblib
 !artifacts/scalers/.gitkeep
 
 # ==========================================
-# 📊 LARGE DATA & PARQUET
+# 📊 LARGE DATA & PARQUET (OFFLINE ONLY)
 # ==========================================
-data/market/raw/*.parquet
+data/
+*.parquet
 *.parquet.tmp
 artifacts/state/*.tmp
 
 # ==========================================
 # 📝 LOGS & RUNTIME DATABASES
 # ==========================================
+logs/
 *.log
-logs/*.log
+*.jsonl
 *.sqlite3
 
 # ==========================================
