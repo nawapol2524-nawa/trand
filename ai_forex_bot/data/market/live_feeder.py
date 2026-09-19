@@ -41,8 +41,13 @@ class LiveMarketFeeder:
     ):
         self.symbol = symbol
         self.timeframe = timeframe.upper()
-        self.api_token = api_token or os.getenv("DERIV_API_TOKEN")
-        self.app_id = app_id or os.getenv("DERIV_APP_ID", "1085")
+        token_raw = api_token or os.getenv("DERIV_API_TOKEN")
+        self.api_token = None if (not token_raw or "YOUR_" in token_raw) else token_raw
+
+        app_id_raw = app_id or os.getenv("DERIV_APP_ID", "1085")
+        if not app_id_raw or "YOUR_" in app_id_raw or not str(app_id_raw).strip().isdigit():
+            app_id_raw = "1085"
+        self.app_id = str(app_id_raw).strip()
         self.offline_mode = offline_mode
         self.rng = random.Random(random_seed)
 
@@ -90,11 +95,69 @@ class LiveMarketFeeder:
         # Attempt to inspect clean historical parquet for realistic seed price & epoch
         self._seed_from_parquet_if_available()
 
+    def _fetch_deriv_candles(self, count: int = 1) -> Optional[List[Dict[str, Any]]]:
+        """
+        Fetches live real-time candle(s) directly from Deriv WebSocket API.
+        Does not require api_token for public market price feeds.
+        """
+        if self.offline_mode:
+            return None
+
+        try:
+            from websockets.sync.client import connect
+            uri = f"wss://ws.derivws.com/websockets/v3?app_id={self.app_id}"
+            with connect(uri, open_timeout=3.0, close_timeout=3.0) as ws:
+                if self.api_token:
+                    try:
+                        ws.send(json.dumps({"authorize": self.api_token}))
+                        ws.recv(timeout=2.0)
+                    except Exception:
+                        pass
+
+                # Query latest candles
+                req = {
+                    "ticks_history": self.symbol,
+                    "end": "latest",
+                    "count": count,
+                    "granularity": self.granularity_seconds,
+                    "style": "candles"
+                }
+                ws.send(json.dumps(req))
+                resp_raw = ws.recv(timeout=3.0)
+                resp = json.loads(resp_raw)
+                candles = resp.get("candles", [])
+                if candles:
+                    self.connected = True
+                    self.mode = "DERIV_LIVE_FEED"
+                    formatted_bars = []
+                    for c in candles:
+                        formatted_bars.append({
+                            "epoch": int(c["epoch"]),
+                            "open": round(float(c["open"]), self.decimals),
+                            "high": round(float(c["high"]), self.decimals),
+                            "low": round(float(c["low"]), self.decimals),
+                            "close": round(float(c["close"]), self.decimals),
+                            "symbol": self.symbol
+                        })
+                    return formatted_bars
+        except Exception:
+            self.connected = False
+            return None
+
+        return None
+
     def _seed_from_parquet_if_available(self):
-        """Seeds initial price and epoch from clean parquet if present on disk."""
+        """Seeds initial price and epoch from live Deriv API or clean parquet if present on disk."""
+        # 1. Try seeding directly from Deriv Live API
+        candles = self._fetch_deriv_candles(count=1)
+        if candles:
+            self.last_close = candles[-1]["close"]
+            self.last_epoch = candles[-1]["epoch"]
+            return
+
+        # 2. Fallback to clean parquet if available
         parquet_path = settings.clean_data_dir / f"{self.symbol}_{self.timeframe}.parquet"
         if not parquet_path.exists():
-            # Try M15 or H1 fallback
             parquet_path = settings.clean_data_dir / f"{self.symbol}_M15.parquet"
 
         if parquet_path.exists():
@@ -110,9 +173,18 @@ class LiveMarketFeeder:
     def get_warmup_bars(self, count: int = 50) -> List[Dict[str, Any]]:
         """
         Retrieves warmup bars to prime rolling feature extraction buffer:
-        - First checks local clean parquets.
-        - If not available, generates realistic synthetic warmup sequence.
+        - First attempts to fetch genuine real-time historical bars from Deriv WebSocket API.
+        - Next checks local clean parquets.
+        - If neither is available, generates realistic synthetic warmup sequence.
         """
+        # 1. Fetch real candles directly from Deriv Live Feed
+        deriv_candles = self._fetch_deriv_candles(count=count)
+        if deriv_candles and len(deriv_candles) >= min(count, 5):
+            self.last_close = deriv_candles[-1]["close"]
+            self.last_epoch = deriv_candles[-1]["epoch"]
+            return deriv_candles
+
+        # 2. Next check local clean parquet
         parquet_path = settings.clean_data_dir / f"{self.symbol}_{self.timeframe}.parquet"
         if not parquet_path.exists():
             parquet_path = settings.clean_data_dir / f"{self.symbol}_M15.parquet"
@@ -139,7 +211,7 @@ class LiveMarketFeeder:
             except Exception:
                 pass
 
-        # Generate synthetic warmup sequence
+        # 3. Fallback: Generate synthetic warmup sequence
         bars = []
         base_epoch = self.last_epoch - (count * self.granularity_seconds)
         price = self.last_close
@@ -181,49 +253,9 @@ class LiveMarketFeeder:
         Attempts to fetch live candle from Deriv WebSocket API.
         Returns candle dict or None if offline/unavailable.
         """
-        if self.offline_mode or not self.api_token:
-            return None
-
-        try:
-            from websockets.sync.client import connect
-            uri = f"wss://ws.derivws.com/websockets/v3?app_id={self.app_id}"
-            with connect(uri, open_timeout=2.0, close_timeout=2.0) as ws:
-                # Authorize if token present
-                if self.api_token:
-                    ws.send(json.dumps({"authorize": self.api_token}))
-                    auth_raw = ws.recv(timeout=2.0)
-                    auth_data = json.loads(auth_raw)
-                    if "error" in auth_data:
-                        return None
-
-                # Query latest candle
-                req = {
-                    "ticks_history": self.symbol,
-                    "end": "latest",
-                    "count": 1,
-                    "granularity": self.granularity_seconds,
-                    "style": "candles"
-                }
-                ws.send(json.dumps(req))
-                resp_raw = ws.recv(timeout=2.0)
-                resp = json.loads(resp_raw)
-                candles = resp.get("candles", [])
-                if candles:
-                    c = candles[-1]
-                    self.connected = True
-                    self.mode = "DERIV_WEBSOCKET"
-                    return {
-                        "epoch": int(c["epoch"]),
-                        "open": round(float(c["open"]), self.decimals),
-                        "high": round(float(c["high"]), self.decimals),
-                        "low": round(float(c["low"]), self.decimals),
-                        "close": round(float(c["close"]), self.decimals),
-                        "symbol": self.symbol
-                    }
-        except Exception:
-            self.connected = False
-            return None
-
+        bars = self._fetch_deriv_candles(count=1)
+        if bars:
+            return bars[-1]
         return None
 
     def _generate_synthetic_bar(self) -> Dict[str, Any]:
@@ -267,9 +299,10 @@ class LiveMarketFeeder:
         otherwise generates autonomous synthetic bar seamlessly.
         """
         deriv_bar = self._poll_deriv_api()
-        if deriv_bar is not None and deriv_bar["epoch"] > self.last_epoch:
+        if deriv_bar is not None:
             self.last_close = deriv_bar["close"]
             self.last_epoch = deriv_bar["epoch"]
+            self.mode = "DERIV_LIVE_FEED"
             return deriv_bar
 
         return self._generate_synthetic_bar()
