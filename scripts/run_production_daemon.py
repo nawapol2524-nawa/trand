@@ -84,6 +84,7 @@ class ProductionDaemonSupervisor:
     def log_daemon_event(self, event_type: str, details: Dict[str, Any]) -> None:
         event = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
+            "symbol": self.symbol,
             "event_type": event_type,
             "details": details
         }
@@ -93,7 +94,7 @@ class ProductionDaemonSupervisor:
     def _handle_signal(self, signum, frame):
         sig_name = "SIGINT" if signum == signal.SIGINT else "SIGTERM"
         self.log_daemon_event("SHUTDOWN_SIGNAL_RECEIVED", {"signal": sig_name})
-        print(f"\n[DAEMON] Received {sig_name}. Initiating graceful shutdown...")
+        print(f"\n[DAEMON] Received {sig_name} for {self.symbol}. Initiating graceful shutdown...")
         self.shutdown()
 
     def shutdown(self, reason: str = "GRACEFUL_SHUTDOWN") -> None:
@@ -102,31 +103,35 @@ class ProductionDaemonSupervisor:
         # Save broker portfolio state
         state_path = self.state_manager.save_portfolio_state(
             self.broker,
-            metadata={"shutdown_reason": reason, "timestamp": datetime.now(timezone.utc).isoformat()}
+            metadata={"shutdown_reason": reason, "symbol": self.symbol, "timestamp": datetime.now(timezone.utc).isoformat()}
         )
-        self.log_daemon_event("PORTFOLIO_STATE_SAVED", {"state_file": str(state_path.name), "reason": reason})
+        self.log_daemon_event("PORTFOLIO_STATE_SAVED", {"state_file": str(state_path.name), "symbol": self.symbol, "reason": reason})
 
         # Update heartbeat to SHUTDOWN
         self.health_monitor.record_heartbeat(
+            symbol=self.symbol,
             open_positions_count=len(self.broker.positions),
             today_pnl_usd=0.0,
             risk_engine_status=f"SHUTDOWN: {reason}",
             broker_connected=False,
-            worker_statuses={k: "STOPPED" for k in self.worker_statuses}
+            worker_statuses={k: "STOPPED" for k in self.worker_statuses},
+            custom_metrics={"symbol": self.symbol, "timeframe": self.timeframe}
         )
-        print(f"[DAEMON] Shutdown complete. Portfolio state persisted to {state_path.name}.")
+        print(f"[DAEMON] Shutdown complete for {self.symbol}. Portfolio state persisted to {state_path.name}.")
 
     def _run_heartbeat_cycle(self) -> None:
         """Emits system health heartbeat."""
         try:
             self.health_monitor.record_heartbeat(
+                symbol=self.symbol,
                 open_positions_count=len(self.broker.positions),
                 today_pnl_usd=0.0,
                 risk_engine_status="NORMAL" if not self.kill_switch.is_kill_switch_active() else "KILL_SWITCH_ACTIVE",
                 broker_connected=self.broker.connected,
-                worker_statuses=self.worker_statuses
+                worker_statuses=self.worker_statuses,
+                custom_metrics={"symbol": self.symbol, "timeframe": self.timeframe}
             )
-            self.worker_statuses["heartbeat_worker"] = "HEALTHY"
+            self.worker_statuses["heartbeat_worker"] = f"HEALTHY [{self.symbol}]"
         except Exception as e:
             self.worker_statuses["heartbeat_worker"] = f"ERROR: {e}"
 
@@ -135,21 +140,21 @@ class ProductionDaemonSupervisor:
         try:
             # Check kill-switch before any action
             if self.kill_switch.is_kill_switch_active():
-                self.worker_statuses["trading_worker"] = "KILL_SWITCH_BLOCKED"
+                self.worker_statuses["trading_worker"] = f"KILL_SWITCH_BLOCKED [{self.symbol}]"
                 return
 
-            self.worker_statuses["trading_worker"] = "ACTIVE"
+            self.worker_statuses["trading_worker"] = f"ACTIVE [{self.symbol}]"
         except Exception as e:
             self.worker_statuses["trading_worker"] = f"CRASHED: {e}"
             self.restart_counts["trading_worker"] += 1
-            self.log_daemon_event("TRADING_WORKER_ERROR", {"error": str(e), "restarts": self.restart_counts["trading_worker"]})
+            self.log_daemon_event("TRADING_WORKER_ERROR", {"symbol": self.symbol, "error": str(e), "restarts": self.restart_counts["trading_worker"]})
 
     def _run_retraining_cycle(self) -> None:
         """Executes retraining preflight / scheduled training check."""
         try:
             trainer = ContinuousTrainer(symbol=self.symbol, timeframe=self.timeframe, auto_promotion=False)
             preflight = trainer.run_preflight_checks()
-            self.worker_statuses["retraining_worker"] = f"IDLE (Preflight: {'PASS' if preflight.passed else 'STANDBY'})"
+            self.worker_statuses["retraining_worker"] = f"IDLE [{self.symbol}] (Preflight: {'PASS' if preflight.passed else 'STANDBY'})"
         except Exception as e:
             self.worker_statuses["retraining_worker"] = f"ERROR: {e}"
             self.restart_counts["retraining_worker"] += 1
@@ -216,9 +221,11 @@ class ProductionDaemonSupervisor:
 
 
 def main():
+    default_symbol = os.getenv("SYMBOL", "frxEURUSD")
+    default_timeframe = os.getenv("TIMEFRAME", "M15")
     parser = argparse.ArgumentParser(description="24/7 Autonomous Production Daemon Supervisor")
-    parser.add_argument("--symbol", default="frxEURUSD", help="Trading Symbol")
-    parser.add_argument("--timeframe", default="M15", help="Timeframe")
+    parser.add_argument("--symbol", default=default_symbol, help="Trading Symbol")
+    parser.add_argument("--timeframe", default=default_timeframe, help="Timeframe")
     parser.add_argument("--heartbeat-interval", type=float, default=60.0, help="Heartbeat interval in seconds")
     parser.add_argument("--retrain-interval", type=float, default=3600.0, help="Retraining interval in seconds")
     parser.add_argument("--single-cycle", action="store_true", help="Execute one supervision cycle and exit")
@@ -228,9 +235,11 @@ def main():
     args = parser.parse_args()
 
     if args.dry_run:
-        print("[DAEMON DRY-RUN] Verifying production environment...")
+        print(f"[DAEMON DRY-RUN] Verifying production environment for {args.symbol}...")
         reg = ModelRegistry()
         champ = reg.get_champion()
+        print(f"Target Symbol: {args.symbol}")
+        print(f"Execution Timeframe: {args.timeframe}")
         print(f"Champion Model: {champ.model_id if champ else 'NONE'}")
         print(f"Live Trading: {settings.live_trading} (STRICTLY FALSE)")
         print(f"Auto Promotion: {settings.auto_promotion} (STRICTLY FALSE)")

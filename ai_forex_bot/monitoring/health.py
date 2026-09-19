@@ -64,6 +64,7 @@ class SystemHealthMonitor:
 
     def record_heartbeat(
         self,
+        symbol: Optional[str] = None,
         champion_model_id: Optional[str] = None,
         open_positions_count: int = 0,
         today_pnl_usd: float = 0.0,
@@ -107,12 +108,14 @@ class SystemHealthMonitor:
             "timestamp": now.isoformat(),
             "uptime_seconds": uptime,
             "overall_status": overall_status,
+            "symbol": symbol,
             "governance": {
                 "live_trading": settings.live_trading,
                 "auto_promotion": settings.auto_promotion
             },
             "system_resources": resources,
             "trading_state": {
+                "symbol": symbol,
                 "champion_model_id": champion_model_id,
                 "open_positions_count": open_positions_count,
                 "today_pnl_usd": round(today_pnl_usd, 2),

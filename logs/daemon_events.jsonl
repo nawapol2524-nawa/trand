@@ -11,3 +11,9 @@
 {"timestamp": "2026-09-18T13:16:21.644015+00:00", "event_type": "STATE_RESTORE_ATTEMPT", "details": {"restored": true, "message": "Restored 0 open positions. Synchronized: True"}}
 {"timestamp": "2026-09-18T13:16:21.644194+00:00", "event_type": "DAEMON_STARTED", "details": {"symbol": "frxEURUSD", "single_cycle": false, "heartbeat_interval": 60.0}}
 {"timestamp": "2026-09-18T13:16:22.244447+00:00", "event_type": "PORTFOLIO_STATE_SAVED", "details": {"state_file": "portfolio_state.json", "reason": "HOST_SIGTERM"}}
+{"timestamp": "2026-09-19T02:08:53.300311+00:00", "symbol": "R_75", "event_type": "STATE_RESTORE_ATTEMPT", "details": {"restored": true, "message": "Restored 0 open positions. Synchronized: True"}}
+{"timestamp": "2026-09-19T02:08:53.300813+00:00", "symbol": "R_75", "event_type": "DAEMON_STARTED", "details": {"symbol": "R_75", "single_cycle": true, "heartbeat_interval": 60.0}}
+{"timestamp": "2026-09-19T02:08:53.400579+00:00", "symbol": "R_75", "event_type": "PORTFOLIO_STATE_SAVED", "details": {"state_file": "portfolio_state.json", "symbol": "R_75", "reason": "SINGLE_CYCLE_COMPLETED"}}
+{"timestamp": "2026-09-19T02:20:12.065007+00:00", "symbol": "R_75", "event_type": "STATE_RESTORE_ATTEMPT", "details": {"restored": true, "message": "Restored 0 open positions. Synchronized: True"}}
+{"timestamp": "2026-09-19T02:20:12.065198+00:00", "symbol": "R_75", "event_type": "DAEMON_STARTED", "details": {"symbol": "R_75", "single_cycle": true, "heartbeat_interval": 60.0}}
+{"timestamp": "2026-09-19T02:20:12.151388+00:00", "symbol": "R_75", "event_type": "PORTFOLIO_STATE_SAVED", "details": {"state_file": "portfolio_state.json", "symbol": "R_75", "reason": "SINGLE_CYCLE_COMPLETED"}}

@@ -63,3 +63,35 @@ symbols:
     swap_long_points: -15.0
     swap_short_points: 5.0
     typical_spread_pips: 22.0
+  R_75:
+    asset_class: synthetic_index
+    base_currency: USD
+    commission_per_lot_usd: 0.0
+    display_name: Volatility 75 Index
+    lot_size: 1.0
+    lot_step: 0.001
+    max_lot: 10.0
+    max_spread_pips: 50.0
+    min_lot: 0.001
+    pip_size: 0.01
+    pip_value_usd: 0.01
+    quote_currency: USD
+    swap_long_points: 0.0
+    swap_short_points: 0.0
+    typical_spread_pips: 25.0
+  R_25:
+    asset_class: synthetic_index
+    base_currency: USD
+    commission_per_lot_usd: 0.0
+    display_name: Volatility 25 Index
+    lot_size: 1.0
+    lot_step: 0.01
+    max_lot: 20.0
+    max_spread_pips: 15.0
+    min_lot: 0.5
+    pip_size: 0.001
+    pip_value_usd: 0.001
+    quote_currency: USD
+    swap_long_points: 0.0
+    swap_short_points: 0.0
+    typical_spread_pips: 5.0

@@ -70,6 +70,11 @@ class PaperBroker(BaseBroker):
         sym_cfg = settings.get_symbol_config(symbol)
         typical = sym_cfg.typical_spread_pips if sym_cfg else 1.2
 
+        if sym_cfg and sym_cfg.asset_class == "synthetic_index":
+            # Synthetic indices on Deriv run 24/7/365 with constant liquidity and volatility.
+            # They DO NOT close on weekends and DO NOT have London/NY session overlap shifts or weekend 2.5x widening!
+            return round(typical * self.rng.uniform(0.95, 1.05), 4)
+
         dt = datetime.fromtimestamp(epoch, tz=timezone.utc)
         hour = dt.hour
         weekday = dt.weekday()
@@ -188,8 +193,20 @@ class PaperBroker(BaseBroker):
             # SELL fills at Bid - slippage (adverse execution)
             fill_price = quote["bid"] - slip_delta
 
-        # 3. Commission Deducted at Entry ($6.00 / lot standard institutional round-turn)
-        comm_usd = (sym_cfg.commission_per_lot_usd if sym_cfg else 6.0) * lot_size
+        # 3. Commission Deducted at Entry ($6.00 / lot standard institutional round-turn, 0.0 for synthetic indices)
+        comm_per_lot = sym_cfg.commission_per_lot_usd if sym_cfg else 6.0
+        comm_usd = comm_per_lot * lot_size
+
+        # 4. Margin Requirement Check: (Lot * ContractSize * FillPrice) / Leverage
+        sym_lot_size = sym_cfg.lot_size if sym_cfg else 100000.0
+        req_margin = (lot_size * sym_lot_size * fill_price) / self.leverage
+        if self.free_margin < req_margin:
+            return {
+                "status": "REJECTED",
+                "reason": "INSUFFICIENT_MARGIN",
+                "message": f"Insufficient margin: required ${req_margin:.2f}, free ${self.free_margin:.2f}."
+            }
+
         self.balance -= comm_usd
 
         pos_id = f"paper_{uuid.uuid4().hex[:8]}"
@@ -337,12 +354,14 @@ class PaperBroker(BaseBroker):
 
             pos["bars_held"] += 1
 
-            # Rollover Swap Check (Apply at 21:00 UTC)
+            # Rollover Swap Check (Apply at 21:00 UTC, not applicable to synthetic indices)
             if dt.hour == 21 and dt.minute == 0:
-                swap_points = sym_cfg.swap_long_points if pos["direction"] == "BUY" else sym_cfg.swap_short_points
-                # 1 point = 0.1 pip
-                swap_usd = (swap_points * 0.1) * pip_value * pos["lot_size"]
-                pos["swap_usd"] += swap_usd
+                is_synthetic = sym_cfg and sym_cfg.asset_class == "synthetic_index"
+                if not is_synthetic and sym_cfg:
+                    swap_points = sym_cfg.swap_long_points if pos["direction"] == "BUY" else sym_cfg.swap_short_points
+                    # 1 point = 0.1 pip
+                    swap_usd = (swap_points * 0.1) * pip_value * pos["lot_size"]
+                    pos["swap_usd"] += swap_usd
 
             # Track MFE and MAE
             if pos["direction"] == "BUY":
@@ -422,6 +441,7 @@ class PaperBroker(BaseBroker):
             sym_cfg = settings.get_symbol_config(sym)
             pip_size = sym_cfg.pip_size if sym_cfg else 0.0001
             pip_value = sym_cfg.pip_value_usd if sym_cfg else 10.0
+            sym_lot_size = sym_cfg.lot_size if sym_cfg else 100000.0
 
             q = self.quotes.get(sym)
             if q:
@@ -430,7 +450,8 @@ class PaperBroker(BaseBroker):
                 pnl = (diff / pip_size) * pip_value * pos["lot_size"]
                 recalculated_unrealized_pnl += pnl
 
-            req_margin = (pos["lot_size"] * sym_cfg.lot_size * pos["entry_price"]) / self.leverage
+            # Margin: (pos["lot_size"] * sym_cfg.lot_size * pos["entry_price"]) / self.leverage
+            req_margin = (pos["lot_size"] * sym_lot_size * pos["entry_price"]) / self.leverage
             recalculated_used_margin += req_margin
 
         equity_diff = abs(self.equity - (self.balance + recalculated_unrealized_pnl))
@@ -456,12 +477,13 @@ class PaperBroker(BaseBroker):
 
         for pos in self.positions.values():
             sym = pos["symbol"]
+            sym_cfg = settings.get_symbol_config(sym)
+            pip_size = sym_cfg.pip_size if sym_cfg else 0.0001
+            pip_value = sym_cfg.pip_value_usd if sym_cfg else 10.0
+            sym_lot_size = sym_cfg.lot_size if sym_cfg else 100000.0
+
             if sym in self.quotes:
                 q = self.quotes[sym]
-                sym_cfg = settings.get_symbol_config(sym)
-                pip_size = sym_cfg.pip_size if sym_cfg else 0.0001
-                pip_value = sym_cfg.pip_value_usd if sym_cfg else 10.0
-
                 cur_price = q["bid"] if pos["direction"] == "BUY" else q["ask"]
                 diff = (cur_price - pos["entry_price"]) if pos["direction"] == "BUY" else (pos["entry_price"] - cur_price)
                 pip_diff = diff / pip_size
@@ -469,9 +491,9 @@ class PaperBroker(BaseBroker):
                 pos["unrealized_pnl"] = pnl
                 total_unrealized += pnl
 
-                # Margin: (Lot * ContractSize * EntryPrice) / Leverage
-                req_margin = (pos["lot_size"] * sym_cfg.lot_size * pos["entry_price"]) / self.leverage
-                total_margin += req_margin
+            # Margin: (pos["lot_size"] * sym_cfg.lot_size * pos["entry_price"]) / self.leverage
+            req_margin = (pos["lot_size"] * sym_lot_size * pos["entry_price"]) / self.leverage
+            total_margin += req_margin
 
         self.equity = self.balance + total_unrealized
         self.used_margin = total_margin
