@@ -1,2 +1,0 @@
-trade_id,timestamp,symbol,direction,model_version,feature_version,label_version,probability,decision_reason,regime,session,entry_price,fill_price,exit_price,size,spread,commission,slippage,swap,gross_pnl,net_pnl,MAE,MFE,holding_time,exit_reason
-ZERO_TRADES,N/A,frxEURUSD,N/A,Candidate_B_Class_Weighted_HGB,all_43_features,LABEL_V1,N/A,THRESHOLD_NOT_BREACHED_MAX_PROB_BELOW_0.55,ALL_REGIMES,ALL_SESSIONS,N/A,N/A,N/A,0.0,N/A,N/A,N/A,0.0,0.00,0.00,N/A,N/A,0,NO_TRADES_EXECUTED_DURING_PERIOD

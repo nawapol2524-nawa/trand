@@ -1,9 +1,0 @@
-scenario,trades_count,win_rate_pct,gross_pnl_usd,execution_cost_usd,net_pnl_usd,profit_factor,expectancy_usd,max_drawdown_pct,max_consecutive_losses,stress_test_status
-BASE,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,ZERO_OOS_TRADES_OBSERVED (confidence_threshold=0.55 produced 0 trades; synthetic assumption prohibited)
-2X SPREAD,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,ZERO_OOS_TRADES_OBSERVED (confidence_threshold=0.55 produced 0 trades; synthetic assumption prohibited)
-3X SPREAD,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,ZERO_OOS_TRADES_OBSERVED (confidence_threshold=0.55 produced 0 trades; synthetic assumption prohibited)
-2X SLIPPAGE,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,ZERO_OOS_TRADES_OBSERVED (confidence_threshold=0.55 produced 0 trades; synthetic assumption prohibited)
-3X SLIPPAGE,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,ZERO_OOS_TRADES_OBSERVED (confidence_threshold=0.55 produced 0 trades; synthetic assumption prohibited)
-LATENCY,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,ZERO_OOS_TRADES_OBSERVED (confidence_threshold=0.55 produced 0 trades; synthetic assumption prohibited)
-GAP,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,ZERO_OOS_TRADES_OBSERVED (confidence_threshold=0.55 produced 0 trades; synthetic assumption prohibited)
-SPREAD + SLIPPAGE COMBINED,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,ZERO_OOS_TRADES_OBSERVED (confidence_threshold=0.55 produced 0 trades; synthetic assumption prohibited)

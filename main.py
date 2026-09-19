@@ -71,7 +71,7 @@ def main():
 
     # Read environment variables with fallback
     env_symbol = os.getenv("SYMBOL", "R_25,R_10,R_75")
-    env_timeframe = os.getenv("TIMEFRAME", "M15")
+    env_timeframe = os.getenv("TIMEFRAME", "M1")
     env_strategy = os.getenv("STRATEGY", "double_barrel")
     env_heartbeat = float(os.getenv("HEARTBEAT_INTERVAL", "60.0"))
     env_retrain = float(os.getenv("RETRAIN_INTERVAL", "3600.0"))

@@ -1,6 +1,0 @@
-scenario,spread_mult,slippage_mult,total_trades,win_rate_pct,net_pnl_usd,profit_factor,median_max_dd_pct,p95_max_dd_pct,p99_max_dd_pct,ruin_paths_observed
-"Base Case (1x Spread, 1x Slippage)",1.0,1.0,60,58.33,102.5,1.482,4.02,8.13,10.2,0 / 1000 simulated paths
-"Moderate Stress (2x Spread, 1x Slippage)",2.0,1.0,60,53.33,-2.0,0.992,6.76,14.25,17.56,0 / 1000 simulated paths
-"Severe Stress (3x Spread, 2x Slippage)",3.0,2.0,60,53.33,-53.0,0.817,9.36,18.24,22.01,0 / 1000 simulated paths
-"Extreme Stress (4x Spread, 3x Slippage, Gaps)",4.0,3.0,60,53.33,-127.5,0.605,14.77,25.07,28.93,0 / 1000 simulated paths
-"Flash Crash / Shock (5x Spread, Adverse Gaps)",5.0,4.0,60,53.33,-217.0,0.4,22.6,33.22,37.33,0 / 1000 simulated paths

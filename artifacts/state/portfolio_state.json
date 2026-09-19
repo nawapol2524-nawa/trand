@@ -1,72 +1,49 @@
 {
-  "saved_at": "2026-09-19T13:25:59.975741+00:00",
-  "balance": 1000.5712865620001,
-  "equity": 1000.5593213840002,
-  "used_margin": 49.749500369645,
-  "free_margin": 950.8098210143552,
+  "saved_at": "2026-09-19T13:39:38.865673+00:00",
+  "balance": 999.4666435265,
+  "equity": 999.4569262145004,
+  "used_margin": 37.245507867040004,
+  "free_margin": 962.2114183474604,
   "positions": [
     {
-      "position_id": "paper_96bec23c",
+      "position_id": "paper_b8b2b8e9",
       "symbol": "R_25",
       "direction": "SELL",
-      "lot_size": 1.73,
-      "entry_price": 2115.91828925,
-      "entry_epoch": 1780665300,
-      "entry_dt": "2026-06-05T13:15:00+00:00",
-      "sl_price": 2121.6836991071427,
-      "tp_price": 2104.3882705357137,
-      "partial_tp_price": 2110.153146392857,
-      "partial_tp_pips": 5765.142857142953,
+      "lot_size": 1.76,
+      "entry_price": 2116.2220379,
+      "entry_epoch": 1780664460,
+      "entry_dt": "2026-06-05T13:01:00+00:00",
+      "sl_price": 2121.8879409,
+      "tp_price": 2104.8914409,
+      "partial_tp_price": 2110.5565379,
+      "partial_tp_pips": 5665.5000000000655,
       "buffer_pips": 1.0,
-      "atr": 3.843428571428636,
+      "atr": 3.7770000000000437,
       "partial_tp_hit": false,
       "breakeven_locked": false,
-      "slippage_pips": 0.267,
+      "slippage_pips": 0.403,
       "commission_usd": 0.0,
       "swap_usd": 0.0,
-      "unrealized_pnl": -0.009184223999941423,
-      "bars_held": 1,
-      "max_favorable_excursion_pips": 391.28924999977244,
-      "max_adverse_excursion_pips": 861.710750000384
-    },
-    {
-      "position_id": "paper_8e125402",
-      "symbol": "R_75",
-      "direction": "SELL",
-      "lot_size": 0.011,
-      "entry_price": 119491.94514200001,
-      "entry_epoch": 1780665300,
-      "entry_dt": "2026-06-05T13:15:00+00:00",
-      "sl_price": 120416.42031200002,
-      "tp_price": 117643.002812,
-      "partial_tp_price": 118567.47264200001,
-      "partial_tp_pips": 92447.25000000004,
-      "buffer_pips": 1.0,
-      "atr": 616.3150000000003,
-      "partial_tp_hit": false,
-      "breakeven_locked": false,
-      "slippage_pips": 0.267,
-      "commission_usd": 0.0,
-      "swap_usd": 0.0,
-      "unrealized_pnl": -0.002780953999914345,
-      "bars_held": 2,
-      "max_favorable_excursion_pips": 6688.514200001373,
-      "max_adverse_excursion_pips": 14655.48579999886
+      "unrealized_pnl": -0.009717311999556841,
+      "bars_held": 0,
+      "max_favorable_excursion_pips": 0.0,
+      "max_adverse_excursion_pips": 0.0
     }
   ],
-  "closed_trade_count": 0,
+  "closed_trade_count": 1,
   "processed_order_keys": [
     "R_75_SELL_1780665300",
     "R_75_SELL_1780664460",
+    "R_25_SELL_1780664460",
     "R_25_SELL_1780665300"
   ],
   "metadata": {
     "shutdown_reason": "SINGLE_CYCLE_COMPLETED",
     "symbols": [
-      "R_75",
       "R_25",
-      "R_10"
+      "R_10",
+      "R_75"
     ],
-    "timestamp": "2026-09-19T13:25:59.975712+00:00"
+    "timestamp": "2026-09-19T13:39:38.865654+00:00"
   }
 }

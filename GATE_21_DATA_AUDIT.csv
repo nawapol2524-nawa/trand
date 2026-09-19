@@ -1,5 +1,0 @@
-symbol,timeframe,total_bars,first_timestamp_utc,last_timestamp_utc,calendar_span_days,trading_days_count,historical_regime_coverage,economic_history_available,news_history_available,spread_data_source,slippage_data_source
-frxEURUSD,M15,24225,2025-09-18 03:15:00,2026-09-18 03:00:00,364.99,260,LIMITED HISTORICAL REGIME COVERAGE (< 3 years),False,False,SIMULATED_TYPICAL_SPREAD (configured),SIMULATED_SLIPPAGE (0.2 pips assumed)
-frxGBPUSD,M15,24225,2025-09-18 03:15:00,2026-09-18 03:00:00,364.99,260,LIMITED HISTORICAL REGIME COVERAGE (< 3 years),False,False,SIMULATED_TYPICAL_SPREAD (configured),SIMULATED_SLIPPAGE (0.2 pips assumed)
-frxUSDJPY,M15,24225,2025-09-18 03:30:00,2026-09-18 03:15:00,364.99,260,LIMITED HISTORICAL REGIME COVERAGE (< 3 years),False,False,SIMULATED_TYPICAL_SPREAD (configured),SIMULATED_SLIPPAGE (0.2 pips assumed)
-frxXAUUSD,M15,23159,2025-09-18 03:00:00,2026-09-18 02:45:00,364.99,259,LIMITED HISTORICAL REGIME COVERAGE (< 3 years),False,False,SIMULATED_TYPICAL_SPREAD (configured),SIMULATED_SLIPPAGE (0.2 pips assumed)

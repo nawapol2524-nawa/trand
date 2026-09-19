@@ -1,9 +1,0 @@
-window,model_type,train_bars,val_bars,balanced_accuracy,macro_f1,buy_recall,sell_recall,brier_macro
-Window_1,HGB_Baseline,7996,3000,0.3679,0.3515,0.0000,0.1417,0.1370
-Window_1,HGB_Balanced,7996,3000,0.3914,0.3819,0.0238,0.2234,0.1360
-Window_2,HGB_Baseline,7996,3000,0.3568,0.3413,0.0585,0.0488,0.1470
-Window_2,HGB_Balanced,7996,3000,0.3873,0.3877,0.1927,0.0786,0.1499
-Window_3,HGB_Baseline,7996,3000,0.3335,0.3229,0.0000,0.0214,0.0664
-Window_3,HGB_Balanced,7996,3000,0.4012,0.3956,0.0958,0.2000,0.0805
-Window_4,HGB_Baseline,7996,3560,0.3795,0.3557,0.2391,0.0160,0.0942
-Window_4,HGB_Balanced,7996,3560,0.4538,0.3710,0.5326,0.0691,0.1336

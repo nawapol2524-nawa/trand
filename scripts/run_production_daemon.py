@@ -495,6 +495,18 @@ class ProductionDaemonSupervisor:
                     self.risk_engine.record_closed_trade(trade.get("net_pnl", 0.0), bar_dt)
                     with open(self.paper_trades_file, "a", encoding="utf-8") as f:
                         f.write(json.dumps(trade) + "\n")
+                    ConsoleUI.print_trade_closed(
+                        order_id=trade.get("position_id", ""),
+                        symbol=trade.get("symbol", sym),
+                        direction=trade.get("direction", ""),
+                        lot_size=trade.get("lot_size", 0.0),
+                        entry_price=trade.get("entry_price", 0.0),
+                        exit_price=trade.get("exit_price", 0.0),
+                        pips_gain=trade.get("pips_gain", 0.0),
+                        net_pnl=trade.get("net_pnl", 0.0),
+                        exit_reason=trade.get("exit_reason", "CLOSE"),
+                        balance=self.broker.balance
+                    )
 
                 # Check rolling buffer warmup depth
                 if len(self.rolling_bars[sym]) < 30:
@@ -545,6 +557,13 @@ class ProductionDaemonSupervisor:
                 )
                 direction_str = decision_payload.direction.value
                 confidence = decision_payload.confidence
+                self.latest_signals[sym] = {
+                    "direction": direction_str,
+                    "confidence": confidence,
+                    "p_buy": p_buy,
+                    "p_sell": p_sell,
+                    "p_hold": p_hold
+                }
 
                 # 5. Pass signal through RiskEngine
                 acct_dict = self.broker.get_account_state()
@@ -640,6 +659,17 @@ class ProductionDaemonSupervisor:
                             )
                             if order_res.get("status") == "FILLED":
                                 executed_order_id = order_res.get("order_id")
+                                ConsoleUI.print_order_executed(
+                                    order_id=executed_order_id,
+                                    symbol=sym,
+                                    direction=direction_str,
+                                    lot_size=lot_size,
+                                    fill_price=entry_est,
+                                    sl_price=sl_price,
+                                    tp_price=tp_price,
+                                    partial_tp_pips=partial_tp_pips,
+                                    strategy=self.strategy
+                                )
                             else:
                                 veto_reason = order_res.get("reason") or order_res.get("message")
 
@@ -744,7 +774,7 @@ class ProductionDaemonSupervisor:
 
 def main():
     default_symbol = os.getenv("SYMBOL", "R_25,R_10,R_75")
-    default_timeframe = os.getenv("TIMEFRAME", "M15")
+    default_timeframe = os.getenv("TIMEFRAME", "M1")
     default_strategy = os.getenv("STRATEGY", "double_barrel")
 
     parser = argparse.ArgumentParser(description="24/7 Autonomous Production Daemon Supervisor")

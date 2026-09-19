@@ -1,5 +1,0 @@
-audit_scope,target_artifact,scanned_items_count,secrets_detected_count,findings_summary,audit_status
-git_commit_history,git_log_and_blobs,0,0,Zero historical commits in clean-room repository; no historical commits or blobs contain secrets,VERIFIED_CLEAN
-git_staged_content,git_staging_index,0,0,No files staged for commit; staging index clean,VERIFIED_CLEAN
-git_trackable_working_tree,active_code_and_configs,176,0,Scanned 176 trackable files with institutional regex scanner; zero actual secrets detected (placeholders only in .env.example),VERIFIED_CLEAN
-environment_file_isolation,.env and env files,2,0,.env and env files explicitly ignored by .gitignore and strictly isolated from VCS,VERIFIED_CLEAN

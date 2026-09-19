@@ -185,7 +185,7 @@ class TestLiveFeederAndDaemon(unittest.TestCase):
         ]
         res = subprocess.run(cmd, cwd=str(self.root_dir), capture_output=True, text=True)
         self.assertEqual(res.returncode, 0, f"Process failed with stderr: {res.stderr}")
-        self.assertIn("Target Symbol       : R_25,R_10,R_75", res.stdout)
+        self.assertTrue("R_25, R_10, R_75" in res.stdout or "Target Symbol(s) : R_25,R_10,R_75" in res.stdout)
         self.assertIn("Single-cycle execution for R_25,R_10,R_75 verified successfully", res.stdout)
 
 

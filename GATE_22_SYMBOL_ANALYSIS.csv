@@ -1,5 +1,0 @@
-symbol,timeframe,validation_samples,hold_class_pct,buy_class_pct,sell_class_pct,val_balanced_acc,val_macro_f1,typical_cost_bps,top_5pct_buy_gross_ret_bps,top_5pct_buy_net_ret_bps,edge_survival_status
-frxEURUSD,M15,3625,89.7,5.1,5.2,0.3767,0.3717,1.66,-0.27,-1.93,COST_ERODED
-frxGBPUSD,M15,3625,79.5,9.9,10.6,0.3882,0.3949,1.65,-1.22,-2.86,COST_ERODED
-frxUSDJPY,M15,3625,87.0,5.9,7.2,0.4065,0.4045,1.42,0.27,-1.15,COST_ERODED
-frxXAUUSD,M15,3465,94.7,2.6,2.7,0.3333,0.3242,0.70,0.01,-0.69,COST_ERODED

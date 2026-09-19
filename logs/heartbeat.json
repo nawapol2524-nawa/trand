@@ -1,23 +1,23 @@
 {
-  "timestamp": "2026-09-19T13:25:59.976733+00:00",
-  "uptime_seconds": 3.18,
+  "timestamp": "2026-09-19T13:39:38.866481+00:00",
+  "uptime_seconds": 7.84,
   "overall_status": "BROKER_DISCONNECTED",
-  "symbol": "R_75,R_25,R_10",
+  "symbol": "R_25,R_10,R_75",
   "governance": {
     "live_trading": false,
     "auto_promotion": false
   },
   "system_resources": {
-    "pid": 149,
-    "memory_rss_mb": 189.39,
-    "free_disk_mb": 21590.95
+    "pid": 995,
+    "memory_rss_mb": 188.59,
+    "free_disk_mb": 21431.57
   },
   "trading_state": {
-    "symbol": "R_75,R_25,R_10",
-    "champion_model_id": "candidate_r75_M15,fallback_technical_R_25,fallback_technical_R_10",
-    "open_positions_count": 2,
-    "today_pnl_usd": 0,
-    "last_candle_epoch": 1780665300,
+    "symbol": "R_25,R_10,R_75",
+    "champion_model_id": "candidate_r25_M15,candidate_r10_M15,candidate_r75_M15",
+    "open_positions_count": 1,
+    "today_pnl_usd": -0.53,
+    "last_candle_epoch": 1780664460,
     "risk_engine_status": "SHUTDOWN: SINGLE_CYCLE_COMPLETED",
     "kill_switch_active": false,
     "kill_switch_reason": "NORMAL"
@@ -28,35 +28,29 @@
     "heartbeat_worker": "STOPPED"
   },
   "custom": {
-    "symbol": "R_75,R_25,R_10",
+    "symbol": "R_25,R_10,R_75",
     "symbols": [
-      "R_75",
       "R_25",
-      "R_10"
+      "R_10",
+      "R_75"
     ],
-    "timeframe": "M15",
+    "timeframe": "M1",
     "strategy": "double_barrel",
-    "trades_count": 0,
+    "trades_count": 1,
     "open_positions": [
       {
-        "id": "paper_96bec23c",
+        "id": "paper_b8b2b8e9",
         "symbol": "R_25",
         "dir": "SELL",
-        "lot": 1.73
-      },
-      {
-        "id": "paper_8e125402",
-        "symbol": "R_75",
-        "dir": "SELL",
-        "lot": 0.011
+        "lot": 1.76
       }
     ],
     "feed_mode": {
-      "R_75": "SYNTHETIC_OFFLINE",
       "R_25": "SYNTHETIC_OFFLINE",
-      "R_10": "SYNTHETIC_OFFLINE"
+      "R_10": "SYNTHETIC_OFFLINE",
+      "R_75": "SYNTHETIC_OFFLINE"
     },
-    "broker_equity": 1000.56,
-    "broker_balance": 1000.57
+    "broker_equity": 999.46,
+    "broker_balance": 999.47
   }
 }
