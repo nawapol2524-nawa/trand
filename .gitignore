@@ -14,6 +14,7 @@ credentials.json
 # 🧠 MODEL BINARIES & CHECKPOINTS
 # ==========================================
 artifacts/models/*.joblib
+!artifacts/models/candidate_*.joblib
 !artifacts/models/.gitkeep
 artifacts/scalers/*.joblib
 !artifacts/scalers/.gitkeep
