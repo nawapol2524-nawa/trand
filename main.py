@@ -75,6 +75,8 @@ def main():
     env_strategy = os.getenv("STRATEGY", "double_barrel")
     env_heartbeat = float(os.getenv("HEARTBEAT_INTERVAL", "60.0"))
     env_retrain = float(os.getenv("RETRAIN_INTERVAL", "3600.0"))
+    env_balance = float(os.getenv("INITIAL_BALANCE", "6.0"))
+    env_leverage = float(os.getenv("LEVERAGE", "500.0"))
 
     parser = argparse.ArgumentParser(
         description="AI Forex Autonomous Trading System — Production Entrypoint"
@@ -119,6 +121,23 @@ def main():
         action="store_true",
         help="Verify configuration and exit without running loops"
     )
+    parser.add_argument(
+        "--balance",
+        type=float,
+        default=env_balance,
+        help="Initial wallet balance in USDT (default: 6.0)"
+    )
+    parser.add_argument(
+        "--leverage",
+        type=float,
+        default=env_leverage,
+        help="Broker leverage ratio (default: 500.0)"
+    )
+    parser.add_argument(
+        "--reset-state",
+        action="store_true",
+        help="Reset portfolio state to clean initial balance"
+    )
 
     args = parser.parse_args()
 
@@ -135,7 +154,10 @@ def main():
         strategy=args.strategy,
         heartbeat_interval=args.heartbeat_interval,
         retrain_interval=args.retrain_interval,
-        restore_state=True
+        restore_state=not args.reset_state,
+        initial_balance=args.balance,
+        leverage=args.leverage,
+        reset_state=args.reset_state
     )
 
     # Signal handlers for container lifecycle

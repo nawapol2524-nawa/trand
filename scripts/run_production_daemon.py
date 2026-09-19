@@ -93,7 +93,10 @@ class ProductionDaemonSupervisor:
         heartbeat_interval: float = 60.0,
         retrain_interval: float = 3600.0,
         restore_state: bool = True,
-        warmup_bars_count: int = 50
+        warmup_bars_count: int = 50,
+        initial_balance: Optional[float] = None,
+        leverage: Optional[float] = None,
+        reset_state: bool = False
     ):
         # Parse symbols (supports single symbol, list, comma-separated, or 'ALL')
         if isinstance(symbol, str):
@@ -116,6 +119,7 @@ class ProductionDaemonSupervisor:
         self.retrain_interval = retrain_interval
         self.restore_state = restore_state
         self.warmup_bars_count = warmup_bars_count
+        self.reset_state = reset_state
 
         self.root_dir = settings.root_dir
         self.log_dir = self.root_dir / "logs"
@@ -129,11 +133,18 @@ class ProductionDaemonSupervisor:
         self.kill_switch = EmergencyKillSwitch(root_dir=self.root_dir)
         self.health_monitor = SystemHealthMonitor(root_dir=self.root_dir)
         self.state_manager = StateRecoveryManager(root_dir=self.root_dir)
-        self.broker = PaperBroker(initial_balance=1000.0, leverage=100.0, random_seed=42)
+
+        # Budget & Margin Configuration (Default 6.00 USDT Micro/Nano Wallet)
+        cfg_bal = float(settings.raw_system.get("risk", {}).get("initial_balance_usd", 6.0))
+        cfg_lev = float(settings.raw_system.get("risk", {}).get("leverage", 500.0))
+        self.initial_balance = initial_balance if initial_balance is not None else float(os.getenv("INITIAL_BALANCE", str(cfg_bal)))
+        self.leverage = leverage if leverage is not None else float(os.getenv("LEVERAGE", str(cfg_lev)))
+
+        self.broker = PaperBroker(initial_balance=self.initial_balance, leverage=self.leverage, random_seed=42)
         self.broker.connect()
 
         # Decision & Risk engines
-        self.risk_engine = RiskEngine()
+        self.risk_engine = RiskEngine(leverage=self.leverage)
         self.feature_builder = FeatureBuilder()
         self.decision_engine = MetaDecisionEngine(confidence_threshold=settings.confidence_threshold)
 
@@ -180,9 +191,24 @@ class ProductionDaemonSupervisor:
         }
 
         # Initialize State Recovery
-        if self.restore_state:
+        if self.reset_state:
+            self.broker.balance = self.initial_balance
+            self.broker.equity = self.initial_balance
+            self.broker.free_margin = self.initial_balance
+            self.broker.used_margin = 0.0
+            self.broker.positions.clear()
+            self.state_manager.save_portfolio_state(self.broker, metadata={"reason": "STATE_RESET_REQUESTED"})
+            self.log_daemon_event("STATE_RESET_PERFORMED", {"balance": self.initial_balance})
+        elif self.restore_state:
             restored, msg = self.state_manager.restore_broker_state(self.broker)
             self.log_daemon_event("STATE_RESTORE_ATTEMPT", {"restored": restored, "message": msg})
+            if self.initial_balance <= 10.0 and self.broker.balance > 50.0:
+                self.broker.balance = self.initial_balance
+                self.broker.equity = self.initial_balance
+                self.broker.free_margin = self.initial_balance
+                self.broker.used_margin = 0.0
+                self.broker.positions.clear()
+                self.state_manager.save_portfolio_state(self.broker, metadata={"reason": "MICRO_BALANCE_CALIBRATED"})
 
         # Register Signal Handlers
         signal.signal(signal.SIGINT, self._handle_signal)
@@ -786,6 +812,9 @@ def main():
     parser.add_argument("--single-cycle", action="store_true", help="Execute one supervision cycle and exit")
     parser.add_argument("--dry-run", action="store_true", help="Verify configuration and readiness without running loop")
     parser.add_argument("--no-restore", action="store_true", help="Do not restore previous portfolio state on startup")
+    parser.add_argument("--balance", type=float, default=float(os.getenv("INITIAL_BALANCE", "6.0")), help="Initial balance in USDT (default: 6.0)")
+    parser.add_argument("--leverage", type=float, default=float(os.getenv("LEVERAGE", "500.0")), help="Leverage ratio (default: 500.0)")
+    parser.add_argument("--reset-state", action="store_true", help="Reset portfolio state to clean initial balance")
 
     args = parser.parse_args()
 
@@ -808,7 +837,10 @@ def main():
         strategy=args.strategy,
         heartbeat_interval=args.heartbeat_interval,
         retrain_interval=args.retrain_interval,
-        restore_state=not args.no_restore
+        restore_state=not args.no_restore and not args.reset_state,
+        initial_balance=args.balance,
+        leverage=args.leverage,
+        reset_state=args.reset_state
     )
 
     exit_code = supervisor.run(single_cycle=args.single_cycle)

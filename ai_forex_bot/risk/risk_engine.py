@@ -74,7 +74,8 @@ class RiskEngine:
         daily_loss_limit: Optional[float] = None,
         weekly_loss_limit: Optional[float] = None,
         max_risk_pct: Optional[float] = None,
-        daily_profit_target_usd: Optional[float] = None
+        daily_profit_target_usd: Optional[float] = None,
+        leverage: Optional[float] = None
     ):
         self.daily_loss_limit = daily_loss_limit if daily_loss_limit is not None else settings.max_daily_loss_usd
         self.weekly_loss_limit = weekly_loss_limit if weekly_loss_limit is not None else settings.max_weekly_loss_usd
@@ -82,6 +83,7 @@ class RiskEngine:
         self.max_risk_pct = max_risk_pct if max_risk_pct is not None else settings.max_risk_per_trade_pct
         self.max_currency_exposure = max_currency_exposure
         self.daily_profit_target_usd = daily_profit_target_usd if daily_profit_target_usd is not None else 15.0
+        self.leverage = leverage if leverage is not None else float(settings.raw_system.get("risk", {}).get("leverage", 500.0))
 
         self.current_calendar_day: Optional[str] = None
         self.current_date: str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
@@ -204,7 +206,7 @@ class RiskEngine:
         final_lot = float(np.clip(snapped_lot, sym_cfg.min_lot, sym_cfg.max_lot))
 
         # Margin check
-        margin_required = (final_lot * sym_cfg.lot_size * entry_price) / 100.0  # assume 1:100 leverage
+        margin_required = (final_lot * sym_cfg.lot_size * entry_price) / self.leverage
         if margin_required > account.free_margin:
             return 0.0, f"Insufficient free margin: required ${margin_required:.2f}, available ${account.free_margin:.2f}"
 

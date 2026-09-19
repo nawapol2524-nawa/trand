@@ -140,7 +140,7 @@ class ConsoleUI:
         print(f"{c.CYAN}├{line}┤{c.RESET}")
 
         # Account financials
-        fin_line = f"  Balance: ${balance:,.2f}  |  Equity: ${equity:,.2f}  |  PnL: {pnl_color}{pnl_sign}${today_pnl:,.2f} ({pnl_sign}{pnl_pct:.2f}%){c.RESET}"
+        fin_line = f"  Balance: ${balance:,.2f} USDT |  Equity: ${equity:,.2f} USDT |  PnL: {pnl_color}{pnl_sign}${today_pnl:,.2f} ({pnl_sign}{pnl_pct:.2f}%){c.RESET}"
         print(cls._box_line(fin_line, c.CYAN, "│"))
 
         stats_line = f"  Open Positions: {len(open_positions)}  |  Closed Trades: {closed_trades_count}  |  Risk Guard: {ks_status}"
@@ -285,7 +285,7 @@ class ConsoleUI:
         print(f"  • Total Uptime     : {uptime_str}")
         print(f"  • Closed Trades    : {trades_count}")
         print(f"  • Session Net PnL  : {pnl_color}{pnl_sign}${today_pnl:,.2f}{c.RESET}")
-        print(f"  • Final Balance    : ${final_balance:,.2f}")
+        print(f"  • Final Balance    : ${final_balance:,.2f} USDT")
         print(f"  • Shutdown Trigger : {reason}")
         print(f"  • State File       : {c.GREEN}artifacts/state/portfolio_state.json{c.RESET}")
         print(f"{c.DIM}{'─' * (cls.WIDTH + 2)}{c.RESET}\n")
