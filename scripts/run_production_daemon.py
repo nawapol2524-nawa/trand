@@ -31,6 +31,7 @@ sys.path.insert(0, str(WORKSPACE_ROOT))
 from ai_forex_bot.config.settings import settings
 from ai_forex_bot.models.registry import ModelRegistry, ModelRecord
 from ai_forex_bot.monitoring.health import SystemHealthMonitor
+from ai_forex_bot.monitoring.console import ConsoleUI
 from ai_forex_bot.risk.kill_switch import EmergencyKillSwitch, StateRecoveryManager
 from ai_forex_bot.risk.risk_engine import RiskEngine, RiskDecision, AccountState, Position
 from ai_forex_bot.execution.paper_broker import PaperBroker
@@ -160,6 +161,8 @@ class ProductionDaemonSupervisor:
         self.models_data: Dict[str, Dict[str, Any]] = {}
         for sym in self.symbols:
             self.models_data[sym] = self._load_model_for_symbol(sym)
+
+        self.latest_signals: Dict[str, Dict[str, Any]] = {}
 
         self.model_id = ",".join(m["model_id"] for m in self.models_data.values())
         self.model_record = self.models_data[primary_sym].get("record")
@@ -377,6 +380,14 @@ class ProductionDaemonSupervisor:
                 "broker_balance": round(self.broker.balance, 2)
             }
         )
+        ConsoleUI.print_shutdown_summary(
+            symbol=self.symbol,
+            uptime_seconds=self.health_monitor.get_uptime_seconds(),
+            trades_count=len(self.broker.closed_trades),
+            final_balance=self.broker.balance,
+            today_pnl=today_pnl,
+            reason=reason
+        )
         print(f"[DAEMON] Shutdown complete for [{self.symbol}]. Portfolio state persisted to {state_path.name}.")
 
     def _run_heartbeat_cycle(self) -> None:
@@ -413,6 +424,36 @@ class ProductionDaemonSupervisor:
                 }
             )
             self.worker_statuses["heartbeat_worker"] = f"HEALTHY [{self.symbol}]"
+
+            # Render Console Status Board
+            symbols_status = []
+            for s in self.symbols:
+                q = self.broker.quotes.get(s, {})
+                sig = self.latest_signals.get(s, {})
+                pos_s = [p for p in self.broker.positions.values() if p.get("symbol") == s]
+                pos_str = f"{pos_s[0].get('direction', '')} {pos_s[0].get('lot_size', 0.0):.2f}L" if pos_s else "None"
+                symbols_status.append({
+                    "symbol": s,
+                    "price": q.get("ask", q.get("close", 0.0)),
+                    "spread": q.get("spread_pips", 0.0),
+                    "direction": sig.get("direction", "HOLD"),
+                    "confidence": sig.get("confidence", 0.5),
+                    "position_str": pos_str
+                })
+
+            res = self.health_monitor.get_system_resources()
+            ConsoleUI.print_status_board(
+                timestamp=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC"),
+                uptime_seconds=self.health_monitor.get_uptime_seconds(),
+                memory_mb=res.get("memory_rss_mb", 0.0),
+                balance=self.broker.balance,
+                equity=self.broker.equity,
+                today_pnl=today_pnl,
+                open_positions=list(self.broker.positions.values()),
+                symbols_data=symbols_status,
+                closed_trades_count=len(self.broker.closed_trades),
+                kill_switch_active=self.kill_switch.is_kill_switch_active()
+            )
         except Exception as e:
             self.worker_statuses["heartbeat_worker"] = f"ERROR: {e}"
 
@@ -634,7 +675,7 @@ class ProductionDaemonSupervisor:
             self.worker_statuses["retraining_worker"] = f"ERROR: {e}"
             self.restart_counts["retraining_worker"] += 1
 
-    def run(self, single_cycle: bool = False) -> int:
+    def run(self, single_cycle: bool = False, show_banner: bool = True) -> int:
         """
         Main supervision loop with process watchdog and kill-switch polling.
         """
@@ -645,15 +686,17 @@ class ProductionDaemonSupervisor:
             "single_cycle": single_cycle,
             "heartbeat_interval": self.heartbeat_interval
         })
-        feed_modes_str = ", ".join(f"{s}:{f.mode}" for s, f in self.feeders.items())
-        print("=" * 80)
-        print("GATE 26 — 24/7 PRODUCTION DAEMON SUPERVISOR RUNNING")
-        print("=" * 80)
-        print(f"Target: {self.symbol} {self.timeframe} | Strategy: {self.strategy} | Feeds: {feed_modes_str}")
-        print(f"Model ID: {self.model_id} | Mode: PAPER / SHADOW | LIVE_TRADING = false")
-        print(f"Heartbeat: logs/heartbeat.json (interval: {self.heartbeat_interval}s)")
-        print(f"Kill Switch Monitor: Active (File: KILL_SWITCH)")
-        print("-" * 80)
+        if show_banner:
+            ConsoleUI.print_startup_banner(
+                symbols=self.symbols,
+                timeframe=self.timeframe,
+                strategy=self.strategy,
+                single_cycle=single_cycle,
+                live_trading=settings.live_trading,
+                auto_promotion=settings.auto_promotion,
+                model_id=self.model_id,
+                heartbeat_interval=self.heartbeat_interval
+            )
 
         last_heartbeat = 0.0
         last_retrain = 0.0
@@ -701,7 +744,7 @@ class ProductionDaemonSupervisor:
 
 def main():
     default_symbol = os.getenv("SYMBOL", "R_25,R_10,R_75")
-    default_timeframe = os.getenv("TIMEFRAME", "M1")
+    default_timeframe = os.getenv("TIMEFRAME", "M15")
     default_strategy = os.getenv("STRATEGY", "double_barrel")
 
     parser = argparse.ArgumentParser(description="24/7 Autonomous Production Daemon Supervisor")

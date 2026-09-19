@@ -20,21 +20,22 @@ WORKSPACE_ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(WORKSPACE_ROOT))
 
 from ai_forex_bot.config.settings import settings
+from ai_forex_bot.monitoring.console import ConsoleUI
 from scripts.run_production_daemon import ProductionDaemonSupervisor
 
 
-def print_banner(symbol: str, timeframe: str, strategy: str, single_cycle: bool):
-    print("=" * 80)
-    print("  🚀 AI FOREX AUTONOMOUS TRADING BOT — PRODUCTION ENTRYPOINT")
-    print("=" * 80)
-    print(f"  Target Symbol       : {symbol}")
-    print(f"  Execution Timeframe : {timeframe}")
-    print(f"  Execution Strategy  : {strategy}")
-    print(f"  Trading Mode        : PAPER / SHADOW SIMULATION")
-    print(f"  Live Trading Gate   : LIVE_TRADING = {str(settings.live_trading).lower()} (STRICT FINANCIAL SAFETY)")
-    print(f"  Auto Promotion Gate : AUTO_PROMOTION = {str(settings.auto_promotion).lower()}")
-    print(f"  Supervisor Mode     : {'SINGLE-CYCLE TEST' if single_cycle else '24/7 CONTINUOUS DAEMON'}")
-    print("=" * 80)
+def print_banner(symbol: str, timeframe: str, strategy: str, single_cycle: bool, heartbeat_interval: float = 60.0):
+    symbols_list = [s.strip() for s in symbol.split(",") if s.strip()]
+    ConsoleUI.print_startup_banner(
+        symbols=symbols_list,
+        timeframe=timeframe,
+        strategy=strategy,
+        single_cycle=single_cycle,
+        live_trading=settings.live_trading,
+        auto_promotion=settings.auto_promotion,
+        model_id=os.getenv("MODEL_ID", "candidate_r75_M15"),
+        heartbeat_interval=heartbeat_interval
+    )
 def clean_system_disk_cache():
     """Frees up disk space on constrained VPS containers (bot-hosting.net) by removing caches."""
     import shutil
@@ -70,7 +71,7 @@ def main():
 
     # Read environment variables with fallback
     env_symbol = os.getenv("SYMBOL", "R_25,R_10,R_75")
-    env_timeframe = os.getenv("TIMEFRAME", "M1")
+    env_timeframe = os.getenv("TIMEFRAME", "M15")
     env_strategy = os.getenv("STRATEGY", "double_barrel")
     env_heartbeat = float(os.getenv("HEARTBEAT_INTERVAL", "60.0"))
     env_retrain = float(os.getenv("RETRAIN_INTERVAL", "3600.0"))
@@ -121,7 +122,7 @@ def main():
 
     args = parser.parse_args()
 
-    print_banner(args.symbol, args.timeframe, args.strategy, args.single_cycle)
+    print_banner(args.symbol, args.timeframe, args.strategy, args.single_cycle, args.heartbeat_interval)
 
     if args.dry_run:
         print("[MAIN] Dry-run completed. System is ready for execution.")
@@ -148,7 +149,7 @@ def main():
     signal.signal(signal.SIGINT, _term_handler)
     signal.signal(signal.SIGTERM, _term_handler)
 
-    exit_code = supervisor.run(single_cycle=args.single_cycle)
+    exit_code = supervisor.run(single_cycle=args.single_cycle, show_banner=False)
     sys.exit(exit_code)
 
 
