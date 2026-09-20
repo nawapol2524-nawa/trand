@@ -68,3 +68,4 @@ ENV/
 .DS_Store
 .idea/
 .vscode/
+*.zip

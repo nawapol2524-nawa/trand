@@ -12,6 +12,7 @@ from enum import Enum
 from typing import Dict, List, Optional, Any
 import uuid
 
+from ai_forex_bot.config.settings import settings
 from ai_forex_bot.execution.broker_base import BaseBroker
 from ai_forex_bot.risk.risk_engine import RiskEngine, RiskDecision, AccountState, Position
 
