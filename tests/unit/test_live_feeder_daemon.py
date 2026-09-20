@@ -23,6 +23,7 @@ import json
 import subprocess
 import sys
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 from datetime import datetime, timezone
 import numpy as np
@@ -67,7 +68,8 @@ class TestLiveFeederAndDaemon(unittest.TestCase):
             self.assertEqual(next_bar["symbol"], sym)
             self.assertEqual(feeder.mode, "SYNTHETIC_OFFLINE")
 
-    def test_live_feeder_deriv_fallback(self):
+    @patch.object(LiveMarketFeeder, "_fetch_deriv_candles", return_value=None)
+    def test_live_feeder_deriv_fallback(self, mock_fetch):
         """Verify LiveMarketFeeder gracefully falls back to synthetic mode if Deriv API unavailable."""
         feeder = LiveMarketFeeder(
             symbol="R_25",

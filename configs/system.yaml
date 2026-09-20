@@ -45,3 +45,15 @@ research:
   oos_evaluation_session_id: null
   oos_consumed: false
 
+execution:
+  deriv:
+    enabled: true
+    account_type: demo
+    min_stake_usd: 1.0
+    default_multipliers:
+      R_10: 400
+      R_25: 160
+      R_50: 80
+      R_75: 100
+      R_100: 100
+

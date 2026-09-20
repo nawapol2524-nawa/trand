@@ -4,7 +4,7 @@ from ai_forex_bot.risk.risk_engine import RiskEngine, RiskDecision, AccountState
 
 class TestRiskEngine(unittest.TestCase):
     def setUp(self):
-        self.risk = RiskEngine()
+        self.risk = RiskEngine(daily_loss_limit=2.0)
         self.account = AccountState(balance=1000.0, equity=1000.0, free_margin=1000.0)
 
     def test_daily_reset_zero_trades(self):

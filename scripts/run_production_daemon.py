@@ -35,6 +35,7 @@ from ai_forex_bot.monitoring.console import ConsoleUI, Colors
 from ai_forex_bot.risk.kill_switch import EmergencyKillSwitch, StateRecoveryManager
 from ai_forex_bot.risk.risk_engine import RiskEngine, RiskDecision, AccountState, Position
 from ai_forex_bot.execution.paper_broker import PaperBroker
+from ai_forex_bot.execution.deriv_broker import DerivBroker
 from ai_forex_bot.features.builder import FeatureBuilder
 from ai_forex_bot.decision.engine import MetaDecisionEngine
 from ai_forex_bot.ai.training.continuous_trainer import ContinuousTrainer
@@ -140,8 +141,32 @@ class ProductionDaemonSupervisor:
         self.initial_balance = initial_balance if initial_balance is not None else float(os.getenv("INITIAL_BALANCE", str(cfg_bal)))
         self.leverage = leverage if leverage is not None else float(os.getenv("LEVERAGE", str(cfg_lev)))
 
-        self.broker = PaperBroker(initial_balance=self.initial_balance, leverage=self.leverage, random_seed=42)
-        self.broker.connect()
+        enable_deriv = os.getenv("ENABLE_DERIV", "false").lower() in ("true", "1", "yes")
+        deriv_token = os.getenv("DERIV_API_TOKEN")
+        deriv_connected = False
+
+        if enable_deriv and deriv_token:
+            try:
+                deriv_app_id = os.getenv("DERIV_APP_ID", "34lQGsI4JVHDtfZhaHAqk")
+                self.broker = DerivBroker(
+                    token=deriv_token,
+                    app_id=deriv_app_id,
+                    account_type=os.getenv("DERIV_ACCOUNT_TYPE", "demo"),
+                    leverage=self.leverage
+                )
+                deriv_connected = self.broker.connect()
+                if deriv_connected:
+                    self.initial_balance = self.broker.balance
+                    print(f"[DAEMON] 🚀 LIVE DERIV DEMO BROKER CONNECTED | Account: {self.broker.account_id} | Balance: ${self.broker.balance:.2f} USD")
+                else:
+                    print("[DAEMON] ⚠️ Deriv connection failed. Falling back to PaperBroker.")
+            except Exception as e:
+                print(f"[DAEMON] ⚠️ Deriv init failed ({e}). Falling back to PaperBroker.")
+                deriv_connected = False
+
+        if not deriv_connected:
+            self.broker = PaperBroker(initial_balance=self.initial_balance, leverage=self.leverage, random_seed=42)
+            self.broker.connect()
 
         # Decision & Risk engines
         cfg_daily_loss = float(os.getenv("MAX_DAILY_LOSS_USD", str(settings.max_daily_loss_usd)))
@@ -195,25 +220,28 @@ class ProductionDaemonSupervisor:
             "retraining_worker": 0
         }
 
-        # Initialize State Recovery
-        if self.reset_state:
-            self.broker.balance = self.initial_balance
-            self.broker.equity = self.initial_balance
-            self.broker.free_margin = self.initial_balance
-            self.broker.used_margin = 0.0
-            self.broker.positions.clear()
-            self.state_manager.save_portfolio_state(self.broker, metadata={"reason": "STATE_RESET_REQUESTED"})
-            self.log_daemon_event("STATE_RESET_PERFORMED", {"balance": self.initial_balance})
-        elif self.restore_state:
-            restored, msg = self.state_manager.restore_broker_state(self.broker)
-            self.log_daemon_event("STATE_RESTORE_ATTEMPT", {"restored": restored, "message": msg})
-            if self.broker.balance <= 0:
+        # Initialize State Recovery (for PaperBroker only; DerivBroker maintains authoritative cloud state)
+        if not isinstance(self.broker, DerivBroker):
+            if self.reset_state:
                 self.broker.balance = self.initial_balance
                 self.broker.equity = self.initial_balance
                 self.broker.free_margin = self.initial_balance
                 self.broker.used_margin = 0.0
                 self.broker.positions.clear()
-                self.state_manager.save_portfolio_state(self.broker, metadata={"reason": "BANKRUPTCY_AUTO_RECOVER"})
+                self.state_manager.save_portfolio_state(self.broker, metadata={"reason": "STATE_RESET_REQUESTED"})
+                self.log_daemon_event("STATE_RESET_PERFORMED", {"balance": self.initial_balance})
+            elif self.restore_state:
+                restored, msg = self.state_manager.restore_broker_state(self.broker)
+                self.log_daemon_event("STATE_RESTORE_ATTEMPT", {"restored": restored, "message": msg})
+                if self.broker.balance <= 0:
+                    self.broker.balance = self.initial_balance
+                    self.broker.equity = self.initial_balance
+                    self.broker.free_margin = self.initial_balance
+                    self.broker.used_margin = 0.0
+                    self.broker.positions.clear()
+                    self.state_manager.save_portfolio_state(self.broker, metadata={"reason": "BANKRUPTCY_AUTO_RECOVER"})
+        else:
+            self.log_daemon_event("DERIV_LIVE_STATE", {"account_id": self.broker.account_id, "balance": self.broker.balance})
 
         # Register Signal Handlers
         signal.signal(signal.SIGINT, self._handle_signal)
