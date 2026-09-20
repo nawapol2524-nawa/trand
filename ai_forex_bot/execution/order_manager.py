@@ -101,7 +101,8 @@ class OrderManager:
 
         # 2. Position Sizing
         entry_estimate = quote["ask"] if direction == "BUY" else quote["bid"]
-        pip_size = 0.0001 if "JPY" not in symbol and "XAU" not in symbol else 0.01
+        sym_cfg = settings.get_symbol_config(symbol)
+        pip_size = sym_cfg.pip_size if sym_cfg else (0.0001 if "JPY" not in symbol and "XAU" not in symbol else 0.01)
         sl_price = entry_estimate - (sl_pips * pip_size) if direction == "BUY" else entry_estimate + (sl_pips * pip_size)
         tp_price = entry_estimate + (tp_pips * pip_size) if direction == "BUY" else entry_estimate - (tp_pips * pip_size)
 

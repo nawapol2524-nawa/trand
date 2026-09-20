@@ -426,7 +426,7 @@ class ProductionDaemonSupervisor:
                 open_positions_count=len(self.broker.positions),
                 today_pnl_usd=round(today_pnl, 2),
                 last_candle_epoch=self.last_candle_epoch,
-                risk_engine_status="NORMAL" if not self.kill_switch.is_kill_switch_active() else "KILL_SWITCH_ACTIVE",
+                risk_engine_status="NORMAL" if not self.risk_engine.is_kill_switch_active() else "KILL_SWITCH_ACTIVE",
                 broker_connected=self.broker.connected,
                 worker_statuses=self.worker_statuses,
                 custom_metrics={
@@ -478,7 +478,7 @@ class ProductionDaemonSupervisor:
                 open_positions=list(self.broker.positions.values()),
                 symbols_data=symbols_status,
                 closed_trades_count=len(self.broker.closed_trades),
-                kill_switch_active=self.kill_switch.is_kill_switch_active()
+                kill_switch_active=self.risk_engine.is_kill_switch_active()
             )
             # Continuously sync live portfolio state to disk
             self.state_manager.save_portfolio_state(self.broker, metadata={"event": "HEARTBEAT_PERIODIC_SYNC"})
@@ -634,7 +634,8 @@ class ProductionDaemonSupervisor:
 
                 if val_signal.decision != RiskDecision.APPROVE:
                     risk_verdict = "VETO"
-                    veto_reason = val_signal.reason
+                    veto_reason = f"{val_signal.reason}: {val_signal.detail}"
+                    print(f"  {Colors.YELLOW}[SIGNAL VETO] {sym} {direction_str} blocked by risk: {veto_reason}{Colors.RESET}")
                 elif direction_str in ("HOLD", "NO_TRADE"):
                     risk_verdict = "HOLD"
                     veto_reason = None

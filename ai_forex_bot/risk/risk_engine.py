@@ -118,17 +118,28 @@ class RiskEngine:
             return True
         return False
 
+    def is_kill_switch_active(self) -> bool:
+        """Returns True if either portfolio risk kill switch or host emergency kill switch is tripped."""
+        return self.kill_switch_active or self.emergency_kill_switch.is_kill_switch_active()
+
     def record_closed_trade(self, pnl_usd: float, close_dt: datetime):
         self.check_daily_reset(close_dt)
         self.daily_realized_pnl += pnl_usd
-        if pnl_usd < 0:
-            loss = abs(pnl_usd)
-            self.daily_realized_loss += loss
-            self.weekly_realized_loss += loss
+        if self.daily_realized_pnl < 0:
+            self.daily_realized_loss = abs(self.daily_realized_pnl)
+        else:
+            self.daily_realized_loss = 0.0
 
-            if self.daily_realized_loss >= self.daily_loss_limit:
-                self.kill_switch_active = True
-                self.kill_switch_reason = f"DAILY_LOSS_LIMIT_BREACHED: ${self.daily_realized_loss:.2f} >= ${self.daily_loss_limit:.2f}"
+        if pnl_usd < 0:
+            self.weekly_realized_loss += abs(pnl_usd)
+
+        if self.daily_realized_pnl <= -self.daily_loss_limit:
+            self.kill_switch_active = True
+            self.kill_switch_reason = f"DAILY_LOSS_LIMIT_BREACHED: ${self.daily_realized_loss:.2f} >= ${self.daily_loss_limit:.2f}"
+        elif self.kill_switch_active and "DAILY_LOSS_LIMIT" in self.kill_switch_reason:
+            # If net daily PnL recovers above the daily loss limit, unlatch kill switch
+            self.kill_switch_active = False
+            self.kill_switch_reason = ""
 
     def validate_signal(
         self,
