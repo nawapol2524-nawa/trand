@@ -457,7 +457,7 @@ class ProductionDaemonSupervisor:
                 q = self.broker.quotes.get(s, {})
                 sig = self.latest_signals.get(s, {})
                 pos_s = [p for p in self.broker.positions.values() if p.get("symbol") == s]
-                pos_str = f"{pos_s[0].get('direction', '')} {pos_s[0].get('lot_size', 0.0):.2f}L" if pos_s else "None"
+                pos_str = f"{pos_s[0].get('direction', '')} {pos_s[0].get('lot_size', 0.0):.3f}L" if pos_s else "None"
                 symbols_status.append({
                     "symbol": s,
                     "price": q.get("ask", q.get("close", 0.0)),

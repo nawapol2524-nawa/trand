@@ -293,35 +293,36 @@ class RiskEngine:
                 f"Account drawdown {dd_pct:.1f}% >= limit {settings.max_drawdown_pct:.1f}%"
             )
 
-        # Currency exposure concentration check
-        base_curr = sym_cfg.base_currency
-        quote_curr = sym_cfg.quote_currency
-        candidate_exposures = [
-            (base_curr, "LONG" if direction == "BUY" else "SHORT"),
-            (quote_curr, "SHORT" if direction == "BUY" else "LONG")
-        ]
+        # Currency exposure concentration check (applies to forex pairs only)
+        if sym_cfg.asset_class == "forex":
+            base_curr = sym_cfg.base_currency
+            quote_curr = sym_cfg.quote_currency
+            candidate_exposures = [
+                (base_curr, "LONG" if direction == "BUY" else "SHORT"),
+                (quote_curr, "SHORT" if direction == "BUY" else "LONG")
+            ]
 
-        for cand_curr, cand_side in candidate_exposures:
-            if not cand_curr:
-                continue
-            curr_count = 0
-            for p in open_positions:
-                p_cfg = settings.get_symbol_config(p.symbol)
-                if not p_cfg:
+            for cand_curr, cand_side in candidate_exposures:
+                if not cand_curr:
                     continue
-                p_base = p_cfg.base_currency
-                p_quote = p_cfg.quote_currency
-                p_base_side = "LONG" if p.direction == "BUY" else "SHORT"
-                p_quote_side = "SHORT" if p.direction == "BUY" else "LONG"
+                curr_count = 0
+                for p in open_positions:
+                    p_cfg = settings.get_symbol_config(p.symbol)
+                    if not p_cfg or p_cfg.asset_class != "forex":
+                        continue
+                    p_base = p_cfg.base_currency
+                    p_quote = p_cfg.quote_currency
+                    p_base_side = "LONG" if p.direction == "BUY" else "SHORT"
+                    p_quote_side = "SHORT" if p.direction == "BUY" else "LONG"
 
-                if (p_base == cand_curr and p_base_side == cand_side) or (p_quote == cand_curr and p_quote_side == cand_side):
-                    curr_count += 1
+                    if (p_base == cand_curr and p_base_side == cand_side) or (p_quote == cand_curr and p_quote_side == cand_side):
+                        curr_count += 1
 
-            if curr_count >= self.max_currency_exposure:
-                return (
-                    RiskDecision.REJECT,
-                    "CURRENCY_CONCENTRATION_LIMIT",
-                    f"Exceeds max allowed concurrent {cand_side} exposure to currency {cand_curr} ({curr_count} >= {self.max_currency_exposure})"
-                )
+                if curr_count >= self.max_currency_exposure:
+                    return (
+                        RiskDecision.REJECT,
+                        "CURRENCY_CONCENTRATION_LIMIT",
+                        f"Exceeds max allowed concurrent {cand_side} exposure to currency {cand_curr} ({curr_count} >= {self.max_currency_exposure})"
+                    )
 
         return RiskDecision.APPROVE, "APPROVED", "All risk checks passed."
