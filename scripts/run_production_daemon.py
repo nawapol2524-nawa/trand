@@ -31,7 +31,7 @@ sys.path.insert(0, str(WORKSPACE_ROOT))
 from ai_forex_bot.config.settings import settings
 from ai_forex_bot.models.registry import ModelRegistry, ModelRecord
 from ai_forex_bot.monitoring.health import SystemHealthMonitor
-from ai_forex_bot.monitoring.console import ConsoleUI
+from ai_forex_bot.monitoring.console import ConsoleUI, Colors
 from ai_forex_bot.risk.kill_switch import EmergencyKillSwitch, StateRecoveryManager
 from ai_forex_bot.risk.risk_engine import RiskEngine, RiskDecision, AccountState, Position
 from ai_forex_bot.execution.paper_broker import PaperBroker
@@ -648,13 +648,19 @@ class ProductionDaemonSupervisor:
                     if order_decision != RiskDecision.APPROVE:
                         risk_verdict = "VETO"
                         veto_reason = f"{veto_code}: {veto_detail}"
+                        print(f"  {Colors.YELLOW}[RISK VETO] {sym} {direction_str} blocked: {veto_reason}{Colors.RESET}")
                     else:
                         # 6. Execute order via PaperBroker (with Double-Barrel configuration)
                         sym_cfg = settings.get_symbol_config(sym)
                         pip_size = sym_cfg.pip_size if sym_cfg else feeder.pip_size
                         entry_est = quote["ask"] if direction_str == "BUY" else quote["bid"]
 
-                        atr_val = float(latest_row.get("atr_14", 15.0 * pip_size))
+                        raw_atr = latest_row.get("atr_14", None)
+                        if raw_atr is None or pd.isna(raw_atr) or float(raw_atr) <= 0:
+                            atr_val = max(15.0 * pip_size, entry_est * 0.001)
+                        else:
+                            atr_val = float(raw_atr)
+
                         sl_pips = max(10.0, (atr_val / pip_size) * 1.5)
                         tp_pips = sl_pips * 2.0
                         partial_tp_pips = sl_pips * 1.0  # Barrel 1 TP at 1R
@@ -670,6 +676,7 @@ class ProductionDaemonSupervisor:
                         if size_err or lot_size <= 0:
                             risk_verdict = "VETO"
                             veto_reason = size_err or "CALCULATED_LOT_ZERO"
+                            print(f"  {Colors.YELLOW}[RISK VETO] {sym} {direction_str} blocked: {veto_reason}{Colors.RESET}")
                         else:
                             risk_verdict = "APPROVE"
                             order_res = self.broker.place_order(
@@ -698,6 +705,7 @@ class ProductionDaemonSupervisor:
                                 )
                             else:
                                 veto_reason = order_res.get("reason") or order_res.get("message")
+                                print(f"  {Colors.YELLOW}[BROKER REJECT] {sym} {direction_str} order failed: {veto_reason}{Colors.RESET}")
 
                 # 7. Log signal to logs/shadow_signals.jsonl
                 self._log_signal(

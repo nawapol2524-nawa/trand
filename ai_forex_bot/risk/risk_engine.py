@@ -13,6 +13,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Dict, List, Optional, Tuple, Any
+import math
 import numpy as np
 
 from ai_forex_bot.config.settings import settings, SymbolConfig
@@ -205,10 +206,22 @@ class RiskEngine:
         snapped_lot = round(raw_lot / lot_step) * lot_step
         final_lot = float(np.clip(snapped_lot, sym_cfg.min_lot, sym_cfg.max_lot))
 
-        # Margin check
-        margin_required = (final_lot * sym_cfg.lot_size * entry_price) / self.leverage
+        # Margin check & Dynamic Margin Clamping for Micro-Wallets
+        margin_per_lot = (sym_cfg.lot_size * entry_price) / self.leverage
+        margin_required = final_lot * margin_per_lot
+
         if margin_required > account.free_margin:
-            return 0.0, f"Insufficient free margin: required ${margin_required:.2f}, available ${account.free_margin:.2f}"
+            # Scale down to maximum lot affordable within free margin (with 5% buffer)
+            max_affordable_lot = (account.free_margin * 0.95) / (margin_per_lot + 1e-9)
+            # Snap down to nearest valid lot step
+            max_affordable_snapped = math.floor(max_affordable_lot / lot_step) * lot_step
+            max_affordable_snapped = round(max_affordable_snapped, 4)
+
+            if max_affordable_snapped >= sym_cfg.min_lot:
+                final_lot = min(final_lot, max_affordable_snapped)
+            else:
+                margin_for_min = sym_cfg.min_lot * margin_per_lot
+                return 0.0, f"Insufficient free margin for min lot ({sym_cfg.min_lot}): required ${margin_for_min:.2f}, available ${account.free_margin:.2f}"
 
         return final_lot, None
 
