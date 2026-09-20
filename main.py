@@ -65,7 +65,24 @@ def clean_system_disk_cache():
         print(f"[DISK-CLEANER] Auto-purged {cleaned_bytes / (1024 * 1024):.1f} MB of temporary build caches.")
 
 
+def auto_git_pull():
+    """Auto-sync latest updates from git on startup if in git repo."""
+    try:
+        import subprocess
+        res = subprocess.run(["git", "pull", "--ff-only"], capture_output=True, text=True, timeout=15)
+        if res.returncode == 0:
+            if "Already up to date" not in res.stdout:
+                print(f"[AUTO-UPDATE] Pulled latest updates from GitHub:\n{res.stdout.strip()}")
+            else:
+                print("[AUTO-UPDATE] Verified: Codebase is up-to-date with GitHub.")
+    except Exception:
+        pass
+
+
 def main():
+    # Automatically pull latest updates on boot
+    auto_git_pull()
+
     # Automatically ensure disk cleanliness on constrained environments
     clean_system_disk_cache()
 
