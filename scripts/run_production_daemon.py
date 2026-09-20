@@ -144,9 +144,14 @@ class ProductionDaemonSupervisor:
         self.broker.connect()
 
         # Decision & Risk engines
-        self.risk_engine = RiskEngine(leverage=self.leverage)
+        cfg_daily_loss = float(os.getenv("MAX_DAILY_LOSS_USD", str(settings.max_daily_loss_usd)))
+        self.risk_engine = RiskEngine(leverage=self.leverage, daily_loss_limit=cfg_daily_loss)
         self.feature_builder = FeatureBuilder()
         self.decision_engine = MetaDecisionEngine(confidence_threshold=settings.confidence_threshold)
+        self._last_trade_closed_epochs: Dict[str, float] = {}
+        self._last_veto_reasons: Dict[str, str] = {}
+        self._last_veto_times: Dict[str, float] = {}
+        self.trade_cooldown_seconds = float(os.getenv("TRADE_COOLDOWN_SECONDS", "30.0"))
 
         # Market Feeders & Warmup Rolling Buffers per symbol
         self.feeders: Dict[str, LiveMarketFeeder] = {}
@@ -521,6 +526,7 @@ class ProductionDaemonSupervisor:
                 closed_trades = self.broker.on_bar(bar)
                 for trade in closed_trades:
                     self.risk_engine.record_closed_trade(trade.get("net_pnl", 0.0), bar_dt)
+                    self._last_trade_closed_epochs[trade.get("symbol", sym)] = time.time()
                     with open(self.paper_trades_file, "a", encoding="utf-8") as f:
                         f.write(json.dumps(trade) + "\n")
                     ConsoleUI.print_trade_closed(
@@ -631,31 +637,56 @@ class ProductionDaemonSupervisor:
                 risk_verdict = "VETO"
                 veto_reason: Optional[str] = None
                 executed_order_id: Optional[str] = None
+                now_ts = time.time()
 
-                if val_signal.decision != RiskDecision.APPROVE:
-                    risk_verdict = "VETO"
-                    veto_reason = f"{val_signal.reason}: {val_signal.detail}"
-                    print(f"  {Colors.YELLOW}[SIGNAL VETO] {sym} {direction_str} blocked by risk: {veto_reason}{Colors.RESET}")
-                elif direction_str in ("HOLD", "NO_TRADE"):
+                if direction_str in ("HOLD", "NO_TRADE"):
                     risk_verdict = "HOLD"
                     veto_reason = None
                 else:
-                    # Order validation (spread, max positions, drawdown, currency concentration)
-                    order_decision, veto_code, veto_detail = self.risk_engine.validate_new_order(
-                        symbol=sym,
-                        direction=direction_str,
-                        current_spread_pips=spread_pips,
-                        account=account,
-                        open_positions=open_positions,
-                        current_dt=bar_dt,
-                        is_news_blackout=False
-                    )
-
-                    if order_decision != RiskDecision.APPROVE:
-                        risk_verdict = "VETO"
-                        veto_reason = f"{veto_code}: {veto_detail}"
-                        print(f"  {Colors.YELLOW}[RISK VETO] {sym} {direction_str} blocked: {veto_reason}{Colors.RESET}")
+                    # Check post-trade cooldown to prevent rapid-fire churning
+                    last_close_ts = self._last_trade_closed_epochs.get(sym, 0.0)
+                    elapsed_since_close = now_ts - last_close_ts
+                    if elapsed_since_close < self.trade_cooldown_seconds:
+                        rem = self.trade_cooldown_seconds - elapsed_since_close
+                        risk_verdict = "COOLDOWN"
+                        veto_reason = f"COOLDOWN: {rem:.1f}s remaining"
                     else:
+                        # Signal validation (evaluates daily profit target & daily loss limit)
+                        val_signal = self.risk_engine.validate_signal(
+                            signal={"current_dt": bar_dt, "direction": direction_str},
+                            current_dt=bar_dt
+                        )
+
+                        if val_signal.decision != RiskDecision.APPROVE:
+                            risk_verdict = "VETO"
+                            veto_reason = f"{val_signal.reason}: {val_signal.detail}"
+                            veto_key = f"{sym}_{direction_str}_{val_signal.reason}"
+                            if veto_key != self._last_veto_reasons.get(sym) or (now_ts - self._last_veto_times.get(sym, 0.0) > 60.0):
+                                self._last_veto_reasons[sym] = veto_key
+                                self._last_veto_times[sym] = now_ts
+                                print(f"  {Colors.YELLOW}[SIGNAL VETO] {sym} {direction_str} blocked by risk: {veto_reason}{Colors.RESET}")
+                        else:
+                            # Order validation (spread, max positions, drawdown, currency concentration)
+                            order_decision, veto_code, veto_detail = self.risk_engine.validate_new_order(
+                                symbol=sym,
+                                direction=direction_str,
+                                current_spread_pips=spread_pips,
+                                account=account,
+                                open_positions=open_positions,
+                                current_dt=bar_dt,
+                                is_news_blackout=False
+                            )
+
+                            if order_decision != RiskDecision.APPROVE:
+                                risk_verdict = "VETO"
+                                veto_reason = f"{veto_code}: {veto_detail}"
+                                veto_key = f"{sym}_{direction_str}_{veto_code}"
+                                if veto_key != self._last_veto_reasons.get(sym) or (now_ts - self._last_veto_times.get(sym, 0.0) > 60.0):
+                                    self._last_veto_reasons[sym] = veto_key
+                                    self._last_veto_times[sym] = now_ts
+                                    print(f"  {Colors.YELLOW}[RISK VETO] {sym} {direction_str} blocked: {veto_reason}{Colors.RESET}")
+                            else:
+                                self._last_veto_reasons[sym] = ""
                         # 6. Execute order via PaperBroker (with Double-Barrel configuration)
                         sym_cfg = settings.get_symbol_config(sym)
                         pip_size = sym_cfg.pip_size if sym_cfg else feeder.pip_size
