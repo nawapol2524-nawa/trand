@@ -75,8 +75,8 @@ def main():
     env_strategy = os.getenv("STRATEGY", "double_barrel")
     env_heartbeat = float(os.getenv("HEARTBEAT_INTERVAL", "60.0"))
     env_retrain = float(os.getenv("RETRAIN_INTERVAL", "3600.0"))
-    env_balance = float(os.getenv("INITIAL_BALANCE", "6.0"))
-    env_leverage = float(os.getenv("LEVERAGE", "500.0"))
+    env_balance = float(os.getenv("INITIAL_BALANCE", "4.92"))
+    env_leverage = float(os.getenv("LEVERAGE", "1000.0"))
 
     parser = argparse.ArgumentParser(
         description="AI Forex Autonomous Trading System — Production Entrypoint"
@@ -125,13 +125,13 @@ def main():
         "--balance",
         type=float,
         default=env_balance,
-        help="Initial wallet balance in USDT (default: 6.0)"
+        help="Initial wallet balance in USDT (default: 4.92)"
     )
     parser.add_argument(
         "--leverage",
         type=float,
         default=env_leverage,
-        help="Broker leverage ratio (default: 500.0)"
+        help="Broker leverage ratio (default: 1000.0)"
     )
     parser.add_argument(
         "--reset-state",

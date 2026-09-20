@@ -1,19 +1,19 @@
 {
-  "saved_at": "2026-09-19T14:55:00.000000+00:00",
-  "balance": 6.0,
-  "equity": 6.0,
+  "saved_at": "2026-09-20T10:05:00.000000+00:00",
+  "balance": 4.92,
+  "equity": 4.92,
   "used_margin": 0.0,
-  "free_margin": 6.0,
+  "free_margin": 4.92,
   "positions": [],
-  "closed_trade_count": 0,
+  "closed_trade_count": 1,
   "processed_order_keys": [],
   "metadata": {
-    "shutdown_reason": "CLEAN_INITIAL_STATE",
+    "shutdown_reason": "USER_EXACT_BALANCE_4_92",
     "symbols": [
       "R_25",
       "R_10",
       "R_75"
     ],
-    "timestamp": "2026-09-19T14:55:00.000000+00:00"
+    "timestamp": "2026-09-20T10:05:00.000000+00:00"
   }
 }

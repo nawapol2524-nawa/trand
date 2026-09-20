@@ -480,6 +480,8 @@ class ProductionDaemonSupervisor:
                 closed_trades_count=len(self.broker.closed_trades),
                 kill_switch_active=self.kill_switch.is_kill_switch_active()
             )
+            # Continuously sync live portfolio state to disk
+            self.state_manager.save_portfolio_state(self.broker, metadata={"event": "HEARTBEAT_PERIODIC_SYNC"})
         except Exception as e:
             self.worker_statuses["heartbeat_worker"] = f"ERROR: {e}"
 
@@ -533,6 +535,9 @@ class ProductionDaemonSupervisor:
                         exit_reason=trade.get("exit_reason", "CLOSE"),
                         balance=self.broker.balance
                     )
+
+                if closed_trades:
+                    self.state_manager.save_portfolio_state(self.broker, metadata={"event": "TRADE_CLOSED", "symbol": sym})
 
                 # Check rolling buffer warmup depth
                 if len(self.rolling_bars[sym]) < 30:
@@ -692,6 +697,10 @@ class ProductionDaemonSupervisor:
                             )
                             if order_res.get("status") == "FILLED":
                                 executed_order_id = order_res.get("order_id")
+                                self.state_manager.save_portfolio_state(
+                                    self.broker,
+                                    metadata={"event": "ORDER_PLACED", "symbol": sym, "order_id": executed_order_id}
+                                )
                                 ConsoleUI.print_order_executed(
                                     order_id=executed_order_id,
                                     symbol=sym,

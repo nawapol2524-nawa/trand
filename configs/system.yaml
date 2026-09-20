@@ -24,7 +24,7 @@ economic_calendar:
 risk:
   allow_weekend_holding: false
   emergency_stop_loss_pct: 15.0
-  initial_balance_usd: 6.0
+  initial_balance_usd: 4.92
   leverage: 1000.0
   max_daily_loss_usd: 2.5
   max_drawdown_pct: 50.0

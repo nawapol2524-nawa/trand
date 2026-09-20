@@ -140,11 +140,34 @@ class StateRecoveryManager:
     def restore_broker_state(self, broker: PaperBroker) -> Tuple[bool, str]:
         """Restores positions, balance, and margin state into PaperBroker."""
         state = self.load_portfolio_state()
+
+        # Check logs/paper_trades.jsonl to discover any real executed trade balance
+        paper_trades_file = self.root_dir / "logs" / "paper_trades.jsonl"
+        last_trade_balance = None
+        if paper_trades_file.exists():
+            try:
+                lines = paper_trades_file.read_text(encoding="utf-8").strip().splitlines()
+                if lines:
+                    last_trade = json.loads(lines[-1])
+                    if "balance" in last_trade and float(last_trade["balance"]) > 0:
+                        last_trade_balance = float(last_trade["balance"])
+            except Exception:
+                pass
+
         if not state:
+            if last_trade_balance is not None:
+                broker.balance = last_trade_balance
+                broker.equity = last_trade_balance
+                broker.free_margin = last_trade_balance
+                return True, f"Restored balance from trade history: {last_trade_balance:.2f} USDT"
             return False, "No persistent state file found."
 
         try:
             restored_bal = float(state.get("balance", broker.initial_balance))
+            # If trade history has a valid balance and state was reset or differs, honor trade history
+            if last_trade_balance is not None and abs(restored_bal - broker.initial_balance) < 1e-4 and last_trade_balance != broker.initial_balance:
+                restored_bal = last_trade_balance
+
             if restored_bal <= 0:
                 broker.balance = broker.initial_balance
                 broker.equity = broker.initial_balance
@@ -171,6 +194,6 @@ class StateRecoveryManager:
 
             # Re-sync quotes if available and reconcile
             recon = broker.reconcile()
-            return True, f"Restored {len(broker.positions)} open positions. Synchronized: {recon['is_synchronized']}"
+            return True, f"Restored {len(broker.positions)} open positions. Balance: {broker.balance:.2f} USDT. Synchronized: {recon['is_synchronized']}"
         except Exception as e:
             return False, f"Failed to restore broker state: {str(e)}"
