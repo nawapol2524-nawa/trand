@@ -19,6 +19,9 @@ from pathlib import Path
 WORKSPACE_ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(WORKSPACE_ROOT))
 
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=WORKSPACE_ROOT / ".env", override=True)
+
 from ai_forex_bot.config.settings import settings
 from ai_forex_bot.monitoring.console import ConsoleUI
 from scripts.run_production_daemon import ProductionDaemonSupervisor

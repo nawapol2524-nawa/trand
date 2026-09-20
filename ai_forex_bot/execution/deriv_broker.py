@@ -56,8 +56,10 @@ class DerivBroker(BaseBroker):
         partial_tp_pips: Optional[float] = None,
         buffer_pips: float = 1.0
     ):
-        self.token = token or os.getenv("DERIV_API_TOKEN", "")
-        self.app_id = app_id or os.getenv("DERIV_APP_ID", "34lQGsI4JVHDtfZhaHAqk")
+        raw_token = token or os.getenv("DERIV_API_TOKEN", "")
+        raw_app_id = app_id or os.getenv("DERIV_APP_ID", "34lQGsI4JVHDtfZhaHAqk")
+        self.token = raw_token.strip().strip('"').strip("'")
+        self.app_id = raw_app_id.strip().strip('"').strip("'")
         self.account_type = account_type.lower()
         self.account_id = account_id
         self.default_stake = default_stake
@@ -138,6 +140,20 @@ class DerivBroker(BaseBroker):
             if connected:
                 logger.info(f"[DERIV] WebSocket Gateway connected successfully for {self.account_id}")
             return connected
+        except urllib.error.HTTPError as he:
+            err_body = ""
+            try:
+                err_body = he.read().decode()
+            except Exception:
+                pass
+            masked_tok = f"{self.token[:8]}...{self.token[-4:]}" if len(self.token) > 12 else self.token
+            print(f"[DERIV] ❌ Connection failed: HTTP {he.code} {he.reason} | Token: {masked_tok} (length {len(self.token)}) | App ID: {self.app_id}")
+            if err_body:
+                print(f"[DERIV] Server response: {err_body}")
+            if not self.token.startswith("pat_"):
+                print("[DERIV] ⚠️ Warning: Your DERIV_API_TOKEN does NOT start with 'pat_'. Please ensure your .env or Env tab has the valid PAT token.")
+            self.connected = False
+            return False
         except Exception as e:
             logger.error(f"[DERIV] Connection failed: {e}", exc_info=True)
             self.connected = False
@@ -177,6 +193,7 @@ class DerivBroker(BaseBroker):
         headers = {
             "Authorization": f"Bearer {self.token}",
             "Deriv-App-ID": self.app_id,
+            "User-Agent": "Mozilla/5.0 (compatible; DerivBot/1.0)",
             "Accept": "application/json"
         }
         req = urllib.request.Request(url, headers=headers)
@@ -189,6 +206,7 @@ class DerivBroker(BaseBroker):
         headers = {
             "Authorization": f"Bearer {self.token}",
             "Deriv-App-ID": self.app_id,
+            "User-Agent": "Mozilla/5.0 (compatible; DerivBot/1.0)",
             "Content-Type": "application/json",
             "Accept": "application/json"
         }
@@ -449,10 +467,11 @@ class DerivBroker(BaseBroker):
                     "idempotency_key": dedup_key
                 }
 
-        # Stake calculation (Deriv minimum multiplier stake is $1.00 USD)
-        stake = max(1.0, round(lot_size * 100.0, 2))
+        # Stake calculation (Deriv minimum multiplier stake is $1.00 USD, cap at DERIV_MAX_STAKE_USD or $10.0)
+        cfg_max_stake = float(os.getenv("DERIV_MAX_STAKE_USD", "10.0"))
+        stake = min(cfg_max_stake, max(1.0, round(lot_size * 5.0, 2)))
         if "stake" in kwargs:
-            stake = max(1.0, float(kwargs["stake"]))
+            stake = max(1.0, min(cfg_max_stake, float(kwargs["stake"])))
 
         with self._lock:
             if self.free_margin < stake:
