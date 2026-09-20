@@ -202,13 +202,13 @@ class ProductionDaemonSupervisor:
         elif self.restore_state:
             restored, msg = self.state_manager.restore_broker_state(self.broker)
             self.log_daemon_event("STATE_RESTORE_ATTEMPT", {"restored": restored, "message": msg})
-            if self.broker.balance <= 0 or (self.initial_balance <= 10.0 and self.broker.balance > 50.0):
+            if self.broker.balance <= 0:
                 self.broker.balance = self.initial_balance
                 self.broker.equity = self.initial_balance
                 self.broker.free_margin = self.initial_balance
                 self.broker.used_margin = 0.0
                 self.broker.positions.clear()
-                self.state_manager.save_portfolio_state(self.broker, metadata={"reason": "MICRO_BALANCE_CALIBRATED"})
+                self.state_manager.save_portfolio_state(self.broker, metadata={"reason": "BANKRUPTCY_AUTO_RECOVER"})
 
         # Register Signal Handlers
         signal.signal(signal.SIGINT, self._handle_signal)
