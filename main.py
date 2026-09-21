@@ -23,6 +23,7 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path=WORKSPACE_ROOT / ".env", override=True)
 
 from ai_forex_bot.config.settings import settings
+from ai_forex_bot.market.sessions.session import MarketScheduleManager
 from ai_forex_bot.monitoring.console import ConsoleUI
 from scripts.run_production_daemon import ProductionDaemonSupervisor
 
@@ -90,7 +91,7 @@ def main():
     clean_system_disk_cache()
 
     # Read environment variables with fallback
-    env_symbol = os.getenv("SYMBOL", "R_25,R_10,R_75")
+    env_symbol = os.getenv("SYMBOL", "auto")
     env_timeframe = os.getenv("TIMEFRAME", "M1")
     env_strategy = os.getenv("STRATEGY", "double_barrel")
     env_heartbeat = float(os.getenv("HEARTBEAT_INTERVAL", "60.0"))
@@ -105,7 +106,7 @@ def main():
         "--symbol",
         type=str,
         default=env_symbol,
-        help="Trading Symbol(s) (e.g. R_25, R_75, R_10, frxEURUSD, or comma-separated 'R_25,R_10,R_75', or 'ALL')"
+        help="Trading Symbol(s) (default: 'auto' for dynamic schedule, or 'frxEURUSD,R_75', etc.)"
     )
     parser.add_argument(
         "--timeframe",
@@ -162,7 +163,17 @@ def main():
 
     args = parser.parse_args()
 
-    print_banner(args.symbol, args.timeframe, args.strategy, args.single_cycle, args.heartbeat_interval)
+    # Dynamic symbol banner resolution
+    target_symbols_str = args.symbol
+    if args.symbol.strip().upper() in ("AUTO", "ALL", "MARKET", "ADAPTIVE"):
+        resolved = MarketScheduleManager.get_auto_symbols()
+        forex_open = MarketScheduleManager.is_forex_market_open()
+        market_status = "OPEN (Weekdays)" if forex_open else "CLOSED (Weekend)"
+        print(f"[MAIN] 🌐 Auto-Market Schedule: Global Forex is {market_status}")
+        print(f"[MAIN] 🎯 Active Symbols: {resolved}\n")
+        target_symbols_str = ",".join(resolved)
+
+    print_banner(target_symbols_str, args.timeframe, args.strategy, args.single_cycle, args.heartbeat_interval)
 
     if args.dry_run:
         print("[MAIN] Dry-run completed. System is ready for execution.")

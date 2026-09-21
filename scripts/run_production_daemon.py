@@ -99,11 +99,14 @@ class ProductionDaemonSupervisor:
         leverage: Optional[float] = None,
         reset_state: bool = False
     ):
-        # Parse symbols (supports single symbol, list, comma-separated, or 'ALL')
+        # Parse symbols (supports single symbol, list, comma-separated, 'ALL', or 'AUTO')
+        self.auto_schedule = False
         if isinstance(symbol, str):
             s_upper = symbol.strip().upper()
-            if s_upper == "ALL":
-                self.symbols = ["R_25", "R_10", "R_75"]
+            if s_upper in ("AUTO", "ALL", "MARKET", "ADAPTIVE"):
+                self.auto_schedule = True
+                from ai_forex_bot.market.sessions.session import MarketScheduleManager
+                self.symbols = MarketScheduleManager.get_auto_symbols()
             elif "," in symbol:
                 self.symbols = [s.strip() for s in symbol.split(",") if s.strip()]
             else:
@@ -111,7 +114,9 @@ class ProductionDaemonSupervisor:
         elif isinstance(symbol, (list, tuple)):
             self.symbols = [str(s).strip() for s in symbol if str(s).strip()]
         else:
-            self.symbols = ["R_25"]
+            self.auto_schedule = True
+            from ai_forex_bot.market.sessions.session import MarketScheduleManager
+            self.symbols = MarketScheduleManager.get_auto_symbols()
 
         self.symbol = ",".join(self.symbols) if len(self.symbols) > 1 else self.symbols[0]
         self.timeframe = timeframe.upper()
@@ -293,6 +298,40 @@ class ProductionDaemonSupervisor:
                 "artifact": None,
                 "fallback": FallbackTechnicalModel(symbol)
             }
+
+    def _ensure_symbol_initialized(self, sym: str) -> None:
+        """Ensures market feeder, rolling bars, and model are loaded for symbol."""
+        if sym not in self.feeders:
+            feeder = LiveMarketFeeder(symbol=sym, timeframe=self.timeframe)
+            self.feeders[sym] = feeder
+            bars = feeder.get_warmup_bars(count=self.warmup_bars_count)
+            self.rolling_bars[sym] = bars
+            self.last_candle_epochs[sym] = bars[-1]["epoch"] if bars else None
+            if bars:
+                self.broker.update_quote_from_bar(sym, bars[-1])
+        if sym not in self.models_data:
+            self.models_data[sym] = self._load_model_for_symbol(sym)
+
+    def _check_auto_schedule(self) -> None:
+        """Dynamically switches active symbols based on market schedule (Forex vs Synthetics)."""
+        if not self.auto_schedule:
+            return
+        from ai_forex_bot.market.sessions.session import MarketScheduleManager
+        current_active = MarketScheduleManager.get_auto_symbols()
+        if set(current_active) != set(self.symbols):
+            old_symbols = list(self.symbols)
+            self.symbols = current_active
+            self.symbol = ",".join(self.symbols)
+            for sym in self.symbols:
+                self._ensure_symbol_initialized(sym)
+            forex_open = MarketScheduleManager.is_forex_market_open()
+            print(f"\n[DAEMON] 🔄 Market schedule transition: Forex Open={forex_open}")
+            print(f"[DAEMON] 🔄 Switched active symbols: {old_symbols} -> {self.symbols}\n")
+            self.log_daemon_event("SCHEDULE_TRANSITION", {
+                "forex_open": forex_open,
+                "old_symbols": old_symbols,
+                "new_symbols": self.symbols
+            })
 
     def _load_symbol_model(self) -> None:
         """Backward compatibility stub."""
@@ -833,6 +872,7 @@ class ProductionDaemonSupervisor:
 
         last_heartbeat = 0.0
         last_retrain = 0.0
+        last_schedule_check = 0.0
 
         try:
             while not self.shutdown_event.is_set():
@@ -845,6 +885,11 @@ class ProductionDaemonSupervisor:
                     self.log_daemon_event("EMERGENCY_HALT_TRIGGERED", {"reason": reason})
                     self.shutdown(reason=f"KILL_SWITCH: {reason}")
                     return 1
+
+                # 1.5 Dynamic Auto-Market Schedule Transition Check
+                if self.auto_schedule and (now - last_schedule_check >= 30.0 or single_cycle):
+                    self._check_auto_schedule()
+                    last_schedule_check = now
 
                 # 2. Trading Execution Step
                 self._run_trading_cycle()

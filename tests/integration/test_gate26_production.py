@@ -94,7 +94,8 @@ class TestGate26ProductionDeployment(unittest.TestCase):
         """Verify portfolio state persistence and exact reconstruction on broker restart."""
         broker_1 = PaperBroker(initial_balance=1000.0)
         broker_1.connect()
-        broker_1.set_quote("frxEURUSD", bid=1.0850, ask=1.0852, timestamp=1789700000)
+        now_epoch = int(datetime.now(timezone.utc).timestamp())
+        broker_1.set_quote("frxEURUSD", bid=1.0850, ask=1.0852, timestamp=now_epoch)
 
         # Place trade
         order = broker_1.place_order(

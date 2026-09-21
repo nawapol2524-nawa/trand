@@ -41,6 +41,8 @@ DEFAULT_SYMBOL_MULTIPLIERS = {
     "1HZ75V": 100,
     "frxEURUSD": 100,
     "frxGBPUSD": 100,
+    "frxUSDJPY": 100,
+    "frxXAUUSD": 100,
 }
 
 

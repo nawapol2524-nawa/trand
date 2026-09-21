@@ -187,8 +187,13 @@ class TestLiveFeederAndDaemon(unittest.TestCase):
         ]
         res = subprocess.run(cmd, cwd=str(self.root_dir), capture_output=True, text=True)
         self.assertEqual(res.returncode, 0, f"Process failed with stderr: {res.stderr}")
-        self.assertTrue("R_25, R_10, R_75" in res.stdout or "Target Symbol(s) : R_25,R_10,R_75" in res.stdout)
-        self.assertIn("Single-cycle execution for R_25,R_10,R_75 verified successfully", res.stdout)
+        self.assertTrue(
+            "Auto-Market Schedule" in res.stdout
+            or "R_25, R_10, R_75" in res.stdout
+            or "Target Symbol(s) : R_25,R_10,R_75" in res.stdout
+            or "frxEURUSD" in res.stdout
+        )
+        self.assertIn("verified successfully", res.stdout)
 
 
 if __name__ == "__main__":
