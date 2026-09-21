@@ -82,7 +82,7 @@ jobs:
 
       - name: Run Full Unit & Integration Test Discovery
         run: |
-          python3 -m unittest discover -s tests -p "test_*.py" -v
+          PYTHONPATH=. python3 -m unittest discover -s tests -p "test_*.py" -v
 
   ast-oos-audit:
     name: Static AST Out-of-Sample Leakage Scan
