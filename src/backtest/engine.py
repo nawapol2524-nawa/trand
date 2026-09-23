@@ -132,11 +132,24 @@ class BacktestEngine:
 
     def run(
         self,
-        historical_dir: str = "data/historical",
+        historical_dir: Optional[str] = None,
         symbols: Optional[List[str]] = None,
     ) -> tuple[BacktestMetrics, List[PositionRecord]]:
         if symbols is None:
             symbols = ["EURUSD", "GBPUSD", "USDJPY", "XAUUSD"]
+
+        # Default path resolution: prefer data/historical, fallback to committed test fixture
+        if historical_dir is None:
+            if os.path.exists("data/historical") and os.path.isdir("data/historical"):
+                historical_dir = "data/historical"
+            else:
+                fixture_dir = os.path.join(
+                    os.path.dirname(__file__), "..", "..", "tests", "fixtures", "synthetic_backtest_data"
+                )
+                if os.path.exists(fixture_dir):
+                    historical_dir = fixture_dir
+                else:
+                    historical_dir = "data/historical"
 
         # 1. Load historical bars for all symbols
         m5_data: Dict[str, List[Bar]] = {}
@@ -156,6 +169,10 @@ class BacktestEngine:
             for b in bars:
                 all_timestamps.add(b.timestamp)
         timeline = sorted(list(all_timestamps))
+        if not timeline:
+            raise FileNotFoundError(
+                f"No historical bar data found in '{historical_dir}' for symbols {symbols}."
+            )
 
         # Index lookup maps: (sym, timestamp) -> bar
         bar_lookup: Dict[tuple[str, datetime], Bar] = {}

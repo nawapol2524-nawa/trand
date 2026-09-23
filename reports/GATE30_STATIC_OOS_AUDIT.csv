@@ -1,0 +1,12 @@
+file,line,code_snippet,pattern_matched,classification,allowed,status
+scripts/audit_oos_access.py,23,"r""bounds\.test_indices"",",test_indices,AUTHORIZED_GUARD_IMPLEMENTATION,True,COMPLIANT_INFRASTRUCTURE
+scripts/audit_oos_access.py,24,"r""test_indices"",",test_indices,AUTHORIZED_GUARD_IMPLEMENTATION,True,COMPLIANT_INFRASTRUCTURE
+scripts/audit_oos_access.py,25,"r""test_df"",",test_df,AUTHORIZED_GUARD_IMPLEMENTATION,True,COMPLIANT_INFRASTRUCTURE
+scripts/audit_oos_access.py,26,"r""X_test"",",X_test,AUTHORIZED_GUARD_IMPLEMENTATION,True,COMPLIANT_INFRASTRUCTURE
+scripts/audit_oos_access.py,27,"r""y_test"",",y_test,AUTHORIZED_GUARD_IMPLEMENTATION,True,COMPLIANT_INFRASTRUCTURE
+scripts/audit_oos_access.py,28,"r""get_oos_slice"",",get_oos_slice,AUTHORIZED_GUARD_IMPLEMENTATION,True,COMPLIANT_INFRASTRUCTURE
+scripts/audit_oos_access.py,29,"r""load_oos_data"",",load_oos_data,AUTHORIZED_GUARD_IMPLEMENTATION,True,COMPLIANT_INFRASTRUCTURE
+scripts/audit_oos_access.py,30,"r""evaluate_frozen_oos"",",evaluate_frozen_oos,AUTHORIZED_GUARD_IMPLEMENTATION,True,COMPLIANT_INFRASTRUCTURE
+scripts/audit_oos_access.py,31,"r""evaluate_oos_gate"",",evaluate_oos_gate,AUTHORIZED_GUARD_IMPLEMENTATION,True,COMPLIANT_INFRASTRUCTURE
+scripts/audit_oos_access.py,32,"r""OOSManifest"",",OOSManifest,AUTHORIZED_GUARD_IMPLEMENTATION,True,COMPLIANT_INFRASTRUCTURE
+scripts/audit_oos_access.py,33,"r""OOSEvaluationSession"",",OOSEvaluationSession,AUTHORIZED_GUARD_IMPLEMENTATION,True,COMPLIANT_INFRASTRUCTURE
