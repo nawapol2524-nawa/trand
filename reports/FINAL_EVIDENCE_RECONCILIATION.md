@@ -2,7 +2,7 @@
 
 **Audit Timestamp**: 2026-09-23 13:07:30 UTC  
 **Repository**: `https://github.com/nawapol2524-nawa/trand`  
-**Current HEAD Commit**: `d624d0d` (origin/main)  
+**Current HEAD Commit**: `0ead299` (origin/main)  
 **Base Audit Commit**: `fa3ad83`  
 **Operational Trading Mode**: `DEMO` (`LIVE_TRADING_ENABLED=false`)  
 **Target Broker**: Deriv cTrader Remote MCP (`https://mcp.ctrader.com/trading/mcp`)  
@@ -41,11 +41,11 @@ The SHA-256 hashes of the frozen strategy specifications, risk models, and symbo
 
 ## 3. GitHub Actions CI/CD Evidence
 
-All four automated validation gates on GitHub Actions are passing green at commit `d624d0d`:
+All four automated validation gates on GitHub Actions are passing green at commit `0ead299`:
 
 * **Workflow**: `Trading Bot CI/CD & Security Gate`
-* **Run ID**: `35862684792`
-* **Commit**: `d624d0d`
+* **Run ID**: `35865015105`
+* **Commit**: `0ead299`
 * **Status**: `completed`
 * **Conclusion**: `success` ✅
 

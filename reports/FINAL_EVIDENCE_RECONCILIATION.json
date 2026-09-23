@@ -1,12 +1,12 @@
 {
   "audit_type": "FINAL_DEMO_SOAK_AND_EVIDENCE_CONSISTENCY",
   "timestamp": "2026-09-23T13:07:30Z",
-  "current_head_commit": "d624d0d",
+  "current_head_commit": "0ead299",
   "base_audit_commit": "fa3ad83",
   "repository": "https://github.com/nawapol2524-nawa/trand",
   "ci_cd_evidence": {
-    "run_id": 35862684792,
-    "commit": "d624d0d",
+    "run_id": 35865015105,
+    "commit": "0ead299",
     "workflow": "Trading Bot CI/CD & Security Gate",
     "status": "completed",
     "conclusion": "success",
