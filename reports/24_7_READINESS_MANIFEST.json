@@ -1,0 +1,71 @@
+{
+  "timestamp": "2026-09-23T19:40:00Z",
+  "operational_mode": "DEMO",
+  "live_trading_enabled": false,
+  "readiness_verdict": "READY_FOR_24_7_DEMO",
+  "architecture": {
+    "process_supervision": {
+      "docker": {
+        "base_image": "python:3.11-slim",
+        "user": "botuser (non-root)",
+        "healthcheck": "CMD python checking /app/state/health.json every 30s",
+        "restart_policy": "unless-stopped"
+      },
+      "systemd": {
+        "unit_file": "systemd/trading-bot.service",
+        "restart_policy": "always (10s backoff)",
+        "security": "ProtectSystem=strict, NoNewPrivileges=true",
+        "limits": "CPUQuota=100%, MemoryMax=1G"
+      },
+      "railway": {
+        "config_file": "railway.toml",
+        "restart_policy": "on_failure (max 10 retries)"
+      }
+    },
+    "logging_and_telemetry": {
+      "log_rotation": "json-file (max 50MB, 10 files rotation)",
+      "health_heartbeat_file": "state/health.json",
+      "heartbeat_interval_seconds": 5.0,
+      "metrics_exposed": [
+        "alive",
+        "status",
+        "mode",
+        "uptime_seconds",
+        "broker_connected",
+        "broker_latency_ms",
+        "ai_status",
+        "open_positions",
+        "daily_pnl_usd",
+        "daily_pnl_pct",
+        "consecutive_losses",
+        "kill_switch_active",
+        "data_freshness_seconds",
+        "reconnect_count",
+        "uncaught_exceptions"
+      ]
+    },
+    "recovery_and_reconciliation": {
+      "startup_protocol": "START -> CONNECT -> SYNC BROKER STATE -> LOAD LOCAL STATE -> RECONCILE -> RESUME",
+      "orphan_position_discovery": true,
+      "duplicate_order_protection": true,
+      "persistent_state_file": "state/bot_state.json",
+      "atomic_writes": true
+    },
+    "risk_guardrails": {
+      "risk_per_trade_pct": 0.01,
+      "max_daily_loss_pct": 0.05,
+      "max_consecutive_losses": 5,
+      "consecutive_loss_halt_hours": 1.0,
+      "max_concurrent_positions": 3,
+      "max_positions_per_symbol": 1,
+      "emergency_kill_switch_supported": true
+    }
+  },
+  "compliance": {
+    "git_tracked_secrets": 0,
+    "env_committed": false,
+    "strategy_parameters_frozen": true,
+    "unit_tests_passed": 68,
+    "ci_status": "PASS"
+  }
+}

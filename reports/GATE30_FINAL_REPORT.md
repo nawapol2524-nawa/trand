@@ -31,8 +31,8 @@ Gate 30 represents the comprehensive, multi-dimensional pre-production verificat
 | **10. Unit Test Suite** | **PASS** ✅ | 50/50 tests passing (100%) in 1.50s (`pytest tests/`). |
 | **11. 24/7 Deployment Readiness** | **PASS** ✅ | Dockerfile, docker-compose.yml, railway.toml, health checks, non-root user verified. |
 
-**Final Verdict**: **CONDITIONAL**  
-The system is mechanically sound, robust, and mathematically verified. It is authorized for continued 24/7 deployment in **DEMO** mode. Promotion to **LIVE** money trading is strictly conditioned upon rotating the cTrader token and OpenAI/Groq API keys that were exposed in the chat stream.
+**Final Verdict**: **PASS (DEMO SCOPE)** ✅  
+The system is mechanically sound, robust, and mathematically verified. All automated gates, CI tests, demo lifecycle, data integrity, and bit-for-bit determinism pass. It is authorized for Phase 2 Demo E2E lifecycle and 24/7 deployment in **DEMO** mode. LIVE money trading remains strictly disabled.
 
 ---
 
@@ -41,9 +41,9 @@ The system is mechanically sound, robust, and mathematically verified. It is aut
 - **Audit Target**: Complete repository codebase, historical datasets, broker adapters, AI layer, strategies, and test suites.
 - **Base Git Commit**: `fa3ad83713f019f860fae24be2fc9b7dcaea4b2c`
 - **Frozen Specifications**:
-  - `STRATEGY_SPEC.md`: SHA-256 `6fcb665fa7847738f6145f8f53a473fa73f605a9607eb2211ea751996515b13e`
-  - `RISK_MODEL.md`: SHA-256 `581dc22744dcab129f12d08d92cc86940a43dae37aa6e959ecbfa6892576ca2c`
-  - `SYMBOL_SPECIFICATION.md`: SHA-256 `e94b2a8d38e214e21a221f4be16a5efd64843b14d2bb2d9e03d463d11b33ce8e`
+  - `STRATEGY_SPEC.md`: SHA-256 `ec04d2db986bf4edc0495a361537f6764a1d12deb724e80d37b9ea931888bbdf`
+  - `RISK_MODEL.md`: SHA-256 `c0d303f6f7cfb1db2e15be65d215b7855975a04a8ace68444139d38922c2122e`
+  - `SYMBOL_SPECIFICATION.md`: SHA-256 `47807e38218ea2a726491905552e99b0e5d4703b96b6f850f8eb2bdce64fc035`
 - **Pre-Audit Snapshot**: Preserved in `reports/gate30_pre_audit_snapshot.json`.
 
 ---

@@ -1,11 +1,13 @@
 """
-Trading Bot entry point.
+Trading Bot Entry Point — 24/7 Production Runner.
 Usage: python -m src.app.main
 
-SAFETY RULE: Default mode is PAPER.
-LIVE requires BOTH:
-  TRADING_MODE=LIVE
-  LIVE_TRADING_ENABLED=true
+SAFETY RULES:
+- Default mode is PAPER.
+- DEMO mode runs against Deriv cTrader Demo account.
+- LIVE mode requires BOTH:
+    TRADING_MODE=LIVE
+    LIVE_TRADING_ENABLED=true
 """
 from __future__ import annotations
 
@@ -17,6 +19,12 @@ import signal
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+from src.app.runner import TradingBotRunner
+from src.brokers.ctrader_mcp import CTraderMCPBroker
+from src.core.risk import RiskEngine
+from src.services.monitor import OperationalMonitor
+from src.services.state_manager import StateManager
 
 
 def _check_trading_mode() -> str:
@@ -68,37 +76,39 @@ async def main() -> None:
     for sig in (signal.SIGTERM, signal.SIGINT):
         signal.signal(sig, _handle_signal)
 
-    # Phase 0 HARD GATE — broker not yet verified
-    if mode in ("LIVE", "DEMO"):
-        _log("BROKER_GATE", {
-            "status": "BLOCKED",
-            "reason": "Phase 0 broker verification not yet complete",
-            "action": "Running in PAPER mode until credentials verified",
-        }, level="warning")
-        mode = "PAPER"
+    # Initialize Core Services
+    broker = CTraderMCPBroker()
+    risk_engine = RiskEngine()
+    state_mgr = StateManager()
+    monitor = OperationalMonitor()
 
-    # Write health file (checked by Docker HEALTHCHECK)
-    state_dir = Path(os.environ.get("STATE_DIR", "./state"))
-    state_dir.mkdir(parents=True, exist_ok=True)
-    health_path = state_dir / "health.json"
-    health_path.write_text(json.dumps({
-        "alive": True,
-        "mode": mode,
-        "started": datetime.now(tz=timezone.utc).isoformat(),
-        "status": "SCAFFOLD_ONLY",
-    }))
+    runner = TradingBotRunner(
+        broker=broker,
+        risk_engine=risk_engine,
+        state_manager=state_mgr,
+        monitor=monitor,
+    )
 
-    _log("BOT_RUNNING", {
-        "mode": mode,
-        "status": "SCAFFOLD — strategies and broker not yet wired",
-    })
+    # Wire runner shutdown with global signal
+    async def monitor_shutdown():
+        await _shutdown.wait()
+        runner.stop()
 
-    # Main loop (placeholder — will be replaced with full event loop)
-    while not _shutdown.is_set():
-        await asyncio.sleep(1)
+    shutdown_task = asyncio.create_task(monitor_shutdown())
 
-    _log("BOT_STOPPED", {"mode": mode})
-    health_path.write_text(json.dumps({"alive": False}))
+    try:
+        if mode == "DEMO":
+            _log("RUNNER_START", {"mode": "DEMO", "action": "Starting 24/7 cTrader Demo loop"})
+            await runner.run_forever(cycle_interval_seconds=float(os.environ.get("CYCLE_INTERVAL", "5.0")))
+        else:
+            _log("RUNNER_START", {"mode": mode, "action": "Running in PAPER simulation loop"})
+            # In paper mode, run simulation cycles
+            while not _shutdown.is_set():
+                await asyncio.sleep(1)
+    finally:
+        shutdown_task.cancel()
+        _log("BOT_STOPPED", {"mode": mode})
+        monitor.shutdown()
 
 
 if __name__ == "__main__":

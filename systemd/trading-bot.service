@@ -1,0 +1,39 @@
+[Unit]
+Description=Deriv cTrader Autonomous Trading Bot (24/7 Demo Daemon)
+After=network.target network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=botuser
+Group=botuser
+WorkingDirectory=/app
+EnvironmentFile=/app/.env
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=TRADING_MODE=DEMO
+Environment=LIVE_TRADING_ENABLED=false
+Environment=TZ=UTC
+
+ExecStart=/usr/local/bin/python -m src.app.main
+ExecStop=/bin/kill -s SIGTERM $MAINPID
+
+Restart=always
+RestartSec=10s
+KillMode=mixed
+TimeoutStopSec=30s
+
+# Sandboxing and security hardening
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/app/logs /app/state
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Resource limits
+LimitNOFILE=65535
+CPUQuota=100%
+MemoryMax=1G
+
+[Install]
+WantedBy=multi-user.target

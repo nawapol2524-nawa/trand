@@ -1,0 +1,140 @@
+{
+  "timestamp": "2026-09-23T12:38:44.239563+00:00",
+  "broker": "Deriv cTrader Remote MCP",
+  "account_id": "2548625",
+  "trading_mode": "DEMO",
+  "broker_connected": true,
+  "account_balance": 9999.85,
+  "open_positions": 0,
+  "total_scenarios_tested": 18,
+  "scenarios_passed": 18,
+  "overall_status": "PASS",
+  "scenarios": [
+    {
+      "id": 1,
+      "name": "AI unavailable",
+      "expected": "Failover to OfflineDeterministicAIProvider without crash",
+      "actual": "Handled by offline_rules (decision=APPROVE)",
+      "status": "PASS"
+    },
+    {
+      "id": 2,
+      "name": "AI timeout",
+      "expected": "Graceful fallback to offline rules",
+      "actual": "Handled by offline_rules",
+      "status": "PASS"
+    },
+    {
+      "id": 3,
+      "name": "AI invalid response",
+      "expected": "DeterministicGate rejects schema violation",
+      "actual": "Rejected: Schema validation failed: missing symbol, rationale, invalidation, or invalid confidence",
+      "status": "PASS"
+    },
+    {
+      "id": 4,
+      "name": "Market data stale",
+      "expected": "RiskEngine blocks stale data",
+      "actual": "Blocked with reason: STALE_DATA",
+      "status": "PASS"
+    },
+    {
+      "id": 5,
+      "name": "Malformed market data",
+      "expected": "Validation error on High < Low",
+      "actual": "ValueError raised, fail-closed",
+      "status": "PASS"
+    },
+    {
+      "id": 6,
+      "name": "cTrader disconnect",
+      "expected": "Telemetry reports DEGRADED_BROKER_DISCONNECTED",
+      "actual": "Status: DEGRADED_BROKER_DISCONNECTED",
+      "status": "PASS"
+    },
+    {
+      "id": 7,
+      "name": "Reconnect",
+      "expected": "Reconnect metric incremented",
+      "actual": "Reconnect count: 1",
+      "status": "PASS"
+    },
+    {
+      "id": 8,
+      "name": "Order rejection",
+      "expected": "Rejected order does not enter local state",
+      "actual": "Open positions: 0",
+      "status": "PASS"
+    },
+    {
+      "id": 9,
+      "name": "Order timeout",
+      "expected": "Reconciliation safely verifies broker truth",
+      "actual": "Reconciliation status: IN_SYNC",
+      "status": "PASS"
+    },
+    {
+      "id": 10,
+      "name": "Duplicate execution attempt",
+      "expected": "Blocked by SYMBOL_EXPOSURE_LIMIT",
+      "actual": "Blocked: SYMBOL_EXPOSURE_LIMIT",
+      "status": "PASS"
+    },
+    {
+      "id": 11,
+      "name": "Application restart",
+      "expected": "State safely reloaded from disk",
+      "actual": "Recovered daily starting balance: $9500.00",
+      "status": "PASS"
+    },
+    {
+      "id": 12,
+      "name": "Restart with open position",
+      "expected": "Broker position discovered and tracked without duplication",
+      "actual": "Discovered position: ['12345']",
+      "status": "PASS"
+    },
+    {
+      "id": 13,
+      "name": "Restart after network interruption",
+      "expected": "Syncs properly once network is restored",
+      "actual": "Broker open count synced to 1",
+      "status": "PASS"
+    },
+    {
+      "id": 14,
+      "name": "Local state vs broker state mismatch",
+      "expected": "Detects external closure and moves to history",
+      "actual": "Closed detected: ['P1']",
+      "status": "PASS"
+    },
+    {
+      "id": 15,
+      "name": "Kill switch activation",
+      "expected": "Immediately halts all new orders",
+      "actual": "Blocked: KILL_SWITCH_ACTIVE",
+      "status": "PASS"
+    },
+    {
+      "id": 16,
+      "name": "Daily loss threshold condition",
+      "expected": "Blocks new orders when daily loss >= 5%",
+      "actual": "Blocked: DAILY_LOSS_LIMIT",
+      "status": "PASS"
+    },
+    {
+      "id": 17,
+      "name": "Consecutive loss halt",
+      "expected": "Halts trading after 5 consecutive losses",
+      "actual": "Blocked: CONSECUTIVE_LOSS_HALT",
+      "status": "PASS"
+    },
+    {
+      "id": 18,
+      "name": "Max position limit",
+      "expected": "Blocks new orders when 3 positions are open",
+      "actual": "Blocked: MAX_POSITIONS_REACHED",
+      "status": "PASS"
+    }
+  ]
+}
