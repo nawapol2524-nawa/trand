@@ -218,8 +218,33 @@ No duplicate implementations permitted.
 
 ---
 
+## INTEGRATION WITH SCENARIO ENGINE & UNIVERSAL AI LAYER
+
+```
+ARCHITECTURE:
+Deterministic Strategy Signals / Structure
+          ↓
+Scenario Engine (src/core/scenarios.py)
+          ↓
+Event Detector (src/ai/event_detector.py)
+          ↓
+Universal AI Proposal Layer (src/ai/)
+          ↓
+Deterministic Gate (src/ai/validator.py)
+          ↓
+Deterministic Risk Engine (src/core/risk.py)
+```
+
+1. **Deterministic Signals**: Strategies evaluate market data and emit technical signals based strictly on frozen rules.
+2. **Scenario Book Alignment**: The Scenario Engine tracks active scenarios (e.g. `BULLISH_CONTINUATION`). AI can propose scenario updates, but activations/invalidations are validated deterministically.
+3. **AI as Proposal**: When triggered by meaningful events (BOS, monitored zone entry), the Universal AI Layer generates a `TradeProposal`.
+4. **Veto & Gate**: If AI proposal conflicts with frozen strategy direction or risk limits, the deterministic gate REJECTS the trade (Fail-Closed). AI cannot force a trade.
+
+---
+
 ## VERSION HISTORY
 
 | Version | Date | Change |
 |---------|------|--------|
 | 1.0.0 | 2026-09-23 | Initial frozen spec |
+| 1.1.0 | 2026-09-23 | Added Scenario Engine and Universal AI Proposal Layer integration |

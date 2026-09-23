@@ -1,0 +1,51 @@
+# Verified Symbol Configuration for Deriv cTrader
+# Verified via Live cTrader Remote MCP Server on 2026-09-23
+
+symbols:
+  XAUUSD:
+    strategy: XAU_MEAN_REVERSION_V1
+    symbol_id: 41
+    symbol_name: "XAUUSD"
+    description: "Gold vs US Dollar"
+    price_scale: 100000.0  # 433825000 / 100000 = 4338.25
+    min_volume: 0.01
+    volume_step: 0.01
+    sl_atr_multiplier: 2.0
+    tp_atr_multiplier: 3.0
+    enabled: true
+
+  EURUSD:
+    strategy: FOREX_TREND_BREAKOUT_V1
+    symbol_id: 1
+    symbol_name: "EURUSD"
+    description: "Euro vs US Dollar"
+    price_scale: 100000.0  # 114269 / 100000 = 1.14269
+    min_volume: 0.01
+    volume_step: 0.01
+    sl_atr_multiplier: 1.5
+    tp_atr_multiplier: 2.5
+    enabled: true
+
+  GBPUSD:
+    strategy: FOREX_TREND_BREAKOUT_V1
+    symbol_id: 2
+    symbol_name: "GBPUSD"
+    description: "British Pound vs US Dollar"
+    price_scale: 100000.0  # 133151 / 100000 = 1.33151
+    min_volume: 0.01
+    volume_step: 0.01
+    sl_atr_multiplier: 1.5
+    tp_atr_multiplier: 2.5
+    enabled: true
+
+  USDJPY:
+    strategy: FOREX_TREND_BREAKOUT_V1
+    symbol_id: 4
+    symbol_name: "USDJPY"
+    description: "US Dollar vs Japanese Yen"
+    price_scale: 100000.0  # 15763000 / 100000 = 157.630
+    min_volume: 0.01
+    volume_step: 0.01
+    sl_atr_multiplier: 1.5
+    tp_atr_multiplier: 2.5
+    enabled: true

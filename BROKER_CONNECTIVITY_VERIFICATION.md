@@ -1,6 +1,40 @@
 # BROKER_CONNECTIVITY_VERIFICATION.md
-# STATUS: CONDITIONAL — Account confirmed, API credentials INCOMPLETE
-# Generated: 2026-09-23
+# STATUS: BLOCKED — Spotware KYC Pending (up to 3 business days)
+# Updated: 2026-09-23
+
+## 🔴 CURRENT BLOCKER: Application KYC Pending
+
+| Item | Value | Status |
+|------|-------|--------|
+| App Name | BotTraingforme | ✅ REGISTERED |
+| App ID | 41116 | ✅ CONFIRMED |
+| Spotware Status | **Submitted** (not Active) | 🔴 BLOCKED |
+| Trading scope | Cannot obtain until Active | ❌ BLOCKED |
+| ETA | Up to 3 business days | ⏳ WAITING |
+
+### What this means
+- Cannot get OAuth Access Token with `trading` scope
+- Cannot implement or test `ProtoOANewOrderReq` (order execution)
+- Cannot verify symbol discovery via API
+- **Phase 6 (Broker Implementation): HARD BLOCKED until Active**
+
+### While waiting — what we CAN do
+- ✅ Build `src/backtest/` engine (no broker needed)
+- ✅ Build `src/core/risk.py` (no broker needed)
+- ✅ Build full test suite (no broker needed)
+- ✅ Deploy scaffold to Railway.app (will run in PAPER mode)
+- ✅ Continue all strategy/indicator work
+
+### When Status Changes to "Active"
+1. Go to https://connect.spotware.com/apps/41116/playground
+2. Select **"Account info and trading"** scope
+3. Click **Get token** → Authorize account 2565611
+4. Run: `python3 scripts/get_ctrader_token.py` (or use Sandbox token)
+5. Phase 6 UNBLOCKED → broker implementation starts
+
+---
+
+
 
 ---
 
@@ -25,7 +59,7 @@
 
 | Credential | Type | Status | Action Required |
 |------------|------|--------|-----------------|
-| Deriv API Token (`pat_0a69f...`) | Deriv WebSocket API PAT | ✅ Received | Store in .env ONLY — revoke & regenerate after setup |
+| Deriv API Token (`[REDACTED]`) | Deriv WebSocket API PAT | ✅ Received | Store in .env ONLY — revoke & regenerate after setup |
 | "App ID" (`34tzoLtwQUNOLqSK0uLaj`) | ⚠️ Unknown type — NOT numeric App ID | ❓ Needs clarification | See note below |
 | cTrader Client ID | NOT PROVIDED | ❌ MISSING | Required for cTrader Open API |
 | cTrader Client Secret | NOT PROVIDED | ❌ MISSING | Required for cTrader Open API |
