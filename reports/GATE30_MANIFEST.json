@@ -1,0 +1,66 @@
+{
+  "gate": "GATE_30",
+  "timestamp": "2026-09-23T13:10:00Z",
+  "repository": "https://github.com/nawapol2524-nawa/trand",
+  "base_commit": "fa3ad83713f019f860fae24be2fc9b7dcaea4b2c",
+  "frozen_specifications": {
+    "STRATEGY_SPEC.md": "ec04d2db986bf4edc0495a361537f6764a1d12deb724e80d37b9ea931888bbdf",
+    "RISK_MODEL.md": "c0d303f6f7cfb1db2e15be65d215b7855975a04a8ace68444139d38922c2122e",
+    "SYMBOL_SPECIFICATION.md": "47807e38218ea2a726491905552e99b0e5d4703b96b6f850f8eb2bdce64fc035"
+  },
+  "security_audit": {
+    "status": "CONDITIONAL",
+    "env_tracked": false,
+    "git_history_clean": true,
+    "credential_exposure": "CHAT_EXPOSURE",
+    "action_required": "ROTATION_REQUIRED"
+  },
+  "broker_reconciliation": {
+    "status": "PASS",
+    "broker": "Deriv cTrader Remote MCP",
+    "account_id": "2548625",
+    "trading_mode": "DEMO",
+    "symbols_verified": [
+      "EURUSD",
+      "GBPUSD",
+      "USDJPY",
+      "XAUUSD"
+    ],
+    "order_lifecycle": {
+      "create_order": "PASS (Order 44624448, Pos 139550911)",
+      "amend_position": "PASS (ORDER_REPLACED, SL amended to 1.14118)",
+      "close_position": "PASS (ORDER_CANCELLED, 100000 units closed)",
+      "reconciliation": "PASS (0 open positions)"
+    }
+  },
+  "data_audit": {
+    "status": "PASS",
+    "total_bars": 3572,
+    "ohlc_violations": 0,
+    "nan_inf_count": 0,
+    "strictly_monotonic": true
+  },
+  "backtest": {
+    "status": "PASS",
+    "determinism_verified": true,
+    "determinism_sha256": "157443b92da82038c6ded740967460b3dc624fecc8a7dd5fb9dd9b455083b2ff",
+    "total_trades": 22,
+    "win_rate_pct": 36.36,
+    "profit_factor": 0.76,
+    "net_pnl_usd": -386.53,
+    "max_drawdown_pct": 7.1,
+    "max_consecutive_losses": 4
+  },
+  "stress_tests": {
+    "status": "PASS",
+    "scenarios_tested": 8
+  },
+  "test_suite": {
+    "status": "PASS",
+    "total_tests": 50,
+    "passed": 50,
+    "failed": 0
+  },
+  "final_verdict": "CONDITIONAL",
+  "verdict_rationale": "Core architecture, broker execution, demo lifecycle, data integrity, test suite, and determinism all pass. CONDITIONAL rating assigned solely due to mandatory credential rotation required for chat-exposed cTrader/AI tokens prior to any production deployment."
+}

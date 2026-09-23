@@ -1,0 +1,3764 @@
+{
+  "total_trades": 22,
+  "winning_trades": 8,
+  "losing_trades": 14,
+  "win_rate_pct": 36.36,
+  "profit_factor": 0.76,
+  "expectancy_usd": -17.57,
+  "expectancy_r": -0.17,
+  "gross_profit_usd": 1237.02,
+  "gross_loss_usd": 1623.55,
+  "net_pnl_usd": -386.53,
+  "net_pnl_pct": -3.87,
+  "initial_balance": 10000.0,
+  "ending_balance": 9613.47,
+  "ending_equity": 9613.47,
+  "max_drawdown_usd": 709.63,
+  "max_drawdown_pct": 7.1,
+  "sharpe_ratio": -4.67,
+  "sortino_ratio": -116.29,
+  "max_consecutive_losses": 4,
+  "max_consecutive_wins": 3,
+  "avg_trade_duration_minutes": 47.3,
+  "spread_multiplier": 1.0,
+  "slippage_mode": "0.0",
+  "symbol_breakdown": {
+    "EURUSD": {
+      "trades": 8,
+      "wins": 2,
+      "losses": 6,
+      "win_rate_pct": 25.0,
+      "profit_factor": 0.46,
+      "gross_profit_usd": 335.52,
+      "gross_loss_usd": 723.28,
+      "net_pnl_usd": -387.76,
+      "avg_duration_minutes": 37.5
+    },
+    "GBPUSD": {
+      "trades": 9,
+      "wins": 5,
+      "losses": 4,
+      "win_rate_pct": 55.56,
+      "profit_factor": 1.56,
+      "gross_profit_usd": 720.24,
+      "gross_loss_usd": 462.45,
+      "net_pnl_usd": 257.79,
+      "avg_duration_minutes": 48.9
+    },
+    "USDJPY": {
+      "trades": 5,
+      "wins": 1,
+      "losses": 4,
+      "win_rate_pct": 20.0,
+      "profit_factor": 0.41,
+      "gross_profit_usd": 181.26,
+      "gross_loss_usd": 437.82,
+      "net_pnl_usd": -256.56,
+      "avg_duration_minutes": 60.0
+    }
+  },
+  "equity_curve": [
+    {
+      "timestamp": "2026-09-21T02:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T02:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T02:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T02:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T02:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T02:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T02:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T02:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T03:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T03:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T03:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T03:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T03:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T03:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T03:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T03:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T03:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T03:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T03:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T03:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T04:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T04:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T04:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T04:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T04:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T04:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T04:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T04:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T04:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T04:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T04:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T04:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T05:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T05:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T05:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T05:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T05:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T05:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T05:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T05:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T05:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T05:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T05:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T05:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T06:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T06:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T06:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T06:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T06:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T06:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T06:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T06:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T06:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T06:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T06:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T06:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T07:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T07:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T07:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T07:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T07:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T07:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T07:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T07:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T07:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T07:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T07:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T07:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T08:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T08:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T08:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T08:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T08:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T08:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T08:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T08:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T08:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T08:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T08:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T08:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T09:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T09:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T09:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T09:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T09:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T09:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T09:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T09:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T09:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T09:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T09:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T09:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T10:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T10:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T10:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T10:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T10:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T10:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T10:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T10:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T10:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T10:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T10:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T10:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T11:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T11:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T11:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T11:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T11:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T11:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T11:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T11:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T11:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T11:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T11:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T11:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T12:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T12:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T12:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T12:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T12:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T12:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T12:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T12:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T12:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T12:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T12:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T12:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T13:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T13:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T13:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T13:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T13:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T13:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T13:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T13:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T13:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T13:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T13:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T13:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T14:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T14:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T14:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T14:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T14:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T14:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T14:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T14:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T14:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T14:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T14:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T14:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T15:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T15:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T15:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T15:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T15:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T15:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T15:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T15:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T15:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T15:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T15:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T15:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T16:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T16:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T16:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T16:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T16:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T16:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T16:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T16:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T16:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T16:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T16:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T16:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T17:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T17:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T17:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T17:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T17:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T17:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T17:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T17:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T17:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T17:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T17:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T17:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T18:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T18:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T18:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T18:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T18:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T18:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T18:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T18:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T18:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T18:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T18:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T18:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T19:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T19:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T19:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T19:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T19:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T19:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T19:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T19:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T19:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T19:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T19:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T19:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T20:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T20:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T20:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T20:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T20:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T20:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T20:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T20:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T20:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T20:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T20:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T20:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T21:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T21:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T21:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T21:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T21:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T21:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T21:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T21:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T21:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T21:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T22:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T22:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T22:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T22:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T22:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T22:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T22:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T22:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T22:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T22:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T22:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T22:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T23:00:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T23:05:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T23:10:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T23:15:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T23:20:00+00:00",
+      "balance": 10000.0,
+      "equity": 10000.0,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-21T23:25:00+00:00",
+      "balance": 10000.0,
+      "equity": 9974.98,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-21T23:30:00+00:00",
+      "balance": 10000.0,
+      "equity": 9961.33,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-21T23:35:00+00:00",
+      "balance": 10000.0,
+      "equity": 9974.98,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-21T23:40:00+00:00",
+      "balance": 10000.0,
+      "equity": 9934.03,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-21T23:45:00+00:00",
+      "balance": 10000.0,
+      "equity": 9929.48,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-21T23:50:00+00:00",
+      "balance": 10000.0,
+      "equity": 9929.48,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-21T23:55:00+00:00",
+      "balance": 10000.0,
+      "equity": 9965.88,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T00:00:00+00:00",
+      "balance": 9874.87,
+      "equity": 9874.87,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T00:05:00+00:00",
+      "balance": 9874.87,
+      "equity": 9874.87,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T00:10:00+00:00",
+      "balance": 9874.87,
+      "equity": 9874.87,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T00:15:00+00:00",
+      "balance": 9874.87,
+      "equity": 9861.33,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T00:20:00+00:00",
+      "balance": 9874.87,
+      "equity": 9792.73,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T00:25:00+00:00",
+      "balance": 9874.87,
+      "equity": 9818.01,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T00:30:00+00:00",
+      "balance": 9762.54,
+      "equity": 9762.54,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T00:35:00+00:00",
+      "balance": 9762.54,
+      "equity": 9762.54,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T00:40:00+00:00",
+      "balance": 9762.54,
+      "equity": 9750.28,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T00:45:00+00:00",
+      "balance": 9762.54,
+      "equity": 9725.78,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T00:50:00+00:00",
+      "balance": 9762.54,
+      "equity": 9704.54,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T00:55:00+00:00",
+      "balance": 9652.7,
+      "equity": 9652.7,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T01:00:00+00:00",
+      "balance": 9652.7,
+      "equity": 9652.7,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T01:05:00+00:00",
+      "balance": 9652.7,
+      "equity": 9652.7,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T01:10:00+00:00",
+      "balance": 9652.7,
+      "equity": 9640.69,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T01:15:00+00:00",
+      "balance": 9652.7,
+      "equity": 9672.71,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T01:20:00+00:00",
+      "balance": 9652.7,
+      "equity": 9715.92,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T01:25:00+00:00",
+      "balance": 9652.7,
+      "equity": 9706.32,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T01:30:00+00:00",
+      "balance": 9652.7,
+      "equity": 9695.11,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T01:35:00+00:00",
+      "balance": 9652.7,
+      "equity": 9696.71,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T01:40:00+00:00",
+      "balance": 9652.7,
+      "equity": 9755.92,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T01:45:00+00:00",
+      "balance": 9652.7,
+      "equity": 9731.95,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T01:50:00+00:00",
+      "balance": 9833.96,
+      "equity": 9787.08,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T01:55:00+00:00",
+      "balance": 9833.96,
+      "equity": 9792.94,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T02:00:00+00:00",
+      "balance": 9719.69,
+      "equity": 9719.69,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T02:05:00+00:00",
+      "balance": 9719.69,
+      "equity": 9719.69,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T02:10:00+00:00",
+      "balance": 9719.69,
+      "equity": 9719.69,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T02:15:00+00:00",
+      "balance": 9719.69,
+      "equity": 9719.69,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T02:20:00+00:00",
+      "balance": 9719.69,
+      "equity": 9719.69,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T02:25:00+00:00",
+      "balance": 9719.69,
+      "equity": 9695.93,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T02:30:00+00:00",
+      "balance": 9598.73,
+      "equity": 9598.73,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T02:35:00+00:00",
+      "balance": 9598.73,
+      "equity": 9598.73,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T02:40:00+00:00",
+      "balance": 9598.73,
+      "equity": 9598.73,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T02:45:00+00:00",
+      "balance": 9598.73,
+      "equity": 9598.73,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T02:50:00+00:00",
+      "balance": 9598.73,
+      "equity": 9598.73,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T02:55:00+00:00",
+      "balance": 9598.73,
+      "equity": 9598.73,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T03:00:00+00:00",
+      "balance": 9598.73,
+      "equity": 9581.27,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T03:05:00+00:00",
+      "balance": 9598.73,
+      "equity": 9537.62,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T03:10:00+00:00",
+      "balance": 9598.73,
+      "equity": 9604.55,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T03:15:00+00:00",
+      "balance": 9598.73,
+      "equity": 9595.82,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T03:20:00+00:00",
+      "balance": 9598.73,
+      "equity": 9630.74,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T03:25:00+00:00",
+      "balance": 9598.73,
+      "equity": 9700.27,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T03:30:00+00:00",
+      "balance": 9773.33,
+      "equity": 9815.35,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T03:35:00+00:00",
+      "balance": 9773.33,
+      "equity": 9834.49,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T03:40:00+00:00",
+      "balance": 9773.33,
+      "equity": 9785.44,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T03:45:00+00:00",
+      "balance": 9773.33,
+      "equity": 9792.96,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T03:50:00+00:00",
+      "balance": 9773.33,
+      "equity": 9760.78,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T03:55:00+00:00",
+      "balance": 9773.33,
+      "equity": 9768.91,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T04:00:00+00:00",
+      "balance": 9773.33,
+      "equity": 9748.89,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T04:05:00+00:00",
+      "balance": 9773.33,
+      "equity": 9723.99,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-22T04:10:00+00:00",
+      "balance": 9773.33,
+      "equity": 9821.15,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-22T04:15:00+00:00",
+      "balance": 9773.33,
+      "equity": 9794.27,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-22T04:20:00+00:00",
+      "balance": 9773.33,
+      "equity": 9792.36,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-22T04:25:00+00:00",
+      "balance": 9662.0,
+      "equity": 9751.14,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T04:30:00+00:00",
+      "balance": 9662.0,
+      "equity": 9771.16,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T04:35:00+00:00",
+      "balance": 9662.0,
+      "equity": 9816.45,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T04:40:00+00:00",
+      "balance": 9662.0,
+      "equity": 9807.27,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T04:45:00+00:00",
+      "balance": 9662.0,
+      "equity": 9856.32,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T04:50:00+00:00",
+      "balance": 9662.0,
+      "equity": 9887.62,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T04:55:00+00:00",
+      "balance": 9662.0,
+      "equity": 9937.89,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T05:00:00+00:00",
+      "balance": 9662.0,
+      "equity": 9893.65,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T05:05:00+00:00",
+      "balance": 9662.0,
+      "equity": 9923.73,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T05:10:00+00:00",
+      "balance": 9662.0,
+      "equity": 9849.85,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T05:15:00+00:00",
+      "balance": 9662.0,
+      "equity": 9817.5,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T05:20:00+00:00",
+      "balance": 9662.0,
+      "equity": 9791.79,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T05:25:00+00:00",
+      "balance": 9662.0,
+      "equity": 9802.19,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T05:30:00+00:00",
+      "balance": 9662.0,
+      "equity": 9672.79,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T05:35:00+00:00",
+      "balance": 9545.44,
+      "equity": 9510.73,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T05:40:00+00:00",
+      "balance": 9545.44,
+      "equity": 9507.47,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T05:45:00+00:00",
+      "balance": 9545.44,
+      "equity": 9478.19,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-22T05:50:00+00:00",
+      "balance": 9426.09,
+      "equity": 9388.15,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T05:55:00+00:00",
+      "balance": 9426.09,
+      "equity": 9407.12,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-22T06:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T06:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T06:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T06:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T06:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T06:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T06:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T06:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T06:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T06:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T06:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T06:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T07:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T07:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T07:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T07:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T07:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T07:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T07:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T07:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T07:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T07:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T07:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T07:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T08:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T08:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T08:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T08:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T08:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T08:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T08:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T08:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T08:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T08:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T08:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T08:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T09:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T09:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T09:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T09:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T09:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T09:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T09:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T09:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T09:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T09:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T09:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T09:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T10:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T10:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T10:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T10:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T10:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T10:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T10:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T10:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T10:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T10:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T10:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T10:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T11:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T11:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T11:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T11:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T11:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T11:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T11:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T11:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T11:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T11:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T11:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T11:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T12:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T12:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T12:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T12:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T12:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T12:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T12:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T12:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T12:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T12:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T12:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T12:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T13:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T13:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T13:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T13:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T13:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T13:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T13:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T13:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T13:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T13:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T13:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T13:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T14:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T14:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T14:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T14:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T14:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T14:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T14:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T14:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T14:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T14:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T14:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T14:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T15:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T15:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T15:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T15:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T15:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T15:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T15:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T15:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T15:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T15:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T15:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T15:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T16:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T16:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T16:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T16:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T16:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T16:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T16:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T16:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T16:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T16:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T16:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T16:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T17:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T17:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T17:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T17:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T17:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T17:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T17:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T17:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T17:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T17:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T17:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T17:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T18:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T18:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T18:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T18:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T18:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T18:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T18:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T18:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T18:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T18:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T18:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T18:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T19:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T19:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T19:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T19:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T19:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T19:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T19:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T19:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T19:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T19:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T19:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T19:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T20:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T20:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T20:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T20:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T20:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T20:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T20:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T20:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T20:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T20:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T20:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T20:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T21:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T21:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T21:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T21:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T21:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T21:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T21:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T21:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T21:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T21:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T22:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T22:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T22:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T22:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T22:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T22:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T22:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T22:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T22:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T22:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T22:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T22:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T23:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T23:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T23:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T23:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T23:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T23:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T23:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T23:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T23:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T23:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T23:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-22T23:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9312.27,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-23T00:00:00+00:00",
+      "balance": 9312.27,
+      "equity": 9290.37,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T00:05:00+00:00",
+      "balance": 9312.27,
+      "equity": 9294.02,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T00:10:00+00:00",
+      "balance": 9312.27,
+      "equity": 9301.32,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T00:15:00+00:00",
+      "balance": 9312.27,
+      "equity": 9326.87,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T00:20:00+00:00",
+      "balance": 9312.27,
+      "equity": 9304.97,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T00:25:00+00:00",
+      "balance": 9312.27,
+      "equity": 9297.67,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T00:30:00+00:00",
+      "balance": 9312.27,
+      "equity": 9334.17,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T00:35:00+00:00",
+      "balance": 9312.27,
+      "equity": 9374.32,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T00:40:00+00:00",
+      "balance": 9312.27,
+      "equity": 9374.32,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T00:45:00+00:00",
+      "balance": 9312.27,
+      "equity": 9367.02,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T00:50:00+00:00",
+      "balance": 9312.27,
+      "equity": 9377.97,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T00:55:00+00:00",
+      "balance": 9312.27,
+      "equity": 9399.83,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-23T01:00:00+00:00",
+      "balance": 9476.52,
+      "equity": 9415.98,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T01:05:00+00:00",
+      "balance": 9476.52,
+      "equity": 9464.75,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T01:10:00+00:00",
+      "balance": 9476.52,
+      "equity": 9498.76,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T01:15:00+00:00",
+      "balance": 9476.52,
+      "equity": 9706.3,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T01:20:00+00:00",
+      "balance": 9812.29,
+      "equity": 9819.79,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-23T01:25:00+00:00",
+      "balance": 9812.29,
+      "equity": 9984.5,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-23T01:30:00+00:00",
+      "balance": 9694.57,
+      "equity": 9708.5,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T01:35:00+00:00",
+      "balance": 9694.57,
+      "equity": 9685.04,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T01:40:00+00:00",
+      "balance": 9694.57,
+      "equity": 9740.74,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T01:45:00+00:00",
+      "balance": 9694.57,
+      "equity": 9721.69,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T01:50:00+00:00",
+      "balance": 9694.57,
+      "equity": 9677.71,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T01:55:00+00:00",
+      "balance": 9694.57,
+      "equity": 9676.25,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T02:00:00+00:00",
+      "balance": 9694.57,
+      "equity": 9696.77,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T02:05:00+00:00",
+      "balance": 9694.57,
+      "equity": 9750.99,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T02:10:00+00:00",
+      "balance": 9694.57,
+      "equity": 9721.3,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-23T02:15:00+00:00",
+      "balance": 9694.57,
+      "equity": 9728.63,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-23T02:20:00+00:00",
+      "balance": 9694.57,
+      "equity": 9653.12,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-23T02:25:00+00:00",
+      "balance": 9576.77,
+      "equity": 9609.75,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T02:30:00+00:00",
+      "balance": 9576.77,
+      "equity": 9627.33,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T02:35:00+00:00",
+      "balance": 9576.77,
+      "equity": 9631.73,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T02:40:00+00:00",
+      "balance": 9576.77,
+      "equity": 9624.4,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T02:45:00+00:00",
+      "balance": 9576.77,
+      "equity": 9650.77,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T02:50:00+00:00",
+      "balance": 9576.77,
+      "equity": 9650.77,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T02:55:00+00:00",
+      "balance": 9576.77,
+      "equity": 9609.78,
+      "open_positions": 2
+    },
+    {
+      "timestamp": "2026-09-23T03:00:00+00:00",
+      "balance": 9576.77,
+      "equity": 9609.78,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T03:05:00+00:00",
+      "balance": 9576.77,
+      "equity": 9700.65,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T03:10:00+00:00",
+      "balance": 9576.77,
+      "equity": 9640.89,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T03:15:00+00:00",
+      "balance": 9576.77,
+      "equity": 9876.79,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T03:20:00+00:00",
+      "balance": 9576.77,
+      "equity": 9667.44,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T03:25:00+00:00",
+      "balance": 9576.77,
+      "equity": 9685.9,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T03:30:00+00:00",
+      "balance": 9576.77,
+      "equity": 9703.73,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T03:35:00+00:00",
+      "balance": 9576.77,
+      "equity": 9890.0,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T03:40:00+00:00",
+      "balance": 9576.77,
+      "equity": 9870.63,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T03:45:00+00:00",
+      "balance": 9576.77,
+      "equity": 9931.12,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T03:50:00+00:00",
+      "balance": 9919.63,
+      "equity": 9952.1,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T03:55:00+00:00",
+      "balance": 9919.63,
+      "equity": 10086.33,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T04:00:00+00:00",
+      "balance": 9919.63,
+      "equity": 10080.62,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T04:05:00+00:00",
+      "balance": 9919.63,
+      "equity": 10091.3,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T04:10:00+00:00",
+      "balance": 9919.63,
+      "equity": 10021.0,
+      "open_positions": 3
+    },
+    {
+      "timestamp": "2026-09-23T04:15:00+00:00",
+      "balance": 9679.51,
+      "equity": 9687.57,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T04:20:00+00:00",
+      "balance": 9679.51,
+      "equity": 9681.71,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T04:25:00+00:00",
+      "balance": 9575.19,
+      "equity": 9575.19,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-23T04:30:00+00:00",
+      "balance": 9575.19,
+      "equity": 9575.19,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-23T04:35:00+00:00",
+      "balance": 9575.19,
+      "equity": 9575.19,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-23T04:40:00+00:00",
+      "balance": 9575.19,
+      "equity": 9575.19,
+      "open_positions": 0
+    },
+    {
+      "timestamp": "2026-09-23T04:45:00+00:00",
+      "balance": 9575.19,
+      "equity": 9556.05,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T04:50:00+00:00",
+      "balance": 9575.19,
+      "equity": 9559.24,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T04:55:00+00:00",
+      "balance": 9575.19,
+      "equity": 9575.19,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T05:00:00+00:00",
+      "balance": 9575.19,
+      "equity": 9543.29,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T05:05:00+00:00",
+      "balance": 9575.19,
+      "equity": 9578.38,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T05:10:00+00:00",
+      "balance": 9575.19,
+      "equity": 9562.43,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T05:15:00+00:00",
+      "balance": 9575.19,
+      "equity": 9552.86,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T05:20:00+00:00",
+      "balance": 9575.19,
+      "equity": 9559.24,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T05:25:00+00:00",
+      "balance": 9575.19,
+      "equity": 9578.38,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T05:30:00+00:00",
+      "balance": 9575.19,
+      "equity": 9587.95,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T05:35:00+00:00",
+      "balance": 9575.19,
+      "equity": 9623.04,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T05:40:00+00:00",
+      "balance": 9575.19,
+      "equity": 9674.08,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T05:45:00+00:00",
+      "balance": 9575.19,
+      "equity": 9725.12,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T05:50:00+00:00",
+      "balance": 9575.19,
+      "equity": 9664.51,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T05:55:00+00:00",
+      "balance": 9575.19,
+      "equity": 9654.94,
+      "open_positions": 1
+    },
+    {
+      "timestamp": "2026-09-23T06:00:00+00:00",
+      "balance": 9575.19,
+      "equity": 9632.61,
+      "open_positions": 1
+    }
+  ]
+}

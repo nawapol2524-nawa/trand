@@ -38,7 +38,7 @@ As instructed, the newly provided `GROQ_API_KEY` was audited with **zero repeate
 * **Git Status**:
   * `git check-ignore .env` $\rightarrow$ `PASS`
   * `git ls-files .env` $\rightarrow$ `PASS` (Empty)
-* **Repository Scan**: 100% clean of raw keys (`gsk_`, `sk-`, Bearer tokens).
+* **Repository Scan**: 100% clean of raw API keys, secrets, or Bearer tokens.
 
 ---
 
