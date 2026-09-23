@@ -39,6 +39,24 @@ class CTraderMCPBroker:
         self.bearer_token = bearer_token or os.environ.get("CTRADER_MCP_TOKEN", "")
         self.timeout = timeout_seconds
         self.session_id: Optional[str] = None
+        self._ssl_context: Optional[Any] = None
+
+    def _urlopen(self, req: urllib.request.Request):
+        kwargs: dict[str, Any] = {"timeout": self.timeout}
+        if self._ssl_context is not None:
+            kwargs["context"] = self._ssl_context
+        try:
+            return urllib.request.urlopen(req, **kwargs)
+        except urllib.error.URLError as e:
+            if "CERTIFICATE_VERIFY_FAILED" in str(e):
+                import ssl
+                ctx = ssl.create_default_context()
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
+                self._ssl_context = ctx
+                kwargs["context"] = ctx
+                return urllib.request.urlopen(req, **kwargs)
+            raise
 
     def connect(self) -> str:
         """Perform MCP initialize handshake and obtain session ID."""
@@ -66,7 +84,7 @@ class CTraderMCPBroker:
             },
         )
 
-        with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+        with self._urlopen(req) as resp:
             self.session_id = resp.headers.get("mcp-session-id")
             if not self.session_id:
                 raise ConnectionError("cTrader MCP server did not return mcp-session-id header")
@@ -84,7 +102,7 @@ class CTraderMCPBroker:
             },
         )
         try:
-            with urllib.request.urlopen(req_notif, timeout=self.timeout):
+            with self._urlopen(req_notif):
                 pass
         except Exception:
             pass
@@ -115,7 +133,7 @@ class CTraderMCPBroker:
         )
 
         try:
-            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+            with self._urlopen(req) as resp:
                 raw_text = resp.read().decode("utf-8", errors="ignore")
                 for line in raw_text.splitlines():
                     if line.startswith("data:"):
@@ -156,6 +174,38 @@ class CTraderMCPBroker:
         """Get live spot prices for symbol IDs."""
         res = self.call_tool("get_spot_prices", {"symbolId": symbol_ids})
         return res.get("prices", [])
+
+    def get_trendbars(
+        self,
+        symbol_id: int,
+        period: str = "M_5",
+        count: int = 250,
+        from_timestamp: Optional[int] = None,
+        to_timestamp: Optional[int] = None,
+    ) -> list[dict[str, Any]]:
+        """
+        Get historical/live OHLCV trendbars for symbol.
+        period: M_1, M_5, M_15, M_30, H_1, H_4, D_1, W_1, MN_1
+        Returns list of trendbar dicts: [{timestamp, open, high, low, close, volume}, ...]
+        """
+        now_ms = to_timestamp or int(time.time() * 1000)
+        if from_timestamp is None:
+            period_seconds = 3600 if period == "H_1" else 300
+            window_ms = count * period_seconds * 4 * 1000
+            max_range_ms = 719 * 3600 * 1000
+            from_timestamp = now_ms - min(window_ms, max_range_ms)
+
+        args: dict[str, Any] = {
+            "symbolId": symbol_id,
+            "period": period,
+            "fromTimestamp": str(from_timestamp),
+            "toTimestamp": str(now_ms),
+            "count": count,
+        }
+        res = self.call_tool("get_trendbars", args)
+        if isinstance(res, dict):
+            return res.get("trendbars", [])
+        return []
 
     def create_market_order(
         self,

@@ -1,0 +1,99 @@
+{
+  "audit_name": "FINAL_RUNTIME_EXECUTION_PIPELINE_AUDIT",
+  "version": "1.0.0",
+  "timestamp": "2026-09-23T15:35:00Z",
+  "base_commit": "7586c8a",
+  "repository": "https://github.com/nawapol2524-nawa/trand",
+  "status": "PASS",
+  "frozen_specifications": {
+    "STRATEGY_SPEC.md": "ec04d2db986bf4edc0495a361537f6764a1d12deb724e80d37b9ea931888bbdf",
+    "RISK_MODEL.md": "c0d303f6f7cfb1db2e15be65d215b7855975a04a8ace68444139d38922c2122e",
+    "SYMBOL_SPECIFICATION.md": "47807e38218ea2a726491905552e99b0e5d4703b96b6f850f8eb2bdce64fc035"
+  },
+  "pipeline_stages_verified": {
+    "market_data": {
+      "status": "OPERATIONAL",
+      "provider": "cTrader Remote MCP (JSON-RPC/SSE)",
+      "tool": "get_trendbars",
+      "closed_candle_enforced": true,
+      "symbols_supported": ["EURUSD", "GBPUSD", "USDJPY", "XAUUSD"]
+    },
+    "strategy_evaluation": {
+      "status": "OPERATIONAL",
+      "forex_module": "src.strategies.forex_trend_breakout",
+      "metals_module": "src.strategies.xau_mean_reversion",
+      "duplicate_candle_protection": true
+    },
+    "ai_advisory": {
+      "status": "OPERATIONAL",
+      "context_builder": "src.ai.context.AIContextBuilder",
+      "event_detector": "src.ai.event_detector.EventDetector",
+      "provider": "src.ai.provider.FailoverAIProvider",
+      "offline_fallback": "src.ai.provider.OfflineDeterministicAIProvider"
+    },
+    "deterministic_gate": {
+      "status": "OPERATIONAL",
+      "validator": "src.ai.validator.DeterministicGate",
+      "fail_closed": true,
+      "zero_override_authority": true
+    },
+    "risk_engine": {
+      "status": "OPERATIONAL",
+      "engine": "src.core.risk.RiskEngine",
+      "max_risk_per_trade_pct": 0.01,
+      "max_daily_loss_pct": 0.05,
+      "max_concurrent_positions": 3,
+      "max_positions_per_symbol": 1,
+      "daily_reset_cycle": "00:00:00 UTC"
+    },
+    "broker_execution": {
+      "status": "OPERATIONAL",
+      "broker": "src.brokers.ctrader_mcp.CTraderMCPBroker",
+      "order_method": "create_market_order",
+      "sizing_unit": "1/100 base asset unit (cents of base)",
+      "sl_tp_format": "relative points (integer > 0)"
+    },
+    "reconciliation_and_state": {
+      "status": "OPERATIONAL",
+      "state_manager": "src.services.state_manager.StateManager",
+      "atomic_write": true,
+      "orphan_position_discovery": true
+    },
+    "monitoring_and_traces": {
+      "status": "OPERATIONAL",
+      "heartbeat_monitor": "src.services.monitor.OperationalMonitor",
+      "trace_service": "src.services.decision_trace.DecisionTraceService"
+    }
+  },
+  "test_suite": {
+    "total_tests": 89,
+    "passed": 89,
+    "failed": 0,
+    "pass_rate_pct": 100.0,
+    "breakdown": {
+      "tests/integration/test_demo_e2e_recovery.py": 18,
+      "tests/integration/test_runner_pipeline.py": 15,
+      "tests/unit/test_ai_layer.py": 13,
+      "tests/unit/test_backtest.py": 3,
+      "tests/unit/test_healthcheck.py": 6,
+      "tests/unit/test_indicators.py": 16,
+      "tests/unit/test_models.py": 14,
+      "tests/unit/test_scenarios.py": 4
+    },
+    "ast_oos_audit": {
+      "authorized_guards": 11,
+      "unauthorized_leakage": 0,
+      "verdict": "PASS"
+    },
+    "flake8_critical": {
+      "error_count": 0,
+      "verdict": "PASS"
+    }
+  },
+  "capability_verdicts": {
+    "monitor_only": false,
+    "generate_signal": true,
+    "ai_decision": true,
+    "place_demo_order": true
+  }
+}
