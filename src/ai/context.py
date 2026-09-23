@@ -44,6 +44,7 @@ class AIContextBuilder:
         recent_trade_state: Optional[dict[str, Any]] = None,
         news_state: Optional[dict[str, Any]] = None,
         scenario_state: Optional[dict[str, Any]] = None,
+        now: Optional[datetime] = None,
     ) -> AIContext:
         """
         Build normalized AIContext from closed bars.
@@ -52,7 +53,7 @@ class AIContextBuilder:
         if len(m5_bars) < 25:
             raise ValueError(f"Insufficient bars to build AIContext: {len(m5_bars)} < 25")
 
-        now = datetime.now(tz=timezone.utc)
+        now_utc = now or (m5_bars[0].timestamp if m5_bars else datetime.now(tz=timezone.utc))
         closes = np.array([b.close for b in reversed(m5_bars)])
         highs = np.array([b.high for b in reversed(m5_bars)])
         lows = np.array([b.low for b in reversed(m5_bars)])
@@ -96,7 +97,7 @@ class AIContextBuilder:
         else:
             volatility = "NORMAL"
 
-        session = cls.determine_session(now)
+        session = cls.determine_session(now_utc)
 
         return AIContext(
             symbol=symbol,
@@ -114,5 +115,5 @@ class AIContextBuilder:
             account_risk_state=account_risk_state or {"daily_pnl_pct": 0.0, "kill_switch_active": False},
             recent_trade_state=recent_trade_state or {"consecutive_losses": 0},
             scenario_state=scenario_state or {"active_scenario": "NONE"},
-            timestamp=now,
+            timestamp=now_utc,
         )

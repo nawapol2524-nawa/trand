@@ -86,7 +86,7 @@ class OfflineDeterministicAIProvider(BaseAIProvider):
 
     def analyze(self, context: AIContext, trace_id: Optional[str] = None) -> TradeProposal:
         tid = trace_id or f"trace_{uuid.uuid4().hex[:12]}"
-        now = datetime.now(tz=timezone.utc)
+        now = context.timestamp if context.timestamp else datetime.now(tz=timezone.utc)
 
         # Deterministic context evaluation
         if context.news_state.get("high_impact_soon", False):
@@ -305,6 +305,179 @@ class OpenAIProvider(BaseAIProvider):
         raise UnknownError("Exhausted retries without response")
 
 
+class GroqProvider(BaseAIProvider):
+    """
+    Groq LPU LLM Provider (OpenAI-compatible ChatML endpoint).
+    Designed for ultra-low latency inference with Llama 3 models.
+    """
+
+    def __init__(
+        self,
+        api_key: Optional[str] = None,
+        model: str = "llama-3.3-70b-versatile",
+        base_url: str = "https://api.groq.com/openai/v1",
+        timeout_seconds: float = 3.0,
+        max_retries: int = 1,
+    ):
+        self._api_key = api_key or os.environ.get("GROQ_API_KEY", "")
+        self._model = model
+        self._base_url = base_url.rstrip("/")
+        self._timeout = timeout_seconds
+        self._max_retries = max_retries
+
+    @property
+    def provider_name(self) -> str:
+        return f"groq/{self._model}"
+
+    def capabilities(self) -> ProviderCapabilities:
+        return ProviderCapabilities(
+            is_llm=True,
+            supports_structured_output=True,
+            supports_chat=True,
+            supports_streaming=False,
+            token_limits=8192,
+            default_timeout=self._timeout,
+            api_category="LLM",
+        )
+
+    def health_check(self) -> HealthCheckResult:
+        if not self._api_key or self._api_key.startswith("YOUR_"):
+            return HealthCheckResult(False, 0.0, "Groq API key not configured", code="NO_KEY")
+
+        url = f"{self._base_url}/models"
+        req = urllib.request.Request(url, headers={"Authorization": f"Bearer {self._api_key}"})
+        t0 = time.perf_counter()
+        try:
+            with urllib.request.urlopen(req, timeout=self._timeout) as resp:
+                elapsed = (time.perf_counter() - t0) * 1000.0
+                return HealthCheckResult(True, round(elapsed, 2), "Groq models endpoint reached")
+        except urllib.error.HTTPError as e:
+            elapsed = (time.perf_counter() - t0) * 1000.0
+            if e.code in (401, 403):
+                return HealthCheckResult(False, elapsed, f"Auth Error ({e.code})", code="AUTH_ERROR")
+            elif e.code == 429:
+                return HealthCheckResult(False, elapsed, "Rate Limit (429)", code="RATE_LIMIT")
+            return HealthCheckResult(False, elapsed, f"HTTP {e.code}", code="HTTP_ERROR")
+        except Exception as e:
+            elapsed = (time.perf_counter() - t0) * 1000.0
+            return HealthCheckResult(False, elapsed, str(e), code="CONN_ERROR")
+
+    def analyze(self, context: AIContext, trace_id: Optional[str] = None) -> TradeProposal:
+        tid = trace_id or f"trace_{uuid.uuid4().hex[:12]}"
+        now = datetime.now(tz=timezone.utc)
+
+        if not self._api_key or self._api_key.startswith("YOUR_"):
+            raise AuthError("Groq API key missing or unconfigured")
+
+        payload = {
+            "model": self._model,
+            "messages": [
+                {"role": "system", "content": AI_SYSTEM_PROMPT},
+                {"role": "user", "content": json.dumps(context.to_dict())},
+            ],
+            "response_format": {"type": "json_object"},
+            "temperature": 0.1,
+            "max_tokens": 250,
+        }
+
+        data_bytes = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(
+            f"{self._base_url}/chat/completions",
+            data=data_bytes,
+            headers={
+                "Authorization": f"Bearer {self._api_key}",
+                "Content-Type": "application/json",
+            },
+        )
+
+        try:
+            with urllib.request.urlopen(req, timeout=self._timeout) as resp:
+                resp_data = json.loads(resp.read().decode("utf-8"))
+                choice = resp_data["choices"][0]["message"]["content"]
+                parsed = json.loads(choice)
+
+                return TradeProposal(
+                    decision=ProposalDecision(parsed["decision"]),
+                    direction=Direction(parsed["direction"]),
+                    symbol=context.symbol,
+                    confidence=float(parsed.get("confidence", 0.0)),
+                    entry_context=context.to_dict(),
+                    invalidation=str(parsed.get("invalidation", "")),
+                    rationale=str(parsed.get("rationale", "")),
+                    scenario=str(parsed.get("scenario", "RANGE")),
+                    timestamp=now,
+                    model_provider=self.provider_name,
+                    trace_id=tid,
+                    raw_response=choice,
+                )
+        except urllib.error.HTTPError as e:
+            err_body = e.read().decode("utf-8", errors="ignore")
+            if e.code in (401, 403):
+                raise AuthError(f"Groq Auth failure ({e.code}): {err_body}")
+            elif e.code == 429:
+                raise RateLimit429Error(f"Groq 429: {err_body}")
+            elif 500 <= e.code < 600:
+                raise Provider5xxError(f"Groq 5xx: {err_body}")
+            else:
+                raise UnknownError(f"Groq HTTP {e.code}: {err_body}")
+        except urllib.error.URLError as e:
+            if "timed out" in str(e).lower():
+                raise TimeoutError(f"Groq request timed out after {self._timeout}s")
+            raise NetworkError(f"Groq network error: {e}")
+        except (json.JSONDecodeError, KeyError) as e:
+            raise SchemaError(f"Invalid JSON schema from Groq: {e}")
+
+
+class FailoverAIProvider(BaseAIProvider):
+    """
+    Deterministic Failover Provider.
+    Attempts primary provider -> fallback provider -> OfflineDeterministicAIProvider.
+    Ensures absolute zero-downtime and fail-closed safety without retry storms.
+    """
+
+    def __init__(
+        self,
+        primary: Optional[BaseAIProvider] = None,
+        secondary: Optional[BaseAIProvider] = None,
+        offline_fallback: Optional[BaseAIProvider] = None,
+    ):
+        self.primary = primary or GroqProvider()
+        self.secondary = secondary or OpenAIProvider()
+        self.offline_fallback = offline_fallback or OfflineDeterministicAIProvider()
+
+    @property
+    def provider_name(self) -> str:
+        return f"failover({self.primary.provider_name}->{self.offline_fallback.provider_name})"
+
+    def capabilities(self) -> ProviderCapabilities:
+        return self.primary.capabilities()
+
+    def health_check(self) -> HealthCheckResult:
+        primary_hc = self.primary.health_check()
+        if primary_hc.is_healthy:
+            return primary_hc
+        sec_hc = self.secondary.health_check()
+        if sec_hc.is_healthy:
+            return sec_hc
+        return self.offline_fallback.health_check()
+
+    def analyze(self, context: AIContext, trace_id: Optional[str] = None) -> TradeProposal:
+        # 1. Attempt Primary
+        try:
+            return self.primary.analyze(context, trace_id=trace_id)
+        except (AuthError, RateLimit429Error, TimeoutError, NetworkError, Provider5xxError, SchemaError):
+            pass
+
+        # 2. Attempt Secondary (if configured)
+        try:
+            return self.secondary.analyze(context, trace_id=trace_id)
+        except (AuthError, RateLimit429Error, TimeoutError, NetworkError, Provider5xxError, SchemaError):
+            pass
+
+        # 3. Deterministic Offline Fallback
+        return self.offline_fallback.analyze(context, trace_id=trace_id)
+
+
 class MockAIProvider(BaseAIProvider):
     """Mock Provider for deterministic unit tests."""
 
@@ -355,3 +528,4 @@ class MockAIProvider(BaseAIProvider):
             model_provider=self.provider_name,
             trace_id=trace_id or "mock_trace",
         )
+

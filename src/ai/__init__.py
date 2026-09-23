@@ -15,6 +15,8 @@ from src.ai.errors import (
 )
 from src.ai.event_detector import EventDetector, MarketEvent, MarketEventType
 from src.ai.provider import (
+    FailoverAIProvider,
+    GroqProvider,
     MockAIProvider,
     OfflineDeterministicAIProvider,
     OpenAIProvider,
@@ -31,6 +33,8 @@ from src.ai.validator import DeterministicGate, ValidationResult
 __all__ = [
     "BaseAIProvider",
     "OpenAIProvider",
+    "GroqProvider",
+    "FailoverAIProvider",
     "OfflineDeterministicAIProvider",
     "MockAIProvider",
     "AIContext",

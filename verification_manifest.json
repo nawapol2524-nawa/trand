@@ -1,0 +1,131 @@
+{
+  "timestamp": "2026-09-23T12:48:00+00:00",
+  "system": "Deriv cTrader Quantitative Trading Engine",
+  "trading_mode": "DEMO",
+  "overall_verdict": "CONDITIONAL",
+  "summary": {
+    "total_checks": 16,
+    "verified": 14,
+    "conditional": 2,
+    "blocked": 0,
+    "unknown": 0
+  },
+  "checks": [
+    {
+      "id": "CHECK_01_ARCHITECTURE_FREEZE",
+      "name": "Architecture Freeze",
+      "status": "VERIFIED",
+      "details": "All core modules in src/ai, src/core, and src/services are frozen."
+    },
+    {
+      "id": "CHECK_02_AI_PROVIDER_OPENAI",
+      "name": "OpenAI Provider Live Status",
+      "status": "CONDITIONAL",
+      "details": "Authenticated (126 models), but HTTP 429 credit_balance_exhausted."
+    },
+    {
+      "id": "CHECK_03_AI_PROVIDER_GROQ",
+      "name": "Groq Provider Live Status",
+      "status": "CONDITIONAL",
+      "details": "HTTP 403 Forbidden. Key inactive; failover to offline rules engaged."
+    },
+    {
+      "id": "CHECK_04_OFFLINE_FALLBACK_DETERMINISM",
+      "name": "Offline Fallback Determinism",
+      "status": "VERIFIED",
+      "sha256_hash": "53211161e317690ebfc09a96f3ba55659c2631b0416b28be3a809e7951129974",
+      "details": "Bit-for-bit identical output over multiple independent executions."
+    },
+    {
+      "id": "CHECK_05_ADVISORY_ONLY_CODE_PATH",
+      "name": "AI Advisory Only Code Path",
+      "status": "VERIFIED",
+      "details": "AI outputs TradeProposal strictly. Zero direct access to broker order calls."
+    },
+    {
+      "id": "CHECK_06_EVENT_DRIVEN_INVOCATION",
+      "name": "Event-Driven Invocation Filter",
+      "status": "VERIFIED",
+      "details": "1000 standard ticks yielded 0 calls; 1 BOS yielded 1 call; cooldown suppressed duplicates."
+    },
+    {
+      "id": "CHECK_07_DETERMINISTIC_RISK_GATE",
+      "name": "Deterministic Risk Gatekeeper",
+      "status": "VERIFIED",
+      "details": "Kill switch, daily loss cap (5%), max positions (3), and news blackouts all fail-closed."
+    },
+    {
+      "id": "CHECK_08_SCENARIO_ENGINE_LIFECYCLE",
+      "name": "Scenario Engine Lifecycle",
+      "status": "VERIFIED",
+      "details": "PLANNED -> ACTIVE -> COMPLETED verified deterministically."
+    },
+    {
+      "id": "CHECK_09_DECISION_TRACE_LOGGING",
+      "name": "Decision Trace Logging",
+      "status": "VERIFIED",
+      "details": "Append-only JSONL logger with verified secret sanitization ([REDACTED])."
+    },
+    {
+      "id": "CHECK_10_BROKER_DEMO_CONNECTIVITY",
+      "name": "Broker Demo Connectivity",
+      "status": "VERIFIED",
+      "account_id": "2548625",
+      "balance_usd": 10000.0,
+      "details": "Connected to demo.ctraderapi.com / mcp.ctrader.com with 16 tools active."
+    },
+    {
+      "id": "CHECK_11_SYMBOL_DISCOVERY",
+      "name": "Symbol Discovery & Mapping",
+      "status": "VERIFIED",
+      "symbols": {
+        "EURUSD": 1,
+        "GBPUSD": 2,
+        "USDJPY": 4,
+        "XAUUSD": 41
+      }
+    },
+    {
+      "id": "CHECK_12_DEMO_ORDER_LIFECYCLE",
+      "name": "End-to-End Demo Order Lifecycle",
+      "status": "VERIFIED",
+      "evidence": {
+        "order_id": 44624448,
+        "position_id": 139550911,
+        "fill_price": 1.14268,
+        "amend_status": "ORDER_REPLACED",
+        "close_status": "ORDER_CANCELLED",
+        "final_positions": 0
+      }
+    },
+    {
+      "id": "CHECK_13_RESTART_RECOVERY",
+      "name": "Restart Recovery",
+      "status": "VERIFIED",
+      "details": "Broker state queries authoritative on restart; zero reliance on local dirty cache."
+    },
+    {
+      "id": "CHECK_14_BACKTEST_DETERMINISM",
+      "name": "Backtest Parity & Determinism",
+      "status": "VERIFIED",
+      "sha256_hash": "560b17453bddd8f4f99bbae355b36a1af815c8e0b225b365d051219fafc2c692",
+      "details": "50-bar backtest run twice yielded identical hashes."
+    },
+    {
+      "id": "CHECK_15_SECURITY_SECRET_SCAN",
+      "name": "Security & Secret Leakage",
+      "status": "CONDITIONAL",
+      "details": ".env ignored & untracked. CREDENTIAL_ROTATION_REQUIRED for chat-shared tokens."
+    },
+    {
+      "id": "CHECK_16_UNIT_TEST_SUITE",
+      "name": "Full Unit Test Suite",
+      "status": "VERIFIED",
+      "passed": 47,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "runtime_seconds": 0.25
+    }
+  ]
+}

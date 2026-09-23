@@ -78,6 +78,20 @@ class TestUniversalAILayer:
         assert prop.decision == ProposalDecision.REJECT
         assert "news" in prop.rationale.lower()
 
+    def test_failover_provider_falls_back_to_offline(self):
+        # When primary (Groq) and secondary (OpenAI) raise errors, falls back to offline rules
+        mock_groq = MockAIProvider(name="mock_groq", exception_to_raise=AuthError("Groq 403"))
+        mock_openai = MockAIProvider(name="mock_openai", exception_to_raise=RateLimit429Error("OpenAI 429"))
+        offline = OfflineDeterministicAIProvider()
+
+        from src.ai.provider import FailoverAIProvider
+        failover = FailoverAIProvider(primary=mock_groq, secondary=mock_openai, offline_fallback=offline)
+
+        ctx = make_test_context(structure="BOS_LONG", trend="BULLISH")
+        prop = failover.analyze(ctx)
+        assert prop.decision == ProposalDecision.APPROVE
+        assert prop.model_provider == "offline_rules"
+
     def test_mock_provider_error_simulation(self):
         # 429 Rate limit simulation
         provider_429 = MockAIProvider(exception_to_raise=RateLimit429Error("Quota exceeded"))

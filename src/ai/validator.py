@@ -112,11 +112,20 @@ class DeterministicGate:
         # 4. News Blackout Check
         news_high_impact = context.news_state.get("high_impact_soon", False)
         checks["news_window_clear"] = not news_high_impact
-        if proposal.decision == ProposalDecision.APPROVE and not checks["news_window_clear"]:
+        if not checks["news_window_clear"]:
             return ValidationResult(
                 passed=False,
                 decision="REJECTED",
                 reason="HARD GATE: News blackout window active",
+                checks=checks,
+            )
+
+        # 4.1 Proposal Decision Check
+        if proposal.decision != ProposalDecision.APPROVE:
+            return ValidationResult(
+                passed=False,
+                decision="REJECTED",
+                reason=f"Proposal decision is {proposal.decision.value}: {proposal.rationale}",
                 checks=checks,
             )
 
