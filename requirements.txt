@@ -1,16 +1,6 @@
 numpy>=1.26,<2.0
 python-dotenv>=1.0.0
 pyyaml>=6.0
-requests>=2.31.0
-aiohttp>=3.9.0
-
-# cTrader Open API — official Spotware SDK
-ctrader-open-api>=2.0.0
-twisted>=24.3.0
-protobuf>=4.25.0
-
-# News/Calendar
-feedparser>=6.0.10
 
 # Testing
 pytest>=8.0.0

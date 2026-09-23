@@ -1,7 +1,5 @@
 # Test/CI dependencies only
 # Used by: GitHub Actions CI, local pytest
-# Does NOT include broker SDKs (ctrader-open-api, twisted)
-# Those are in requirements.txt for production only
 
 numpy>=1.26,<2.0
 pytest>=8.0.0
