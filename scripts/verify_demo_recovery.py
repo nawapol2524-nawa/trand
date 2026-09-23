@@ -10,10 +10,13 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import sys
+import tempfile
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 from unittest.mock import MagicMock
 
 WORKSPACE_ROOT = Path(__file__).resolve().parent.parent
@@ -57,7 +60,11 @@ def run_failure_scenarios() -> list[dict[str, Any]]:
     try:
         p_mock = MagicMock()
         p_mock.analyze.side_effect = NetworkError("AI Cluster down")
-        fo = FailoverAIProvider(primary=p_mock, offline_fallback=OfflineDeterministicAIProvider())
+        fo = FailoverAIProvider(
+            primary=p_mock,
+            secondary=OfflineDeterministicAIProvider(),
+            offline_fallback=OfflineDeterministicAIProvider(),
+        )
         prop = fo.analyze(ctx)
         scenarios.append({
             "id": 1,
@@ -73,7 +80,11 @@ def run_failure_scenarios() -> list[dict[str, Any]]:
     try:
         p_mock = MagicMock()
         p_mock.analyze.side_effect = TimeoutError("Request timed out")
-        fo = FailoverAIProvider(primary=p_mock, offline_fallback=OfflineDeterministicAIProvider())
+        fo = FailoverAIProvider(
+            primary=p_mock,
+            secondary=OfflineDeterministicAIProvider(),
+            offline_fallback=OfflineDeterministicAIProvider(),
+        )
         prop = fo.analyze(ctx)
         scenarios.append({
             "id": 2,
@@ -192,6 +203,7 @@ def run_failure_scenarios() -> list[dict[str, Any]]:
 
     # 9. Order timeout
     try:
+        shutil.rmtree("/tmp/test_sm_timeout", ignore_errors=True)
         sm = StateManager(state_dir="/tmp/test_sm_timeout")
         recon = sm.reconcile_with_broker([])
         assert recon["status"] == "IN_SYNC"
@@ -223,6 +235,7 @@ def run_failure_scenarios() -> list[dict[str, Any]]:
     # 11. Application restart
     try:
         d = "/tmp/test_sm_restart"
+        shutil.rmtree(d, ignore_errors=True)
         sm1 = StateManager(state_dir=d)
         sm1.state.daily_starting_balance = 9500.0
         sm1.save_state()
@@ -240,6 +253,7 @@ def run_failure_scenarios() -> list[dict[str, Any]]:
 
     # 12. Restart with open position
     try:
+        shutil.rmtree("/tmp/test_sm_open_pos", ignore_errors=True)
         sm = StateManager(state_dir="/tmp/test_sm_open_pos")
         recon = sm.reconcile_with_broker([{"positionId": 12345, "symbolId": 1, "tradeSide": "BUY", "volume": 100000, "entryPrice": 1.1420}])
         assert "12345" in recon["orphans_discovered"]
@@ -255,6 +269,7 @@ def run_failure_scenarios() -> list[dict[str, Any]]:
 
     # 13. Restart after network interruption
     try:
+        shutil.rmtree("/tmp/test_sm_net_int", ignore_errors=True)
         sm = StateManager(state_dir="/tmp/test_sm_net_int")
         r1 = sm.reconcile_with_broker([])
         r2 = sm.reconcile_with_broker([{"positionId": 777, "symbolId": 2, "tradeSide": "BUY", "volume": 100000, "entryPrice": 1.33}])
@@ -271,6 +286,7 @@ def run_failure_scenarios() -> list[dict[str, Any]]:
 
     # 14. Local state vs broker state mismatch
     try:
+        shutil.rmtree("/tmp/test_sm_mismatch", ignore_errors=True)
         sm = StateManager(state_dir="/tmp/test_sm_mismatch")
         sm.record_new_position(PositionState("P1", "EURUSD", "LONG", 0.01, 1.14, 1.138, 1.144, now.isoformat()))
         recon = sm.reconcile_with_broker([])

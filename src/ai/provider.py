@@ -465,14 +465,15 @@ class FailoverAIProvider(BaseAIProvider):
         # 1. Attempt Primary
         try:
             return self.primary.analyze(context, trace_id=trace_id)
-        except (AuthError, RateLimit429Error, TimeoutError, NetworkError, Provider5xxError, SchemaError):
+        except AIError:
             pass
 
         # 2. Attempt Secondary (if configured)
-        try:
-            return self.secondary.analyze(context, trace_id=trace_id)
-        except (AuthError, RateLimit429Error, TimeoutError, NetworkError, Provider5xxError, SchemaError):
-            pass
+        if self.secondary is not None:
+            try:
+                return self.secondary.analyze(context, trace_id=trace_id)
+            except AIError:
+                pass
 
         # 3. Deterministic Offline Fallback
         return self.offline_fallback.analyze(context, trace_id=trace_id)
