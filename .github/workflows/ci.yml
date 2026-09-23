@@ -183,18 +183,20 @@ jobs:
         run: |
           HAS_REQ=false
           HAS_TESTS=false
-          [ -f "requirements.txt" ] && HAS_REQ=true
+          # Use requirements-dev.txt for CI — broker SDK (ctrader-open-api/twisted)
+          # is production-only and not needed for unit tests
+          [ -f "requirements-dev.txt" ] && HAS_REQ=true
           find tests/ -name "test_*.py" 2>/dev/null | grep -q . && HAS_TESTS=true
           if [ "$HAS_REQ" = "true" ] && [ "$HAS_TESTS" = "true" ]; then
             echo "ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
-            echo "Rebuild phase: requirements=$HAS_REQ tests=$HAS_TESTS"
+            echo "Rebuild phase: requirements-dev=$HAS_REQ tests=$HAS_TESTS"
           fi
 
-      - name: Install dependencies
+      - name: Install CI test dependencies (requirements-dev.txt)
         if: steps.check_tests.outputs.ready == 'true'
-        run: pip install -r requirements.txt
+        run: pip install -r requirements-dev.txt
 
       - name: Run pytest
         if: steps.check_tests.outputs.ready == 'true'
