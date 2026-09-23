@@ -5,6 +5,7 @@
 .env.*
 !.env.example
 *.md
+!STRATEGY_SPEC.md
 docs/
 archive/
 trand/
