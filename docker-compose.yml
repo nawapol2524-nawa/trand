@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+  trading-bot:
+    build: .
+    container_name: deriv-ctrader-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - TRADING_MODE=${TRADING_MODE:-PAPER}
+      - LIVE_TRADING_ENABLED=${LIVE_TRADING_ENABLED:-false}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - TZ=UTC
+    volumes:
+      - ./logs:/app/logs
+      - ./state:/app/state
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "10"
+    healthcheck:
+      test: ["CMD", "python", "-c",
+        "import json,sys,pathlib; hf=pathlib.Path('/app/state/health.json'); d=json.loads(hf.read_text()) if hf.exists() else {}; sys.exit(0 if d.get('alive') else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s

@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "deriv-ctrader-bot"
+version = "0.1.0"
+requires-python = ">=3.11"
+description = "Deriv cTrader Trading Bot — XAUUSD/EURUSD/GBPUSD/USDJPY"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-q --tb=short"
+
+[tool.flake8]
+max-line-length = 120
+exclude = [".venv", "__pycache__", ".git"]
+select = ["E9", "F63", "F7", "F82"]
