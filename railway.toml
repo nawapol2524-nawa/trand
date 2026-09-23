@@ -4,6 +4,7 @@ dockerfilePath = "Dockerfile"
 
 [deploy]
 startCommand = "python -m src.app.main"
-restartPolicyType = "on_failure"
+restartPolicyType = "always"
 restartPolicyMaxRetries = 10
 healthcheckPath = ""
+healthcheckTimeout = 120

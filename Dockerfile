@@ -23,12 +23,13 @@ COPY STRATEGY_SPEC.md .
 
 # Persistent directories
 RUN mkdir -p /app/logs /app/state && \
+    chmod 777 /app/logs /app/state && \
     chown -R botuser:botuser /app
 
 USER botuser
 
-# Safety defaults — PAPER mode, LIVE requires explicit opt-in
-ENV TRADING_MODE=PAPER
+# Safety defaults — DEMO mode, LIVE requires explicit dual opt-in
+ENV TRADING_MODE=DEMO
 ENV LIVE_TRADING_ENABLED=false
 ENV LOG_LEVEL=INFO
 ENV TZ=UTC
@@ -36,9 +37,6 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD python -c "import json,sys,pathlib; \
-        hf=pathlib.Path('/app/state/health.json'); \
-        d=json.loads(hf.read_text()) if hf.exists() else {}; \
-        sys.exit(0 if d.get('alive') else 1)"
+    CMD python -m src.services.healthcheck
 
 ENTRYPOINT ["python", "-m", "src.app.main"]
