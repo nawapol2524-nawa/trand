@@ -44,7 +44,7 @@ The system is mechanically sound, robust, and mathematically verified. All autom
   - `STRATEGY_SPEC.md`: SHA-256 `ec04d2db986bf4edc0495a361537f6764a1d12deb724e80d37b9ea931888bbdf`
   - `RISK_MODEL.md`: SHA-256 `c0d303f6f7cfb1db2e15be65d215b7855975a04a8ace68444139d38922c2122e`
   - `SYMBOL_SPECIFICATION.md`: SHA-256 `47807e38218ea2a726491905552e99b0e5d4703b96b6f850f8eb2bdce64fc035`
-- **Pre-Audit Snapshot**: Preserved in `reports/gate30_pre_audit_snapshot.json`.
+- **Pre-Audit Snapshot**: Preserved and verified in `reports/GATE30_MANIFEST.json`.
 
 ---
 
@@ -58,9 +58,18 @@ The system is mechanically sound, robust, and mathematically verified. All autom
   - Zero raw secrets or keys are committed in git.
 - **Decision Trace Redaction**:
   - `DecisionTraceService` and logger utilize strict regex sanitization masking all keys matching `(sk-[a-zA-Z0-9]{20,}|gsk_[a-zA-Z0-9]{20,}|Bearer\s+[a-zA-Z0-9_\-\./+=]+)`.
-- **Credential Rotation Finding (`ROTATION_REQUIRED`)**:
-  - The cTrader MCP Bearer Token (`eyJwbGFud...`) and OpenAI API key were provided in the user chat prompt.
-  - **Mandatory Action**: These credentials must be rotated on the Deriv and OpenAI developer dashboards before live capital is connected.
+- **Credential Rotation Status (`ROTATION_PENDING`)**:
+  - The cTrader MCP Bearer Token (`eyJwbGFud...`) and AI keys were transmitted in conversational chat prompts during development.
+  - **Status Classification**: In compliance with security policy, unconfirmed historical credentials must be classified as `ROTATION_PENDING` (never guessed as PASS).
+  - **Mandatory Action**: These credentials must be rotated on the Deriv and AI developer dashboards before any live capital is connected.
+
+| Credential Name | Provider | Local Configuration | External Exposure | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| `GROQ_API_KEY` | Groq Inc. | CONFIGURED (in local `.env`) | Chat prompt | **ROTATION_PENDING** ⚠️ |
+| `OPENAI_API_KEY` | OpenAI LLC | CONFIGURED (in local `.env`) | Quota Exhausted / Chat | **ROTATION_PENDING** ⚠️ |
+| `CTRADER_MCP_TOKEN` | Spotware / Deriv | CONFIGURED (in local `.env`) | Chat prompt | **ROTATION_PENDING** ⚠️ |
+| `CTRADER_CLIENT_SECRET` | Spotware / Deriv | CONFIGURED (in local `.env`) | Chat prompt | **ROTATION_PENDING** ⚠️ |
+| `DERIV_API_TOKEN` | Deriv Group | CONFIGURED (in local `.env`) | Chat prompt | **ROTATION_PENDING** ⚠️ |
 
 ---
 
@@ -113,7 +122,7 @@ A complete live execution lifecycle test was executed on the Deriv Demo account 
    - `get_positions` returned empty list (`len == 0`).
    - Clean slate confirmed; zero orphan positions or leaked margin.
 
-Full details are documented in `reports/GATE30_BROKER_RECONCILIATION.md`.
+Full details are documented in this canonical report and `reports/DEMO_E2E_RECOVERY_REPORT.md`.
 
 ---
 
@@ -186,7 +195,7 @@ All 8 historical trendbar series downloaded from the cTrader Remote MCP were val
 - **Candle Validity**: Zero OHLC violations ($High \ge \max(Open, Close)$ and $Low \le \min(Open, Close)$).
 - **Data Cleanliness**: Zero `NaN`, zero `Inf`, zero missing or zero prices.
 - **Gaps**: Only standard weekend closures (Friday 20:00 UTC to Sunday 21:00 UTC) and daily broker maintenance windows.
-- Full details in `reports/GATE30_DATA_AUDIT.md`.
+- Full details documented in this section and `reports/GATE30_MANIFEST.json`.
 
 ---
 
@@ -281,9 +290,10 @@ Two completely separate and independent backtest passes were executed from scrat
 ## 18. Test Suite Verification
 
 The full pytest test suite was executed:
-- **Total Tests**: 50 tests across 5 test modules (`test_models.py`, `test_indicators.py`, `test_scenarios.py`, `test_ai_layer.py`, `test_backtest.py`).
-- **Pass Rate**: 50 passed, 0 failed, 0 errors ($100\%$ pass rate).
-- **Execution Time**: 1.50 seconds.
+- **Unit Tests**: 50 tests across 5 test modules (`test_models.py`, `test_indicators.py`, `test_scenarios.py`, `test_ai_layer.py`, `test_backtest.py`).
+- **Integration & Recovery Tests**: 18 tests in `tests/integration/test_demo_e2e_recovery.py`.
+- **Total Tests**: 68 tests (68 passed, 0 failed, 100% pass rate).
+- **Execution Time**: ~0.6-1.50 seconds.
 - **Bytecode Compilation**: `python -m compileall src` executed with 0 syntax errors or compilation warnings.
 
 ---

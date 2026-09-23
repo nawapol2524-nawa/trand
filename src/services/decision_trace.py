@@ -94,3 +94,7 @@ class DecisionTraceLogger:
         elif isinstance(data, list):
             return [DecisionTraceLogger._sanitize(item) for item in data]
         return data
+
+
+# Canonical Alias for Runner & Services
+DecisionTraceService = DecisionTraceLogger

@@ -31,6 +31,7 @@ artifacts/state/*.tmp
 # 📝 LOGS & RUNTIME DATABASES
 # ==========================================
 /logs/
+/state/
 *.log
 *.jsonl
 *.sqlite3

@@ -13,7 +13,8 @@
     "env_tracked": false,
     "git_history_clean": true,
     "credential_exposure": "CHAT_EXPOSURE",
-    "action_required": "ROTATION_REQUIRED"
+    "credential_rotation_status": "ROTATION_PENDING",
+    "action_required": "ROTATION_REQUIRED_BEFORE_LIVE"
   },
   "broker_reconciliation": {
     "status": "PASS",
@@ -57,10 +58,11 @@
   },
   "test_suite": {
     "status": "PASS",
-    "total_tests": 50,
-    "passed": 50,
+    "unit_tests": 50,
+    "total_tests_with_recovery": 68,
+    "passed": 68,
     "failed": 0
   },
   "final_verdict": "PASS",
-  "verdict_rationale": "All Gate 30 engineering criteria pass: frozen spec hashes verified, 50/50 CI tests passing, broker reconciliation verified on Demo account 2548625, bit-for-bit determinism confirmed. Authorized for Demo E2E lifecycle and 24/7 Demo readiness. LIVE money trading remains strictly disabled."
+  "verdict_rationale": "All Gate 30 engineering criteria pass: frozen spec hashes verified, 68/68 CI tests passing, broker reconciliation verified on Demo account 2548625, bit-for-bit determinism confirmed. Authorized for Demo E2E lifecycle and 24/7 Demo readiness. LIVE money trading remains strictly disabled."
 }

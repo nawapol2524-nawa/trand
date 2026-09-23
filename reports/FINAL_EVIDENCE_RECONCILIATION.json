@@ -1,0 +1,125 @@
+{
+  "audit_type": "FINAL_DEMO_SOAK_AND_EVIDENCE_CONSISTENCY",
+  "timestamp": "2026-09-23T13:07:30Z",
+  "current_head_commit": "d624d0d",
+  "base_audit_commit": "fa3ad83",
+  "repository": "https://github.com/nawapol2524-nawa/trand",
+  "ci_cd_evidence": {
+    "run_id": 35862684792,
+    "commit": "d624d0d",
+    "workflow": "Trading Bot CI/CD & Security Gate",
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "Lint & Python Syntax Check",
+        "conclusion": "success"
+      },
+      {
+        "name": "Security & Secret Leakage Scanner",
+        "conclusion": "success"
+      },
+      {
+        "name": "Full Test Suite Execution",
+        "conclusion": "success"
+      },
+      {
+        "name": "Static AST Out-of-Sample Leakage Scan",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "frozen_specification_hashes": {
+    "STRATEGY_SPEC.md": "ec04d2db986bf4edc0495a361537f6764a1d12deb724e80d37b9ea931888bbdf",
+    "RISK_MODEL.md": "c0d303f6f7cfb1db2e15be65d215b7855975a04a8ace68444139d38922c2122e",
+    "SYMBOL_SPECIFICATION.md": "47807e38218ea2a726491905552e99b0e5d4703b96b6f850f8eb2bdce64fc035"
+  },
+  "test_suite_status": {
+    "total_tests": 68,
+    "unit_tests": 50,
+    "integration_recovery_tests": 18,
+    "passed": 68,
+    "failed": 0,
+    "pass_rate_pct": 100.0,
+    "ast_oos_guards_verified": 11,
+    "unauthorized_oos_leakage": 0
+  },
+  "security_and_credentials": {
+    "env_tracked": false,
+    "secrets_in_repo": false,
+    "live_trading_enabled": false,
+    "trading_mode": "DEMO",
+    "historical_exposure": "CHAT_TRANSCRIPTS",
+    "credential_rotation_status": "ROTATION_PENDING",
+    "action_required": "Must rotate cTrader Bearer token & AI keys before any real-money deployment"
+  },
+  "demo_broker_verification": {
+    "broker": "Deriv cTrader Remote MCP",
+    "endpoint": "https://mcp.ctrader.com/trading/mcp",
+    "account_id": "2548625",
+    "account_type": "DEMO",
+    "balance_usd": 9999.85,
+    "equity_usd": 9999.85,
+    "open_positions": 0,
+    "connection_status": "CONNECTED",
+    "symbols_verified": ["EURUSD", "GBPUSD", "USDJPY", "XAUUSD"]
+  },
+  "recovery_scenarios_status": {
+    "total_scenarios_tested": 18,
+    "passed": 18,
+    "failed": 0,
+    "pass_rate_pct": 100.0,
+    "fail_closed_verified": true,
+    "self_healing_verified": true
+  },
+  "demo_soak_execution": {
+    "soak_started": true,
+    "start_timestamp": "2026-09-23T13:06:08.840372+00:00",
+    "deployment_mode": "HEADLESS_ASYNC_DAEMON",
+    "process_pid": 62446,
+    "initial_uptime_seconds": 62.0,
+    "health_status": "HEALTHY",
+    "telemetry_file": "state/health.json",
+    "state_file": "state/bot_state.json",
+    "cpu_usage_pct": 0.0,
+    "memory_rss_mb": 27.58,
+    "disk_free_gb": 12.0,
+    "limitations": [
+      "Soak test has just been initiated and is actively running; 24h/72h/7d soak completion cannot be claimed until duration is fulfilled.",
+      "Credential rotation is ROTATION_PENDING on developer dashboards.",
+      "Real-money LIVE trading is strictly disabled (DEMO only)."
+    ]
+  },
+  "report_cleanup_manifest": {
+    "files_deleted": [
+      "reports/gate30_pre_audit_snapshot.json",
+      "reports/GATE30_SECURITY_AUDIT.md",
+      "reports/GATE30_BROKER_RECONCILIATION.md",
+      "reports/GATE30_DATA_AUDIT.md"
+    ],
+    "files_retained_as_canonical": [
+      "reports/GATE30_FINAL_REPORT.md",
+      "reports/GATE30_MANIFEST.json",
+      "reports/DEMO_E2E_RECOVERY_REPORT.md",
+      "reports/DEMO_E2E_RECOVERY_MANIFEST.json",
+      "reports/24_7_READINESS_REPORT.md",
+      "reports/24_7_READINESS_MANIFEST.json",
+      "reports/FINAL_EVIDENCE_RECONCILIATION.md",
+      "reports/FINAL_EVIDENCE_RECONCILIATION.json"
+    ],
+    "raw_evidence_retained": [
+      "reports/GATE30_BACKTEST_RESULTS.json",
+      "reports/GATE30_STRESS_TEST_RESULTS.json",
+      "reports/GATE30_STATIC_OOS_AUDIT.csv"
+    ],
+    "files_rebuilt_or_synchronized": [
+      "reports/GATE30_FINAL_REPORT.md",
+      "reports/GATE30_MANIFEST.json"
+    ],
+    "references_updated": [
+      "Removed dangling links to deleted intermediate files across all reports",
+      "Standardized credential status to ROTATION_PENDING across all documentation",
+      "Synchronized total test count to 68 across reports and CI"
+    ]
+  }
+}

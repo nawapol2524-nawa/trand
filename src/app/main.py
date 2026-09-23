@@ -29,6 +29,18 @@ from src.services.state_manager import StateManager
 
 def _check_trading_mode() -> str:
     """Enforce trading mode safety — LIVE requires explicit double-opt-in."""
+    env_path = Path.cwd() / ".env"
+    if env_path.exists():
+        try:
+            from dotenv import load_dotenv
+            load_dotenv(env_path)
+        except ImportError:
+            with open(env_path, "r", encoding="utf-8") as fp:
+                for line in fp:
+                    if "=" in line and not line.strip().startswith("#"):
+                        k, v = line.split("=", 1)
+                        os.environ.setdefault(k.strip(), v.strip())
+
     mode = os.environ.get("TRADING_MODE", "PAPER").upper().strip()
     if mode == "LIVE":
         live_enabled = os.environ.get("LIVE_TRADING_ENABLED", "false").strip().lower()
