@@ -31,10 +31,10 @@ from src.strategies import forex_trend_breakout, xau_mean_reversion
 logger = logging.getLogger("TradingBot")
 
 SYMBOL_MAP = {
-    "EURUSD": {"id": 1, "lot_size": 100000.0, "scale": 100000.0, "point_scale": 100000},
-    "GBPUSD": {"id": 2, "lot_size": 100000.0, "scale": 100000.0, "point_scale": 100000},
-    "USDJPY": {"id": 4, "lot_size": 100000.0, "scale": 100000.0, "point_scale": 1000},
-    "XAUUSD": {"id": 41, "lot_size": 100.0, "scale": 100000.0, "point_scale": 100},
+    "EURUSD": {"id": 1, "lot_size": 100000.0, "scale": 100000.0, "digits": 5},
+    "GBPUSD": {"id": 2, "lot_size": 100000.0, "scale": 100000.0, "digits": 5},
+    "USDJPY": {"id": 4, "lot_size": 100000.0, "scale": 100000.0, "digits": 3},
+    "XAUUSD": {"id": 41, "lot_size": 100.0, "scale": 100000.0, "digits": 2},
 }
 
 
@@ -498,9 +498,12 @@ class TradingBotRunner:
             sl_dist = max(atr_val * self.risk_engine.config.atr_multiplier_sl, 1e-5)
             tp_dist = sl_dist * self.risk_engine.config.rr_ratio
 
-            point_scale = sym_info.get("point_scale", 100000)
-            relative_sl = max(1, int(round(sl_dist * point_scale)))
-            relative_tp = max(1, int(round(tp_dist * point_scale)))
+            digits = sym_info.get("digits", 5)
+            sl_dist_rounded = round(sl_dist, digits)
+            tp_dist_rounded = round(tp_dist, digits)
+            # In cTrader MCP, relative SL/TP are in 10^-5 scale (fixed 100,000 points multiplier)
+            relative_sl = max(1, int(round(sl_dist_rounded * 100000)))
+            relative_tp = max(1, int(round(tp_dist_rounded * 100000)))
 
             trade_side = "BUY" if sig.direction == Direction.LONG else "SELL"
             trace_id = str(uuid.uuid4())

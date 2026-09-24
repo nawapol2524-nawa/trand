@@ -1,0 +1,38 @@
+{
+  "report_id": "BROKER_INTEGRATION_ROOT_CAUSE_AUDIT",
+  "audit_timestamp_utc": "2026-09-24T09:17:00Z",
+  "issues_investigated": {
+    "issue_1_repeated_404": {
+      "root_cause": "Superseded Railway deployment 4c70a120 ran code lacking 404 session retry handler, repeatedly calling get_positions with expired session until container was terminated by Railway.",
+      "failing_query": "get_positions",
+      "shutdown_cause": "Railway orchestrator sent SIGTERM (signal 15) to retire old container 4c70a120 after new container a3eaf0a0 completed startup healthcheck.",
+      "verdict": "RESOLVED_IN_NEW_DEPLOYMENT"
+    },
+    "issue_2_usdjpy_invalid_precision": {
+      "root_cause": "SYMBOL_MAP configured USDJPY point_scale as 1000 instead of 100000, sending 116 points (0.00116 JPY, 5 decimals) instead of 11600 points (0.116 JPY, 3 decimals). cTrader MCP rejected the 5-decimal SL on a 3-decimal symbol.",
+      "sl_points_generated": 116,
+      "tp_points_generated": 231,
+      "mcp_volume": 13100000,
+      "volume_contract_status": "COMPLIANT",
+      "corrective_action": "Configured symbol digits precision (USDJPY: 3, XAUUSD: 2, Forex: 5) and rounded distance before scaling by fixed 100,000 multiplier.",
+      "verdict": "FIXED_AND_TESTED"
+    }
+  },
+  "modifications": {
+    "files_changed": [
+      "src/app/runner.py",
+      "src/brokers/ctrader_mcp.py",
+      "tests/unit/test_broker_precision.py"
+    ],
+    "strategy_changes": 0,
+    "risk_changes": 0,
+    "ai_changes": 0,
+    "live_trading_enabled": false
+  },
+  "test_results": {
+    "total_tests": 95,
+    "passed": 95,
+    "failed": 0,
+    "compile_status": "PASS"
+  }
+}

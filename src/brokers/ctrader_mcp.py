@@ -6,11 +6,14 @@ Communicates via JSON-RPC 2.0 / SSE with https://mcp.ctrader.com/trading/mcp.
 from __future__ import annotations
 
 import json
+import logging
 import os
 import time
 import urllib.error
 import urllib.request
 from typing import Any, Optional
+
+logger = logging.getLogger("CTraderMCPBroker")
 
 
 class CTraderMCPBroker:
@@ -138,6 +141,12 @@ class CTraderMCPBroker:
         except urllib.error.HTTPError as e:
             if e.code in (400, 404) and not _retry:
                 # Session expired or not found, re-connect once
+                logger.warning(
+                    "cTrader MCP tool '%s' encountered HTTP %d (session=%s). Re-authenticating and retrying...",
+                    tool_name,
+                    e.code,
+                    self.session_id,
+                )
                 self.connect()
                 return self.call_tool(tool_name, arguments, _retry=True)
             raise
