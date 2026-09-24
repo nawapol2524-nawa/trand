@@ -1,0 +1,90 @@
+{
+  "report_id": "REAL_GBPUSD_TRADE_FORENSIC_AUDIT",
+  "audit_timestamp_utc": "2026-09-24T08:44:00Z",
+  "investigated_trade": {
+    "broker": "Deriv / cTrader",
+    "account": "2548625 Demo",
+    "symbol": "GBPUSD",
+    "direction": "SELL",
+    "position_id": "140062611",
+    "order_id": "44708076",
+    "volume_lots": 1.27,
+    "volume_units": 127000,
+    "entry_price": 1.32375,
+    "stop_loss_price": 1.32451,
+    "take_profit_price": 1.32222,
+    "exit_execution_price": 1.32453,
+    "exit_reason": "STOP_LOSS",
+    "exit_timestamp_utc": "2026-09-24T08:32:02Z",
+    "gross_pnl_usd": -99.06,
+    "net_pnl_usd": -99.06,
+    "balance_pre_trade_usd": 9689.95,
+    "balance_post_trade_usd": 9590.89
+  },
+  "attribution": {
+    "verdict": "BOT_CONFIRMED",
+    "evidence_level": "LEVEL_A",
+    "strategy_trace": "FOUND",
+    "ai_trace": "FOUND",
+    "risk_trace": "FOUND",
+    "execution_trace": "FOUND",
+    "reconciliation_trace": "FOUND"
+  },
+  "pipeline_verification": {
+    "candle_timestamp": "2026-09-24T08:25:00+00:00",
+    "signal_timestamp": "2026-09-24T08:30:01.398694+00:00",
+    "strategy_id": "FOREX_TREND_BREAKOUT_V1",
+    "indicators": {
+      "ema9": 1.32443,
+      "ema21": 1.32447,
+      "ema200": 1.32448,
+      "atr": 0.00051,
+      "rsi": 42.93,
+      "bos_level": 1.32387,
+      "pattern": "bearish_engulfing"
+    },
+    "ai_proposal": {
+      "provider": "AIProvider",
+      "decision": "APPROVE",
+      "direction": "SHORT",
+      "confidence": 0.85,
+      "scenario": "BEARISH_CONTINUATION"
+    },
+    "deterministic_gate": {
+      "passed": true,
+      "checks_count": 8,
+      "failed_checks": []
+    },
+    "risk_engine": {
+      "approved": true,
+      "equity_used": 9689.95,
+      "risk_pct": 0.01,
+      "risk_amount_usd": 96.90,
+      "calculated_lots": 1.27,
+      "relative_sl_points": 76,
+      "relative_tp_points": 153
+    },
+    "broker_execution": {
+      "mcp_method": "create_market_order",
+      "symbol_id": 2,
+      "mcp_volume": 12700000,
+      "response_order_id": 44708076,
+      "response_position_id": 140062611
+    },
+    "reconciliation": {
+      "detected_closed_at": "2026-09-24T08:32:08.910710+00:00",
+      "status": "CLOSED_EXTERNAL"
+    }
+  },
+  "integrity_checks": {
+    "position_size_match": "MATCH",
+    "stop_loss_match": "MATCH",
+    "pnl_match": "MATCH",
+    "balance_match": "MATCH",
+    "strategy_changes": 0,
+    "risk_changes": 0,
+    "ai_changes": 0,
+    "live_trading_enabled": false
+  },
+  "remaining_evidence_gaps": []
+}
