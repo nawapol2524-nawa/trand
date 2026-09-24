@@ -45,18 +45,7 @@ class CTraderMCPBroker:
         kwargs: dict[str, Any] = {"timeout": self.timeout}
         if self._ssl_context is not None:
             kwargs["context"] = self._ssl_context
-        try:
-            return urllib.request.urlopen(req, **kwargs)
-        except urllib.error.URLError as e:
-            if "CERTIFICATE_VERIFY_FAILED" in str(e):
-                import ssl
-                ctx = ssl.create_default_context()
-                ctx.check_hostname = False
-                ctx.verify_mode = ssl.CERT_NONE
-                self._ssl_context = ctx
-                kwargs["context"] = ctx
-                return urllib.request.urlopen(req, **kwargs)
-            raise
+        return urllib.request.urlopen(req, **kwargs)
 
     def connect(self) -> str:
         """Perform MCP initialize handshake and obtain session ID."""

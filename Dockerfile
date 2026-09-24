@@ -7,6 +7,7 @@ RUN groupadd -r botuser && useradd -r -g botuser botuser
 # Minimal system deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
