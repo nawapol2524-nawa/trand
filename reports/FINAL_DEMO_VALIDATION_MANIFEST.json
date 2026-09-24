@@ -1,0 +1,162 @@
+{
+  "audit_name": "FINAL_DEMO_VALIDATION",
+  "version": "1.0.0",
+  "timestamp": "2026-09-24T05:15:00Z",
+  "base_commit": "b0982d1",
+  "repository": "https://github.com/nawapol2524-nawa/trand",
+  "overall_status": "CONDITIONAL",
+  "overall_verdict_rationale": "All production pipeline stages (Market Data, Continuous Loop, Strategy Traceability, AI Layer Guardrails, Deterministic Gate, Risk Engine, State Reconciliation, Process Recovery, Health Monitoring) are fully operational and verified healthy. Actual broker order submission is explicitly designated as 'NOT OBSERVED — NO NATURAL ELIGIBLE SIGNAL' because the market was consolidating during the observation window, and artificial trade manufacture is strictly prohibited.",
+  "safety_mandates": {
+    "trading_mode": "DEMO",
+    "live_trading_enabled": false,
+    "real_money_trades": false,
+    "strategy_parameters_frozen": true,
+    "risk_parameters_frozen": true
+  },
+  "frozen_specifications": {
+    "STRATEGY_SPEC.md": "ec04d2db986bf4edc0495a361537f6764a1d12deb724e80d37b9ea931888bbdf",
+    "RISK_MODEL.md": "c0d303f6f7cfb1db2e15be65d215b7855975a04a8ace68444139d38922c2122e",
+    "SYMBOL_SPECIFICATION.md": "47807e38218ea2a726491905552e99b0e5d4703b96b6f850f8eb2bdce64fc035"
+  },
+  "soak_observation": {
+    "start_utc": "2026-09-24T04:59:36Z",
+    "end_utc": "2026-09-24T05:07:58Z",
+    "duration_seconds": 500.79,
+    "duration_minutes": 8.35,
+    "cycles_observed": 60,
+    "cycle_interval_target_seconds": 5.0,
+    "uncaught_exceptions": 0,
+    "broker_disconnects": 0,
+    "crashes": 0,
+    "duplicate_orders": 0
+  },
+  "broker_environment": {
+    "broker": "Deriv cTrader Remote MCP",
+    "endpoint": "https://mcp.ctrader.com/trading/mcp",
+    "account_id": "2548625",
+    "account_type": "DEMO",
+    "session_id": "55f45f80-ffd0-45d8-aeac-dc63f58ee5bc",
+    "balance_usd": 9999.85,
+    "equity_usd": 9999.85,
+    "open_positions": 0,
+    "reconciliation_status": "IN_SYNC"
+  },
+  "strategy_traceability": {
+    "EURUSD": {
+      "strategy": "FOREX_TREND_BREAKOUT_V1",
+      "timeframe": "M5",
+      "ema_fast": 9,
+      "ema_mid": 21,
+      "ema_slow": 200,
+      "atr_period": 14,
+      "bos_lookback_n": 20,
+      "candlestick_confirmation": ["bullish_engulfing", "bullish_pinbar", "bearish_engulfing", "bearish_pinbar"],
+      "live_snapshot": {
+        "m5_close": 1.13840,
+        "ema9": 1.13812,
+        "ema21": 1.13799,
+        "ema200": 1.13881,
+        "atr14": 0.00018,
+        "bos_high_level": 1.13840,
+        "bos_low_level": 1.13749,
+        "trend_condition_met": false,
+        "decision": "NO_TRADE",
+        "reason": "Trend condition not met: EMA9(1.13812) vs EMA21(1.13799), close(1.13840) vs EMA200(1.13881)"
+      }
+    },
+    "GBPUSD": {
+      "strategy": "FOREX_TREND_BREAKOUT_V1",
+      "timeframe": "M5",
+      "ema_fast": 9,
+      "ema_mid": 21,
+      "ema_slow": 200,
+      "atr_period": 14,
+      "bos_lookback_n": 20,
+      "candlestick_confirmation": ["bullish_engulfing", "bullish_pinbar", "bearish_engulfing", "bearish_pinbar"],
+      "live_snapshot": {
+        "m5_close": 1.32430,
+        "ema9": 1.32402,
+        "ema21": 1.32385,
+        "ema200": 1.32493,
+        "atr14": 0.00023,
+        "bos_high_level": 1.32431,
+        "bos_low_level": 1.32324,
+        "trend_condition_met": false,
+        "decision": "NO_TRADE",
+        "reason": "Trend condition not met: EMA9(1.32402) vs EMA21(1.32385), close(1.32430) vs EMA200(1.32493)"
+      }
+    },
+    "USDJPY": {
+      "strategy": "FOREX_TREND_BREAKOUT_V1",
+      "timeframe": "M5",
+      "ema_fast": 9,
+      "ema_mid": 21,
+      "ema_slow": 200,
+      "atr_period": 14,
+      "bos_lookback_n": 20,
+      "candlestick_confirmation": ["bullish_engulfing", "bullish_pinbar", "bearish_engulfing", "bearish_pinbar"],
+      "live_snapshot": {
+        "m5_close": 157.865,
+        "ema9": 157.92676,
+        "ema21": 157.95044,
+        "ema200": 158.06303,
+        "atr14": 0.05267,
+        "bos_high_level": 158.089,
+        "bos_low_level": 157.874,
+        "trend_condition_met": true,
+        "bos_condition_met": true,
+        "candlestick_confirmation_met": false,
+        "decision": "NO_TRADE",
+        "reason": "Trend and BOS SHORT met, but no Bearish Engulfing or Bearish Pin Bar confirmation"
+      }
+    },
+    "XAUUSD": {
+      "strategy": "XAU_MEAN_REVERSION_V1",
+      "timeframe_signal": "M5",
+      "timeframe_filter": "H1",
+      "rsi_period": 14,
+      "rsi_oversold": 37.0,
+      "rsi_overbought": 63.0,
+      "h1_ema_period": 50,
+      "live_snapshot": {
+        "m5_close": 4289.94,
+        "rsi_current": 57.05,
+        "rsi_prev": 54.66,
+        "h1_close": 4284.98,
+        "h1_ema50": 4316.53,
+        "rsi_cross_met": false,
+        "h1_bias_short": true,
+        "decision": "NO_TRADE",
+        "reason": "RSI(57.05) did not cross 37 (oversold) or 63 (overbought). Prev: 54.66"
+      }
+    }
+  },
+  "actual_demo_orders": {
+    "status": "NOT OBSERVED — NO NATURAL ELIGIBLE SIGNAL",
+    "real_broker_order_placed": false,
+    "distinction_of_evidence": {
+      "level_a_real_broker": "cTrader MCP session active, balance/equity read ($9999.85), trendbars fetched (250 M5 bars), positions queried (0 open). No orders submitted because market conditions did not trigger entry criteria.",
+      "level_b_integration_mock_tests": "test_7_approved_signal_broker_execution_path verifies that when a signal is approved by DeterministicGate and RiskEngine, create_market_order is invoked with correct 1/100 base units volume and point-based relative SL/TP.",
+      "level_c_static_code": "src/app/runner.py lines 490-550 wires broker.create_market_order upon full pipeline approval."
+    }
+  },
+  "restart_recovery_verification": {
+    "status": "PASS",
+    "state_file_persisted": true,
+    "reconciliation_count_before_restart": 74,
+    "reconciliation_count_after_restart": 75,
+    "daily_starting_balance_preserved": 10000.0,
+    "last_reset_date_preserved": "2026-09-24",
+    "broker_reconnected_ms": 886.58,
+    "post_restart_reconciliation_status": "IN_SYNC",
+    "duplicate_orders_created": 0
+  },
+  "test_suite": {
+    "total_tests": 89,
+    "passed": 89,
+    "failed": 0,
+    "skipped": 0,
+    "execution_time_seconds": 0.81,
+    "status": "PASS"
+  }
+}

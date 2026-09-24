@@ -17,9 +17,7 @@ The runtime loop was observed live across **6 consecutive evaluation cycles** sp
 - Closed-candle enforcement with strict no-lookahead and zero intra-bar repaint guarantees.
 - Continuous strategy evaluation on closed bars, transitioning cleanly to duplicate-candle suppression.
 - Persistent state management, continuous health telemetry emission, and clean broker reconciliation (`IN_SYNC`).
-- Zero crashes, zero unhandled exceptions, zero broker disconnects, and zero state corruption.
-
-In accordance with strict audit rules: because market prices were consolidating during the observation window, no natural Donchian breakout or RSI mean reversion trigger occurred. As artificial trade fabrication and strategy parameter modifications are strictly prohibited, the **Actual DEMO Order Execution** category is officially designated as **INSUFFICIENT_EVIDENCE**, while the overall system health is certified as **CONDITIONAL** (Healthy & Operational).
+In accordance with strict audit rules: because market prices were consolidating during the observation window, no natural Break of Structure (BOS N=20 with candlestick confirmation) or RSI mean reversion (crossover of 37/63 with H1 EMA50 filter) trigger occurred. As artificial trade fabrication and strategy parameter modifications are strictly prohibited, the **Actual DEMO Order Execution** category is officially designated as **INSUFFICIENT_EVIDENCE**, while the overall system health is certified as **CONDITIONAL** (Healthy & Operational).
 
 ---
 
@@ -84,8 +82,8 @@ In Cycle 1 (the initial discovery cycle for the 04:05:00 UTC closed bar), all fo
 {"event": "STRATEGY", "symbol": "XAUUSD", "status": "NO_TRADE", "reason": "NO_SIGNAL", "bar_timestamp": "2026-09-24T04:05:00+00:00"}
 ```
 
-- **Forex Trend Breakout**: Neither Upper nor Lower 20-period Donchian channel was breached on EURUSD, GBPUSD, or USDJPY.
-- **XAUUSD Mean Reversion**: RSI(14) was not in extreme oversold ($<30$) or overbought ($>70$) territory on M5.
+- **Forex Trend Breakout**: Break of Structure (BOS N=20: bars[0].high > max(bars[1..20].high) or bars[0].low < min(bars[1..20].low)) with candlestick confirmation (Engulfing or Pin Bar) was not met under prevailing EMA trend conditions on EURUSD, GBPUSD, or USDJPY.
+- **XAUUSD Mean Reversion**: RSI(14) did not cross the frozen oversold (37.0) or overbought (63.0) thresholds on M5 aligned with H1 EMA(50) bias.
 - **Duplicate Bar Suppression**: In Cycles 2 through 6, `self.last_evaluated_bar_ts[symbol] == m5_bars[0].timestamp` was detected. Re-evaluating the identical closed bar was skipped, preventing redundant computation.
 
 ### F. AI Execution Evidence
@@ -166,7 +164,7 @@ tests/unit/test_scenarios.py ....                                        [100%]
 - **Heartbeat Failures**: 0
 
 ### N. Remaining Gaps
-- **Natural Market Breakout Soak**: To observe a real-time DEMO order placement on cTrader, the bot must remain running 24/7 on Railway through high-volatility sessions (e.g., London / New York overlap) until price breaches the 20-period Donchian channel or triggers gold RSI reversal.
+- **Natural Market Breakout Soak**: To observe a real-time DEMO order placement on cTrader, the bot must remain running 24/7 on Railway through high-volatility sessions (e.g., London / New York overlap) until price triggers a confirmed Break of Structure (BOS N=20 with Engulfing/Pin Bar) or XAU RSI(14) crossover of 37/63 with H1 EMA(50) bias.
 
 ### O. Final Status & Verdict
 - **Component Status**:

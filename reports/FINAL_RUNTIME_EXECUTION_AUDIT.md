@@ -61,8 +61,8 @@ The architecture strictly adheres to frozen specifications without parameter tun
 - **Sufficiency Gates**: Rejects evaluation if M5 bars < 221 (Forex) or M5 < 16 / H1 < 51 (XAUUSD).
 
 ### 3.2 Strategy Evaluation
-- **Forex Trend Breakout**: Evaluates 20-period Donchian channel breakout confirmed by 200 EMA trend and 14 ATR filter (`EURUSD`, `GBPUSD`, `USDJPY`).
-- **XAUUSD Mean Reversion**: Evaluates H1 trend (50 EMA slope) and M5 RSI(14) oversold/overbought pullbacks.
+- **Forex Trend Breakout**: Evaluates Break of Structure (BOS N=20: bars[0].high > max(bars[1..20].high) or bars[0].low < min(bars[1..20].low)) confirmed by EMA trend (EMA9 vs EMA21 and close vs EMA200) and candlestick confirmation (Bullish/Bearish Engulfing or Pin Bar) with 14 ATR filter (`EURUSD`, `GBPUSD`, `USDJPY`).
+- **XAUUSD Mean Reversion**: Evaluates H1 trend filter (H1 close vs H1 EMA50) and M5 RSI(14) crossover of frozen oversold (37) and overbought (63) thresholds.
 - **Duplicate Bar Protection**: Tracks `last_evaluated_bar_ts[symbol]` to ensure each closed bar is analyzed exactly once.
 - **Structured Telemetry**: Outputs `{"event": "STRATEGY", "status": "NO_TRADE" | "SIGNAL_GENERATED"}`.
 
