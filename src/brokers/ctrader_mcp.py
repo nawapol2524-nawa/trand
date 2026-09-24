@@ -109,7 +109,7 @@ class CTraderMCPBroker:
 
         return self.session_id
 
-    def call_tool(self, tool_name: str, arguments: dict[str, Any]) -> dict[str, Any]:
+    def call_tool(self, tool_name: str, arguments: dict[str, Any], _retry: bool = False) -> dict[str, Any]:
         """Execute a tool on the remote cTrader MCP server."""
         if not self.session_id:
             self.connect()
@@ -147,10 +147,10 @@ class CTraderMCPBroker:
                             return {"raw": content}
                 return {"raw": raw_text}
         except urllib.error.HTTPError as e:
-            if e.code == 400:
-                # Session expired, re-connect once
+            if e.code in (400, 404) and not _retry:
+                # Session expired or not found, re-connect once
                 self.connect()
-                return self.call_tool(tool_name, arguments)
+                return self.call_tool(tool_name, arguments, _retry=True)
             raise
 
     def get_balance(self) -> dict[str, Any]:
