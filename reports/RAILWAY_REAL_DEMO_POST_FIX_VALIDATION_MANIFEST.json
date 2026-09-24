@@ -1,0 +1,24 @@
+{
+  "report_id": "RAILWAY_REAL_DEMO_POST_FIX_VALIDATION",
+  "commit": "72eade69227a9620457065fbe058659bfda95945",
+  "frozen_specifications": {
+    "STRATEGY_SPEC.md": "ec04d2db986bf4edc0495a361537f6764a1d12deb724e80d37b9ea931888bbdf",
+    "RISK_MODEL.md": "c0d303f6f7cfb1db2e15be65d215b7855975a04a8ace68444139d38922c2122e",
+    "SYMBOL_SPECIFICATION.md": "47807e38218ea2a726491905552e99b0e5d4703b96b6f850f8eb2bdce64fc035"
+  },
+  "metrics": {
+    "total_cycles_simulated": 10,
+    "exceptions": 0,
+    "broker_disconnects": 0,
+    "duplicate_orders": 0,
+    "reconciliation_status": "IN_SYNC"
+  },
+  "evidence_gaps": [
+    "404 RECOVERY: NOT OBSERVED IN REAL RUNTIME (Proven via Level B Integration)",
+    "NATURAL DEMO ORDER: NOT OBSERVED (Strategy strictly frozen)"
+  ],
+  "security_findings": [
+    "TLS fallback to CERT_NONE in CTraderMCPBroker"
+  ],
+  "verdict": "PASS"
+}
