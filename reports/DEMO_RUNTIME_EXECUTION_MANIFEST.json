@@ -1,0 +1,115 @@
+{
+  "audit_name": "DEMO_RUNTIME_EXECUTION_VERIFICATION",
+  "version": "1.0.0",
+  "timestamp": "2026-09-24T04:15:00Z",
+  "deployed_commit": "b61a002",
+  "repository": "https://github.com/nawapol2524-nawa/trand",
+  "overall_verdict": "CONDITIONAL",
+  "verdict_rationale": "All runtime components (Market Data, Continuous Loop, Strategy Evaluation, AI Guardrails, Deterministic Gate, Risk Engine, State Reconciliation, Health Telemetry) are verified healthy and operational. Actual broker order submission is marked INSUFFICIENT_EVIDENCE because no natural market breakout or reversion signal triggered during the observation window, and artificial trade manufacture is strictly prohibited.",
+  "safety_mandates": {
+    "trading_mode": "DEMO",
+    "live_trading_enabled": false,
+    "real_money_trades": false,
+    "strategy_parameters_frozen": true,
+    "risk_parameters_frozen": true
+  },
+  "frozen_specifications": {
+    "STRATEGY_SPEC.md": "ec04d2db986bf4edc0495a361537f6764a1d12deb724e80d37b9ea931888bbdf",
+    "RISK_MODEL.md": "c0d303f6f7cfb1db2e15be65d215b7855975a04a8ace68444139d38922c2122e",
+    "SYMBOL_SPECIFICATION.md": "47807e38218ea2a726491905552e99b0e5d4703b96b6f850f8eb2bdce64fc035"
+  },
+  "component_verdicts": {
+    "deployment_identity": "PASS",
+    "continuous_runtime_loop": "PASS",
+    "market_data_ingestion": "PASS",
+    "strategy_evaluation": "PASS",
+    "ai_advisory_guardrails": "PASS",
+    "deterministic_gate": "PASS",
+    "risk_engine": "PASS",
+    "actual_demo_order": "INSUFFICIENT_EVIDENCE",
+    "restart_reconciliation": "PASS",
+    "health_and_observability": "PASS",
+    "test_suite": "PASS"
+  },
+  "live_observation_evidence": {
+    "observation_window_seconds": 39.9,
+    "cycles_observed": 6,
+    "cycle_interval_target_seconds": 5.0,
+    "broker_session_id": "1e9465aa-781e-4ac4-bca2-bc5892b9509d",
+    "broker_latency_ms": 334.5,
+    "account_id": "2548625",
+    "account_type": "DEMO",
+    "balance_usd": 9999.85,
+    "equity_usd": 9999.85,
+    "open_positions_count": 0,
+    "symbols_evaluated": [
+      "EURUSD",
+      "GBPUSD",
+      "USDJPY",
+      "XAUUSD"
+    ],
+    "market_data_metrics": {
+      "EURUSD": {
+        "m5_bars": 250,
+        "m5_closed_bars": 249,
+        "latest_closed_ts": "2026-09-24T04:05:00+00:00",
+        "latest_close": 1.13766,
+        "ohlc_valid": true,
+        "no_lookahead": true,
+        "strategy_status": "NO_TRADE",
+        "strategy_reason": "NO_SIGNAL"
+      },
+      "GBPUSD": {
+        "m5_bars": 250,
+        "m5_closed_bars": 249,
+        "latest_closed_ts": "2026-09-24T04:05:00+00:00",
+        "latest_close": 1.32342,
+        "ohlc_valid": true,
+        "no_lookahead": true,
+        "strategy_status": "NO_TRADE",
+        "strategy_reason": "NO_SIGNAL"
+      },
+      "USDJPY": {
+        "m5_bars": 250,
+        "m5_closed_bars": 249,
+        "latest_closed_ts": "2026-09-24T04:05:00+00:00",
+        "latest_close": 157.975,
+        "ohlc_valid": true,
+        "no_lookahead": true,
+        "strategy_status": "NO_TRADE",
+        "strategy_reason": "NO_SIGNAL"
+      },
+      "XAUUSD": {
+        "m5_bars": 250,
+        "m5_closed_bars": 249,
+        "latest_closed_m5_ts": "2026-09-24T04:05:00+00:00",
+        "latest_m5_close": 4283.92,
+        "h1_bars": 70,
+        "h1_closed_bars": 69,
+        "latest_closed_h1_ts": "2026-09-24T03:00:00+00:00",
+        "ohlc_valid": true,
+        "no_lookahead": true,
+        "strategy_status": "NO_TRADE",
+        "strategy_reason": "NO_SIGNAL"
+      }
+    },
+    "duplicate_protection_active": true,
+    "reconciliation_status": "IN_SYNC",
+    "uncaught_exceptions": 0,
+    "crashes": 0
+  },
+  "test_suite_status": {
+    "total_tests": 89,
+    "passed": 89,
+    "failed": 0,
+    "skipped": 0,
+    "pass_rate_pct": 100.0,
+    "execution_time_seconds": 1.06
+  },
+  "git_status": {
+    "working_tree_clean": true,
+    "head_commit": "b61a002",
+    "ci_run_id": 35882321689,
+    "ci_conclusion": "success"
+  }
+}
