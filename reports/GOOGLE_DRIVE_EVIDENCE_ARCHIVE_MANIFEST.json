@@ -1,0 +1,70 @@
+{
+  "report_id": "GOOGLE_DRIVE_EVIDENCE_ARCHIVE_MANIFEST",
+  "timestamp_utc": "2026-09-25T04:16:30Z",
+  "google_drive_folder_id": "1pEn5CK-qeXuPQYbbVc6KMNjbjTGwvn5I",
+  "configuration": {
+    "google_drive_enabled_default": false,
+    "local_retention_days_default": 30,
+    "upload_interval_seconds_default": 30.0,
+    "batch_size_default": 20,
+    "trading_mode": "DEMO",
+    "live_trading_enabled": false
+  },
+  "architecture": {
+    "local_evidence_root": "state/evidence",
+    "categories": [
+      "runtime_logs",
+      "decisions",
+      "trades",
+      "daily_reports",
+      "reconciliation",
+      "health"
+    ],
+    "dual_trade_ledger_formats": ["jsonl", "csv"],
+    "durable_upload_queue": "state/evidence/upload_queue.json",
+    "worker_type": "asyncio_background_worker",
+    "retry_policy": "exponential_backoff_with_jitter_and_cap",
+    "retention_policy": "safe_retention_only_uploaded_purged_unsent_preserved"
+  },
+  "secret_redaction": {
+    "patterns_sanitized": [
+      "token",
+      "key",
+      "secret",
+      "password",
+      "auth",
+      "credential",
+      "bearer",
+      "private_key"
+    ],
+    "verification_status": "VERIFIED_CLEAN"
+  },
+  "constraints_verification": {
+    "strategy_changes": 0,
+    "risk_changes": 0,
+    "ai_changes": 0,
+    "live_trading_remains_disabled": true,
+    "trading_loop_never_blocks_on_drive": true
+  },
+  "modifications": {
+    "files_created": [
+      "src/services/evidence/__init__.py",
+      "src/services/evidence/models.py",
+      "src/services/evidence/collector.py",
+      "src/services/evidence/gdrive_client.py",
+      "src/services/evidence/uploader.py",
+      "tests/unit/test_evidence_archive.py"
+    ],
+    "files_modified": [
+      "requirements.txt",
+      "src/app/runner.py"
+    ]
+  },
+  "test_results": {
+    "total_tests": 109,
+    "passed": 109,
+    "failed": 0,
+    "archive_unit_tests": 14,
+    "compile_status": "PASS"
+  }
+}

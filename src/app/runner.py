@@ -12,6 +12,7 @@ import time
 import uuid
 from dataclasses import asdict
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from src.ai.context import AIContextBuilder
@@ -24,6 +25,7 @@ from src.core.clock import candle_close_time, is_candle_closed
 from src.core.models import Bar, Direction, Signal, Timeframe
 from src.core.risk import RiskConfig, RiskEngine
 from src.services.decision_trace import DecisionTraceService
+from src.services.evidence import EvidenceCollector, EvidenceUploader, TradeRecord
 from src.services.monitor import OperationalMonitor
 from src.services.state_manager import PositionState, StateManager
 from src.strategies import forex_trend_breakout, xau_mean_reversion
@@ -47,6 +49,8 @@ class TradingBotRunner:
         monitor: Optional[OperationalMonitor] = None,
         ai_provider: Optional[Any] = None,
         trace_service: Optional[DecisionTraceService] = None,
+        evidence_collector: Optional[EvidenceCollector] = None,
+        evidence_uploader: Optional[EvidenceUploader] = None,
     ):
         self.broker = broker or CTraderMCPBroker()
         self.risk_engine = risk_engine or RiskEngine()
@@ -54,12 +58,19 @@ class TradingBotRunner:
         self.monitor = monitor or OperationalMonitor()
         self.ai_provider = ai_provider or FailoverAIProvider()
         self.trace_service = trace_service or DecisionTraceService()
+        self.evidence_collector = evidence_collector or EvidenceCollector(
+            base_dir=str(Path(self.state_mgr.state_dir) / "evidence")
+        )
+        self.evidence_uploader = evidence_uploader or EvidenceUploader(
+            collector=self.evidence_collector
+        )
 
         self.detectors: Dict[str, EventDetector] = {
             sym: EventDetector(cooldown_seconds=300.0) for sym in SYMBOL_MAP
         }
         self.last_evaluated_bar_ts: Dict[str, datetime] = {}
         self._shutdown_event: Optional[asyncio.Event] = None
+        self._uploader_task: Optional[asyncio.Task] = None
 
     @property
     def shutdown_event(self) -> asyncio.Event:
@@ -74,6 +85,7 @@ class TradingBotRunner:
     async def initialize(self) -> None:
         """Connect to broker, verify account, and reconcile initial state."""
         logger.info("Initializing TradingBotRunner...")
+        self.evidence_collector.record_runtime_event("BOT_INITIALIZING", status="IN_PROGRESS")
         t0 = time.perf_counter()
         try:
             self.broker.connect()
@@ -81,6 +93,11 @@ class TradingBotRunner:
             logger.info("Broker connected successfully in %.2f ms", elapsed_ms)
         except Exception as e:
             logger.error("Failed to connect to broker: %s", e)
+            self.evidence_collector.record_runtime_event(
+                "BROKER_CONNECT_FAILED",
+                status="FAILED",
+                error_message=str(e),
+            )
             self.monitor.record_heartbeat(
                 broker_connected=False,
                 open_positions=0,
@@ -97,6 +114,11 @@ class TradingBotRunner:
         balance = bal["balance"]
         equity = bal["equity"]
         logger.info("Account balance: $%.2f | Equity: $%.2f", balance, equity)
+        self.evidence_collector.record_runtime_event(
+            "BROKER_CONNECTED",
+            status="SUCCESS",
+            payload={"latency_ms": elapsed_ms, "balance": balance, "equity": equity},
+        )
 
         # Update starting balance if not set
         if self.state_mgr.state.daily_starting_balance <= 0:
@@ -106,6 +128,13 @@ class TradingBotRunner:
         broker_positions = self.broker.get_positions()
         recon = self.state_mgr.reconcile_with_broker(broker_positions)
         logger.info("Startup reconciliation complete: %s", recon)
+        self.evidence_collector.record_reconciliation(recon)
+        self.evidence_collector.record_runtime_event(
+            "RECONCILIATION",
+            status=recon.get("status", "IN_SYNC"),
+            reconciliation_state=recon.get("status", "IN_SYNC"),
+            payload=recon,
+        )
 
         # Update initial monitor telemetry
         self.monitor.record_heartbeat(
@@ -118,6 +147,8 @@ class TradingBotRunner:
             ai_status="HEALTHY",
             broker_latency_ms=elapsed_ms,
         )
+        self.evidence_collector.record_health(asdict(self.monitor.telemetry))
+        self.evidence_collector.record_runtime_event("BOT_INITIALIZED", status="SUCCESS")
 
     async def execute_cycle(self) -> None:
         """Execute a single evaluation, risk verification, and monitoring cycle."""
@@ -131,11 +162,38 @@ class TradingBotRunner:
             latency_ms = (time.perf_counter() - t0) * 1000.0
             recon = self.state_mgr.reconcile_with_broker(broker_positions, now=now_utc)
             broker_connected = True
+            self.evidence_collector.record_reconciliation(recon)
+            for cid in recon.get("closed_detected", []):
+                self.evidence_collector.record_runtime_event(
+                    event_type="POSITION_CLOSED",
+                    position_id=str(cid),
+                    status="CLOSED",
+                    reason="RECONCILIATION_EXTERNAL_CLOSE",
+                )
+                self.evidence_collector.update_trade_exit(
+                    position_id=str(cid),
+                    exit_price=0.0,
+                    exit_time=now_utc.isoformat(),
+                    close_reason="CLOSED_EXTERNAL",
+                    gross_pnl=0.0,
+                    net_pnl=0.0,
+                )
+            for oid in recon.get("orphans_discovered", []):
+                self.evidence_collector.record_runtime_event(
+                    event_type="ORPHAN_POSITION_DISCOVERED",
+                    position_id=str(oid),
+                    status="DISCOVERED",
+                )
         except Exception as e:
             logger.error("Broker query failed: %s", e)
             broker_connected = False
             latency_ms = 0.0
             self.monitor.record_exception()
+            self.evidence_collector.record_runtime_event(
+                "BROKER_DISCONNECTED",
+                status="FAILED",
+                error_message=str(e),
+            )
 
         # 2. Account balance & risk state
         bal_info = self.broker.get_balance() if broker_connected else {"balance": 10000.0, "equity": 10000.0}
@@ -150,6 +208,8 @@ class TradingBotRunner:
             current_balance=balance,
         )
         if did_reset or self.state_mgr.state.daily_starting_balance <= 0.0:
+            if did_reset and prev_reset_str:
+                self.evidence_collector.generate_daily_summary(prev_reset_str[:10])
             self.state_mgr.state.last_reset_date = new_date.isoformat()
             self.state_mgr.state.daily_starting_balance = new_bal
             self.state_mgr.state.daily_pnl = 0.0
@@ -316,6 +376,16 @@ class TradingBotRunner:
                 "h1_bars": len(h1_bars) if symbol == "XAUUSD" else 0,
                 "latest_closed_bar": m5_bars[0].timestamp.isoformat(),
             }))
+            self.evidence_collector.record_runtime_event(
+                "MARKET_DATA",
+                symbol=symbol,
+                status="ACQUIRED",
+                payload={
+                    "m5_bars": len(m5_bars),
+                    "h1_bars": len(h1_bars) if symbol == "XAUUSD" else 0,
+                    "latest_closed_bar": m5_bars[0].timestamp.isoformat(),
+                },
+            )
 
             # 3.2 Strategy Signal Generation
             sig: Optional[Signal] = None
@@ -343,6 +413,17 @@ class TradingBotRunner:
                 "price": sig.price,
                 "indicators": sig.indicators,
             }))
+            self.evidence_collector.record_runtime_event(
+                "STRATEGY_SIGNAL",
+                symbol=symbol,
+                direction=sig.direction.value,
+                strategy_version=sig.strategy_id,
+                status="SIGNAL_GENERATED",
+                payload={
+                    "price": sig.price,
+                    "indicators": sig.indicators,
+                },
+            )
 
             # 3.3 AI Advisory Layer
             try:
@@ -391,6 +472,17 @@ class TradingBotRunner:
                 "confidence": proposal.confidence,
                 "scenario": proposal.scenario if isinstance(proposal.scenario, str) else getattr(proposal.scenario, "value", str(proposal.scenario)),
             }))
+            self.evidence_collector.record_runtime_event(
+                "AI_DECISION",
+                symbol=symbol,
+                direction=proposal.direction.value,
+                status="PROPOSAL_GENERATED",
+                payload={
+                    "decision": proposal.decision.value,
+                    "confidence": proposal.confidence,
+                    "scenario": proposal.scenario if isinstance(proposal.scenario, str) else getattr(proposal.scenario, "value", str(proposal.scenario)),
+                },
+            )
 
             # 3.4 Deterministic Gatekeeper
             val_res = DeterministicGate.validate(
@@ -419,7 +511,7 @@ class TradingBotRunner:
                     "status": "REJECTED",
                     "reason": reject_reason,
                 }))
-                self.trace_service.log_decision(
+                dec_rec = self.trace_service.log_decision(
                     trace_id=str(uuid.uuid4()),
                     event_id=event.event_type.value if event else "STRATEGY_SIGNAL",
                     provider=getattr(self.ai_provider, "name", "AIProvider"),
@@ -430,6 +522,13 @@ class TradingBotRunner:
                     risk_result={"approved": False, "reason": "Gate rejected"},
                     execution_result={"status": "REJECTED_BY_GATE", "reason": reject_reason},
                 )
+                self.evidence_collector.record_decision(asdict(dec_rec))
+                self.evidence_collector.record_runtime_event(
+                    "DETERMINISTIC_GATE",
+                    symbol=symbol,
+                    status="REJECTED",
+                    reason=reject_reason,
+                )
                 continue
 
             logger.info(json.dumps({
@@ -438,6 +537,12 @@ class TradingBotRunner:
                 "status": "APPROVED",
                 "reason": val_res.reason,
             }))
+            self.evidence_collector.record_runtime_event(
+                "DETERMINISTIC_GATE",
+                symbol=symbol,
+                status="APPROVED",
+                reason=val_res.reason,
+            )
 
             # 3.5 Risk Engine Evaluation
             atr_val = ctx.atr
@@ -465,7 +570,7 @@ class TradingBotRunner:
                     "reason": risk_decision.reason,
                     "block_reason": risk_decision.block_reason,
                 }))
-                self.trace_service.log_decision(
+                dec_rec = self.trace_service.log_decision(
                     trace_id=str(uuid.uuid4()),
                     event_id=event.event_type.value if event else "STRATEGY_SIGNAL",
                     provider=getattr(self.ai_provider, "name", "AIProvider"),
@@ -480,6 +585,14 @@ class TradingBotRunner:
                     },
                     execution_result={"status": "REJECTED_BY_RISK", "reason": risk_decision.reason},
                 )
+                self.evidence_collector.record_decision(asdict(dec_rec))
+                self.evidence_collector.record_runtime_event(
+                    "RISK_DECISION",
+                    symbol=symbol,
+                    status="REJECTED",
+                    reason=risk_decision.reason,
+                    payload={"block_reason": risk_decision.block_reason},
+                )
                 continue
 
             logger.info(json.dumps({
@@ -488,6 +601,12 @@ class TradingBotRunner:
                 "status": "APPROVED",
                 "allocated_volume": risk_decision.adjusted_volume,
             }))
+            self.evidence_collector.record_runtime_event(
+                "RISK_DECISION",
+                symbol=symbol,
+                status="APPROVED",
+                payload={"allocated_volume": risk_decision.adjusted_volume},
+            )
 
             # 3.6 Broker Order Submission (cTrader Remote MCP)
             lots = risk_decision.adjusted_volume
@@ -535,7 +654,7 @@ class TradingBotRunner:
                 order_result = {"status": "FAILED", "error": str(e)}
 
             # 3.7 Decision Trace Logging
-            self.trace_service.log_decision(
+            dec_rec = self.trace_service.log_decision(
                 trace_id=trace_id,
                 event_id=event.event_type.value if event else "STRATEGY_SIGNAL",
                 provider=getattr(self.ai_provider, "name", "AIProvider"),
@@ -550,6 +669,53 @@ class TradingBotRunner:
                 },
                 execution_result=order_result,
             )
+            self.evidence_collector.record_decision(asdict(dec_rec))
+
+            order_id = str(order_result.get("orderId", order_result.get("order", {}).get("orderId", "")))
+            position_id = str(order_result.get("positionId", order_result.get("position", {}).get("positionId", "")))
+            fill_price = float(order_result.get("executionPrice", order_result.get("order", {}).get("executionPrice", sig.price)))
+
+            self.evidence_collector.record_runtime_event(
+                event_type="ORDER_SUBMITTED",
+                symbol=symbol,
+                direction=sig.direction.value,
+                strategy_version=sig.strategy_id,
+                order_id=order_id or None,
+                position_id=position_id or None,
+                trade_id=trace_id,
+                status="SUBMITTED" if order_result.get("status") != "FAILED" else "FAILED",
+                payload={
+                    "trade_side": trade_side,
+                    "volume_lots": lots,
+                    "mcp_volume": mcp_volume,
+                    "relative_sl_points": relative_sl,
+                    "relative_tp_points": relative_tp,
+                    "result": order_result,
+                },
+            )
+
+            trade_rec = TradeRecord(
+                trade_id=trace_id,
+                symbol=symbol,
+                direction=sig.direction.value,
+                signal_time_utc=sig.timestamp.isoformat() if hasattr(sig, "timestamp") and sig.timestamp else now_utc.isoformat(),
+                order_time_utc=now_utc.isoformat(),
+                entry_time_utc=now_utc.isoformat(),
+                entry_price=fill_price,
+                volume=lots,
+                stop_loss=round(sig.price - (sl_dist if sig.direction == Direction.LONG else -sl_dist), digits),
+                take_profit=round(sig.price + (tp_dist if sig.direction == Direction.LONG else -tp_dist), digits),
+                risk_amount=risk_decision.risk_amount if hasattr(risk_decision, "risk_amount") else None,
+                order_id=order_id or None,
+                position_id=position_id or None,
+                strategy_version=sig.strategy_id,
+                ai_decision=proposal.decision.value if proposal else None,
+                ai_confidence=proposal.confidence if proposal else None,
+                gate_result=val_res.reason if val_res else None,
+                risk_result=risk_decision.reason if risk_decision else None,
+                source="BOT_EVENT",
+            )
+            self.evidence_collector.record_trade(trade_rec)
 
             # 3.8 State Update & Reconciliation
             try:
@@ -558,25 +724,41 @@ class TradingBotRunner:
             except Exception as e:
                 logger.error("Post-order position reconciliation error: %s", e)
 
+        # Update monitor telemetry with Google Drive uploader metrics
+        self.monitor.telemetry.metadata["google_drive"] = self.evidence_uploader.get_telemetry()
+        self.evidence_collector.record_health(asdict(self.monitor.telemetry))
+
     async def run_forever(self, cycle_interval_seconds: float = 5.0) -> None:
         """Main 24/7 autonomous loop."""
         await self.initialize()
         logger.info("TradingBotRunner 24/7 loop started (interval: %.1fs)", cycle_interval_seconds)
 
-        while not self.shutdown_event.is_set():
-            try:
-                await self.execute_cycle()
-            except Exception as e:
-                logger.error("Unhandled error in execution cycle: %s", e)
-                self.monitor.record_exception()
+        self._uploader_task = asyncio.create_task(self.evidence_uploader.start())
 
-            try:
-                await asyncio.wait_for(self.shutdown_event.wait(), timeout=cycle_interval_seconds)
-            except asyncio.TimeoutError:
-                pass
+        try:
+            while not self.shutdown_event.is_set():
+                try:
+                    await self.execute_cycle()
+                except Exception as e:
+                    logger.error("Unhandled error in execution cycle: %s", e)
+                    self.monitor.record_exception()
 
-        logger.info("TradingBotRunner shutting down gracefully...")
-        self.monitor.shutdown()
+                try:
+                    await asyncio.wait_for(self.shutdown_event.wait(), timeout=cycle_interval_seconds)
+                except asyncio.TimeoutError:
+                    pass
+        finally:
+            logger.info("TradingBotRunner shutting down gracefully...")
+            self.evidence_uploader.stop()
+            if self._uploader_task:
+                try:
+                    await asyncio.wait_for(self._uploader_task, timeout=5.0)
+                except (asyncio.TimeoutError, asyncio.CancelledError):
+                    pass
+            self.evidence_collector.generate_daily_summary()
+            self.evidence_collector.record_runtime_event("BOT_SHUTDOWN", status="SUCCESS")
+            self.monitor.shutdown()
 
     def stop(self) -> None:
         self.shutdown_event.set()
+        self.evidence_uploader.stop()
