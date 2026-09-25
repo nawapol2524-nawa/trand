@@ -57,6 +57,7 @@
     ],
     "files_modified": [
       "requirements.txt",
+      "requirements-dev.txt",
       "src/app/runner.py"
     ]
   },
