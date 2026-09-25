@@ -30,6 +30,9 @@ class RiskConfig:
     max_data_staleness_seconds: float = 300.0 # 5 minutes maximum bar age
     defensive_drawdown_threshold: float = 0.025 # 2.5% daily drawdown -> Level 1 Defensive
     emergency_kill_switch: bool = False       # Programmatic kill switch override
+    base_risk_pct: float = 0.010              # 1.0% equity per trade
+    high_conviction_risk_pct: float = 0.015   # 1.5% equity per trade for high conviction
+    high_conviction_threshold: float = 0.85   # Confidence >= 0.85 for high conviction
 
 
 class RiskEngine:
@@ -87,10 +90,11 @@ class RiskEngine:
         entry_price: float,
         sl_distance: float,
         lot_size_units: float = 100000.0,
+        risk_pct: Optional[float] = None,
     ) -> tuple[float, Optional[str]]:
         """
         Calculate position volume according to RISK_MODEL.md:
-          Risk Amount = Equity * 0.01
+          Risk Amount = Equity * Risk%
           Lot Size = Risk Amount / (Stop Distance * Point Value)
         Returns: (clamped_volume: float, reject_reason: Optional[str])
         """
@@ -99,7 +103,8 @@ class RiskEngine:
         if sl_distance <= 0:
             return 0.0, f"Invalid stop distance: {sl_distance}"
 
-        risk_amount = equity * self.config.max_risk_per_trade_pct
+        target_risk_pct = risk_pct if risk_pct is not None else self.config.max_risk_per_trade_pct
+        risk_amount = equity * target_risk_pct
 
         if symbol == "USDJPY":
             # For USDJPY, quote currency is JPY, so 1 point in USD = units / exit_price
@@ -136,6 +141,8 @@ class RiskEngine:
         lot_size_units: float = 100000.0,
         current_spread_pips: Optional[float] = None,
         max_spread_pips: Optional[float] = None,
+        confidence: Optional[float] = None,
+        h1_aligned: bool = False,
     ) -> RiskDecision:
         """
         Strict evaluation of new trade against all capital preservation mandates,
@@ -214,6 +221,17 @@ class RiskEngine:
                     defense_level=0,
                 )
 
+        # Determine conviction tier risk percentage
+        chosen_risk_pct = self.config.base_risk_pct
+        is_high_conviction = (
+            confidence is not None
+            and confidence >= self.config.high_conviction_threshold
+            and h1_aligned
+            and consecutive_losses < 3
+        )
+        if is_high_conviction:
+            chosen_risk_pct = self.config.high_conviction_risk_pct
+
         # Dynamic Position Sizing Calculation
         sl_distance = max(atr_val * self.config.atr_multiplier_sl, 1e-5)
         volume, reject_reason = self.calculate_lot_size(
@@ -222,6 +240,7 @@ class RiskEngine:
             entry_price=entry_price,
             sl_distance=sl_distance,
             lot_size_units=lot_size_units,
+            risk_pct=chosen_risk_pct,
         )
 
         if reject_reason or volume <= 0.0:
@@ -236,6 +255,9 @@ class RiskEngine:
         defense_level = 0
         allocated_volume = volume
         level_notes: List[str] = []
+
+        if is_high_conviction:
+            level_notes.append(f"High Conviction Tier (Confidence {confidence:.0%}): risk {chosen_risk_pct:.1%}")
 
         if daily_loss_pct <= -self.config.defensive_drawdown_threshold:
             defense_level = 1

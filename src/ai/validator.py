@@ -46,6 +46,7 @@ class DeterministicGate:
         max_daily_loss_pct: float = 0.05,
         max_open_positions: int = 3,
         now: Optional[datetime] = None,
+        enforce_session_filter: bool = False,
     ) -> ValidationResult:
         now_utc = now or datetime.now(tz=timezone.utc)
         checks: dict[str, bool] = {}
@@ -120,7 +121,19 @@ class DeterministicGate:
                 checks=checks,
             )
 
-        # 4.1 Proposal Decision Check
+        # 4.1 Institutional Session Filter Check
+        session = getattr(context, "session", "UNKNOWN").upper()
+        allowed_sessions = ("LONDON", "OVERLAP_LONDON_NY", "OVERLAP", "NEW_YORK")
+        checks["session_active"] = session in allowed_sessions if enforce_session_filter else True
+        if enforce_session_filter and not (session in allowed_sessions):
+            return ValidationResult(
+                passed=False,
+                decision="REJECTED",
+                reason=f"Institutional Session Filter: Session '{session}' is off-hours. Active windows: London (07:00-12:00 UTC) & New York (12:00-21:00 UTC)",
+                checks=checks,
+            )
+
+        # 4.2 Proposal Decision Check
         if proposal.decision != ProposalDecision.APPROVE:
             return ValidationResult(
                 passed=False,

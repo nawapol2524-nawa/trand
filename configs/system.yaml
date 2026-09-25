@@ -1,0 +1,29 @@
+# Institutional Trading Session & Risk System Configuration
+# Profit Acceleration Suite v1.3.0
+
+session_filter:
+  enabled: true
+  # Institutional High-Volume Sessions (UTC)
+  # London: 07:00 - 11:30 UTC (14:00 - 18:30 BKK)
+  # New York: 12:30 - 16:30 UTC (19:30 - 23:30 BKK)
+  allowed_sessions:
+    - "LONDON"
+    - "NEW_YORK"
+    - "OVERLAP"
+  allowed_utc_windows:
+    - start: "07:00"
+      end: "11:30"
+    - start: "12:30"
+      end: "16:30"
+
+exit_management:
+  partial_tp_ratio: 1.5          # Partial TP at 1.5x initial SL distance
+  partial_tp_volume_pct: 0.50    # Close 50% of volume at partial TP
+  break_even_enabled: true       # Move SL to entry price once partial TP is filled
+  trailing_stop_enabled: true    # Trailing stop on remaining 50%
+  trailing_atr_multiplier: 1.5   # 1.5x ATR trailing distance
+
+risk_sizing:
+  base_risk_pct: 0.010           # Standard Conviction (Confidence 65% - 84%): 1.0%
+  high_conviction_risk_pct: 0.015 # High Conviction (Confidence >= 85% + H1 Align): 1.5%
+  high_conviction_confidence_threshold: 0.85

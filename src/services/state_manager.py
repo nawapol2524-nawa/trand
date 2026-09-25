@@ -37,6 +37,19 @@ class PositionState:
     close_price: Optional[float] = None
     realized_pnl: float = 0.0
     loss_reason: Optional[str] = None
+    original_volume: float = 0.0
+    partial_tp_hit: bool = False
+    break_even_set: bool = False
+    trailing_stop_active: bool = False
+    highest_favorable_price: float = 0.0
+    atr_at_entry: float = 0.0
+    sl_distance: float = 0.0
+
+    def __post_init__(self):
+        if self.original_volume <= 0.0 and self.volume_lots > 0.0:
+            self.original_volume = self.volume_lots
+        if self.highest_favorable_price <= 0.0 and self.entry_price > 0.0:
+            self.highest_favorable_price = self.entry_price
 
 
 @dataclass

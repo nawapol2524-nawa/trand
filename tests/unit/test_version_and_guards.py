@@ -398,10 +398,10 @@ class TestLossReasonClassifier:
 # ============================================================================
 class TestVersionControlAndLineage:
     def test_version_constants(self):
-        assert SYSTEM_VERSION == "1.2.0"
-        assert SCHEMA_VERSION == "1.2"
+        assert SYSTEM_VERSION == "1.3.0"
+        assert SCHEMA_VERSION == "1.3"
         v_info = get_version_info()
-        assert v_info["system_version"] == "1.2.0"
+        assert v_info["system_version"] == "1.3.0"
         assert len(v_info["git_commit"]) > 0
 
     def test_monitor_telemetry_includes_version(self, tmp_path):
@@ -416,7 +416,7 @@ class TestVersionControlAndLineage:
         )
         health_file = tmp_path / "health.json"
         data = json.loads(health_file.read_text(encoding="utf-8"))
-        assert data["system_version"] == "v1.2.0"
+        assert data["system_version"] == "v1.3.0"
         assert "git_commit" in data
 
     def test_decision_trace_includes_version(self, tmp_path):
@@ -433,4 +433,4 @@ class TestVersionControlAndLineage:
         log_file = tmp_path / "decision_traces.jsonl"
         assert log_file.exists()
         line = json.loads(log_file.read_text(encoding="utf-8").strip())
-        assert line["system_version"] == "1.2.0"
+        assert line["system_version"] == "1.3.0"

@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.0] - 2026-09-25
+
+### Profit Acceleration Suite (Quantitative Triad)
+
+This release implements the approved **Profit Acceleration Suite (v1.3.0)**, boosting bot profit expectancy and convex equity growth without altering base strategy indicators or exceeding risk limits:
+
+### Added
+- **Pillar 1: Institutional High-Liquidity Session Filter**
+  - Restricts new position entries to London (`07:00–11:30 UTC`) and New York / Overlap (`12:30–16:30 UTC`) high-volume sessions.
+  - Off-hours / Asian session trades are rejected by `DeterministicGate.validate()` (`session_active=False`) when `ENFORCE_SESSION_FILTER=true`, filtering out low-liquidity false breakouts and wide spreads.
+  - Active positions continue to be monitored, protected, and trailed 24/7.
+- **Pillar 2: Conviction-Weighted Dynamic Sizing**
+  - Standard Conviction trades (AI Confidence 65%–84%): Base 1.0% equity risk per trade.
+  - High Conviction A+ setups (AI Confidence >= 85% + H1 regime alignment + < 3 consecutive losses): Scale risk up to 1.5% equity per trade (+50% profit acceleration).
+  - Risk is automatically clamped by Multi-Level Defense (e.g. Level 1 halves position size to 0.75% during >= 2.5% intraday drawdown).
+- **Pillar 3: Convex Asymmetric Exit Engine**
+  - **Phase 1 (Partial Take Profit):** When price advances to $+1.5R$, automatically closes 50% position volume via cTrader MCP `close_position()`, locking in cash profits.
+  - **Phase 2 (Break-Even Lock):** Immediately amends Stop Loss to `entry_price` via cTrader MCP `amend_position()`, turning the remaining 50% volume into a completely risk-free runner ($0 risk).
+  - **Phase 3 (Trailing ATR Runner):** Trails the remaining 50% volume using $1.5 \times \text{ATR}$ with a monotonic upward ratchet rule (never moving backwards).
+- **Schema & Persistence Upgrade (v1.3)**
+  - Updated `SCHEMA_VERSION = "1.3"` and `SYSTEM_VERSION = "1.3.0"`.
+  - Added tracking fields to `PositionState`: `original_volume`, `partial_tp_hit`, `break_even_set`, `trailing_stop_active`, `highest_favorable_price`, `atr_at_entry`, `sl_distance`.
+  - Added runtime event emissions: `PARTIAL_TP_EXECUTED` and `TRAILING_STOP_UPDATED`.
+- **Comprehensive Test Suite**
+  - Added 14 comprehensive tests in `tests/unit/test_profit_acceleration.py`.
+  - Achieved 100% test pass rate across 138 total tests (124 existing + 14 new).
+
+---
+
 ## [1.2.0] - 2026-09-25
 
 ### Architecture Upgrade & Risk Hardening Release

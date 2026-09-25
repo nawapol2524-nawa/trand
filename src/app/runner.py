@@ -169,6 +169,209 @@ class TradingBotRunner:
         self.evidence_collector.record_health(asdict(self.monitor.telemetry))
         self.evidence_collector.record_runtime_event("BOT_INITIALIZED", status="SUCCESS")
 
+    def manage_open_positions(
+        self,
+        broker_positions: list[dict[str, Any]],
+        now: Optional[datetime] = None,
+    ) -> None:
+        """
+        Convex Asymmetric Exit Engine:
+          1. 1.5R Partial Take Profit (Close 50% volume)
+          2. Break-Even Stop Loss protection (Risk-Free)
+          3. Trailing ATR runner on remaining 50% volume
+        """
+        now_utc = now or datetime.now(tz=timezone.utc)
+        open_positions_dict = self.state_mgr.state.open_positions
+        if not open_positions_dict:
+            return
+
+        symbol_ids = [info["id"] for info in SYMBOL_MAP.values()]
+        spots_by_id: dict[int, dict[str, Any]] = {}
+        try:
+            spot_list = self.broker.get_spot_prices(symbol_ids)
+            if isinstance(spot_list, list):
+                spots_by_id = {s.get("symbolId"): s for s in spot_list if isinstance(s, dict)}
+        except Exception as e:
+            logger.debug("Failed to fetch spot prices for position management: %s", e)
+
+        id_to_sym = {str(info["id"]): name for name, info in SYMBOL_MAP.items()}
+
+        for pos_id, pos_data in list(open_positions_dict.items()):
+            raw_sym = pos_data.get("symbol")
+            canonical_sym = id_to_sym.get(str(raw_sym), str(raw_sym))
+            sym_info = SYMBOL_MAP.get(canonical_sym)
+            if not sym_info:
+                continue
+
+            sym_id = sym_info["id"]
+            scale = sym_info.get("scale", 100000.0)
+            lot_size = sym_info.get("lot_size", 100000.0)
+            digits = sym_info.get("digits", 5)
+
+            spot = spots_by_id.get(sym_id)
+            if not spot:
+                continue
+            bid_raw = spot.get("bid")
+            ask_raw = spot.get("ask")
+            if bid_raw is None or ask_raw is None:
+                continue
+
+            bid = float(bid_raw)
+            ask = float(ask_raw)
+            if bid > 10.0 and canonical_sym in ("EURUSD", "GBPUSD"):
+                bid /= scale
+            if ask > 10.0 and canonical_sym in ("EURUSD", "GBPUSD"):
+                ask /= scale
+            if bid > 100.0 and canonical_sym == "USDJPY":
+                bid /= scale
+            if ask > 100.0 and canonical_sym == "USDJPY":
+                ask /= scale
+            if bid > 10000.0 and canonical_sym == "XAUUSD":
+                bid /= scale
+            if ask > 10000.0 and canonical_sym == "XAUUSD":
+                ask /= scale
+
+            direction = str(pos_data.get("direction", "")).upper()
+            is_long = direction in ("LONG", "BUY")
+            entry_price = float(pos_data.get("entry_price", 0.0))
+            if entry_price <= 0.0:
+                continue
+
+            current_price = bid if is_long else ask
+            sl_distance = float(pos_data.get("sl_distance", 0.0))
+            if sl_distance <= 0.0:
+                sl_price = float(pos_data.get("sl_price", 0.0))
+                if sl_price > 0.0:
+                    sl_distance = abs(entry_price - sl_price)
+                else:
+                    sl_distance = entry_price * 0.002
+
+            original_volume = float(pos_data.get("original_volume") or pos_data.get("volume_lots", 0.01))
+            current_volume = float(pos_data.get("volume_lots", original_volume))
+            partial_tp_hit = bool(pos_data.get("partial_tp_hit", False))
+            trailing_active = bool(pos_data.get("trailing_stop_active", False))
+            highest_favorable = float(pos_data.get("highest_favorable_price") or entry_price)
+            atr_val = float(pos_data.get("atr_at_entry") or (sl_distance / 1.5))
+
+            try:
+                pid_arg: Any = int(pos_id)
+            except (ValueError, TypeError):
+                pid_arg = pos_id
+
+            # 1. Partial TP Check (+1.5R)
+            r_multiple = ((current_price - entry_price) / sl_distance) if is_long else ((entry_price - current_price) / sl_distance)
+
+            if not partial_tp_hit and r_multiple >= 1.5:
+                half_lots = max(0.01, round(original_volume * 0.5, 2))
+                half_mcp_volume = int(round(half_lots * lot_size * 100))
+
+                logger.info(
+                    "Executing 1.5R Partial TP for %s pos_id=%s (R=%.2f, half_lots=%.2f)",
+                    canonical_sym, pos_id, r_multiple, half_lots
+                )
+                if hasattr(self.broker, "close_position") and callable(self.broker.close_position):
+                    try:
+                        self.broker.close_position(pid_arg, volume=half_mcp_volume)
+                    except Exception as e:
+                        logger.error("Failed to execute partial close on broker for pos %s: %s", pos_id, e)
+
+                be_sl = round(entry_price, digits)
+                if hasattr(self.broker, "amend_position") and callable(self.broker.amend_position):
+                    try:
+                        self.broker.amend_position(pid_arg, stop_loss=be_sl)
+                    except Exception as e:
+                        logger.error("Failed to amend SL to Break-Even for pos %s: %s", pos_id, e)
+
+                pos_data["partial_tp_hit"] = True
+                pos_data["break_even_set"] = True
+                pos_data["trailing_stop_active"] = True
+                pos_data["sl_price"] = be_sl
+                pos_data["volume_lots"] = max(0.01, round(current_volume - half_lots, 2))
+                pos_data["highest_favorable_price"] = current_price
+                self.state_mgr.save_state()
+
+                self.evidence_collector.record_runtime_event(
+                    "PARTIAL_TP_EXECUTED",
+                    symbol=canonical_sym,
+                    position_id=str(pos_id),
+                    status="EXECUTED",
+                    payload={
+                        "r_multiple": round(r_multiple, 2),
+                        "closed_volume_lots": half_lots,
+                        "remaining_volume_lots": pos_data["volume_lots"],
+                        "break_even_sl": be_sl,
+                        "spot_price": current_price,
+                    },
+                )
+
+            # 2. Trailing ATR Stop Check (for runner)
+            elif trailing_active:
+                trail_distance = atr_val * 1.5
+                current_sl = float(pos_data.get("sl_price", entry_price))
+
+                if is_long:
+                    if current_price > highest_favorable:
+                        highest_favorable = current_price
+                        pos_data["highest_favorable_price"] = highest_favorable
+
+                    new_sl = round(highest_favorable - trail_distance, digits)
+                    if new_sl > current_sl and new_sl >= entry_price:
+                        logger.info(
+                            "Ratchet Trailing SL up for LONG %s pos_id=%s: %.5f -> %.5f",
+                            canonical_sym, pos_id, current_sl, new_sl
+                        )
+                        if hasattr(self.broker, "amend_position") and callable(self.broker.amend_position):
+                            try:
+                                self.broker.amend_position(pid_arg, stop_loss=new_sl)
+                            except Exception as e:
+                                logger.error("Failed to amend trailing SL for pos %s: %s", pos_id, e)
+
+                        pos_data["sl_price"] = new_sl
+                        self.state_mgr.save_state()
+                        self.evidence_collector.record_runtime_event(
+                            "TRAILING_STOP_UPDATED",
+                            symbol=canonical_sym,
+                            position_id=str(pos_id),
+                            status="AMENDED",
+                            payload={
+                                "new_sl": new_sl,
+                                "previous_sl": current_sl,
+                                "highest_price": highest_favorable,
+                                "atr": atr_val,
+                            },
+                        )
+                else: # SHORT
+                    if highest_favorable <= 0.0 or current_price < highest_favorable:
+                        highest_favorable = current_price
+                        pos_data["highest_favorable_price"] = highest_favorable
+
+                    new_sl = round(highest_favorable + trail_distance, digits)
+                    if (current_sl <= 0.0 or new_sl < current_sl) and new_sl <= entry_price:
+                        logger.info(
+                            "Ratchet Trailing SL down for SHORT %s pos_id=%s: %.5f -> %.5f",
+                            canonical_sym, pos_id, current_sl, new_sl
+                        )
+                        if hasattr(self.broker, "amend_position") and callable(self.broker.amend_position):
+                            try:
+                                self.broker.amend_position(pid_arg, stop_loss=new_sl)
+                            except Exception as e:
+                                logger.error("Failed to amend trailing SL for pos %s: %s", pos_id, e)
+
+                        pos_data["sl_price"] = new_sl
+                        self.state_mgr.save_state()
+                        self.evidence_collector.record_runtime_event(
+                            "TRAILING_STOP_UPDATED",
+                            symbol=canonical_sym,
+                            position_id=str(pos_id),
+                            status="AMENDED",
+                            payload={
+                                "new_sl": new_sl,
+                                "previous_sl": current_sl,
+                                "lowest_price": highest_favorable,
+                                "atr": atr_val,
+                            },
+                        )
+
     async def execute_cycle(self) -> None:
         """Execute a single evaluation, risk verification, and monitoring cycle."""
         now_utc = datetime.now(tz=timezone.utc)
@@ -213,6 +416,13 @@ class TradingBotRunner:
                 status="FAILED",
                 error_message=str(e),
             )
+
+        # 1.1 Convex Asymmetric Exit Engine: Manage open positions (Partial TP & Trailing Stop)
+        if broker_connected and self.state_mgr.state.open_positions:
+            try:
+                self.manage_open_positions(broker_positions, now=now_utc)
+            except Exception as e:
+                logger.error("Error managing open positions: %s", e)
 
         # 2. Account balance & risk state
         bal_info = self.broker.get_balance() if broker_connected else {"balance": 10000.0, "equity": 10000.0}
@@ -516,12 +726,14 @@ class TradingBotRunner:
             )
 
             # 3.4 Deterministic Gatekeeper
+            enforce_session = os.environ.get("ENFORCE_SESSION_FILTER", "true").lower() == "true"
             val_res = DeterministicGate.validate(
                 proposal=proposal,
                 context=ctx,
                 max_daily_loss_pct=self.risk_engine.config.max_daily_loss_pct,
                 max_open_positions=self.risk_engine.config.max_open_positions,
                 now=now_utc,
+                enforce_session_filter=enforce_session,
             )
 
             gate_approved = (
@@ -600,6 +812,15 @@ class TradingBotRunner:
                 logger.debug("Failed to query live spot prices for %s spread check: %s", symbol, e)
 
             atr_val = ctx.atr
+            # Determine H1 alignment for dynamic sizing boost
+            h1_regime = ctx.scenario_state.get("h1_regime") or sig.indicators.get("h1_regime")
+            if not h1_regime and symbol == "XAUUSD":
+                h1_regime = "BULLISH" if "bullish" in sig.reason.get("h1_bias", "").lower() else "BEARISH"
+            h1_aligned = (
+                (sig.direction == Direction.LONG and h1_regime in ("BULLISH", "UP", "TREND_UP"))
+                or (sig.direction == Direction.SHORT and h1_regime in ("BEARISH", "DOWN", "TREND_DOWN"))
+            )
+
             risk_decision = self.risk_engine.evaluate_order(
                 symbol=symbol,
                 direction=sig.direction,
@@ -616,6 +837,8 @@ class TradingBotRunner:
                 lot_size_units=sym_info.get("lot_size", 100000.0),
                 current_spread_pips=current_spread_pips,
                 max_spread_pips=sym_info.get("max_spread"),
+                confidence=proposal.confidence if proposal else None,
+                h1_aligned=h1_aligned,
             )
 
             if not risk_decision.approved:
@@ -796,6 +1019,30 @@ class TradingBotRunner:
                 source="BOT_EVENT",
             )
             self.evidence_collector.record_trade(trade_rec)
+
+            # Record active position state locally for Asymmetric Exit Engine tracking
+            if position_id and position_id not in ("", "None") and order_result.get("status") != "FAILED":
+                sl_target = round(sig.price - (sl_dist if sig.direction == Direction.LONG else -sl_dist), digits)
+                tp_target = round(sig.price + (tp_dist if sig.direction == Direction.LONG else -tp_dist), digits)
+                pos_state = PositionState(
+                    position_id=position_id,
+                    symbol=symbol,
+                    direction=sig.direction.value,
+                    volume_lots=lots,
+                    entry_price=fill_price,
+                    sl_price=sl_target,
+                    tp_price=tp_target,
+                    open_time=now_utc.isoformat(),
+                    status="OPEN",
+                    original_volume=lots,
+                    partial_tp_hit=False,
+                    break_even_set=False,
+                    trailing_stop_active=False,
+                    highest_favorable_price=fill_price,
+                    atr_at_entry=atr_val,
+                    sl_distance=sl_dist,
+                )
+                self.state_mgr.record_new_position(pos_state)
 
             # 3.8 State Update & Reconciliation
             try:

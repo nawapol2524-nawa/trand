@@ -8,8 +8,8 @@ import os
 import subprocess
 from typing import Any, Dict
 
-SYSTEM_VERSION = "1.2.0"
-SCHEMA_VERSION = "1.2"
+SYSTEM_VERSION = "1.3.0"
+SCHEMA_VERSION = "1.3"
 
 
 def get_git_commit_sha() -> str:
