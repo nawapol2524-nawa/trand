@@ -129,20 +129,46 @@ class DeterministicGate:
                 checks=checks,
             )
 
-        # 5. Confidence Threshold Check
+        # 5. Confidence Threshold Check (Level 2 Restricted Mode: 0.80 threshold if consecutive_losses >= 3)
+        consec_losses = context.recent_trade_state.get("consecutive_losses", 0) if context.recent_trade_state else 0
+        req_confidence = 0.80 if consec_losses >= 3 else cls.MIN_CONFIDENCE_THRESHOLD
         checks["confidence_sufficient"] = (
-            proposal.decision != ProposalDecision.APPROVE or proposal.confidence >= cls.MIN_CONFIDENCE_THRESHOLD
+            proposal.decision != ProposalDecision.APPROVE or proposal.confidence >= req_confidence
         )
         if not checks["confidence_sufficient"]:
+            level_str = " (Level 2 Restricted Mode)" if consec_losses >= 3 else ""
             return ValidationResult(
                 passed=False,
                 decision="REJECTED",
-                reason=f"Insufficient AI confidence: {proposal.confidence:.2f} < {cls.MIN_CONFIDENCE_THRESHOLD:.2f}",
+                reason=f"Insufficient AI confidence: {proposal.confidence:.2f} < {req_confidence:.2f}{level_str}",
                 checks=checks,
             )
 
-        # 6. Direction & Trend Alignment Check
+        # 6. Direction & Trend Alignment Check (M5 & H1 Regime)
+        h1_regime = context.scenario_state.get("h1_regime") if context.scenario_state else None
+        valid_long_scenarios = ("REVERSAL", "BREAKOUT", "BULLISH_BREAKOUT", "REVERSAL_CONFIRMED")
+        valid_short_scenarios = ("REVERSAL", "BREAKDOWN", "BEARISH_BREAKDOWN", "REVERSAL_CONFIRMED")
+
         if proposal.decision == ProposalDecision.APPROVE:
+            if h1_regime == "BEARISH" and proposal.direction == Direction.LONG and proposal.scenario not in valid_long_scenarios:
+                checks["h1_regime_alignment"] = False
+                return ValidationResult(
+                    passed=False,
+                    decision="REJECTED",
+                    reason="Proposal LONG contradicts BEARISH H1 regime without confirmed REVERSAL scenario",
+                    checks=checks,
+                )
+            elif h1_regime == "BULLISH" and proposal.direction == Direction.SHORT and proposal.scenario not in valid_short_scenarios:
+                checks["h1_regime_alignment"] = False
+                return ValidationResult(
+                    passed=False,
+                    decision="REJECTED",
+                    reason="Proposal SHORT contradicts BULLISH H1 regime without confirmed REVERSAL scenario",
+                    checks=checks,
+                )
+            else:
+                checks["h1_regime_alignment"] = True
+
             if proposal.direction == Direction.LONG and context.trend == "BEARISH" and proposal.scenario != "REVERSAL":
                 checks["trend_alignment"] = False
                 return ValidationResult(
@@ -162,6 +188,7 @@ class DeterministicGate:
             else:
                 checks["trend_alignment"] = True
         else:
+            checks["h1_regime_alignment"] = True
             checks["trend_alignment"] = True
 
         all_passed = all(checks.values())

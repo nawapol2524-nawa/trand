@@ -12,6 +12,7 @@ symbols:
     volume_step: 0.01
     sl_atr_multiplier: 2.0
     tp_atr_multiplier: 3.0
+    max_spread_pips: 50.0
     enabled: true
 
   EURUSD:
@@ -24,6 +25,7 @@ symbols:
     volume_step: 0.01
     sl_atr_multiplier: 1.5
     tp_atr_multiplier: 2.5
+    max_spread_pips: 2.0
     enabled: true
 
   GBPUSD:
@@ -36,6 +38,7 @@ symbols:
     volume_step: 0.01
     sl_atr_multiplier: 1.5
     tp_atr_multiplier: 2.5
+    max_spread_pips: 2.5
     enabled: true
 
   USDJPY:
@@ -48,4 +51,5 @@ symbols:
     volume_step: 0.01
     sl_atr_multiplier: 1.5
     tp_atr_multiplier: 2.5
+    max_spread_pips: 2.5
     enabled: true

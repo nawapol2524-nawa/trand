@@ -198,3 +198,4 @@ class RiskDecision:
     reason:          str
     adjusted_volume: float = 0.0
     block_reason:    Optional[str] = None
+    defense_level:   int = 0

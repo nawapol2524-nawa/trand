@@ -50,6 +50,7 @@ MIN_BARS = EMA_SLOW_PERIOD + BOS_LOOKBACK_N + 1
 def evaluate(
     m5_bars: list[Bar],
     now: Optional[datetime] = None,
+    h1_bars: Optional[list[Bar]] = None,
 ) -> Optional[Signal]:
     """
     Evaluate the Forex Trend Breakout strategy.
@@ -58,6 +59,7 @@ def evaluate(
         m5_bars: List of M5 bars, newest at index 0, all must be CLOSED.
                  Minimum length: EMA_SLOW_PERIOD + BOS_LOOKBACK_N + 1 = 221
         now:     Reference UTC time (defaults to datetime.now(utc))
+        h1_bars: Optional list of H1 bars for Higher Timeframe Regime context.
 
     Returns:
         Signal with direction LONG or SHORT, or None if no signal.
@@ -93,6 +95,14 @@ def evaluate(
 
     bars = m5_bars  # newest at index 0
 
+    # Higher Timeframe H1 Regime Context
+    h1_regime = "NOT_PROVIDED"
+    if h1_bars and len(h1_bars) >= 50:
+        h1_closes = np.array([b.close for b in reversed(h1_bars)])
+        h1_ema50_arr = ema(h1_closes, 50)
+        if not np.isnan(h1_ema50_arr[-1]):
+            h1_regime = "BULLISH" if h1_closes[-1] > h1_ema50_arr[-1] else "BEARISH"
+
     # ----------------------------------------------------------------
     # LONG conditions
     # ----------------------------------------------------------------
@@ -116,12 +126,14 @@ def evaluate(
                     "atr":       round(atr_val, 5),
                     "bos_level": round(bos_level, 5),
                     "pattern":   pattern,
+                    "h1_regime": h1_regime,
                     "m5_timestamp": bars[0].timestamp.isoformat(),
                 },
                 reason={
                     "trend_condition": f"EMA9({ema9:.5f}) > EMA21({ema21:.5f}), close({close:.5f}) > EMA200({ema200:.5f})",
                     "bos_condition":   f"High broke {BOS_LOOKBACK_N}-bar high at {bos_level:.5f}",
                     "candle_pattern":  pattern,
+                    "h1_regime":       h1_regime,
                 },
             )
 
@@ -148,12 +160,14 @@ def evaluate(
                     "atr":       round(atr_val, 5),
                     "bos_level": round(bos_level, 5),
                     "pattern":   pattern,
+                    "h1_regime": h1_regime,
                     "m5_timestamp": bars[0].timestamp.isoformat(),
                 },
                 reason={
                     "trend_condition": f"EMA9({ema9:.5f}) < EMA21({ema21:.5f}), close({close:.5f}) < EMA200({ema200:.5f})",
                     "bos_condition":   f"Low broke {BOS_LOOKBACK_N}-bar low at {bos_level:.5f}",
                     "candle_pattern":  pattern,
+                    "h1_regime":       h1_regime,
                 },
             )
 

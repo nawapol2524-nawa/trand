@@ -2,15 +2,24 @@
 State Manager & Broker Reconciliation Service — Phase 4 requirement.
 Ensures persistent local state, atomic saves, startup broker recovery,
 orphan position discovery, and duplicate trade prevention across restarts.
+Hardened with schema versioning, thread-safe atomic writes, and loss classification.
 """
 from __future__ import annotations
 
 import json
+import logging
 import os
+import threading
+import uuid
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+from src.core.loss_classifier import LossReason
+from src.core.version import SCHEMA_VERSION
+
+logger = logging.getLogger("StateManager")
 
 
 @dataclass
@@ -20,19 +29,21 @@ class PositionState:
     direction: str
     volume_lots: float
     entry_price: float
-    sl_price: float
-    tp_price: float
-    open_time: str
+    sl_price: float = 0.0
+    tp_price: float = 0.0
+    open_time: str = ""
     status: str = "OPEN"      # OPEN, CLOSED, ORPHAN
     close_time: Optional[str] = None
     close_price: Optional[float] = None
     realized_pnl: float = 0.0
+    loss_reason: Optional[str] = None
 
 
 @dataclass
 class BotRuntimeState:
     last_reset_date: str
     daily_starting_balance: float
+    schema_version: str = SCHEMA_VERSION
     daily_pnl: float = 0.0
     consecutive_losses: int = 0
     halt_until: Optional[str] = None
@@ -45,12 +56,13 @@ class BotRuntimeState:
 
 
 class StateManager:
-    """Manages persistent bot state and broker reconciliation."""
+    """Manages persistent bot state and broker reconciliation with atomic thread safety."""
 
     def __init__(self, state_dir: Optional[str] = None):
         self.state_dir = Path(state_dir or os.environ.get("STATE_DIR", "./state"))
         self.state_dir.mkdir(parents=True, exist_ok=True)
         self.state_file = self.state_dir / "bot_state.json"
+        self._lock = threading.Lock()
         self.state: BotRuntimeState = self._load_or_initialize()
 
     def _load_or_initialize(self) -> BotRuntimeState:
@@ -60,9 +72,18 @@ class StateManager:
         if self.state_file.exists():
             try:
                 data = json.loads(self.state_file.read_text(encoding="utf-8"))
-                return BotRuntimeState(
+                loaded_schema = data.get("schema_version", "1.0")
+
+                # Schema migration check
+                migrated = False
+                if loaded_schema != SCHEMA_VERSION:
+                    logger.info("Migrating bot_state schema from %s to %s", loaded_schema, SCHEMA_VERSION)
+                    migrated = True
+
+                state = BotRuntimeState(
                     last_reset_date=data.get("last_reset_date", today_str),
                     daily_starting_balance=float(data.get("daily_starting_balance", 10000.0)),
+                    schema_version=SCHEMA_VERSION,
                     daily_pnl=float(data.get("daily_pnl", 0.0)),
                     consecutive_losses=int(data.get("consecutive_losses", 0)),
                     halt_until=data.get("halt_until"),
@@ -73,30 +94,46 @@ class StateManager:
                     last_updated=data.get("last_updated", now_utc.isoformat()),
                     reconciliation_count=int(data.get("reconciliation_count", 0)),
                 )
-            except Exception:
-                pass
+
+                if migrated:
+                    self.save_state(state)
+                return state
+            except Exception as e:
+                logger.warning("Could not parse existing state file: %s. Reinitializing.", e)
 
         # Default initial state
         st = BotRuntimeState(
             last_reset_date=today_str,
             daily_starting_balance=10000.0,
+            schema_version=SCHEMA_VERSION,
             last_updated=now_utc.isoformat(),
         )
         self.save_state(st)
         return st
 
     def save_state(self, state: Optional[BotRuntimeState] = None) -> None:
-        """Atomic write of state file."""
-        if state is not None:
-            self.state = state
+        """Thread-safe atomic write of state file using unique temporary file."""
+        with self._lock:
+            if state is not None:
+                self.state = state
 
-        now_utc = datetime.now(tz=timezone.utc)
-        self.state.last_updated = now_utc.isoformat()
+            now_utc = datetime.now(tz=timezone.utc)
+            self.state.last_updated = now_utc.isoformat()
+            if not getattr(self.state, "schema_version", None):
+                self.state.schema_version = SCHEMA_VERSION
 
-        tmp_path = self.state_file.with_suffix(".tmp")
-        payload = asdict(self.state)
-        tmp_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-        tmp_path.replace(self.state_file)
+            # Unique temp file eliminates race conditions
+            unique_tmp = self.state_file.with_name(f"bot_state_{uuid.uuid4().hex[:8]}.tmp")
+            try:
+                payload = asdict(self.state)
+                unique_tmp.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+                unique_tmp.replace(self.state_file)
+            finally:
+                if unique_tmp.exists():
+                    try:
+                        unique_tmp.unlink(missing_ok=True)
+                    except Exception:
+                        pass
 
     def record_new_position(self, pos: PositionState) -> None:
         """Track new position locally."""
@@ -109,14 +146,20 @@ class StateManager:
         close_price: float,
         realized_pnl: float,
         close_time: Optional[datetime] = None,
+        loss_reason: Optional[str] = None,
     ) -> None:
-        """Update local state on position exit."""
+        """Update local state on position exit, with loss classification."""
         pos_dict = self.state.open_positions.pop(position_id, None)
         if pos_dict:
             pos_dict["status"] = "CLOSED"
             pos_dict["close_price"] = close_price
             pos_dict["realized_pnl"] = realized_pnl
             pos_dict["close_time"] = (close_time or datetime.now(tz=timezone.utc)).isoformat()
+
+            # Post-trade loss reason tagging
+            if realized_pnl < 0:
+                pos_dict["loss_reason"] = loss_reason or LossReason.NORMAL_STRATEGY_LOSS
+
             self.state.closed_positions_history.append(pos_dict)
 
             # Update daily PnL and consecutive loss streak

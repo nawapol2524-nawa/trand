@@ -24,6 +24,7 @@ from src.brokers.ctrader_mcp import CTraderMCPBroker
 from src.core.clock import candle_close_time, is_candle_closed
 from src.core.models import Bar, Direction, Signal, Timeframe
 from src.core.risk import RiskConfig, RiskEngine
+from src.core.version import SYSTEM_VERSION, get_git_commit_sha
 from src.services.decision_trace import DecisionTraceService
 from src.services.evidence import EvidenceCollector, EvidenceUploader, TradeRecord
 from src.services.monitor import OperationalMonitor
@@ -33,10 +34,10 @@ from src.strategies import forex_trend_breakout, xau_mean_reversion
 logger = logging.getLogger("TradingBot")
 
 SYMBOL_MAP = {
-    "EURUSD": {"id": 1, "lot_size": 100000.0, "scale": 100000.0, "digits": 5},
-    "GBPUSD": {"id": 2, "lot_size": 100000.0, "scale": 100000.0, "digits": 5},
-    "USDJPY": {"id": 4, "lot_size": 100000.0, "scale": 100000.0, "digits": 3},
-    "XAUUSD": {"id": 41, "lot_size": 100.0, "scale": 100000.0, "digits": 2},
+    "EURUSD": {"id": 1, "lot_size": 100000.0, "scale": 100000.0, "digits": 5, "max_spread": 2.0},
+    "GBPUSD": {"id": 2, "lot_size": 100000.0, "scale": 100000.0, "digits": 5, "max_spread": 2.5},
+    "USDJPY": {"id": 4, "lot_size": 100000.0, "scale": 100000.0, "digits": 3, "max_spread": 2.5},
+    "XAUUSD": {"id": 41, "lot_size": 100.0, "scale": 100000.0, "digits": 2, "max_spread": 50.0},
 }
 
 
@@ -349,47 +350,47 @@ class TradingBotRunner:
                 continue
 
             h1_bars: list[Bar] = []
-            if symbol == "XAUUSD":
-                try:
-                    raw_h1 = self.broker.get_trendbars(
-                        symbol_id=sym_info["id"],
-                        period="H_1",
-                        count=70,
-                    )
-                    for b in raw_h1:
-                        try:
-                            open_f = b["open"] / scale
-                            high_f = b["high"] / scale
-                            low_f = b["low"] / scale
-                            close_f = b["close"] / scale
-                            ts = datetime.fromtimestamp(b["timestamp"] / 1000.0, tz=timezone.utc)
-                            if is_candle_closed(ts, Timeframe.H1, now=now_utc):
-                                h1_bars.append(Bar(
-                                    symbol=symbol,
-                                    timeframe=Timeframe.H1,
-                                    timestamp=ts,
-                                    open=open_f,
-                                    high=max(high_f, open_f, close_f),
-                                    low=min(low_f, open_f, close_f),
-                                    close=close_f,
-                                    volume=float(b.get("volume", 0)),
-                                ))
-                        except Exception:
-                            pass
-                    h1_bars = sorted({b.timestamp: b for b in h1_bars}.values(), key=lambda b: b.timestamp, reverse=True)
-                except Exception as e:
-                    logger.error("Failed to fetch H1 trendbars for %s: %s", symbol, e)
+            try:
+                raw_h1 = self.broker.get_trendbars(
+                    symbol_id=sym_info["id"],
+                    period="H_1",
+                    count=70,
+                )
+                for b in raw_h1:
+                    try:
+                        open_f = b["open"] / scale
+                        high_f = b["high"] / scale
+                        low_f = b["low"] / scale
+                        close_f = b["close"] / scale
+                        ts = datetime.fromtimestamp(b["timestamp"] / 1000.0, tz=timezone.utc)
+                        if is_candle_closed(ts, Timeframe.H1, now=now_utc):
+                            h1_bars.append(Bar(
+                                symbol=symbol,
+                                timeframe=Timeframe.H1,
+                                timestamp=ts,
+                                open=open_f,
+                                high=max(high_f, open_f, close_f),
+                                low=min(low_f, open_f, close_f),
+                                close=close_f,
+                                volume=float(b.get("volume", 0)),
+                            ))
+                    except Exception:
+                        pass
+                h1_bars = sorted({b.timestamp: b for b in h1_bars}.values(), key=lambda b: b.timestamp, reverse=True)
+            except Exception as e:
+                logger.error("Failed to fetch H1 trendbars for %s: %s", symbol, e)
+                if symbol == "XAUUSD":
                     continue
 
-                if len(h1_bars) < 51:
-                    logger.info(json.dumps({
-                        "event": "MARKET_DATA",
-                        "symbol": symbol,
-                        "status": "INSUFFICIENT_H1_BARS",
-                        "count": len(h1_bars),
-                        "required": 51,
-                    }))
-                    continue
+            if symbol == "XAUUSD" and len(h1_bars) < 51:
+                logger.info(json.dumps({
+                    "event": "MARKET_DATA",
+                    "symbol": symbol,
+                    "status": "INSUFFICIENT_H1_BARS",
+                    "count": len(h1_bars),
+                    "required": 51,
+                }))
+                continue
 
             # Mark this closed bar timestamp as evaluated
             self.last_evaluated_bar_ts[symbol] = m5_bars[0].timestamp
@@ -399,7 +400,7 @@ class TradingBotRunner:
                 "symbol": symbol,
                 "status": "ACQUIRED",
                 "m5_bars": len(m5_bars),
-                "h1_bars": len(h1_bars) if symbol == "XAUUSD" else 0,
+                "h1_bars": len(h1_bars),
                 "latest_closed_bar": m5_bars[0].timestamp.isoformat(),
             }))
             self.evidence_collector.record_runtime_event(
@@ -408,7 +409,7 @@ class TradingBotRunner:
                 status="ACQUIRED",
                 payload={
                     "m5_bars": len(m5_bars),
-                    "h1_bars": len(h1_bars) if symbol == "XAUUSD" else 0,
+                    "h1_bars": len(h1_bars),
                     "latest_closed_bar": m5_bars[0].timestamp.isoformat(),
                 },
             )
@@ -418,7 +419,10 @@ class TradingBotRunner:
             if symbol == "XAUUSD":
                 sig = xau_mean_reversion.evaluate(m5_bars, h1_bars, now=now_utc)
             else:
-                sig = forex_trend_breakout.evaluate(m5_bars, now=now_utc)
+                try:
+                    sig = forex_trend_breakout.evaluate(m5_bars, now=now_utc, h1_bars=h1_bars)
+                except TypeError:
+                    sig = forex_trend_breakout.evaluate(m5_bars, now=now_utc)
 
             if sig is None:
                 logger.info(json.dumps({
@@ -457,6 +461,7 @@ class TradingBotRunner:
                     symbol=symbol,
                     timeframe=Timeframe.M5,
                     m5_bars=m5_bars,
+                    h1_bars=h1_bars,
                     account_risk_state={
                         "daily_pnl_pct": round(daily_pnl / daily_starting_bal, 4) if daily_starting_bal > 0 else 0.0,
                         "kill_switch_active": kill_switch,
@@ -570,7 +575,30 @@ class TradingBotRunner:
                 reason=val_res.reason,
             )
 
-            # 3.5 Risk Engine Evaluation
+            # 3.5 Risk Engine Evaluation & Pre-Trade Spread Guard
+            current_spread_pips: Optional[float] = None
+            try:
+                spot_prices = self.broker.get_spot_prices([sym_info["id"]])
+                if spot_prices and isinstance(spot_prices, list):
+                    spot = spot_prices[0]
+                    bid = spot.get("bid")
+                    ask = spot.get("ask")
+                    if bid is not None and ask is not None:
+                        spread_raw = float(ask) - float(bid)
+                        if spread_raw > 1.0 and symbol in ("EURUSD", "GBPUSD"):
+                            spread_raw = spread_raw / scale
+                        elif spread_raw > 10.0 and symbol == "USDJPY":
+                            spread_raw = spread_raw / scale
+                        elif spread_raw > 100.0 and symbol == "XAUUSD":
+                            spread_raw = spread_raw / scale
+
+                        if symbol in ("EURUSD", "GBPUSD"):
+                            current_spread_pips = spread_raw / 0.0001
+                        elif symbol in ("USDJPY", "XAUUSD"):
+                            current_spread_pips = spread_raw / 0.01
+            except Exception as e:
+                logger.debug("Failed to query live spot prices for %s spread check: %s", symbol, e)
+
             atr_val = ctx.atr
             risk_decision = self.risk_engine.evaluate_order(
                 symbol=symbol,
@@ -586,6 +614,8 @@ class TradingBotRunner:
                 data_timestamp=candle_close_time(m5_bars[0].timestamp, Timeframe.M5),
                 now=now_utc,
                 lot_size_units=sym_info.get("lot_size", 100000.0),
+                current_spread_pips=current_spread_pips,
+                max_spread_pips=sym_info.get("max_spread"),
             )
 
             if not risk_decision.approved:
@@ -595,6 +625,7 @@ class TradingBotRunner:
                     "status": "REJECTED",
                     "reason": risk_decision.reason,
                     "block_reason": risk_decision.block_reason,
+                    "defense_level": risk_decision.defense_level,
                 }))
                 dec_rec = self.trace_service.log_decision(
                     trace_id=str(uuid.uuid4()),
@@ -608,6 +639,7 @@ class TradingBotRunner:
                         "approved": False,
                         "reason": risk_decision.reason,
                         "block_reason": risk_decision.block_reason,
+                        "defense_level": risk_decision.defense_level,
                     },
                     execution_result={"status": "REJECTED_BY_RISK", "reason": risk_decision.reason},
                 )
@@ -617,7 +649,10 @@ class TradingBotRunner:
                     symbol=symbol,
                     status="REJECTED",
                     reason=risk_decision.reason,
-                    payload={"block_reason": risk_decision.block_reason},
+                    payload={
+                        "block_reason": risk_decision.block_reason,
+                        "defense_level": risk_decision.defense_level,
+                    },
                 )
                 continue
 
@@ -626,12 +661,16 @@ class TradingBotRunner:
                 "symbol": symbol,
                 "status": "APPROVED",
                 "allocated_volume": risk_decision.adjusted_volume,
+                "defense_level": risk_decision.defense_level,
             }))
             self.evidence_collector.record_runtime_event(
                 "RISK_DECISION",
                 symbol=symbol,
                 status="APPROVED",
-                payload={"allocated_volume": risk_decision.adjusted_volume},
+                payload={
+                    "allocated_volume": risk_decision.adjusted_volume,
+                    "defense_level": risk_decision.defense_level,
+                },
             )
 
             # 3.6 Broker Order Submission (cTrader Remote MCP)
@@ -652,6 +691,8 @@ class TradingBotRunner:
 
             trade_side = "BUY" if sig.direction == Direction.LONG else "SELL"
             trace_id = str(uuid.uuid4())
+            git_sha = get_git_commit_sha()[:7]
+            order_comment = f"Bot_{symbol}_v{SYSTEM_VERSION}_{git_sha}"
 
             order_result: dict[str, Any] = {}
             try:
@@ -661,7 +702,7 @@ class TradingBotRunner:
                     volume=mcp_volume,
                     relative_sl=relative_sl,
                     relative_tp=relative_tp,
-                    comment=f"Bot_{symbol}_{sig.strategy_id}",
+                    comment=order_comment,
                     label="trading-bot-m5",
                 )
                 logger.info(json.dumps({
@@ -679,6 +720,16 @@ class TradingBotRunner:
                 logger.error("Order submission failed for %s: %s", symbol, e)
                 order_result = {"status": "FAILED", "error": str(e)}
 
+            fill_price = float(order_result.get("executionPrice", order_result.get("order", {}).get("executionPrice", sig.price)))
+            slippage = abs(fill_price - sig.price)
+            if symbol in ("EURUSD", "GBPUSD"):
+                slippage_pips = round(slippage / 0.0001, 2)
+            elif symbol in ("USDJPY", "XAUUSD"):
+                slippage_pips = round(slippage / 0.01, 2)
+            else:
+                slippage_pips = 0.0
+            order_result["slippage_pips"] = slippage_pips
+
             # 3.7 Decision Trace Logging
             dec_rec = self.trace_service.log_decision(
                 trace_id=trace_id,
@@ -692,6 +743,7 @@ class TradingBotRunner:
                     "approved": True,
                     "adjusted_volume": lots,
                     "reason": risk_decision.reason,
+                    "defense_level": risk_decision.defense_level,
                 },
                 execution_result=order_result,
             )
@@ -699,13 +751,13 @@ class TradingBotRunner:
 
             order_id = str(order_result.get("orderId", order_result.get("order", {}).get("orderId", "")))
             position_id = str(order_result.get("positionId", order_result.get("position", {}).get("positionId", "")))
-            fill_price = float(order_result.get("executionPrice", order_result.get("order", {}).get("executionPrice", sig.price)))
 
             self.evidence_collector.record_runtime_event(
                 event_type="ORDER_SUBMITTED",
                 symbol=symbol,
                 direction=sig.direction.value,
-                strategy_version=sig.strategy_id,
+                strategy_version=f"{sig.strategy_id}_v{SYSTEM_VERSION}",
+                bot_git_sha=get_git_commit_sha(),
                 order_id=order_id or None,
                 position_id=position_id or None,
                 trade_id=trace_id,
@@ -716,6 +768,7 @@ class TradingBotRunner:
                     "mcp_volume": mcp_volume,
                     "relative_sl_points": relative_sl,
                     "relative_tp_points": relative_tp,
+                    "slippage_pips": slippage_pips,
                     "result": order_result,
                 },
             )
@@ -734,7 +787,8 @@ class TradingBotRunner:
                 risk_amount=risk_decision.risk_amount if hasattr(risk_decision, "risk_amount") else None,
                 order_id=order_id or None,
                 position_id=position_id or None,
-                strategy_version=sig.strategy_id,
+                strategy_version=f"{sig.strategy_id}_v{SYSTEM_VERSION}",
+                bot_git_sha=get_git_commit_sha(),
                 ai_decision=proposal.decision.value if proposal else None,
                 ai_confidence=proposal.confidence if proposal else None,
                 gate_result=val_res.reason if val_res else None,

@@ -13,6 +13,7 @@ from typing import Any, Optional
 
 from src.ai.schemas import TradeProposal
 from src.ai.validator import ValidationResult
+from src.core.version import SYSTEM_VERSION, get_git_commit_sha
 
 
 @dataclass
@@ -24,6 +25,8 @@ class DecisionTraceRecord:
     model:                 str
     input_schema_version:  str = "1.0"
     output_schema_version: str = "1.0"
+    system_version:        str = SYSTEM_VERSION
+    git_commit:            Optional[str] = None
     context_summary:       dict[str, Any] = None  # type: ignore[assignment]
     proposal:              dict[str, Any] = None  # type: ignore[assignment]
     validation_result:     dict[str, Any] = None  # type: ignore[assignment]
@@ -85,6 +88,8 @@ class DecisionTraceLogger:
             } if validation_result else {},
             risk_result=risk_result or {},
             execution_result=execution_result or {},
+            system_version=SYSTEM_VERSION,
+            git_commit=get_git_commit_sha(),
         )
 
         with open(self.log_path, "a", encoding="utf-8") as f:

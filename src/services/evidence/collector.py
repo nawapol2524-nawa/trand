@@ -147,6 +147,7 @@ class EvidenceCollector:
         reconciliation_state: Optional[str] = None,
         payload: Optional[Dict[str, Any]] = None,
         timestamp_utc: Optional[str] = None,
+        bot_git_sha: Optional[str] = None,
     ) -> RuntimeEvent:
         """Record structured runtime event into daily JSONL."""
         now = datetime.now(tz=timezone.utc)
@@ -159,7 +160,7 @@ class EvidenceCollector:
             symbol=symbol,
             direction=direction,
             strategy_version=strategy_version,
-            bot_git_sha=self._git_sha,
+            bot_git_sha=bot_git_sha or self._git_sha,
             order_id=order_id,
             position_id=position_id,
             trade_id=trade_id,

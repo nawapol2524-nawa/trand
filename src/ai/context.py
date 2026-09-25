@@ -45,6 +45,7 @@ class AIContextBuilder:
         news_state: Optional[dict[str, Any]] = None,
         scenario_state: Optional[dict[str, Any]] = None,
         now: Optional[datetime] = None,
+        h1_bars: Optional[list[Bar]] = None,
     ) -> AIContext:
         """
         Build normalized AIContext from closed bars.
@@ -99,6 +100,15 @@ class AIContextBuilder:
 
         session = cls.determine_session(now_utc)
 
+        # Higher Timeframe H1 Regime Integration
+        scen_state = dict(scenario_state or {"active_scenario": "NONE"})
+        if h1_bars and len(h1_bars) >= 50:
+            h1_closes = np.array([b.close for b in reversed(h1_bars)])
+            h1_ema50_arr = ema(h1_closes, 50)
+            if not np.isnan(h1_ema50_arr[-1]):
+                scen_state["h1_regime"] = "BULLISH" if h1_closes[-1] > h1_ema50_arr[-1] else "BEARISH"
+                scen_state["h1_ema50"] = round(float(h1_ema50_arr[-1]), 5)
+
         return AIContext(
             symbol=symbol,
             timeframe=timeframe,
@@ -114,6 +124,6 @@ class AIContextBuilder:
             current_position=current_position or {"open_positions": 0, "symbol_exposure": 0.0},
             account_risk_state=account_risk_state or {"daily_pnl_pct": 0.0, "kill_switch_active": False},
             recent_trade_state=recent_trade_state or {"consecutive_losses": 0},
-            scenario_state=scenario_state or {"active_scenario": "NONE"},
+            scenario_state=scen_state,
             timestamp=now_utc,
         )
