@@ -598,3 +598,81 @@ def test_15_health_heartbeat_advances(temp_dirs):
         content = f.read()
     assert '"alive": true' in content
     assert '"broker_connected": true' in content
+
+
+def test_16_regression_open_positions_dict_serialization(temp_dirs):
+    """
+    Regression test for:
+    Unhandled error in execution cycle: 'dict' object has no attribute 'to_dict'
+
+    When an existing open position is tracked in state_manager (e.g. from prior
+    order or broker startup discovery), each item in state.open_positions is a dict.
+    When a new signal (e.g. GBPUSD) is evaluated and approved by AI + Gate,
+    passing open_positions to RiskEngine must NOT invoke .to_dict() on the dicts.
+    """
+    state_d, log_d = temp_dirs
+    broker = MagicMock(spec=CTraderMCPBroker)
+    broker.get_positions.return_value = [
+        {"positionId": "PID1001", "symbolId": 1, "tradeSide": "BUY", "volume": 100000, "entryPrice": 1.1000}
+    ]
+    broker.get_balance.return_value = {"balance": 10000.0, "equity": 10000.0}
+    broker.get_trendbars.return_value = generate_synthetic_trendbars(2, count=250)
+    broker.create_market_order.return_value = {"orderId": "ORD_GBP_001", "status": "FILLED"}
+
+    state_mgr = StateManager(state_dir=state_d)
+    # Pre-populate state with an existing open position as dict
+    state_mgr.state.open_positions = {
+        "PID1001": {
+            "position_id": "PID1001",
+            "symbol": "EURUSD",
+            "direction": "BUY",
+            "volume_lots": 0.05,
+            "entry_price": 1.1000,
+            "sl_price": 1.0950,
+            "tp_price": 1.1100,
+            "open_time": "2026-09-25T10:00:00+00:00",
+            "status": "OPEN",
+        }
+    }
+
+    mock_ai = MagicMock(spec=OfflineDeterministicAIProvider)
+    mock_ai.name = "MockAI"
+    mock_ai.analyze.return_value = TradeProposal(
+        decision=ProposalDecision.APPROVE,
+        direction=Direction.SHORT,
+        confidence=0.90,
+        entry_context={"rsi": 65.0},
+        invalidation="Above EMA200",
+        rationale="Strong breakdown confirmed",
+        scenario="BEARISH_BREAKDOWN",
+        symbol="GBPUSD",
+        timestamp=datetime.now(tz=timezone.utc),
+        model_provider="mock",
+        trace_id="trace_regression_16",
+    )
+
+    runner = TradingBotRunner(
+        broker=broker,
+        state_manager=state_mgr,
+        monitor=OperationalMonitor(state_dir=state_d),
+        trace_service=DecisionTraceService(log_dir=log_d),
+        ai_provider=mock_ai,
+    )
+
+    dummy_signal = Signal(
+        symbol="GBPUSD",
+        direction=Direction.SHORT,
+        strategy_id="FOREX_TREND_BREAKOUT_V1",
+        timestamp=datetime.now(tz=timezone.utc),
+        price=1.3245,
+        indicators={"atr": 0.0020},
+    )
+
+    with patch("src.strategies.forex_trend_breakout.evaluate", return_value=dummy_signal):
+        asyncio.run(runner.execute_cycle())
+
+    # Verify broker order was successfully submitted without throwing 'dict' object has no attribute 'to_dict'
+    assert broker.create_market_order.called
+    call_args = broker.create_market_order.call_args[1]
+    assert call_args["symbol_id"] == 2
+    assert call_args["trade_side"] == "SELL"

@@ -10,7 +10,7 @@ import logging
 import os
 import time
 import uuid
-from dataclasses import asdict
+from dataclasses import asdict, is_dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -38,6 +38,24 @@ SYMBOL_MAP = {
     "USDJPY": {"id": 4, "lot_size": 100000.0, "scale": 100000.0, "digits": 3},
     "XAUUSD": {"id": 41, "lot_size": 100.0, "scale": 100000.0, "digits": 2},
 }
+
+
+def _normalize_position_dict(p: Any) -> Dict[str, Any]:
+    """Normalize position representation to Dict[str, Any] with canonical symbol mapping."""
+    if isinstance(p, dict):
+        d = dict(p)
+    elif hasattr(p, "to_dict") and callable(p.to_dict):
+        d = p.to_dict()
+    elif is_dataclass(p):
+        d = asdict(p)
+    else:
+        d = dict(p)
+
+    raw_sym = str(d.get("symbol", ""))
+    id_to_sym = {str(info["id"]): name for name, info in SYMBOL_MAP.items()}
+    if raw_sym in id_to_sym:
+        d["symbol"] = id_to_sym[raw_sym]
+    return d
 
 
 class TradingBotRunner:
@@ -252,8 +270,16 @@ class TradingBotRunner:
             logger.warning("Cycle halted: daily loss limit breached (%.2f%%)", (daily_pnl / daily_starting_bal) * 100)
             return
 
+        id_to_sym = {str(info["id"]): name for name, info in SYMBOL_MAP.items()}
         open_symbols = set(self.state_mgr.state.open_positions.keys())
-        total_open = len(open_symbols)
+        for p in self.state_mgr.state.open_positions.values():
+            sym = p.get("symbol") if isinstance(p, dict) else getattr(p, "symbol", None)
+            if sym:
+                open_symbols.add(str(sym))
+                if str(sym) in id_to_sym:
+                    open_symbols.add(id_to_sym[str(sym)])
+
+        total_open = len(self.state_mgr.state.open_positions)
 
         if total_open >= self.risk_engine.config.max_open_positions:
             logger.info("Max open positions reached (%d/%d). Skipping new evaluations.",
@@ -556,7 +582,7 @@ class TradingBotRunner:
                 daily_pnl=daily_pnl,
                 consecutive_losses=consecutive_losses,
                 halt_until=halt_until,
-                open_positions=[p.to_dict() for p in self.state_mgr.state.open_positions.values()],
+                open_positions=[_normalize_position_dict(p) for p in self.state_mgr.state.open_positions.values()],
                 data_timestamp=candle_close_time(m5_bars[0].timestamp, Timeframe.M5),
                 now=now_utc,
                 lot_size_units=sym_info.get("lot_size", 100000.0),

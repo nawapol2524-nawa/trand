@@ -6,7 +6,7 @@ Strict security: NEVER writes credentials, tokens, or secret keys.
 from __future__ import annotations
 
 import json
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, is_dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
@@ -58,6 +58,17 @@ class DecisionTraceLogger:
         # Sanitize any potential secret substrings defensively
         sanitized_summary = self._sanitize(context_summary)
 
+        if proposal is None:
+            proposal_dict: dict[str, Any] = {}
+        elif isinstance(proposal, dict):
+            proposal_dict = proposal
+        elif hasattr(proposal, "to_dict") and callable(proposal.to_dict):
+            proposal_dict = proposal.to_dict()
+        elif is_dataclass(proposal):
+            proposal_dict = asdict(proposal)
+        else:
+            proposal_dict = {}
+
         record = DecisionTraceRecord(
             trace_id=trace_id,
             timestamp=now_str,
@@ -65,7 +76,7 @@ class DecisionTraceLogger:
             provider=provider,
             model=model,
             context_summary=sanitized_summary,
-            proposal=proposal.to_dict() if proposal else {},
+            proposal=proposal_dict,
             validation_result={
                 "passed": validation_result.passed,
                 "decision": validation_result.decision,

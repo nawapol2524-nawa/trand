@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-09-25T06:37:00Z",
+  "deployment_id": "5e0dee93-82da-40bb-9d79-02b2555f7d2d",
+  "error": "Unhandled error in execution cycle: 'dict' object has no attribute 'to_dict'",
+  "root_cause": {
+    "file": "src/app/runner.py",
+    "line": 559,
+    "issue": "State open_positions contains dict objects, but runner called p.to_dict() when passing open positions to RiskEngine.evaluate_order"
+  },
+  "fix_summary": {
+    "files_modified": [
+      "src/app/runner.py",
+      "src/services/decision_trace.py",
+      "tests/integration/test_runner_pipeline.py"
+    ],
+    "description": "Implemented _normalize_position_dict helper handling dicts, dataclasses, and objects with to_dict(), with canonical symbol mapping, and hardened decision_trace logger"
+  },
+  "verification": {
+    "regression_test": "tests/integration/test_runner_pipeline.py::test_16_regression_open_positions_dict_serialization",
+    "total_tests": 110,
+    "passed_tests": 110,
+    "failed_tests": 0
+  },
+  "compliance": {
+    "strategy_frozen": true,
+    "risk_model_frozen": true,
+    "ai_policy_frozen": true,
+    "live_trading_enabled": false,
+    "trading_mode": "DEMO"
+  }
+}
