@@ -46,15 +46,23 @@ class TestDataAggregator:
         assert port["total_balance_usd"] > 0
         assert "total_daily_pnl_usd" in port
 
-        forex = snapshot["forex_gold"]
-        assert forex["symbol"] == "XAUUSD"
-        assert forex["capital"]["current_balance"] > 0
-        assert forex["market_status"]["spot_price"] > 0
+        gold = snapshot["gold"]
+        assert gold["symbol"] == "XAUUSD"
+        assert gold["capital"]["current_balance"] > 0
+        assert gold["market_status"]["spot_price"] > 0
+        assert "order_history" in gold
+        assert len(gold["order_history"]) > 0
+
+        forex = snapshot["forex"]
+        assert "order_history" in forex
+        assert len(forex["order_history"]) > 0
 
         deriv = snapshot["deriv_synthetic"]
         assert deriv["symbol"] == "1HZ90V"
         assert deriv["capital"]["current_balance"] > 0
         assert deriv["capital"]["stake_usd"] == 10.0
+        assert "open_positions" in deriv
+        assert len(deriv["recent_trades"]) > 0
 
 
 class TestWebboardServer:

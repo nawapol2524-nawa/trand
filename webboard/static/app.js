@@ -5,9 +5,13 @@
 
 // State caches for table change detection (Zero-flicker table diffing)
 let lastGoldPositionsHash = "";
+let lastGoldOrdersHash = "";
 let lastGoldHistoryHash = "";
 let lastForexPairsHash = "";
+let lastForexPositionsHash = "";
+let lastForexOrdersHash = "";
 let lastForexTradesHash = "";
+let lastDerivPositionsHash = "";
 let lastDerivTradesHash = "";
 let lastNewsCalendarHash = "";
 let lastBrainTracesHash = "";
@@ -272,19 +276,25 @@ function applySnapshot(data) {
   }
 
   renderGoldPositions(gold.open_positions || []);
+  renderGoldOrders(gold.order_history || []);
   renderGoldHistory(gold.closed_trades_history || []);
 
   // --- TAB 2: FOREX ---
+  updateText("forex-active-count", `${forex.open_positions_count || 0} ไม้`);
   updateText("forex-active-session", forex.active_session || "London / NY Overlap");
   renderForexPairs(forex.pairs || []);
+  renderForexPositions(forex.open_positions || []);
+  renderForexOrders(forex.order_history || []);
   renderForexTrades(forex.recent_trades || []);
 
   // --- TAB 3: SYNTHETIC ---
+  updateText("syn-active-count", `${syn.open_positions_count || 0} สัญญา`);
   updateText("syn-balance", `$${(synCap.current_balance || 10208.89).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, true);
   const synNet = synCap.daily_pnl_usd || 208.89;
   updateText("syn-pnl", `${synNet >= 0 ? "+" : ""}$${synNet.toFixed(2)} (+${(synCap.daily_pnl_pct || 2.09).toFixed(2)}%)`);
   updateText("syn-winrate", `${syn.performance?.win_rate_pct || 39.2}%`);
   updateText("syn-spot", (synMkt.spot_price || 1205.42).toFixed(2), true);
+  renderSyntheticPositions(syn.open_positions || []);
   renderDerivTrades(syn.recent_trades || []);
 
   // --- TAB 4: NEWS RADAR ---
@@ -343,6 +353,43 @@ function renderGoldPositions(positions) {
         </td>
         <td style="color: var(--text-3); font-size: 0.8rem;">${p.open_time.split("T")[1]?.slice(0, 8) || p.open_time}</td>
         <td><span class="badge badge-bullish">${p.status}</span></td>
+      </tr>
+    `;
+  });
+  tbody.innerHTML = html;
+}
+
+function renderGoldOrders(orders) {
+  const hash = JSON.stringify(orders);
+  if (hash === lastGoldOrdersHash) return;
+  lastGoldOrdersHash = hash;
+
+  const tbody = document.getElementById("gold-orders-tbody");
+  if (!tbody) return;
+
+  if (!orders || orders.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: var(--text-3); padding: 1rem;">ไม่มีประวัติคำสั่งซื้อขาย Gold ล่าสุด</td></tr>`;
+    return;
+  }
+
+  let html = "";
+  orders.forEach((o) => {
+    const isBuy = o.direction.toUpperCase() === "BUY";
+    const dirClass = isBuy ? "badge-bullish" : "badge-bearish";
+    const statusClass = (o.status === "FILLED" || o.status === "EXECUTED") ? "badge-bullish" : (o.status === "CANCELLED" ? "badge-neutral" : "badge-neutral");
+    html += `
+      <tr>
+        <td><strong>#${o.order_id}</strong></td>
+        <td><strong style="color: var(--accent-gold);">${o.symbol}</strong></td>
+        <td><span class="badge badge-neutral">${o.order_type}</span></td>
+        <td><span class="badge ${dirClass}">${o.direction}</span></td>
+        <td>${Number(o.volume_lots).toFixed(2)} lots</td>
+        <td>$${Number(o.order_price).toFixed(2)}</td>
+        <td>${o.fill_price ? `$${Number(o.fill_price).toFixed(2)}` : "-"}</td>
+        <td>${o.sl_price > 0 ? `$${Number(o.sl_price).toFixed(2)}` : "-"}</td>
+        <td>${o.tp_price > 0 ? `$${Number(o.tp_price).toFixed(2)}` : "-"}</td>
+        <td style="color: var(--text-3); font-size: 0.8rem;">${o.created_at || "-"}</td>
+        <td><span class="badge ${statusClass}">${o.status}</span></td>
       </tr>
     `;
   });
@@ -414,6 +461,80 @@ function renderForexPairs(pairs) {
   tbody.innerHTML = html;
 }
 
+function renderForexPositions(positions) {
+  const hash = JSON.stringify(positions);
+  if (hash === lastForexPositionsHash) return;
+  lastForexPositionsHash = hash;
+
+  const tbody = document.getElementById("forex-positions-tbody");
+  if (!tbody) return;
+
+  if (!positions || positions.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--text-3); padding: 1.25rem;">ไม่มีไม้ Forex ค้างอยู่ — บอทกำลังรอ Breakout ตามเซสชัน</td></tr>`;
+    return;
+  }
+
+  let html = "";
+  positions.forEach((p) => {
+    const isBuy = p.direction.toUpperCase() === "BUY";
+    const dirClass = isBuy ? "badge-bullish" : "badge-bearish";
+    html += `
+      <tr>
+        <td><strong>#${p.position_id}</strong></td>
+        <td><strong style="color: var(--accent-forex);">${p.symbol}</strong></td>
+        <td><span class="badge ${dirClass}">${p.direction}</span></td>
+        <td>${Number(p.volume_lots).toFixed(2)} lots</td>
+        <td>${Number(p.entry_price).toFixed(4)}</td>
+        <td>${p.sl_price > 0 ? Number(p.sl_price).toFixed(4) : "-"}</td>
+        <td>${p.tp_price > 0 ? Number(p.tp_price).toFixed(4) : "-"}</td>
+        <td style="color: ${p.floating_pnl >= 0 ? 'var(--green)' : 'var(--red)'}; font-weight: 700;">
+          ${p.floating_pnl >= 0 ? "+" : ""}$${Number(p.floating_pnl).toFixed(2)}
+        </td>
+        <td style="color: var(--text-3); font-size: 0.8rem;">${p.open_time?.split("T")[1]?.slice(0, 8) || p.open_time || "-"}</td>
+        <td><span class="badge badge-bullish">${p.status}</span></td>
+      </tr>
+    `;
+  });
+  tbody.innerHTML = html;
+}
+
+function renderForexOrders(orders) {
+  const hash = JSON.stringify(orders);
+  if (hash === lastForexOrdersHash) return;
+  lastForexOrdersHash = hash;
+
+  const tbody = document.getElementById("forex-orders-tbody");
+  if (!tbody) return;
+
+  if (!orders || orders.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: var(--text-3); padding: 1rem;">ไม่มีประวัติคำสั่งซื้อขาย Forex ล่าสุด</td></tr>`;
+    return;
+  }
+
+  let html = "";
+  orders.forEach((o) => {
+    const isBuy = o.direction.toUpperCase() === "BUY";
+    const dirClass = isBuy ? "badge-bullish" : "badge-bearish";
+    const statusClass = (o.status === "FILLED" || o.status === "EXECUTED") ? "badge-bullish" : (o.status === "CANCELLED" ? "badge-neutral" : "badge-neutral");
+    html += `
+      <tr>
+        <td><strong>#${o.order_id}</strong></td>
+        <td><strong style="color: var(--accent-forex);">${o.symbol}</strong></td>
+        <td><span class="badge badge-neutral">${o.order_type}</span></td>
+        <td><span class="badge ${dirClass}">${o.direction}</span></td>
+        <td>${Number(o.volume_lots).toFixed(2)} lots</td>
+        <td>${Number(o.order_price).toFixed(4)}</td>
+        <td>${o.fill_price ? Number(o.fill_price).toFixed(4) : "-"}</td>
+        <td>${o.sl_price > 0 ? Number(o.sl_price).toFixed(4) : "-"}</td>
+        <td>${o.tp_price > 0 ? Number(o.tp_price).toFixed(4) : "-"}</td>
+        <td style="color: var(--text-3); font-size: 0.8rem;">${o.created_at || "-"}</td>
+        <td><span class="badge ${statusClass}">${o.status}</span></td>
+      </tr>
+    `;
+  });
+  tbody.innerHTML = html;
+}
+
 function renderForexTrades(trades) {
   const hash = JSON.stringify(trades);
   if (hash === lastForexTradesHash) return;
@@ -440,6 +561,45 @@ function renderForexTrades(trades) {
   tbody.innerHTML = html;
 }
 
+function renderSyntheticPositions(positions) {
+  const hash = JSON.stringify(positions);
+  if (hash === lastDerivPositionsHash) return;
+  lastDerivPositionsHash = hash;
+
+  const tbody = document.getElementById("syn-positions-tbody");
+  if (!tbody) return;
+
+  if (!positions || positions.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: var(--text-3); padding: 1.25rem;">ไม่มี Position ที่เปิดอยู่ — บอทกำลังรอจังหวะเข้าสัญญา Multipliers</td></tr>`;
+    return;
+  }
+
+  let html = "";
+  positions.forEach((p) => {
+    const isLong = p.direction.toUpperCase() === "LONG" || p.direction.toUpperCase() === "BUY";
+    const dirClass = isLong ? "badge-bullish" : "badge-bearish";
+    const pnl = p.floating_pnl || 0;
+    html += `
+      <tr>
+        <td><strong>#${p.position_id}</strong></td>
+        <td><strong style="color: var(--accent-syn);">${p.contract_type || "MULTUP"}</strong></td>
+        <td><span class="badge ${dirClass}">${p.direction}</span></td>
+        <td>$${Number(p.stake || 10).toFixed(2)}</td>
+        <td>x${p.multiplier || 100}</td>
+        <td>${Number(p.entry_price).toFixed(2)}</td>
+        <td>${Number(p.current_price || p.entry_price).toFixed(2)}</td>
+        <td style="color: var(--red);">$${Number(p.sl_amount || 5).toFixed(2)}</td>
+        <td style="color: var(--green);">$${Number(p.tp_amount || 10).toFixed(2)}</td>
+        <td style="color: ${pnl >= 0 ? 'var(--green)' : 'var(--red)'}; font-weight: 700;">
+          ${pnl >= 0 ? "+" : ""}$${Number(pnl).toFixed(2)}
+        </td>
+        <td><span class="badge badge-bullish">${p.status || "ACTIVE"}</span></td>
+      </tr>
+    `;
+  });
+  tbody.innerHTML = html;
+}
+
 function renderDerivTrades(trades) {
   const hash = JSON.stringify(trades);
   if (hash === lastDerivTradesHash) return;
@@ -449,7 +609,7 @@ function renderDerivTrades(trades) {
   if (!tbody) return;
 
   if (trades.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-3); padding: 1rem;">กำลังโหลดประวัติสัญญา Multipliers...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-3); padding: 1rem;">ไม่มีประวัติสัญญา Multipliers ล่าสุด</td></tr>`;
     return;
   }
 
@@ -527,16 +687,23 @@ function renderBrainTraces(traces) {
     else if (dec === "SELL") badgeClass = "badge-bearish";
     else if (dec === "BLOCK") badgeClass = "badge-high-impact";
 
-    const reasons = tr.proposal?.reasons ? tr.proposal.reasons.join(", ") : "-";
+    const reasons = (tr.proposal?.reasons && tr.proposal.reasons.length > 0)
+      ? tr.proposal.reasons.join(", ")
+      : (tr.block_reason || tr.validation?.reason || tr.proposal?.rationale || "-");
+    const tsTime = tr.timestamp
+      ? (tr.timestamp.includes("T") ? tr.timestamp.split("T")[1]?.slice(0, 8) : tr.timestamp)
+      : "-";
+    const latencyVal = Number(tr.latency_ms || 0).toFixed(1);
+
     html += `
       <tr>
-        <td style="color: var(--text-3); font-size: 0.8rem;">${tr.timestamp.split("T")[1]?.slice(0, 8) || "-"}</td>
-        <td><strong>${tr.symbol}</strong></td>
-        <td><span class="badge badge-neutral">${tr.market_type}</span></td>
+        <td style="color: var(--text-3); font-size: 0.8rem;">${tsTime}</td>
+        <td><strong>${tr.symbol || "XAUUSD"}</strong></td>
+        <td><span class="badge badge-neutral">${tr.market_type || "MARKET"}</span></td>
         <td><span class="badge ${badgeClass}">${dec}</span></td>
         <td>${((tr.llm_confidence || 0) * 100).toFixed(0)}%</td>
-        <td style="color: var(--accent-forex);">${tr.provider}</td>
-        <td>${tr.latency_ms} ms</td>
+        <td style="color: var(--accent-forex); font-weight: 600;">${tr.provider || "AI-Ensemble"}</td>
+        <td>${latencyVal} ms</td>
         <td style="font-size: 0.8rem; max-width: 320px; white-space: normal;">${reasons}</td>
       </tr>
     `;

@@ -238,7 +238,7 @@
 
       <div class="card" style="margin-bottom:1rem">
         <div class="section-label">
-          ไม้ทองคำที่เปิดอยู่
+          ไม้ทองคำที่เปิดอยู่ (Positions)
           <span class="badge badge-neutral" id="gold-active-count" style="margin-left:0.5rem">0 ไม้</span>
         </div>
         <div class="table-container">
@@ -261,8 +261,24 @@
         </div>
       </div>
 
+      <div class="card" style="margin-bottom:1rem">
+        <div class="section-label">ประวัติคำสั่งซื้อขาย Gold (Order History)</div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th><th>สินทรัพย์</th><th>ประเภทคำสั่ง</th><th>ฝั่ง</th>
+                <th>Volume</th><th>ราคาคำสั่ง</th><th>ราคาที่ได้</th><th>SL</th>
+                <th>TP</th><th>เวลาส่ง</th><th>สถานะ</th>
+              </tr>
+            </thead>
+            <tbody id="gold-orders-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
       <div class="card">
-        <div class="section-label">ประวัติการปิดไม้ทองคำ</div>
+        <div class="section-label">ประวัติการปิดไม้ทองคำ (Trade History)</div>
         <div class="table-container">
           <table>
             <thead>
@@ -327,8 +343,49 @@
         </div>
       </div>
 
+      <div class="card" style="margin-bottom:1rem">
+        <div class="section-label">
+          ไม้ Forex ที่เปิดอยู่ (Positions)
+          <span class="badge badge-neutral" id="forex-active-count" style="margin-left:0.5rem">0 ไม้</span>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th><th>คู่เงิน</th><th>ฝั่ง</th><th>Volume</th>
+                <th>Entry</th><th>SL</th><th>TP</th><th>Floating</th>
+                <th>เวลาเปิด</th><th>สถานะ</th>
+              </tr>
+            </thead>
+            <tbody id="forex-positions-tbody">
+              <tr>
+                <td colspan="10" style="text-align:center;color:var(--text-3);padding:1.25rem">
+                  ไม่มีไม้ Forex ค้างอยู่ — บอทกำลังรอ Breakout ตามเซสชัน
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div class="section-label">ประวัติคำสั่งซื้อขาย Forex (Order History)</div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th><th>คู่เงิน</th><th>ประเภทคำสั่ง</th><th>ฝั่ง</th>
+                <th>Volume</th><th>ราคาคำสั่ง</th><th>ราคาที่ได้</th><th>SL</th>
+                <th>TP</th><th>เวลาส่ง</th><th>สถานะ</th>
+              </tr>
+            </thead>
+            <tbody id="forex-orders-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
       <div class="card">
-        <div class="section-label">ประวัติการเทรด Forex</div>
+        <div class="section-label">ประวัติการปิดไม้ Forex (Trade History)</div>
         <div class="table-container">
           <table>
             <thead>
@@ -387,8 +444,35 @@
         </div>
       </div>
 
+      <!-- SYNTHETIC: POSITIONS -->
+      <div class="card" style="margin-bottom:1rem">
+        <div class="section-label">
+          ตำแหน่งสัญญา Multipliers (Position - 1HZ90V)
+          <span class="badge badge-neutral" id="syn-active-count" style="margin-left:0.5rem">0 สัญญา</span>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Position ID</th><th>สัญญา</th><th>ฝั่ง</th><th>Stake</th>
+                <th>Multiplier</th><th>ราคาเข้า</th><th>ราคาปัจจุบัน</th>
+                <th>SL (50%)</th><th>TP</th><th>Floating PnL</th><th>สถานะ</th>
+              </tr>
+            </thead>
+            <tbody id="syn-positions-tbody">
+              <tr>
+                <td colspan="11" style="text-align:center;color:var(--text-3);padding:1.25rem">
+                  ไม่มี Position ที่เปิดอยู่ — บอทกำลังรอจังหวะเข้าสัญญา Multipliers
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SYNTHETIC: ORDER HISTORY -->
       <div class="card">
-        <div class="section-label">บันทึกการเทรด Multipliers (1HZ90V)</div>
+        <div class="section-label">ประวัติคำสั่งและสัญญา Multipliers (Order History)</div>
         <div class="table-container">
           <table>
             <thead>
