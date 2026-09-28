@@ -10,6 +10,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, time, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
+from src.ai.schemas import BlockReason, normalize_block_reason
 from src.core.models import Direction, RiskDecision
 
 
@@ -22,7 +23,7 @@ class RiskConfig:
     max_open_positions: int = 3               # 3 concurrent open positions total
     max_symbol_exposure_pct: float = 0.05     # 5.0% exposure per symbol
     max_positions_per_symbol: int = 1         # Max 1 open position per symbol
-    atr_multiplier_sl: float = 1.5            # 1.5x ATR for Stop Loss
+    atr_multiplier_sl: float = 2.5            # 2.5x ATR for Stop Loss (upgraded from 1.5x to survive M5 noise)
     rr_ratio: float = 2.0                     # 1:2 Risk to Reward
     min_volume: float = 0.01
     max_volume: float = 10.0
@@ -30,15 +31,16 @@ class RiskConfig:
     max_data_staleness_seconds: float = 300.0 # 5 minutes maximum bar age
     defensive_drawdown_threshold: float = 0.025 # 2.5% daily drawdown -> Level 1 Defensive
     emergency_kill_switch: bool = False       # Programmatic kill switch override
-    base_risk_pct: float = 0.010              # 1.0% equity per trade
-    high_conviction_risk_pct: float = 0.015   # 1.5% equity per trade for high conviction
-    high_conviction_threshold: float = 0.85   # Confidence >= 0.85 for high conviction
+    base_risk_pct: float = 0.010              # 1.0% equity per trade (FROZEN BASE)
+    high_conviction_risk_pct: float = 0.015   # 1.5% equity per trade for high conviction tier
+    high_conviction_threshold: float = 0.85   # Confidence >= 0.85 for high conviction tier
 
 
 class RiskEngine:
     """
     Deterministic Risk Engine implementing institutional capital preservation rules.
     Operates strictly in UTC timezone with Multi-Level Defense.
+    AI/LLM layer has ZERO authority to alter position sizing or override risk parameters.
     """
 
     def __init__(self, config: Optional[RiskConfig] = None):
@@ -103,7 +105,7 @@ class RiskEngine:
         if sl_distance <= 0:
             return 0.0, f"Invalid stop distance: {sl_distance}"
 
-        target_risk_pct = risk_pct if risk_pct is not None else self.config.max_risk_per_trade_pct
+        target_risk_pct = risk_pct if risk_pct is not None else self.config.base_risk_pct
         risk_amount = equity * target_risk_pct
 
         if symbol == "USDJPY":
@@ -143,10 +145,17 @@ class RiskEngine:
         max_spread_pips: Optional[float] = None,
         confidence: Optional[float] = None,
         h1_aligned: bool = False,
+        atr_multiplier_override: Optional[float] = None,
+        min_sl_distance: float = 0.0,
     ) -> RiskDecision:
         """
         Strict evaluation of new trade against all capital preservation mandates,
         incorporating Multi-Level Defense (Levels 0-4) and Pre-Trade Spread Guard.
+        Guaranteed: LLM confidence has ZERO authority to inflate position sizing or override risk gates.
+
+        Args:
+            atr_multiplier_override: Per-symbol ATR multiplier (overrides config default).
+            min_sl_distance: Minimum SL distance in price units (floor to prevent noise-kills).
         """
         now_utc = now or datetime.now(tz=timezone.utc)
 
@@ -155,17 +164,17 @@ class RiskEngine:
             return RiskDecision(
                 approved=False,
                 reason="HARD GATE: Emergency kill switch is active (EMERGENCY_KILL_SWITCH=true)",
-                block_reason="KILL_SWITCH_ACTIVE",
+                block_reason=normalize_block_reason(BlockReason.BLOCK_KILL_SWITCH),
                 defense_level=4,
             )
 
-        # Level 3: Consecutive Loss Halt Gate
+        # Level 3: Consecutive Loss Halt Gate / Circuit Breaker
         if halt_until is not None and now_utc < halt_until:
             remaining = (halt_until - now_utc).total_seconds() / 60.0
             return RiskDecision(
                 approved=False,
                 reason=f"HARD GATE: Trading halted due to {consecutive_losses} consecutive losses. Remaining: {remaining:.1f} mins",
-                block_reason="CONSECUTIVE_LOSS_HALT",
+                block_reason=normalize_block_reason(BlockReason.BLOCK_CIRCUIT_BREAKER),
                 defense_level=3,
             )
 
@@ -175,7 +184,7 @@ class RiskEngine:
             return RiskDecision(
                 approved=False,
                 reason=f"HARD GATE: Daily loss limit reached ({daily_loss_pct:.2%} <= -{self.config.max_daily_loss_pct:.2%})",
-                block_reason="DAILY_LOSS_LIMIT",
+                block_reason=normalize_block_reason(BlockReason.BLOCK_DAILY_LOSS),
                 defense_level=3,
             )
 
@@ -186,7 +195,7 @@ class RiskEngine:
                 return RiskDecision(
                     approved=False,
                     reason=f"HARD GATE: {spread_reason}",
-                    block_reason="SPREAD_TOO_HIGH",
+                    block_reason=normalize_block_reason(BlockReason.BLOCK_SPREAD),
                     defense_level=0,
                 )
 
@@ -196,7 +205,7 @@ class RiskEngine:
             return RiskDecision(
                 approved=False,
                 reason=f"HARD GATE: Max open positions limit reached ({total_open}/{self.config.max_open_positions})",
-                block_reason="MAX_POSITIONS_REACHED",
+                block_reason=normalize_block_reason("MAX_POSITIONS_REACHED"),
                 defense_level=0,
             )
 
@@ -206,7 +215,7 @@ class RiskEngine:
             return RiskDecision(
                 approved=False,
                 reason=f"HARD GATE: Symbol {symbol} already has an open position ({len(symbol_positions)}/{self.config.max_positions_per_symbol})",
-                block_reason="SYMBOL_EXPOSURE_LIMIT",
+                block_reason=normalize_block_reason("SYMBOL_EXPOSURE_LIMIT"),
                 defense_level=0,
             )
 
@@ -217,11 +226,11 @@ class RiskEngine:
                 return RiskDecision(
                     approved=False,
                     reason=f"HARD GATE: Market data is stale ({age:.1f}s > {self.config.max_data_staleness_seconds}s)",
-                    block_reason="STALE_DATA",
+                    block_reason=normalize_block_reason(BlockReason.BLOCK_STALE_SIGNAL),
                     defense_level=0,
                 )
 
-        # Determine conviction tier risk percentage
+        # Deterministic Risk Percentage — Discrete High Conviction Tier
         chosen_risk_pct = self.config.base_risk_pct
         is_high_conviction = (
             confidence is not None
@@ -233,7 +242,9 @@ class RiskEngine:
             chosen_risk_pct = self.config.high_conviction_risk_pct
 
         # Dynamic Position Sizing Calculation
-        sl_distance = max(atr_val * self.config.atr_multiplier_sl, 1e-5)
+        # Use per-symbol ATR multiplier if provided, otherwise fall back to config default
+        effective_atr_mult = atr_multiplier_override if atr_multiplier_override is not None else self.config.atr_multiplier_sl
+        sl_distance = max(atr_val * effective_atr_mult, min_sl_distance, 1e-5)
         volume, reject_reason = self.calculate_lot_size(
             symbol=symbol,
             equity=equity,
@@ -247,7 +258,7 @@ class RiskEngine:
             return RiskDecision(
                 approved=False,
                 reason=f"HARD GATE: Position sizing rejected: {reject_reason}",
-                block_reason="SIZING_REJECTED",
+                block_reason=normalize_block_reason(BlockReason.BLOCK_EXECUTION),
                 defense_level=0,
             )
 

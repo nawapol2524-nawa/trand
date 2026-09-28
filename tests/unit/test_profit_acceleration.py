@@ -144,8 +144,8 @@ class TestConvictionWeightedDynamicSizing:
         )
         assert dec.approved is True
         assert dec.defense_level == 0
-        # sl_dist = 0.0015 * 1.5 = 0.00225; lots = 100 / (0.00225 * 100000) = 0.444 -> 0.44 lots
-        assert 0.40 <= dec.adjusted_volume <= 0.46
+        # sl_dist = 0.0015 * 2.5 = 0.00375; lots = 100 / (0.00375 * 100000) = 0.266 -> 0.27 lots
+        assert 0.25 <= dec.adjusted_volume <= 0.30
         assert "High Conviction Tier" not in dec.reason
 
     def test_high_conviction_a_plus_sizing(self):
@@ -169,8 +169,8 @@ class TestConvictionWeightedDynamicSizing:
         )
         assert dec.approved is True
         assert dec.defense_level == 0
-        # sl_dist = 0.00225; lots = 150 / (0.00225 * 100000) = 0.666 -> 0.66 lots (1.5x of 0.44)
-        assert 0.60 <= dec.adjusted_volume <= 0.70
+        # sl_dist = 0.00375; lots = 150 / (0.00375 * 100000) = 0.40 lots (1.5x of 0.27)
+        assert 0.38 <= dec.adjusted_volume <= 0.45
         assert "High Conviction Tier (Confidence 90%): risk 1.5%" in dec.reason
 
     def test_high_conviction_reverts_if_not_h1_aligned(self):
@@ -193,7 +193,7 @@ class TestConvictionWeightedDynamicSizing:
             h1_aligned=False,
         )
         assert dec.approved is True
-        assert 0.40 <= dec.adjusted_volume <= 0.46
+        assert 0.25 <= dec.adjusted_volume <= 0.30
         assert "High Conviction Tier" not in dec.reason
 
     def test_high_conviction_reverts_if_streak_losses(self):
@@ -217,7 +217,7 @@ class TestConvictionWeightedDynamicSizing:
         )
         assert dec.approved is True
         assert dec.defense_level == 2
-        assert 0.40 <= dec.adjusted_volume <= 0.46
+        assert 0.25 <= dec.adjusted_volume <= 0.30
         assert "High Conviction Tier" not in dec.reason
 
     def test_defensive_level_1_clamps_high_conviction(self):
@@ -241,8 +241,8 @@ class TestConvictionWeightedDynamicSizing:
         )
         assert dec.approved is True
         assert dec.defense_level == 1
-        # High conviction was ~0.66 lots, halved to ~0.33 lots
-        assert 0.30 <= dec.adjusted_volume <= 0.36
+        # High conviction was ~0.40 lots, halved to ~0.20 lots
+        assert 0.18 <= dec.adjusted_volume <= 0.22
         assert "Level 1 Defensive Mode" in dec.reason and "volume halved" in dec.reason
 
 

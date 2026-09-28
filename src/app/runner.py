@@ -18,7 +18,7 @@ from typing import Any, Dict, List, Optional
 from src.ai.context import AIContextBuilder
 from src.ai.event_detector import EventDetector
 from src.ai.provider import FailoverAIProvider, OfflineDeterministicAIProvider
-from src.ai.schemas import ProposalDecision
+from src.ai.schemas import BlockReason, FinalDecision, ProposalDecision, TradeProposal
 from src.ai.validator import DeterministicGate
 from src.brokers.ctrader_mcp import CTraderMCPBroker
 from src.core.clock import candle_close_time, is_candle_closed
@@ -34,10 +34,14 @@ from src.strategies import forex_trend_breakout, xau_mean_reversion
 logger = logging.getLogger("TradingBot")
 
 SYMBOL_MAP = {
-    "EURUSD": {"id": 1, "lot_size": 100000.0, "scale": 100000.0, "digits": 5, "max_spread": 2.0},
-    "GBPUSD": {"id": 2, "lot_size": 100000.0, "scale": 100000.0, "digits": 5, "max_spread": 2.5},
-    "USDJPY": {"id": 4, "lot_size": 100000.0, "scale": 100000.0, "digits": 3, "max_spread": 2.5},
-    "XAUUSD": {"id": 41, "lot_size": 100.0, "scale": 100000.0, "digits": 2, "max_spread": 50.0},
+    "EURUSD": {"id": 1, "lot_size": 100000.0, "scale": 100000.0, "digits": 5, "max_spread": 2.0,
+               "pip_size": 0.0001, "min_sl_pips": 12.0, "sl_atr_mult": 2.5, "cooldown_bars": 6},
+    "GBPUSD": {"id": 2, "lot_size": 100000.0, "scale": 100000.0, "digits": 5, "max_spread": 2.5,
+               "pip_size": 0.0001, "min_sl_pips": 15.0, "sl_atr_mult": 2.5, "cooldown_bars": 6},
+    "USDJPY": {"id": 4, "lot_size": 100000.0, "scale": 100000.0, "digits": 3, "max_spread": 2.5,
+               "pip_size": 0.01, "min_sl_pips": 12.0, "sl_atr_mult": 2.5, "cooldown_bars": 6},
+    "XAUUSD": {"id": 41, "lot_size": 100.0, "scale": 100000.0, "digits": 2, "max_spread": 50.0,
+               "pip_size": 0.01, "min_sl_pips": 200.0, "sl_atr_mult": 2.0, "cooldown_bars": 6},
 }
 
 
@@ -88,6 +92,7 @@ class TradingBotRunner:
             sym: EventDetector(cooldown_seconds=300.0) for sym in SYMBOL_MAP
         }
         self.last_evaluated_bar_ts: Dict[str, datetime] = {}
+        self._last_trade_close_ts: Dict[str, datetime] = {}  # Cooldown: last trade close time per symbol
         self._shutdown_event: Optional[asyncio.Event] = None
         self._uploader_task: Optional[asyncio.Task] = None
 
@@ -385,6 +390,7 @@ class TradingBotRunner:
             recon = self.state_mgr.reconcile_with_broker(broker_positions, now=now_utc)
             broker_connected = True
             self.evidence_collector.record_reconciliation(recon)
+            id_to_sym_recon = {str(info["id"]): name for name, info in SYMBOL_MAP.items()}
             for cid in recon.get("closed_detected", []):
                 self.evidence_collector.record_runtime_event(
                     event_type="POSITION_CLOSED",
@@ -400,6 +406,16 @@ class TradingBotRunner:
                     gross_pnl=0.0,
                     net_pnl=0.0,
                 )
+                # Track cooldown: find symbol of closed position from history
+                for hist_pos in reversed(self.state_mgr.state.closed_positions_history):
+                    if str(hist_pos.get("position_id")) == str(cid):
+                        raw_sym = str(hist_pos.get("symbol", ""))
+                        resolved_sym = id_to_sym_recon.get(raw_sym, raw_sym)
+                        if resolved_sym in SYMBOL_MAP:
+                            self._last_trade_close_ts[resolved_sym] = now_utc
+                            logger.info("Cooldown activated for %s until %d bars pass",
+                                        resolved_sym, SYMBOL_MAP[resolved_sym].get("cooldown_bars", 6))
+                        break
             for oid in recon.get("orphans_discovered", []):
                 self.evidence_collector.record_runtime_event(
                     event_type="ORPHAN_POSITION_DISCOVERED",
@@ -505,6 +521,21 @@ class TradingBotRunner:
             if len(self.state_mgr.state.open_positions) >= self.risk_engine.config.max_open_positions:
                 break
 
+            # Cooldown filter: prevent re-entry too soon after a trade closes
+            cooldown_bars = sym_info.get("cooldown_bars", 6)
+            cooldown_seconds = cooldown_bars * 300  # M5 = 300 seconds per bar
+            last_close_ts = self._last_trade_close_ts.get(symbol)
+            if last_close_ts and (now_utc - last_close_ts).total_seconds() < cooldown_seconds:
+                remaining_mins = (cooldown_seconds - (now_utc - last_close_ts).total_seconds()) / 60.0
+                logger.info(json.dumps({
+                    "event": "COOLDOWN",
+                    "symbol": symbol,
+                    "status": "ACTIVE",
+                    "remaining_mins": round(remaining_mins, 1),
+                    "cooldown_bars": cooldown_bars,
+                }))
+                continue
+
             # 3.1 Market Data Acquisition
             try:
                 raw_m5 = self.broker.get_trendbars(
@@ -548,7 +579,7 @@ class TradingBotRunner:
                 logger.debug("Candle %s for %s already evaluated. Skipping.", m5_bars[0].timestamp, symbol)
                 continue
 
-            min_m5 = 16 if symbol == "XAUUSD" else 221
+            min_m5 = 16 if symbol == "XAUUSD" else 241  # EMA200 + BOS_LOOKBACK(40) + 1
             if len(m5_bars) < min_m5:
                 logger.info(json.dumps({
                     "event": "MARKET_DATA",
@@ -697,97 +728,51 @@ class TradingBotRunner:
                 }))
                 continue
 
+            # 3.3 LLM Context / Advisory Layer
             try:
                 proposal = self.ai_provider.analyze(ctx)
             except Exception as e:
                 logger.error("AI provider failure for %s: %s", symbol, e)
-                fallback = OfflineDeterministicAIProvider()
-                proposal = fallback.analyze(ctx)
+                # Failover to explicit unavailable proposal per Section 6
+                proposal = TradeProposal(
+                    decision=ProposalDecision.UNAVAILABLE,
+                    direction=Direction.FLAT,
+                    symbol=symbol,
+                    confidence=0.0,
+                    llm_confidence=0.0,
+                    llm_decision="UNAVAILABLE",
+                    reasons=[f"LLM_UNAVAILABLE: {e}"],
+                    rationale=f"AI provider failed: {e}",
+                    scenario="NO_ADVISORY",
+                    timestamp=now_utc,
+                    provider="none",
+                    model="unavailable",
+                    entry_context=ctx.to_dict(),
+                    trace_id=str(uuid.uuid4()),
+                )
 
             logger.info(json.dumps({
                 "event": "AI",
                 "symbol": symbol,
                 "status": "PROPOSAL_GENERATED",
-                "decision": proposal.decision.value,
-                "direction": proposal.direction.value,
+                "decision": proposal.decision.value if isinstance(proposal.decision, ProposalDecision) else str(proposal.decision),
+                "direction": proposal.direction.value if isinstance(proposal.direction, Direction) else str(proposal.direction),
                 "confidence": proposal.confidence,
                 "scenario": proposal.scenario if isinstance(proposal.scenario, str) else getattr(proposal.scenario, "value", str(proposal.scenario)),
             }))
             self.evidence_collector.record_runtime_event(
                 "AI_DECISION",
                 symbol=symbol,
-                direction=proposal.direction.value,
+                direction=proposal.direction.value if isinstance(proposal.direction, Direction) else str(proposal.direction),
                 status="PROPOSAL_GENERATED",
                 payload={
-                    "decision": proposal.decision.value,
+                    "decision": proposal.decision.value if isinstance(proposal.decision, ProposalDecision) else str(proposal.decision),
                     "confidence": proposal.confidence,
                     "scenario": proposal.scenario if isinstance(proposal.scenario, str) else getattr(proposal.scenario, "value", str(proposal.scenario)),
                 },
             )
 
-            # 3.4 Deterministic Gatekeeper
-            enforce_session = os.environ.get("ENFORCE_SESSION_FILTER", "true").lower() == "true"
-            val_res = DeterministicGate.validate(
-                proposal=proposal,
-                context=ctx,
-                max_daily_loss_pct=self.risk_engine.config.max_daily_loss_pct,
-                max_open_positions=self.risk_engine.config.max_open_positions,
-                now=now_utc,
-                enforce_session_filter=enforce_session,
-            )
-
-            gate_approved = (
-                val_res.passed
-                and proposal.decision == ProposalDecision.APPROVE
-                and proposal.direction == sig.direction
-            )
-
-            if not gate_approved:
-                reject_reason = (
-                    val_res.reason
-                    if not val_res.passed
-                    else f"Proposal decision={proposal.decision.value} or direction={proposal.direction.value} mismatches strategy={sig.direction.value}"
-                )
-                logger.info(json.dumps({
-                    "event": "GATE",
-                    "symbol": symbol,
-                    "status": "REJECTED",
-                    "reason": reject_reason,
-                }))
-                dec_rec = self.trace_service.log_decision(
-                    trace_id=str(uuid.uuid4()),
-                    event_id=event.event_type.value if event else "STRATEGY_SIGNAL",
-                    provider=getattr(self.ai_provider, "name", "AIProvider"),
-                    model=getattr(self.ai_provider, "model", "default"),
-                    context_summary=ctx.to_dict(),
-                    proposal=proposal,
-                    validation_result=val_res,
-                    risk_result={"approved": False, "reason": "Gate rejected"},
-                    execution_result={"status": "REJECTED_BY_GATE", "reason": reject_reason},
-                )
-                self.evidence_collector.record_decision(asdict(dec_rec))
-                self.evidence_collector.record_runtime_event(
-                    "DETERMINISTIC_GATE",
-                    symbol=symbol,
-                    status="REJECTED",
-                    reason=reject_reason,
-                )
-                continue
-
-            logger.info(json.dumps({
-                "event": "GATE",
-                "symbol": symbol,
-                "status": "APPROVED",
-                "reason": val_res.reason,
-            }))
-            self.evidence_collector.record_runtime_event(
-                "DETERMINISTIC_GATE",
-                symbol=symbol,
-                status="APPROVED",
-                reason=val_res.reason,
-            )
-
-            # 3.5 Risk Engine Evaluation & Pre-Trade Spread Guard
+            # Pre-fetch live spot price for deterministic spread evaluation in Gate
             current_spread_pips: Optional[float] = None
             try:
                 spot_prices = self.broker.get_spot_prices([sym_info["id"]])
@@ -811,8 +796,84 @@ class TradingBotRunner:
             except Exception as e:
                 logger.debug("Failed to query live spot prices for %s spread check: %s", symbol, e)
 
+            # 3.4 Deterministic Gatekeeper (Final Authority on Hard Constraints)
+            enforce_session = os.environ.get("ENFORCE_SESSION_FILTER", "true").lower() == "true"
+            require_llm = os.environ.get("REQUIRE_LLM_ADVISORY", "false").lower() == "true"
+            val_res = DeterministicGate.validate(
+                proposal=proposal,
+                context=ctx,
+                max_daily_loss_pct=self.risk_engine.config.max_daily_loss_pct,
+                max_open_positions=self.risk_engine.config.max_open_positions,
+                now=now_utc,
+                enforce_session_filter=enforce_session,
+                current_spread_pips=current_spread_pips,
+                max_spread_pips=sym_info.get("max_spread"),
+                require_llm_advisory=require_llm,
+            )
+
+            gate_approved = (
+                val_res.passed
+                and val_res.final_decision in (FinalDecision.BUY, FinalDecision.SELL)
+                and (
+                    (val_res.final_decision == FinalDecision.BUY and sig.direction == Direction.LONG)
+                    or (val_res.final_decision == FinalDecision.SELL and sig.direction == Direction.SHORT)
+                )
+            )
+
+            if not gate_approved:
+                block_code = val_res.block_reason.value if val_res.block_reason else "BLOCK_SIGNAL"
+                reject_reason = (
+                    val_res.reason
+                    if not val_res.passed
+                    else f"Proposal final_decision={val_res.final_decision.value} mismatches strategy={sig.direction.value}"
+                )
+                logger.info(json.dumps({
+                    "event": "GATE",
+                    "symbol": symbol,
+                    "status": "REJECTED",
+                    "reason": reject_reason,
+                    "block_reason": block_code,
+                    "final_decision": "BLOCK",
+                }))
+                dec_rec = self.trace_service.log_decision(
+                    trace_id=str(uuid.uuid4()),
+                    event_id=event.event_type.value if event else "STRATEGY_SIGNAL",
+                    provider=getattr(self.ai_provider, "name", "AIProvider"),
+                    model=getattr(self.ai_provider, "model", "default"),
+                    context_summary=ctx.to_dict(),
+                    proposal=proposal,
+                    validation_result=val_res,
+                    risk_result={"approved": False, "reason": "Gate rejected", "block_reason": block_code},
+                    execution_result={"status": "REJECTED_BY_GATE", "reason": reject_reason, "block_reason": block_code, "final_decision": "BLOCK"},
+                )
+                self.evidence_collector.record_decision(asdict(dec_rec))
+                self.evidence_collector.record_runtime_event(
+                    "DETERMINISTIC_GATE",
+                    symbol=symbol,
+                    status="REJECTED",
+                    reason=reject_reason,
+                    payload={"block_reason": block_code, "final_decision": "BLOCK"},
+                )
+                continue
+
+            logger.info(json.dumps({
+                "event": "GATE",
+                "symbol": symbol,
+                "status": "APPROVED",
+                "reason": val_res.reason,
+                "final_decision": val_res.final_decision.value,
+            }))
+            self.evidence_collector.record_runtime_event(
+                "DETERMINISTIC_GATE",
+                symbol=symbol,
+                status="APPROVED",
+                reason=val_res.reason,
+                payload={"final_decision": val_res.final_decision.value},
+            )
+
+            # 3.5 Risk Engine Evaluation & Pre-Trade Spread Guard
             atr_val = ctx.atr
-            # Determine H1 alignment for dynamic sizing boost
+            # Determine H1 alignment for risk context
             h1_regime = ctx.scenario_state.get("h1_regime") or sig.indicators.get("h1_regime")
             if not h1_regime and symbol == "XAUUSD":
                 h1_regime = "BULLISH" if "bullish" in sig.reason.get("h1_bias", "").lower() else "BEARISH"
@@ -820,6 +881,12 @@ class TradingBotRunner:
                 (sig.direction == Direction.LONG and h1_regime in ("BULLISH", "UP", "TREND_UP"))
                 or (sig.direction == Direction.SHORT and h1_regime in ("BEARISH", "DOWN", "TREND_DOWN"))
             )
+
+            # Calculate per-symbol minimum SL distance in price units
+            sym_pip_size = sym_info.get("pip_size", 0.0001)
+            sym_min_sl_pips = sym_info.get("min_sl_pips", 12.0)
+            sym_min_sl_distance = sym_min_sl_pips * sym_pip_size
+            sym_atr_mult = sym_info.get("sl_atr_mult", self.risk_engine.config.atr_multiplier_sl)
 
             risk_decision = self.risk_engine.evaluate_order(
                 symbol=symbol,
@@ -839,6 +906,8 @@ class TradingBotRunner:
                 max_spread_pips=sym_info.get("max_spread"),
                 confidence=proposal.confidence if proposal else None,
                 h1_aligned=h1_aligned,
+                atr_multiplier_override=sym_atr_mult,
+                min_sl_distance=sym_min_sl_distance,
             )
 
             if not risk_decision.approved:
@@ -849,6 +918,7 @@ class TradingBotRunner:
                     "reason": risk_decision.reason,
                     "block_reason": risk_decision.block_reason,
                     "defense_level": risk_decision.defense_level,
+                    "final_decision": "BLOCK",
                 }))
                 dec_rec = self.trace_service.log_decision(
                     trace_id=str(uuid.uuid4()),
@@ -863,8 +933,9 @@ class TradingBotRunner:
                         "reason": risk_decision.reason,
                         "block_reason": risk_decision.block_reason,
                         "defense_level": risk_decision.defense_level,
+                        "final_decision": "BLOCK",
                     },
-                    execution_result={"status": "REJECTED_BY_RISK", "reason": risk_decision.reason},
+                    execution_result={"status": "REJECTED_BY_RISK", "reason": risk_decision.reason, "block_reason": risk_decision.block_reason, "final_decision": "BLOCK"},
                 )
                 self.evidence_collector.record_decision(asdict(dec_rec))
                 self.evidence_collector.record_runtime_event(
@@ -875,6 +946,7 @@ class TradingBotRunner:
                     payload={
                         "block_reason": risk_decision.block_reason,
                         "defense_level": risk_decision.defense_level,
+                        "final_decision": "BLOCK",
                     },
                 )
                 continue
@@ -902,7 +974,9 @@ class TradingBotRunner:
             # Volume in 1/100 base-asset units: volume = lots * lotSize * 100
             mcp_volume = int(round(lots * lot_size * 100))
 
-            sl_dist = max(atr_val * self.risk_engine.config.atr_multiplier_sl, 1e-5)
+            # SL/TP calculation using per-symbol ATR multiplier and minimum SL floor
+            # Must be consistent with what risk engine used for position sizing
+            sl_dist = max(atr_val * sym_atr_mult, sym_min_sl_distance, 1e-5)
             tp_dist = sl_dist * self.risk_engine.config.rr_ratio
 
             digits = sym_info.get("digits", 5)
@@ -968,7 +1042,12 @@ class TradingBotRunner:
                     "reason": risk_decision.reason,
                     "defense_level": risk_decision.defense_level,
                 },
-                execution_result=order_result,
+                execution_result={
+                    "status": "SUBMITTED" if order_result.get("status") != "FAILED" else "FAILED",
+                    "final_decision": trade_side if order_result.get("status") != "FAILED" else "BLOCK",
+                    "block_reason": None if order_result.get("status") != "FAILED" else BlockReason.BLOCK_EXECUTION.value,
+                    "raw": order_result,
+                },
             )
             self.evidence_collector.record_decision(asdict(dec_rec))
 

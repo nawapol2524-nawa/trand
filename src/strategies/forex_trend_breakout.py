@@ -41,10 +41,10 @@ EMA_FAST_PERIOD = 9
 EMA_MID_PERIOD  = 21
 EMA_SLOW_PERIOD = 200
 ATR_PERIOD      = 14
-BOS_LOOKBACK_N  = 20
+BOS_LOOKBACK_N  = 40  # Upgraded from 20: 40 bars = 200 min on M5, reduces fakeout breakouts
 
 # Minimum bars needed: EMA200 seed + lookback
-MIN_BARS = EMA_SLOW_PERIOD + BOS_LOOKBACK_N + 1
+MIN_BARS = EMA_SLOW_PERIOD + BOS_LOOKBACK_N + 1  # 200 + 40 + 1 = 241
 
 
 def evaluate(
