@@ -53,7 +53,7 @@
       </div>
       <div class="pillar-price num" id="ribbon-gold-price">$2,658.45</div>
       <div class="pillar-meta">
-        <span>ทุน: <strong id="ribbon-gold-balance">$8,705.20</strong></span>
+        <span>ทุน: <strong id="ribbon-gold-balance">$10,000.00</strong></span>
         <span>สเปรด: <strong id="ribbon-gold-spread">3.0 pips</strong></span>
         <span>ข่าว: <strong id="ribbon-gold-news" class="text-green">CLEAR</strong></span>
       </div>
@@ -77,10 +77,10 @@
         <span class="pillar-title text-syn">⚡ Synthetic — Deriv</span>
         <span class="badge badge-synthetic">24/7</span>
       </div>
-      <div class="pillar-price num" id="ribbon-deriv-price">1,205.42 <span style="font-size:0.9rem;color:var(--text-3)">1HZ90V</span></div>
+      <div class="pillar-price num" id="ribbon-deriv-price">23,422.31 <span style="font-size:0.9rem;color:var(--text-3)">1HZ90V</span></div>
       <div class="pillar-meta">
-        <span>ทุน: <strong id="ribbon-deriv-balance">$10,208.89</strong></span>
-        <span>กำไร: <strong id="ribbon-deriv-pnl" class="text-green">+$208.89</strong></span>
+        <span>ทุน: <strong id="ribbon-deriv-balance">$8,428.34</strong></span>
+        <span>สุทธิ: <strong id="ribbon-deriv-pnl" class="text-neutral">-$1,571.66</strong></span>
         <span>Win Rate: <strong>39.2%</strong></span>
       </div>
     </div>
@@ -113,15 +113,15 @@
 
       <div class="grid-3">
         <div class="card">
-          <div class="metric-label">เงินทุนรวม (Total Capital)</div>
-          <div class="metric-value num" id="ov-total-balance">$18,914.09</div>
-          <div class="metric-sub" id="ov-starting-balance">เงินทุนเริ่มต้น: $19,385.14</div>
+          <div class="metric-label">เงินทุนรวมบอท (Active Capital)</div>
+          <div class="metric-value num" id="ov-total-balance">$18,428.34</div>
+          <div class="metric-sub" id="ov-starting-balance">เงินทุนเริ่มต้น: $20,000.00 | Deriv พอร์ตรวม: $36,593.51</div>
         </div>
 
         <div class="card">
-          <div class="metric-label">กำไรสุทธิวันนี้ <span class="badge badge-bullish" id="ov-pnl-badge">+2.09%</span></div>
-          <div class="metric-value num text-green" id="ov-daily-pnl">+$208.89</div>
-          <div class="metric-sub">ผลตอบแทนรวมทุกระบบของวันนี้</div>
+          <div class="metric-label">กำไร/ขาดทุนสุทธิ <span class="badge badge-bearish" id="ov-pnl-badge">-7.86%</span></div>
+          <div class="metric-value num text-neutral" id="ov-daily-pnl">-$1,571.66</div>
+          <div class="metric-sub">ผลตอบแทนรวม (cTrader $0.00 | Options -$1,571.66)</div>
         </div>
 
         <div class="card">
@@ -144,7 +144,7 @@
                 <th>ทิศทาง</th>
                 <th>โครงสร้าง</th>
                 <th>ทุนในพอร์ต</th>
-                <th>กำไรวันนี้</th>
+                <th>กำไรสะสม</th>
                 <th>ความเสี่ยง</th>
               </tr>
             </thead>
@@ -155,7 +155,7 @@
                 <td id="ov-gold-spot">$2,658.45</td>
                 <td><span class="badge badge-bullish" id="ov-gold-trend-badge">BULLISH</span></td>
                 <td>BOS_LONG</td>
-                <td id="ov-gold-bal">$8,705.20</td>
+                <td id="ov-gold-bal">$10,000.00</td>
                 <td id="ov-gold-pnl">$0.00</td>
                 <td><span class="badge badge-bullish" id="ov-gold-risk-badge">SAFE</span></td>
               </tr>
@@ -165,18 +165,18 @@
                 <td>1.0845 / 1.2980</td>
                 <td><span class="badge badge-bullish">BULLISH</span></td>
                 <td>PULLBACK_LONG</td>
-                <td>(แชร์พอร์ต)</td>
+                <td>(แชร์ cTrader $10k)</td>
                 <td>—</td>
                 <td><span class="badge badge-forex">SESSION ACTIVE</span></td>
               </tr>
               <tr class="clickable-row" onclick="switchTab('tab-synthetic')">
                 <td><strong class="text-syn">⚡ Synthetic</strong></td>
                 <td>1HZ90V</td>
-                <td id="ov-deriv-spot">1,205.42</td>
+                <td id="ov-deriv-spot">23,422.31</td>
                 <td><span class="badge badge-bullish">BULLISH</span></td>
                 <td>BOS_LONG</td>
-                <td id="ov-deriv-bal">$10,208.89</td>
-                <td class="text-green" style="font-weight:600">+$208.89</td>
+                <td id="ov-deriv-bal">$8,428.34</td>
+                <td class="text-neutral" style="font-weight:600">-$1,571.66</td>
                 <td><span class="badge badge-synthetic">24/7</span></td>
               </tr>
             </tbody>
@@ -198,15 +198,18 @@
 
       <div class="grid-3">
         <div class="card" style="border-top:2px solid var(--accent-gold)">
-          <div class="metric-label">เงินทุนพอร์ตทองคำ <span class="badge badge-neutral">DEMO</span></div>
-          <div class="metric-value num" id="gold-balance">$8,705.20</div>
+          <div class="metric-label">เงินทุนพอร์ตทองคำ <span class="badge badge-neutral">cTrader DEMO</span></div>
+          <div class="metric-value num" id="gold-balance">$10,000.00</div>
           <div class="metric-sub" style="display:flex;justify-content:space-between">
-            <span>Equity: <strong id="gold-equity">$8,705.20</strong></span>
-            <span>Margin: <strong id="gold-margin">1450%</strong></span>
+            <span>Equity: <strong id="gold-equity">$10,000.00</strong></span>
+            <span>Margin: <strong id="gold-margin">100%</strong></span>
           </div>
           <div class="metric-sub" style="display:flex;justify-content:space-between;margin-top:0.35rem;border-top:1px solid var(--border);padding-top:0.35rem">
-            <span>Starting: <strong>$9,385.14</strong></span>
+            <span>Starting: <strong>$10,000.00</strong></span>
             <span>Daily PnL: <strong id="gold-daily-pnl">$0.00</strong></span>
+          </div>
+          <div class="metric-sub" style="margin-top:0.35rem;border-top:1px solid var(--border);padding-top:0.35rem;color:var(--text-3);font-size:0.75rem">
+            Deriv CFDs รวม: $28,165.17 (cTrader $10k | MT5 $10k | TV $8.16k)
           </div>
         </div>
 
@@ -405,10 +408,10 @@
 
       <div class="grid-3">
         <div class="card" style="border-top:2px solid var(--accent-syn)">
-          <div class="metric-label">ทุนพอร์ต Deriv <span class="badge badge-synthetic">x100</span></div>
-          <div class="metric-value num text-syn" id="syn-balance">$10,208.89</div>
+          <div class="metric-label">ทุนพอร์ต Deriv <span class="badge badge-synthetic">Options DEMO</span></div>
+          <div class="metric-value num text-syn" id="syn-balance">$8,428.34</div>
           <div class="metric-sub" style="display:flex;justify-content:space-between">
-            <span>กำไร: <strong id="syn-pnl" class="text-green">+$208.89</strong></span>
+            <span>สุทธิ: <strong id="syn-pnl" class="text-neutral">-$1,571.66</strong></span>
             <span>Stake: <strong>$10.00</strong></span>
           </div>
           <div class="metric-sub" style="display:flex;justify-content:space-between;margin-top:0.35rem;border-top:1px solid var(--border);padding-top:0.35rem">
@@ -432,9 +435,9 @@
 
         <div class="card" style="border-top:2px solid var(--accent-syn)">
           <div class="metric-label">สถานะ Volatility 90 (1s) <span class="badge badge-bullish">BULLISH</span></div>
-          <div class="metric-value num" id="syn-spot">1,205.42</div>
+          <div class="metric-value num" id="syn-spot">23,422.31</div>
           <div class="metric-sub" style="display:flex;justify-content:space-between">
-            <span>สเปรด: <strong>1.2 pips</strong></span>
+            <span>สเปรด: <strong>2.4 pts</strong></span>
             <span>โครงสร้าง: <strong>BOS_LONG</strong></span>
           </div>
           <div class="metric-sub" style="display:flex;justify-content:space-between;margin-top:0.35rem;border-top:1px solid var(--border);padding-top:0.35rem">

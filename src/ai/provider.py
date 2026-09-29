@@ -52,11 +52,11 @@ You must respond with ONLY a single JSON object matching this schema:
 Never include markdown code fences or conversational text. Output pure JSON only."""
 
 
-class OfflineDeterministicAIProvider(BaseAIProvider):
+class DeterministicDecisionEngine(BaseAIProvider):
     """
-    Offline Rule-Based AI Provider.
+    Deterministic Rule-Based Decision Engine.
     Zero external dependencies, zero API costs, zero latency, zero non-determinism.
-    Used for historical backtests, test suites, and fallback when live API quota is exhausted.
+    Used for historical backtests, deterministic test suites, and quantitative scenario checks.
     """
 
     def __init__(self, name: str = "offline_rules"):
@@ -81,7 +81,7 @@ class OfflineDeterministicAIProvider(BaseAIProvider):
         return HealthCheckResult(
             is_healthy=True,
             latency_ms=0.1,
-            message="Offline deterministic provider ready",
+            message="Deterministic decision engine ready",
         )
 
     def analyze(self, context: AIContext, trace_id: Optional[str] = None) -> TradeProposal:
@@ -95,6 +95,16 @@ class OfflineDeterministicAIProvider(BaseAIProvider):
                 direction=Direction.FLAT,
                 symbol=context.symbol,
                 confidence=1.0,
+                llm_confidence=1.0,
+                llm_decision="REJECT",
+                ml_probability=None,
+                regime=str(context.scenario_state.get("h1_regime", context.trend) if context.scenario_state else context.trend),
+                volatility_state=str(context.volatility),
+                news_risk="HIGH",
+                reasons=["Deterministic rule: blackout window preceding high-impact news"],
+                invalidation_conditions=["High-impact news event window active"],
+                provider="deterministic_engine",
+                model="rules_v1",
                 entry_context=context.to_dict(),
                 invalidation="High-impact news event window active",
                 rationale="Deterministic rule: blackout window preceding high-impact news",
@@ -110,6 +120,16 @@ class OfflineDeterministicAIProvider(BaseAIProvider):
                 direction=Direction.LONG,
                 symbol=context.symbol,
                 confidence=0.85,
+                llm_confidence=0.85,
+                llm_decision="APPROVE",
+                ml_probability=None,
+                regime="BULLISH",
+                volatility_state=str(context.volatility),
+                news_risk="LOW",
+                reasons=["Confirmed bullish market structure with trend alignment and BOS"],
+                invalidation_conditions=[f"Close below ATR trailing level ({context.price - context.atr * 1.5:.5f})"],
+                provider="deterministic_engine",
+                model="rules_v1",
                 entry_context=context.to_dict(),
                 invalidation=f"Close below ATR trailing level ({context.price - context.atr * 1.5:.5f})",
                 rationale="Confirmed bullish market structure with trend alignment and BOS",
@@ -125,6 +145,16 @@ class OfflineDeterministicAIProvider(BaseAIProvider):
                 direction=Direction.SHORT,
                 symbol=context.symbol,
                 confidence=0.85,
+                llm_confidence=0.85,
+                llm_decision="APPROVE",
+                ml_probability=None,
+                regime="BEARISH",
+                volatility_state=str(context.volatility),
+                news_risk="LOW",
+                reasons=["Confirmed bearish market structure with trend alignment and BOS"],
+                invalidation_conditions=[f"Close above ATR trailing level ({context.price + context.atr * 1.5:.5f})"],
+                provider="deterministic_engine",
+                model="rules_v1",
                 entry_context=context.to_dict(),
                 invalidation=f"Close above ATR trailing level ({context.price + context.atr * 1.5:.5f})",
                 rationale="Confirmed bearish market structure with trend alignment and BOS",
@@ -141,6 +171,16 @@ class OfflineDeterministicAIProvider(BaseAIProvider):
                 direction=Direction.FLAT,
                 symbol=context.symbol,
                 confidence=0.60,
+                llm_confidence=0.60,
+                llm_decision="PASS",
+                ml_probability=None,
+                regime="RANGE",
+                volatility_state=str(context.volatility),
+                news_risk="LOW",
+                reasons=["Overbought condition in ranging regime — awaiting confirmed structure"],
+                invalidation_conditions=["RSI overbought without confirmed breakdown"],
+                provider="deterministic_engine",
+                model="rules_v1",
                 entry_context=context.to_dict(),
                 invalidation="RSI overbought without confirmed breakdown",
                 rationale="Overbought condition in ranging regime — awaiting confirmed structure",
@@ -155,6 +195,16 @@ class OfflineDeterministicAIProvider(BaseAIProvider):
             direction=Direction.FLAT,
             symbol=context.symbol,
             confidence=0.50,
+            llm_confidence=0.50,
+            llm_decision="PASS",
+            ml_probability=None,
+            regime="RANGE",
+            volatility_state=str(context.volatility),
+            news_risk="LOW",
+            reasons=["No high-probability structural trigger identified"],
+            invalidation_conditions=["No structural catalyst present"],
+            provider="deterministic_engine",
+            model="rules_v1",
             entry_context=context.to_dict(),
             invalidation="No structural catalyst present",
             rationale="No high-probability structural trigger identified",
@@ -163,6 +213,10 @@ class OfflineDeterministicAIProvider(BaseAIProvider):
             model_provider=self.provider_name,
             trace_id=tid,
         )
+
+
+# Backward compatibility alias
+OfflineDeterministicAIProvider = DeterministicDecisionEngine
 
 
 class OpenAIProvider(BaseAIProvider):
@@ -222,6 +276,9 @@ class OpenAIProvider(BaseAIProvider):
             elapsed = (time.perf_counter() - t0) * 1000.0
             return HealthCheckResult(False, elapsed, str(e), code="CONN_ERROR")
 
+    def is_available(self) -> bool:
+        return bool(self._api_key and not self._api_key.startswith("YOUR_"))
+
     def analyze(self, context: AIContext, trace_id: Optional[str] = None) -> TradeProposal:
         tid = trace_id or f"trace_{uuid.uuid4().hex[:12]}"
         now = datetime.now(tz=timezone.utc)
@@ -258,14 +315,44 @@ class OpenAIProvider(BaseAIProvider):
                     choice = resp_data["choices"][0]["message"]["content"]
                     parsed = json.loads(choice)
 
+                    raw_dec = parsed.get("decision", "PASS")
+                    try:
+                        prop_dec = ProposalDecision(raw_dec)
+                    except ValueError:
+                        prop_dec = ProposalDecision.PASS
+
+                    raw_dir = parsed.get("direction", "FLAT")
+                    try:
+                        prop_dir = Direction(raw_dir)
+                    except ValueError:
+                        prop_dir = Direction.FLAT
+
+                    conf = float(parsed.get("confidence", 0.0))
+                    inval = str(parsed.get("invalidation", ""))
+                    rat = str(parsed.get("rationale", ""))
+                    regime = str(context.scenario_state.get("h1_regime", context.trend) if context.scenario_state else context.trend)
+
                     return TradeProposal(
-                        decision=ProposalDecision(parsed["decision"]),
-                        direction=Direction(parsed["direction"]),
+                        decision=prop_dec,
+                        direction=prop_dir,
                         symbol=context.symbol,
-                        confidence=float(parsed.get("confidence", 0.0)),
+                        confidence=conf,
+                        llm_confidence=conf,
+                        llm_decision=raw_dec,
+                        ml_probability=parsed.get("ml_probability"),
+                        ml_model_version=parsed.get("ml_model_version"),
+                        regime=regime,
+                        volatility_state=str(context.volatility),
+                        news_risk="HIGH" if context.news_state.get("high_impact_soon") else "LOW",
+                        reasons=[rat] if rat else [],
+                        invalidation_conditions=[inval] if inval else [],
+                        provider="openai",
+                        model=self._model,
+                        model_version=self._model,
+                        prompt_version="1.0",
                         entry_context=context.to_dict(),
-                        invalidation=str(parsed.get("invalidation", "")),
-                        rationale=str(parsed.get("rationale", "")),
+                        invalidation=inval,
+                        rationale=rat,
                         scenario=str(parsed.get("scenario", "RANGE")),
                         timestamp=now,
                         model_provider=self.provider_name,
@@ -362,6 +449,9 @@ class GroqProvider(BaseAIProvider):
             elapsed = (time.perf_counter() - t0) * 1000.0
             return HealthCheckResult(False, elapsed, str(e), code="CONN_ERROR")
 
+    def is_available(self) -> bool:
+        return bool(self._api_key and not self._api_key.startswith("YOUR_"))
+
     def analyze(self, context: AIContext, trace_id: Optional[str] = None) -> TradeProposal:
         tid = trace_id or f"trace_{uuid.uuid4().hex[:12]}"
         now = datetime.now(tz=timezone.utc)
@@ -396,14 +486,44 @@ class GroqProvider(BaseAIProvider):
                 choice = resp_data["choices"][0]["message"]["content"]
                 parsed = json.loads(choice)
 
+                raw_dec = parsed.get("decision", "PASS")
+                try:
+                    prop_dec = ProposalDecision(raw_dec)
+                except ValueError:
+                    prop_dec = ProposalDecision.PASS
+
+                raw_dir = parsed.get("direction", "FLAT")
+                try:
+                    prop_dir = Direction(raw_dir)
+                except ValueError:
+                    prop_dir = Direction.FLAT
+
+                conf = float(parsed.get("confidence", 0.0))
+                inval = str(parsed.get("invalidation", ""))
+                rat = str(parsed.get("rationale", ""))
+                regime = str(context.scenario_state.get("h1_regime", context.trend) if context.scenario_state else context.trend)
+
                 return TradeProposal(
-                    decision=ProposalDecision(parsed["decision"]),
-                    direction=Direction(parsed["direction"]),
+                    decision=prop_dec,
+                    direction=prop_dir,
                     symbol=context.symbol,
-                    confidence=float(parsed.get("confidence", 0.0)),
+                    confidence=conf,
+                    llm_confidence=conf,
+                    llm_decision=raw_dec,
+                    ml_probability=parsed.get("ml_probability"),
+                    ml_model_version=parsed.get("ml_model_version"),
+                    regime=regime,
+                    volatility_state=str(context.volatility),
+                    news_risk="HIGH" if context.news_state.get("high_impact_soon") else "LOW",
+                    reasons=[rat] if rat else [],
+                    invalidation_conditions=[inval] if inval else [],
+                    provider="groq",
+                    model=self._model,
+                    model_version=self._model,
+                    prompt_version="1.0",
                     entry_context=context.to_dict(),
-                    invalidation=str(parsed.get("invalidation", "")),
-                    rationale=str(parsed.get("rationale", "")),
+                    invalidation=inval,
+                    rationale=rat,
                     scenario=str(parsed.get("scenario", "RANGE")),
                     timestamp=now,
                     model_provider=self.provider_name,
@@ -431,8 +551,8 @@ class GroqProvider(BaseAIProvider):
 class FailoverAIProvider(BaseAIProvider):
     """
     Deterministic Failover Provider.
-    Attempts primary provider -> fallback provider -> OfflineDeterministicAIProvider.
-    Ensures absolute zero-downtime and fail-closed safety without retry storms.
+    Attempts primary provider (Groq) -> fallback provider (OpenAI) -> explicit LLM_UNAVAILABLE or Offline Engine.
+    Ensures absolute zero-downtime, explicit state logging, and fail-closed safety without retry storms.
     """
 
     def __init__(
@@ -440,14 +560,18 @@ class FailoverAIProvider(BaseAIProvider):
         primary: Optional[BaseAIProvider] = None,
         secondary: Optional[BaseAIProvider] = None,
         offline_fallback: Optional[BaseAIProvider] = None,
+        allow_offline_fallback: bool = True,
     ):
         self.primary = primary or GroqProvider()
         self.secondary = secondary or OpenAIProvider()
-        self.offline_fallback = offline_fallback or OfflineDeterministicAIProvider()
+        self.offline_fallback = offline_fallback or DeterministicDecisionEngine()
+        self.allow_offline_fallback = allow_offline_fallback
+        self.last_used_provider: str = "none"
 
     @property
     def provider_name(self) -> str:
-        return f"failover({self.primary.provider_name}->{self.offline_fallback.provider_name})"
+        sec_name = self.secondary.provider_name if self.secondary else "none"
+        return f"failover({self.primary.provider_name}->{sec_name})"
 
     def capabilities(self) -> ProviderCapabilities:
         return self.primary.capabilities()
@@ -456,27 +580,68 @@ class FailoverAIProvider(BaseAIProvider):
         primary_hc = self.primary.health_check()
         if primary_hc.is_healthy:
             return primary_hc
-        sec_hc = self.secondary.health_check()
-        if sec_hc.is_healthy:
-            return sec_hc
-        return self.offline_fallback.health_check()
+        if self.secondary is not None:
+            sec_hc = self.secondary.health_check()
+            if sec_hc.is_healthy:
+                return sec_hc
+        if self.allow_offline_fallback and self.offline_fallback is not None:
+            return self.offline_fallback.health_check()
+        return HealthCheckResult(False, 0.0, "All configured live AI providers are unhealthy", code="ALL_DOWN")
 
     def analyze(self, context: AIContext, trace_id: Optional[str] = None) -> TradeProposal:
-        # 1. Attempt Primary
+        tid = trace_id or f"trace_{uuid.uuid4().hex[:12]}"
+        now = datetime.now(tz=timezone.utc)
+
+        # 1. Attempt Primary (Groq)
         try:
-            return self.primary.analyze(context, trace_id=trace_id)
-        except AIError:
+            prop = self.primary.analyze(context, trace_id=tid)
+            self.last_used_provider = getattr(self.primary, "provider_name", "primary")
+            return prop
+        except (AIError, Exception):
             pass
 
-        # 2. Attempt Secondary (if configured)
+        # 2. Attempt Secondary (OpenAI)
         if self.secondary is not None:
             try:
-                return self.secondary.analyze(context, trace_id=trace_id)
-            except AIError:
+                prop = self.secondary.analyze(context, trace_id=tid)
+                self.last_used_provider = getattr(self.secondary, "provider_name", "secondary")
+                return prop
+            except (AIError, Exception):
                 pass
 
-        # 3. Deterministic Offline Fallback
-        return self.offline_fallback.analyze(context, trace_id=trace_id)
+        # 3. If offline deterministic engine requested (e.g. backtests or unit tests)
+        if self.allow_offline_fallback and self.offline_fallback is not None:
+            self.last_used_provider = getattr(self.offline_fallback, "provider_name", "deterministic_engine")
+            return self.offline_fallback.analyze(context, trace_id=tid)
+
+        # 4. Explicit LLM_UNAVAILABLE State (Section 6)
+        self.last_used_provider = "none"
+        regime = str(context.scenario_state.get("h1_regime", context.trend) if context.scenario_state else context.trend)
+        return TradeProposal(
+            decision=ProposalDecision.UNAVAILABLE,
+            direction=Direction.FLAT,
+            symbol=context.symbol,
+            confidence=0.0,
+            llm_confidence=0.0,
+            llm_decision="UNAVAILABLE",
+            ml_probability=None,
+            regime=regime,
+            volatility_state=str(context.volatility),
+            news_risk="HIGH" if context.news_state.get("high_impact_soon") else "LOW",
+            reasons=["LLM_UNAVAILABLE: Primary and secondary LLM providers failed or unconfigured"],
+            invalidation_conditions=["LLM advisory layer offline"],
+            provider="none",
+            model="unavailable",
+            model_version="1.0",
+            prompt_version="1.0",
+            entry_context=context.to_dict(),
+            invalidation="LLM advisory layer offline",
+            rationale="LLM services unavailable",
+            scenario="NO_ADVISORY",
+            timestamp=now,
+            model_provider="none",
+            trace_id=tid,
+        )
 
 
 class MockAIProvider(BaseAIProvider):

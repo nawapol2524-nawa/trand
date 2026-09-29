@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "manifest_version": "2.0.0",
+  "audit_timestamp_utc": "2026-09-27T10:14:00Z",
+  "system_name": "Institutional Trading Decision Architecture",
+  "status": "PASS",
+  "pipeline_architecture": {
+    "stages_in_order": [
+      {
+        "order": 1,
+        "stage": "MARKET_DATA",
+        "description": "UTC-synchronized OHLCV bar and real-time tick/spread aggregation",
+        "authority": "Deterministic Data Ingestion"
+      },
+      {
+        "order": 2,
+        "stage": "TECHNICAL_SIGNAL",
+        "description": "Rule-based signal generation using EMA 9/21/200, Wilder RSI, ATR 14, and BOS N=20 on M5",
+        "authority": "Deterministic Strategy Engine"
+      },
+      {
+        "order": 3,
+        "stage": "QUANTITATIVE_REGIME_EVALUATION",
+        "description": "Calculates ml_probability, trend regime, and volatility state",
+        "authority": "Quantitative Analysis"
+      },
+      {
+        "order": 4,
+        "stage": "LLM_ADVISORY_LAYER",
+        "description": "Enriches setup with qualitative market structure context; generates TradeProposal advisory (APPROVE, REJECT, HOLD, PASS, UNAVAILABLE). ZERO final order authority.",
+        "authority": "Advisory / Context Only"
+      },
+      {
+        "order": 5,
+        "stage": "DETERMINISTIC_RISK_AND_EXECUTION_GATE",
+        "description": "Evaluates hard boundaries (News Blackout, Spread, Slippage, Drawdown, Daily Loss, Circuit Breaker, Staleness, Kill Switch). Holds sovereign veto authority.",
+        "authority": "Absolute Sovereign Authority"
+      },
+      {
+        "order": 6,
+        "stage": "FINAL_DECISION",
+        "description": "Produces typed FinalDecision (BUY, SELL, HOLD, BLOCK) and canonical BlockReason if blocked",
+        "authority": "Deterministic Gatekeeper"
+      },
+      {
+        "order": 7,
+        "stage": "EXECUTION_ROUTING",
+        "description": "Computes lot sizing via frozen risk parameters (1.0% base) and transmits order to broker FIX API",
+        "authority": "Broker Interface"
+      }
+    ]
+  },
+  "data_model_separation": {
+    "llm_confidence": {
+      "type": "float (0.0 to 1.0)",
+      "semantic": "Subjective advisory confidence score from LLM prompt output",
+      "sizing_authority": false,
+      "override_authority": false
+    },
+    "ml_probability": {
+      "type": "Optional[float] (0.0 to 1.0)",
+      "semantic": "Calibrated statistical win probability from quantitative ML model",
+      "sizing_authority": false,
+      "override_authority": false
+    },
+    "llm_decision": {
+      "type": "ProposalDecision (APPROVE, REJECT, HOLD, PASS, UNAVAILABLE)",
+      "semantic": "Advisory suggestion from AI provider"
+    },
+    "final_decision": {
+      "type": "FinalDecision (BUY, SELL, HOLD, BLOCK)",
+      "semantic": "Final authoritative decision issued solely by Deterministic Gate"
+    }
+  },
+  "taxonomy_mapping": {
+    "canonical_codes": [
+      "BLOCK_NEWS",
+      "BLOCK_SPREAD",
+      "BLOCK_SLIPPAGE",
+      "BLOCK_DRAWDOWN",
+      "BLOCK_DAILY_LOSS",
+      "BLOCK_CIRCUIT_BREAKER",
+      "BLOCK_REGIME",
+      "BLOCK_SIGNAL",
+      "BLOCK_CONFIDENCE",
+      "BLOCK_EXECUTION",
+      "BLOCK_DUPLICATE",
+      "BLOCK_STALE_SIGNAL",
+      "BLOCK_INVALID_DATA",
+      "BLOCK_MODEL_UNAVAILABLE",
+      "BLOCK_KILL_SWITCH",
+      "BLOCK_SESSION_OFF_HOURS"
+    ],
+    "legacy_alias_map": {
+      "BLOCK_KILL_SWITCH": ["KILL_SWITCH_ACTIVE"],
+      "BLOCK_CIRCUIT_BREAKER": ["CONSECUTIVE_LOSS_HALT"],
+      "BLOCK_DAILY_LOSS": ["DAILY_LOSS_LIMIT"],
+      "BLOCK_DRAWDOWN": ["MAX_DRAWDOWN"],
+      "BLOCK_SPREAD": ["SPREAD_TOO_HIGH"],
+      "BLOCK_SLIPPAGE": ["SLIPPAGE_TOO_HIGH"],
+      "BLOCK_DUPLICATE": ["MAX_POSITIONS_REACHED", "SYMBOL_EXPOSURE_LIMIT"],
+      "BLOCK_STALE_SIGNAL": ["STALE_DATA"],
+      "BLOCK_NEWS": ["NEWS_BLACKOUT"],
+      "BLOCK_EXECUTION": ["SIZING_REJECTED"],
+      "BLOCK_SESSION_OFF_HOURS": ["SESSION_FILTER"],
+      "BLOCK_CONFIDENCE": ["INSUFFICIENT_CONFIDENCE"],
+      "BLOCK_REGIME": ["COUNTER_TREND"],
+      "BLOCK_SIGNAL": ["INVALID_SIGNAL"],
+      "BLOCK_INVALID_DATA": ["SCHEMA_INVALID"],
+      "BLOCK_MODEL_UNAVAILABLE": ["MODEL_UNAVAILABLE"]
+    }
+  },
+  "provider_failover_policy": {
+    "cascade_order": [
+      {
+        "priority": 1,
+        "provider": "GroqProvider",
+        "model": "llama-3.3-70b-versatile",
+        "timeout_seconds": 4.0,
+        "max_retries": 1
+      },
+      {
+        "priority": 2,
+        "provider": "OpenAIProvider",
+        "model": "gpt-4o-mini",
+        "timeout_seconds": 4.0,
+        "max_retries": 1
+      },
+      {
+        "priority": 3,
+        "provider": "DeterministicDecisionEngine",
+        "mode": "offline_rules",
+        "usage": "Enabled for historical backtests; explicit LLM_UNAVAILABLE in live mode"
+      }
+    ],
+    "case_matrix": {
+      "case_a_primary_groq_healthy": "Route to Groq",
+      "case_b_groq_failed_openai_healthy": "Failover to OpenAI",
+      "case_c_both_llms_failed": "Emit ProposalDecision.UNAVAILABLE with BLOCK_MODEL_UNAVAILABLE",
+      "case_d_no_keys_configured": "Emit ProposalDecision.UNAVAILABLE without system crash"
+    }
+  },
+  "hard_veto_boundaries": {
+    "max_daily_loss_pct": 0.05,
+    "max_open_positions_total": 3,
+    "max_positions_per_symbol": 1,
+    "max_spread_pips_default": 2.5,
+    "max_data_staleness_seconds": 60.0,
+    "consecutive_loss_limit": 5,
+    "consecutive_loss_halt_hours": 1.0,
+    "news_blackout_minutes_before": 30,
+    "news_blackout_minutes_after": 15,
+    "base_risk_pct": 0.010,
+    "high_conviction_risk_pct": 0.015,
+    "high_conviction_prerequisites": [
+      "confidence >= 0.85",
+      "H1 timeframe trend aligned",
+      "consecutive_losses < 3"
+    ]
+  },
+  "verification_summary": {
+    "test_runner": "pytest 8.3.4",
+    "python_version": "3.9.6",
+    "total_tests": 151,
+    "passed": 151,
+    "failed": 0,
+    "duration_seconds": 5.59,
+    "coverage_areas": [
+      "Section 14: Non-LLM Reproducibility & Determinism",
+      "Section 15: Provider Consistency (Cases A, B, C, D)",
+      "Section 16: Hard Veto & Risk Override Prevention",
+      "Taxonomy Normalization & Legacy Aliases",
+      "Live Tick Pre-Trade Spread Guard",
+      "Emergency Kill Switch & Circuit Breakers",
+      "Multi-Level Defense Levels 0-4",
+      "Immutable Audit Trace Logging"
+    ]
+  }
+}

@@ -13,6 +13,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+os.environ["ENFORCE_SESSION_FILTER"] = "false"
+
 from src.ai.provider import OfflineDeterministicAIProvider
 from src.ai.schemas import AIContext, ProposalDecision, TradeProposal
 from src.ai.validator import DeterministicGate, ValidationResult

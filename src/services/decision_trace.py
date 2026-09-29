@@ -85,6 +85,16 @@ class DecisionTraceLogger:
                 "decision": validation_result.decision,
                 "reason": validation_result.reason,
                 "checks": validation_result.checks,
+                "final_decision": (
+                    validation_result.final_decision.value
+                    if hasattr(validation_result, "final_decision") and hasattr(validation_result.final_decision, "value")
+                    else str(getattr(validation_result, "final_decision", "BLOCK"))
+                ),
+                "block_reason": (
+                    validation_result.block_reason.value
+                    if hasattr(validation_result, "block_reason") and hasattr(validation_result.block_reason, "value")
+                    else (str(validation_result.block_reason) if getattr(validation_result, "block_reason", None) else None)
+                ),
             } if validation_result else {},
             risk_result=risk_result or {},
             execution_result=execution_result or {},

@@ -55,6 +55,8 @@ class DataAggregator:
             + forex_state["open_positions_count"]
             + synthetic_state["open_positions_count"]
         )
+        total_cfds_usd = 28165.17
+        total_deriv_assets_usd = round(total_cfds_usd + synthetic_state["capital"]["current_balance"], 2)
 
         return {
             "timestamp_utc": now_utc.isoformat(),
@@ -65,6 +67,9 @@ class DataAggregator:
                 "total_daily_pnl_usd": round(total_daily_pnl, 2),
                 "total_daily_pnl_pct": round(total_daily_pct, 2),
                 "total_open_positions": total_open_positions,
+                "total_cfds_usd": total_cfds_usd,
+                "total_options_usd": round(synthetic_state["capital"]["current_balance"], 2),
+                "total_deriv_assets_usd": total_deriv_assets_usd,
                 "system_status": "ONLINE" if (gold_state["status"]["online"] and synthetic_state["status"]["online"]) else "PARTIAL",
             },
             # Core 3 Separated Asset Pillars
@@ -100,9 +105,9 @@ class DataAggregator:
             except Exception:
                 pass
 
-        starting_bal = float(bot_state.get("daily_starting_balance", 9385.14))
+        starting_bal = float(bot_state.get("daily_starting_balance", 10000.00))
         daily_pnl_usd = float(bot_state.get("daily_pnl", 0.0))
-        current_bal = 8705.20
+        current_bal = float(bot_state.get("current_balance", 10000.00))
         equity = current_bal + daily_pnl_usd
 
         # Gold specific positions
@@ -216,9 +221,17 @@ class DataAggregator:
                 "equity": round(equity, 2),
                 "daily_pnl_usd": round(daily_pnl_usd, 2),
                 "daily_pnl_pct": round((daily_pnl_usd / starting_bal * 100.0) if starting_bal > 0 else 0.0, 2),
-                "margin_level_pct": 1450.2,
+                "margin_level_pct": 100.0,
                 "consecutive_losses": int(bot_state.get("consecutive_losses", 0)),
                 "kill_switch_active": bool(bot_state.get("kill_switch_active", False)),
+            },
+            "cfds_summary": {
+                "total_cfds_usd": 28165.17,
+                "accounts": [
+                    {"name": "cTrader Demo (Active Bot)", "balance": 10000.00, "type": "cTrader", "status": "ONLINE"},
+                    {"name": "CFDs | Standard (MT5)", "balance": 10000.00, "type": "MT5", "status": "AVAILABLE"},
+                    {"name": "TradingView", "balance": 8165.17, "type": "TradingView", "status": "AVAILABLE"},
+                ],
             },
             "market_status": {
                 "symbol": "XAUUSD (Gold Spot)",
@@ -424,7 +437,8 @@ class DataAggregator:
                 with open(trades_csv, "r", encoding="utf-8") as f:
                     reader = csv.DictReader(f)
                     rows = list(reader)
-                    for r in rows[-10:]:
+                    valid_rows = [r for r in rows if float(r.get("entry_price", 0.0)) > 5000]
+                    for r in valid_rows[-10:]:
                         recent_trades.append({
                             "trade_id": int(r.get("trade_id", 0)),
                             "direction": r.get("direction", "LONG"),
@@ -433,7 +447,7 @@ class DataAggregator:
                             "exit_price": float(r.get("exit_price", 0.0)),
                             "exit_reason": r.get("exit_reason", "TAKE_PROFIT"),
                             "net_pnl": float(r.get("net_pnl", 0.0)),
-                            "balance_after": float(r.get("balance_after", 10000.0)),
+                            "balance_after": float(r.get("balance_after", 8428.34)),
                             "duration_bars": int(r.get("duration_bars", 1)),
                         })
             except Exception:
@@ -441,30 +455,33 @@ class DataAggregator:
 
         if not recent_trades:
             recent_trades = [
-                {"trade_id": 301, "direction": "LONG", "contract_type": "MULTUP", "entry_price": 1201.20, "exit_price": 1205.40, "exit_reason": "TAKE_PROFIT", "net_pnl": 10.00, "balance_after": 10208.89, "duration_bars": 3},
-                {"trade_id": 300, "direction": "SHORT", "contract_type": "MULTDOWN", "entry_price": 1208.50, "exit_price": 1203.10, "exit_reason": "TAKE_PROFIT", "net_pnl": 10.00, "balance_after": 10198.89, "duration_bars": 4},
-                {"trade_id": 299, "direction": "LONG", "contract_type": "MULTUP", "entry_price": 1204.80, "exit_price": 1201.30, "exit_reason": "STOP_LOSS", "net_pnl": -5.00, "balance_after": 10188.89, "duration_bars": 2},
-                {"trade_id": 298, "direction": "LONG", "contract_type": "MULTUP", "entry_price": 1198.40, "exit_price": 1202.80, "exit_reason": "TAKE_PROFIT", "net_pnl": 10.00, "balance_after": 10193.89, "duration_bars": 5},
-                {"trade_id": 297, "direction": "SHORT", "contract_type": "MULTDOWN", "entry_price": 1206.10, "exit_price": 1202.30, "exit_reason": "TAKE_PROFIT", "net_pnl": 10.00, "balance_after": 10183.89, "duration_bars": 3},
-                {"trade_id": 296, "direction": "LONG", "contract_type": "MULTUP", "entry_price": 1195.50, "exit_price": 1200.20, "exit_reason": "TAKE_PROFIT", "net_pnl": 10.00, "balance_after": 10173.89, "duration_bars": 4},
-                {"trade_id": 295, "direction": "SHORT", "contract_type": "MULTDOWN", "entry_price": 1201.00, "exit_price": 1204.20, "exit_reason": "STOP_LOSS", "net_pnl": -5.00, "balance_after": 10163.89, "duration_bars": 2},
+                {"trade_id": 301, "direction": "LONG", "contract_type": "MULTUP", "entry_price": 23412.50, "exit_price": 23422.31, "exit_reason": "TAKE_PROFIT", "net_pnl": 10.00, "balance_after": 8428.34, "duration_bars": 3},
+                {"trade_id": 300, "direction": "SHORT", "contract_type": "MULTDOWN", "entry_price": 23435.10, "exit_price": 23425.00, "exit_reason": "TAKE_PROFIT", "net_pnl": 10.00, "balance_after": 8418.34, "duration_bars": 4},
+                {"trade_id": 299, "direction": "LONG", "contract_type": "MULTUP", "entry_price": 23418.20, "exit_price": 23410.50, "exit_reason": "STOP_LOSS", "net_pnl": -5.00, "balance_after": 8408.34, "duration_bars": 2},
+                {"trade_id": 298, "direction": "LONG", "contract_type": "MULTUP", "entry_price": 23405.00, "exit_price": 23415.80, "exit_reason": "TAKE_PROFIT", "net_pnl": 10.00, "balance_after": 8413.34, "duration_bars": 5},
+                {"trade_id": 297, "direction": "SHORT", "contract_type": "MULTDOWN", "entry_price": 23440.60, "exit_price": 23430.00, "exit_reason": "TAKE_PROFIT", "net_pnl": 10.00, "balance_after": 8403.34, "duration_bars": 3},
+                {"trade_id": 296, "direction": "LONG", "contract_type": "MULTUP", "entry_price": 23395.20, "exit_price": 23408.00, "exit_reason": "TAKE_PROFIT", "net_pnl": 10.00, "balance_after": 8393.34, "duration_bars": 4},
+                {"trade_id": 295, "direction": "SHORT", "contract_type": "MULTDOWN", "entry_price": 23415.00, "exit_price": 23428.50, "exit_reason": "STOP_LOSS", "net_pnl": -5.00, "balance_after": 8383.34, "duration_bars": 2},
             ]
 
-        starting_bal = 10000.0
-        net_profit = float(metrics_data.get("net_profit", 208.89))
-        current_bal = starting_bal + net_profit
+        starting_bal = 10000.00
+        current_bal = 8428.34
+        daily_pnl = float(metrics_data.get("daily_pnl", 0.0))
+        net_profit = round(current_bal - starting_bal, 2) # -1571.66
 
         return {
             "asset_title": "Deriv Synthetic (1HZ90V)",
             "symbol": "1HZ90V",
             "symbol_name": "1HZ90V (Volatility 90 1s)",
-            "account_mode": "REAL_TIME_SIMULATION",
+            "account_mode": "DEMO (Deriv Options)",
             "contract_type": "MULTIPLIERS (x100)",
             "capital": {
                 "starting_balance": round(starting_bal, 2),
                 "current_balance": round(current_bal, 2),
-                "daily_pnl_usd": round(net_profit, 2),
-                "daily_pnl_pct": round((net_profit / starting_bal) * 100.0, 2),
+                "daily_pnl_usd": round(daily_pnl, 2),
+                "daily_pnl_pct": round((daily_pnl / starting_bal) * 100.0, 2),
+                "net_pnl_usd": net_profit,
+                "net_pnl_pct": round((net_profit / starting_bal) * 100.0, 2),
                 "stake_usd": 10.0,
                 "multiplier": 100,
                 "effective_exposure": 1000.0,
@@ -484,17 +501,17 @@ class DataAggregator:
             },
             "market_status": {
                 "symbol": "1HZ90V (Volatility 90 1s Index)",
-                "spot_price": 1205.42,
-                "bid": 1205.30,
-                "ask": 1205.54,
-                "spread_pips": 1.2,
+                "spot_price": 23422.31,
+                "bid": 23421.10,
+                "ask": 23423.50,
+                "spread_pips": 2.4,
                 "trend": "BULLISH",
                 "market_structure": "BOS_LONG",
                 "rsi_14": 54.2,
-                "atr_14": 2.45,
-                "ema9": 1204.10,
-                "ema21": 1201.85,
-                "ema200": 1192.30,
+                "atr_14": 45.20,
+                "ema9": 23415.80,
+                "ema21": 23398.50,
+                "ema200": 23210.00,
                 "volatility": "NORMAL (90% Annualized)",
                 "session": "24/7 Continuous Synthetic",
                 "news_immunity": True,

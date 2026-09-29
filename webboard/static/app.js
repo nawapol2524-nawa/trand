@@ -216,33 +216,33 @@ function applySnapshot(data) {
   // Synthetic Ribbon
   const synCap = syn.capital || {};
   const synMkt = syn.market_status || {};
-  updateText("ribbon-deriv-price", `${(synMkt.spot_price || 1205.42).toFixed(2)} 1HZ90V`, true);
-  updateText("ribbon-deriv-balance", `$${(synCap.current_balance || 10208.89).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
-  const synPnl = synCap.daily_pnl_usd || 208.89;
+  updateText("ribbon-deriv-price", `${(synMkt.spot_price || 23422.31).toFixed(2)} 1HZ90V`, true);
+  updateText("ribbon-deriv-balance", `$${(synCap.current_balance || 8428.34).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  const synPnl = synCap.net_pnl_usd !== undefined ? synCap.net_pnl_usd : (synCap.daily_pnl_usd || -1571.66);
   updateText("ribbon-deriv-pnl", `${synPnl >= 0 ? "+" : ""}$${synPnl.toFixed(2)}`);
 
   // --- TAB 0: OVERVIEW ---
-  updateText("ov-total-balance", `$${(port.total_balance_usd || 18914.09).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, true);
-  updateText("ov-starting-balance", `เงินทุนเริ่มต้น: $${(port.total_starting_balance_usd || 19385.14).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  updateText("ov-total-balance", `$${(port.total_balance_usd || 18428.34).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, true);
+  updateText("ov-starting-balance", `เงินทุนเริ่มต้น: $${(port.total_starting_balance_usd || 20000.00).toLocaleString("en-US", { minimumFractionDigits: 2 })} | Deriv พอร์ตรวม: $${(port.total_deriv_assets_usd || 36593.51).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
   
-  const totalPnl = port.total_daily_pnl_usd || 208.89;
+  const totalPnl = port.total_daily_pnl_usd || 0.00;
   updateText("ov-daily-pnl", `${totalPnl >= 0 ? "+" : ""}$${totalPnl.toFixed(2)}`, true);
   const ovPnlBadge = document.getElementById("ov-pnl-badge");
   if (ovPnlBadge) {
-    ovPnlBadge.textContent = `${totalPnl >= 0 ? "+" : ""}${(port.total_daily_pnl_pct || 1.08).toFixed(2)}%`;
+    ovPnlBadge.textContent = `${totalPnl >= 0 ? "+" : ""}${(port.total_daily_pnl_pct || 0.00).toFixed(2)}%`;
   }
   updateText("ov-open-count", `${port.total_open_positions || 0} ไม้`, true);
   updateText("ov-open-sub", `${gold.open_positions_count || 0} ทองคำ | ${forex.open_positions_count || 0} Forex | ${syn.open_positions_count || 0} Deriv`);
 
   updateText("ov-gold-spot", `$${(goldMkt.spot_price || 2658.45).toFixed(2)}`);
-  updateText("ov-gold-bal", `$${(goldCap.current_balance || 8705.2).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
-  updateText("ov-deriv-spot", (synMkt.spot_price || 1205.42).toFixed(2));
-  updateText("ov-deriv-bal", `$${(synCap.current_balance || 10208.89).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  updateText("ov-gold-bal", `$${(goldCap.current_balance || 10000.0).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  updateText("ov-deriv-spot", (synMkt.spot_price || 23422.31).toFixed(2));
+  updateText("ov-deriv-bal", `$${(synCap.current_balance || 8428.34).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
 
   // --- TAB 1: GOLD ---
-  updateText("gold-balance", `$${(goldCap.current_balance || 8705.2).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, true);
-  updateText("gold-equity", `$${(goldCap.equity || 8705.2).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
-  updateText("gold-margin", `${goldCap.margin_level_pct || 1450}%`);
+  updateText("gold-balance", `$${(goldCap.current_balance || 10000.0).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, true);
+  updateText("gold-equity", `$${(goldCap.equity || 10000.0).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  updateText("gold-margin", `${goldCap.margin_level_pct || 100}%`);
   updateText("gold-daily-pnl", `$${(goldCap.daily_pnl_usd || 0).toFixed(2)}`);
   updateText("gold-spot-price", `$${(goldMkt.spot_price || 2658.45).toFixed(2)}`, true);
   updateText("gold-spread", `${goldMkt.spread_pips || 3.0} pips`);
@@ -289,11 +289,11 @@ function applySnapshot(data) {
 
   // --- TAB 3: SYNTHETIC ---
   updateText("syn-active-count", `${syn.open_positions_count || 0} สัญญา`);
-  updateText("syn-balance", `$${(synCap.current_balance || 10208.89).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, true);
-  const synNet = synCap.daily_pnl_usd || 208.89;
-  updateText("syn-pnl", `${synNet >= 0 ? "+" : ""}$${synNet.toFixed(2)} (+${(synCap.daily_pnl_pct || 2.09).toFixed(2)}%)`);
+  updateText("syn-balance", `$${(synCap.current_balance || 8428.34).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, true);
+  const synDaily = synCap.daily_pnl_usd || 0.00;
+  updateText("syn-pnl", `${synPnl >= 0 ? "+" : ""}$${synPnl.toFixed(2)} (${(synCap.net_pnl_pct || -15.72).toFixed(2)}%)`);
   updateText("syn-winrate", `${syn.performance?.win_rate_pct || 39.2}%`);
-  updateText("syn-spot", (synMkt.spot_price || 1205.42).toFixed(2), true);
+  updateText("syn-spot", (synMkt.spot_price || 23422.31).toFixed(2), true);
   renderSyntheticPositions(syn.open_positions || []);
   renderDerivTrades(syn.recent_trades || []);
 

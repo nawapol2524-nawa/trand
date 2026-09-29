@@ -83,7 +83,7 @@ SIGNAL_TIMEFRAME = M5
 
 ### Break of Structure (BOS) — FROZEN DEFINITION
 ```
-N = 20
+N = 40  (upgraded from 20 — v1.2.0)
 ```
 
 **BOS LONG** (bullish break):
@@ -169,7 +169,7 @@ EMA_FAST_PERIOD = 9
 EMA_MID_PERIOD = 21
 EMA_SLOW_PERIOD = 200
 ATR_PERIOD = 14
-BOS_LOOKBACK_N = 20
+BOS_LOOKBACK_N = 40
 PIN_BAR_WICK_RATIO = 2.0       # wick must be >= 2x body
 PIN_BAR_OPPOSITE_MAX = 0.25    # opposite wick <= 25% of range
 SIGNAL_TIMEFRAME = M5
@@ -248,3 +248,4 @@ Deterministic Risk Engine (src/core/risk.py)
 |---------|------|--------|
 | 1.0.0 | 2026-09-23 | Initial frozen spec |
 | 1.1.0 | 2026-09-23 | Added Scenario Engine and Universal AI Proposal Layer integration |
+| 1.2.0 | 2026-09-28 | Tuning: BOS_LOOKBACK_N 20→40, ATR multiplier 1.5x→2.5x, added min SL floor, added cooldown filter |

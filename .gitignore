@@ -70,3 +70,7 @@ ENV/
 .idea/
 .vscode/
 *.zip
+
+# Sub-bot independent repositories
+Bot-Deriv-Synthetic/
+Bot-Forex-gold/

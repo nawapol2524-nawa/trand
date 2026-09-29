@@ -1,5 +1,5 @@
 # Risk Engine & Capital Preservation Model
-**Version**: 1.0.0  
+**Version**: 1.1.0  
 **Status**: ACTIVE & FROZEN
 
 ---
@@ -20,16 +20,36 @@
 
 $$\text{Risk Amount (\$) } = \text{Account Equity} \times \text{Risk Per Trade Pct (0.01)}$$
 
-$$\text{Stop Distance (Points) } = \text{ATRMultiplier} \times \text{ATR}_{14}$$
+$$\text{Stop Distance (Points) } = \max(\text{ATRMultiplier} \times \text{ATR}_{14},\; \text{MinSL}_{\text{symbol}})$$
 
 $$\text{Lot Size } = \frac{\text{Risk Amount}}{\text{Stop Distance} \times \text{Point Value}}$$
 
 * The calculated lot size is clamped to `[min_volume, max_volume]` and rounded to the broker's `volume_step`.
 * If the calculated lot size is below `min_volume`, the trade is **REJECTED** (no over-leveraging permitted).
 
+### ATR Multiplier & Minimum SL Floor (v1.1.0)
+
+| Symbol | ATR Multiplier | Min SL (pips) | Pip Size |
+|--------|---------------|---------------|----------|
+| EURUSD | 2.5x | 12 | 0.0001 |
+| GBPUSD | 2.5x | 15 | 0.0001 |
+| USDJPY | 2.5x | 12 | 0.01 |
+| XAUUSD | 2.0x | 200 | 0.01 |
+
+The SL distance is the **maximum** of `ATR × Multiplier` and `MinSL × PipSize`. This prevents market noise from triggering stop-outs during low-volatility M5 sessions.
+
 ---
 
-## 3. Daily Reset Cycle
+## 3. Cooldown Filter (v1.1.0)
+
+After any trade closes (TP or SL), the bot waits **6 M5 bars (30 minutes)** before allowing a new trade on the same symbol. This prevents:
+- Re-entering at the same price level immediately after being stopped out
+- Chasing the market after a profitable trade closes
+
+---
+
+## 4. Daily Reset Cycle
 * Timezone: Strictly **UTC midnight** (`00:00:00 UTC`).
 * Account daily starting balance is snapshotted at UTC midnight.
 * Daily cumulative PnL includes both realized and floating PnL.
+
