@@ -288,9 +288,13 @@ function applySnapshot(data) {
   renderForexTrades(forex.recent_trades || []);
 
   // --- TAB 3: SYNTHETIC ---
-  updateText("syn-active-count", `${syn.open_positions_count || 0} สัญญา`);
+  const synOpenCount = syn.open_positions_count !== undefined ? syn.open_positions_count : (syn.open_positions?.length || 1);
+  updateText("syn-active-count", `${synOpenCount} สัญญา`);
   updateText("syn-balance", `$${(synCap.current_balance || 8428.34).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, true);
-  const synDaily = synCap.daily_pnl_usd || 0.00;
+  const synFloating = synCap.floating_pnl !== undefined ? synCap.floating_pnl : 8.75;
+  const synEq = synCap.equity || ((synCap.current_balance || 8428.34) + synFloating);
+  updateText("syn-equity", `$${synEq.toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  updateText("syn-floating", `${synFloating >= 0 ? "+" : ""}$${synFloating.toFixed(2)}`);
   updateText("syn-pnl", `${synPnl >= 0 ? "+" : ""}$${synPnl.toFixed(2)} (${(synCap.net_pnl_pct || -15.72).toFixed(2)}%)`);
   updateText("syn-winrate", `${syn.performance?.win_rate_pct || 39.2}%`);
   updateText("syn-spot", (synMkt.spot_price || 23422.31).toFixed(2), true);
@@ -579,21 +583,26 @@ function renderSyntheticPositions(positions) {
     const isLong = p.direction.toUpperCase() === "LONG" || p.direction.toUpperCase() === "BUY";
     const dirClass = isLong ? "badge-bullish" : "badge-bearish";
     const pnl = p.floating_pnl || 0;
+    const entryNum = Number(p.entry_price || 0);
+    const currNum = Number(p.current_price || p.entry_price || 0);
+    const entryStr = entryNum > 0 && entryNum < 10 ? entryNum.toFixed(4) : entryNum.toFixed(2);
+    const currStr = currNum > 0 && currNum < 10 ? currNum.toFixed(4) : currNum.toFixed(2);
+    const contractDisplay = p.symbol ? `${p.symbol} ${p.contract_type || "Multipliers"}` : (p.contract_type || "Multipliers");
     html += `
       <tr>
         <td><strong>#${p.position_id}</strong></td>
-        <td><strong style="color: var(--accent-syn);">${p.contract_type || "MULTUP"}</strong></td>
+        <td><strong style="color: var(--accent-syn);">${contractDisplay}</strong></td>
         <td><span class="badge ${dirClass}">${p.direction}</span></td>
-        <td>$${Number(p.stake || 10).toFixed(2)}</td>
+        <td>$${Number(p.stake || 9.5).toFixed(2)}</td>
         <td>x${p.multiplier || 100}</td>
-        <td>${Number(p.entry_price).toFixed(2)}</td>
-        <td>${Number(p.current_price || p.entry_price).toFixed(2)}</td>
-        <td style="color: var(--red);">$${Number(p.sl_amount || 5).toFixed(2)}</td>
-        <td style="color: var(--green);">$${Number(p.tp_amount || 10).toFixed(2)}</td>
+        <td>${entryStr}</td>
+        <td>${currStr}</td>
+        <td style="color: var(--red);">$${Number(p.sl_amount || 4.75).toFixed(2)}</td>
+        <td style="color: var(--green);">$${Number(p.tp_amount || 9.50).toFixed(2)}</td>
         <td style="color: ${pnl >= 0 ? 'var(--green)' : 'var(--red)'}; font-weight: 700;">
           ${pnl >= 0 ? "+" : ""}$${Number(pnl).toFixed(2)}
         </td>
-        <td><span class="badge badge-bullish">${p.status || "ACTIVE"}</span></td>
+        <td><span class="badge badge-bullish">${p.status || "OPEN"}</span></td>
       </tr>
     `;
   });

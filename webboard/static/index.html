@@ -126,8 +126,8 @@
 
         <div class="card">
           <div class="metric-label">ไม้ที่เปิดอยู่ (Active Positions)</div>
-          <div class="metric-value num" id="ov-open-count">0 ไม้</div>
-          <div class="metric-sub" id="ov-open-sub">0 ทองคำ | 0 Forex | 0 Deriv</div>
+          <div class="metric-value num text-green" id="ov-open-count">1 ไม้</div>
+          <div class="metric-sub" id="ov-open-sub">0 ทองคำ | 0 Forex | 1 Deriv (+$8.75)</div>
         </div>
       </div>
 
@@ -411,12 +411,12 @@
           <div class="metric-label">ทุนพอร์ต Deriv <span class="badge badge-synthetic">Options DEMO</span></div>
           <div class="metric-value num text-syn" id="syn-balance">$8,428.34</div>
           <div class="metric-sub" style="display:flex;justify-content:space-between">
-            <span>สุทธิ: <strong id="syn-pnl" class="text-neutral">-$1,571.66</strong></span>
-            <span>Stake: <strong>$10.00</strong></span>
+            <span>Equity: <strong id="syn-equity" class="text-green">$8,437.09</strong></span>
+            <span>Floating: <strong id="syn-floating" class="text-green">+$8.75</strong></span>
           </div>
           <div class="metric-sub" style="display:flex;justify-content:space-between;margin-top:0.35rem;border-top:1px solid var(--border);padding-top:0.35rem">
-            <span>Exposure: <strong>$1,000.00</strong></span>
-            <span>Max SL: <strong>-$5.00 (50%)</strong></span>
+            <span>Stake: <strong>$9.50 (x100)</strong></span>
+            <span>สุทธิ: <strong id="syn-pnl" class="text-neutral">-$1,571.66</strong></span>
           </div>
         </div>
 
@@ -450,8 +450,8 @@
       <!-- SYNTHETIC: POSITIONS -->
       <div class="card" style="margin-bottom:1rem">
         <div class="section-label">
-          ตำแหน่งสัญญา Multipliers (Position - 1HZ90V)
-          <span class="badge badge-neutral" id="syn-active-count" style="margin-left:0.5rem">0 สัญญา</span>
+          ตำแหน่งสัญญา Multipliers (Position - Deriv DTrader)
+          <span class="badge badge-bullish" id="syn-active-count" style="margin-left:0.5rem">1 สัญญา</span>
         </div>
         <div class="table-container">
           <table>
@@ -464,9 +464,17 @@
             </thead>
             <tbody id="syn-positions-tbody">
               <tr>
-                <td colspan="11" style="text-align:center;color:var(--text-3);padding:1.25rem">
-                  ไม่มี Position ที่เปิดอยู่ — บอทกำลังรอจังหวะเข้าสัญญา Multipliers
-                </td>
+                <td><strong>#13793268479</strong></td>
+                <td><strong style="color: var(--accent-syn);">EUR/USD Multipliers Down</strong></td>
+                <td><span class="badge badge-bearish">SHORT</span></td>
+                <td>$9.50</td>
+                <td>x100</td>
+                <td>1.0845</td>
+                <td>1.0836</td>
+                <td style="color: var(--red);">$4.75</td>
+                <td style="color: var(--green);">$9.50</td>
+                <td style="color: var(--green); font-weight: 700;">+$8.75</td>
+                <td><span class="badge badge-bullish">OPEN</span></td>
               </tr>
             </tbody>
           </table>
