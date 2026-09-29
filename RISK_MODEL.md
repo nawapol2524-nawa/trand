@@ -53,3 +53,15 @@ After any trade closes (TP or SL), the bot waits **6 M5 bars (30 minutes)** befo
 * Account daily starting balance is snapshotted at UTC midnight.
 * Daily cumulative PnL includes both realized and floating PnL.
 
+---
+
+## 5. Target R:R 1:1.2 & Break-Even Enforcement (Steady Profit & Capital Preservation)
+To maximize win rate, bank consistent profits, and enforce capital preservation:
+* **Default Target R:R**: `1:1.2` (`rr_ratio = 1.2`)
+* **ATR Multipliers**: 
+  - Stop Loss: `2.5x ATR`
+  - Take Profit: `3.0x ATR` ($3.0 / 2.5 = 1.2\text{ R:R}$)
+* **Break-Even / Risk-Free Rule (+1.0R)**:
+  - When floating profit reaches $+1.0R$ ($\text{profit distance} \ge \text{sl\_distance}$), the Stop Loss is **immediately amended to Entry Price** on the broker.
+  - Position becomes completely **risk-free**, protecting seed capital against sudden market reversals while letting price run toward the 1.2R target.
+

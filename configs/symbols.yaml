@@ -28,7 +28,7 @@ symbols:
     min_volume: 0.01
     volume_step: 0.01
     sl_atr_multiplier: 2.5   # Upgraded from 1.5x — wider SL to survive M5 noise
-    tp_atr_multiplier: 5.0   # Upgraded from 2.5x — maintains R:R 1:2
+    tp_atr_multiplier: 3.0   # Target R:R 1:1.2 (SL 2.5x, TP 3.0x ATR)
     max_spread_pips: 2.0
     min_sl_pips: 12.0         # Minimum 12 pips SL floor (0.00120)
     pip_size: 0.0001          # 1 pip = 0.0001
@@ -44,7 +44,7 @@ symbols:
     min_volume: 0.01
     volume_step: 0.01
     sl_atr_multiplier: 2.5   # Upgraded from 1.5x — wider SL to survive M5 noise
-    tp_atr_multiplier: 5.0   # Upgraded from 2.5x — maintains R:R 1:2
+    tp_atr_multiplier: 3.0   # Target R:R 1:1.2 (SL 2.5x, TP 3.0x ATR)
     max_spread_pips: 2.5
     min_sl_pips: 15.0         # Minimum 15 pips SL floor (0.00150) — GBP is more volatile
     pip_size: 0.0001
@@ -60,7 +60,7 @@ symbols:
     min_volume: 0.01
     volume_step: 0.01
     sl_atr_multiplier: 2.5   # Upgraded from 1.5x
-    tp_atr_multiplier: 5.0   # Upgraded from 2.5x — maintains R:R 1:2
+    tp_atr_multiplier: 3.0   # Target R:R 1:1.2 (SL 2.5x, TP 3.0x ATR)
     max_spread_pips: 2.5
     min_sl_pips: 12.0         # Minimum 12 pips SL floor (0.120)
     pip_size: 0.01            # 1 pip = 0.01 for JPY pairs

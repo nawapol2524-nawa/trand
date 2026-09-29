@@ -428,6 +428,61 @@ class TestConvexAsymmetricExitEngine:
         assert broker.amend_position.call_args[1]["stop_loss"] == 1.1455
         assert state_mgr.state.open_positions[pos_id]["sl_price"] == 1.1455
 
+    def test_break_even_at_plus_one_r(self, tmp_path):
+        state_mgr = StateManager(state_dir=str(tmp_path / "state"))
+        evidence = EvidenceCollector(base_dir=str(tmp_path / "evidence"))
+        monitor = OperationalMonitor(state_dir=str(tmp_path / "monitor"))
+        trace = DecisionTraceService(log_dir=str(tmp_path / "trace"))
+
+        broker = MagicMock(spec=CTraderMCPBroker)
+        runner = TradingBotRunner(
+            broker=broker,
+            state_manager=state_mgr,
+            monitor=monitor,
+            trace_service=trace,
+            evidence_collector=evidence,
+        )
+
+        pos_id = "3001"
+        pos = PositionState(
+            position_id=pos_id,
+            symbol="EURUSD",
+            direction="LONG",
+            volume_lots=0.04,
+            entry_price=1.1400,
+            sl_price=1.1380,
+            original_volume=0.04,
+            sl_distance=0.0020,
+            atr_at_entry=0.0010,
+            highest_favorable_price=1.1400,
+            partial_tp_hit=False,
+            break_even_set=False,
+            trailing_stop_active=False,
+        )
+        state_mgr.record_new_position(pos)
+
+        # Price advances to +1.0R (1.1420)
+        broker.get_spot_prices.return_value = [{"symbolId": 1, "bid": 1.1420, "ask": 1.1421}]
+        broker_positions = [{"positionId": 3001, "symbolId": 1, "tradeSide": "BUY", "volume": 400000}]
+
+        now_utc = datetime.now(tz=timezone.utc)
+        runner.manage_open_positions(broker_positions, now=now_utc)
+
+        # 1. Amend SL to Break-Even (entry_price 1.1400)
+        assert broker.amend_position.called
+        assert broker.amend_position.call_args[1]["stop_loss"] == 1.1400
+
+        # 2. Partial close should NOT be called yet (since R = 1.0 < 1.5)
+        assert not broker.close_position.called
+
+        # 3. Check updated local state
+        updated_pos = state_mgr.state.open_positions[pos_id]
+        assert updated_pos["break_even_set"] is True
+        assert updated_pos["trailing_stop_active"] is True
+        assert updated_pos["sl_price"] == 1.1400
+        assert updated_pos["partial_tp_hit"] is False
+        assert updated_pos["volume_lots"] == 0.04
+
 
 # ============================================================================
 # MODULE 4: Schema v1.3 Persistence & Version Lineage Tests

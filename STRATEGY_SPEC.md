@@ -15,9 +15,9 @@ Do NOT cherry-pick periods. Do NOT remove losing trades.
 | Symbol | Timeframe (Primary) | Higher TF | Strategy |
 |--------|---------------------|-----------|----------|
 | XAUUSD | M5 | H1 | XAU Mean Reversion (RSI + EMA) |
-| EURUSD | M5 | H1 | Forex Trend Breakout (EMA + BOS) |
-| GBPUSD | M5 | H1 | Forex Trend Breakout (EMA + BOS) |
-| USDJPY | M5 | H1 | Forex Trend Breakout (EMA + BOS) |
+| EURUSD | M5 | H1 | Forex Trend Pullback (EMA Trend + Confirmation) |
+| GBPUSD | M5 | H1 | Forex Trend Pullback (EMA Trend + Confirmation) |
+| USDJPY | M5 | H1 | Forex Trend Pullback (EMA Trend + Confirmation) |
 
 NOTE: Actual Deriv cTrader symbol names must be verified in Phase 1 (SYMBOL_SPECIFICATION.md).
 Do not assume "XAUUSD" is the exact symbol name on Deriv cTrader.
@@ -58,7 +58,8 @@ SIGNAL_TIMEFRAME = M5
 
 ---
 
-## STRATEGY B — FOREX TREND BREAKOUT (EURUSD / GBPUSD / USDJPY)
+## STRATEGY B — FOREX TREND PULLBACK (EURUSD / GBPUSD / USDJPY)
+*Optimized for "Steady Profit & Capital Preservation" (High Win Rate / Pullback Style)*
 
 ### Timeframes
 - Signal: M5
@@ -72,7 +73,7 @@ SIGNAL_TIMEFRAME = M5
 | EMA_SLOW | 200 | M5 close |
 | ATR | 14 | M5 (high, low, close) |
 
-### Trend Condition (All 3 must hold)
+### Trend Condition
 **LONG bias:**
 - EMA_FAST(9) > EMA_MID(21) on last CLOSED M5 bar
 - Close of last CLOSED M5 bar > EMA_SLOW(200)
@@ -81,24 +82,17 @@ SIGNAL_TIMEFRAME = M5
 - EMA_FAST(9) < EMA_MID(21) on last CLOSED M5 bar
 - Close of last CLOSED M5 bar < EMA_SLOW(200)
 
-### Break of Structure (BOS) — FROZEN DEFINITION
-```
-N = 40  (upgraded from 20 — v1.2.0)
-```
+### Unblocked Entry Architecture (BOS Removed)
+To eliminate entry blockages and capture high-probability pullback continuation:
+- **BOS (Break of Structure) requirement is completely removed**.
+- Minimum required closed bars is reduced to **201** (`EMA_SLOW(200) + 1`).
+- Confirmation relies purely on dynamic candle reversal patterns (Engulfing or Pin Bar) aligned with macro EMA trend.
 
-**BOS LONG** (bullish break):
-- Condition: The LAST CLOSED bar's high STRICTLY EXCEEDS the highest high
-  of the PREVIOUS N completed bars (bars[1] through bars[N], NOT including bars[0])
-- Formal: bars[0].high > max(bars[1].high, bars[2].high, ..., bars[N].high)
-- bars[0] = most recently CLOSED bar
-- bars[1..N] = N bars before bars[0]
-- Total lookback = N+1 bars needed (bars[0] through bars[N])
-
-**BOS SHORT** (bearish break):
-- Condition: bars[0].low < min(bars[1].low, bars[2].low, ..., bars[N].low)
-- Same indexing as above
-
-**IMPORTANT:** The forming/incomplete bar is NEVER included. Only closed bars.
+### Target Risk-to-Reward & Exit Rules
+- **Target R:R**: 1:1.2 (Default `rr_ratio = 1.2`)
+- **SL Distance**: 2.5x ATR (clamped to minimum pip floor)
+- **TP Distance**: 3.0x ATR ($3.0 / 2.5 = 1.2$ R:R)
+- **Break-Even Enforcement (+1.0R)**: When floating profit reaches $+1.0R$ ($\text{distance} = \text{SL distance}$), the Stop Loss is immediately amended to the Entry Price (100% Risk-Free trade).
 
 ### Candlestick Confirmation — FROZEN DEFINITIONS
 
@@ -153,23 +147,23 @@ total_range > 0
 
 ### Full LONG Signal Sequence
 1. Trend: EMA9 > EMA21 AND close > EMA200 (on bars[0])
-2. BOS: bars[0].high > max(bars[1..N].high) — N=20
-3. Confirmation: bars[0] is Bullish Engulfing OR Bullish Pin Bar
-4. All conditions evaluated on CLOSED bars only
+2. Confirmation: bars[0] is Bullish Engulfing OR Bullish Pin Bar
+3. All conditions evaluated on CLOSED bars only (minimum 201 bars)
 
 ### Full SHORT Signal Sequence
 1. Trend: EMA9 < EMA21 AND close < EMA200 (on bars[0])
-2. BOS: bars[0].low < min(bars[1..N].low) — N=20
-3. Confirmation: bars[0] is Bearish Engulfing OR Bearish Pin Bar
-4. All conditions evaluated on CLOSED bars only
+2. Confirmation: bars[0] is Bearish Engulfing OR Bearish Pin Bar
+3. All conditions evaluated on CLOSED bars only (minimum 201 bars)
 
-### Frozen Parameters
+### Optimized Strategy Parameters
 ```
 EMA_FAST_PERIOD = 9
 EMA_MID_PERIOD = 21
 EMA_SLOW_PERIOD = 200
 ATR_PERIOD = 14
-BOS_LOOKBACK_N = 40
+MIN_BARS = 201
+TARGET_RR_RATIO = 1.2
+BREAK_EVEN_TRIGGER_R = 1.0
 PIN_BAR_WICK_RATIO = 2.0       # wick must be >= 2x body
 PIN_BAR_OPPOSITE_MAX = 0.25    # opposite wick <= 25% of range
 SIGNAL_TIMEFRAME = M5

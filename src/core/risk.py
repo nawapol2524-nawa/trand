@@ -24,7 +24,7 @@ class RiskConfig:
     max_symbol_exposure_pct: float = 0.05     # 5.0% exposure per symbol
     max_positions_per_symbol: int = 1         # Max 1 open position per symbol
     atr_multiplier_sl: float = 2.5            # 2.5x ATR for Stop Loss (upgraded from 1.5x to survive M5 noise)
-    rr_ratio: float = 2.0                     # 1:2 Risk to Reward
+    rr_ratio: float = 1.2                     # 1:1.2 Risk to Reward (Steady Profit & Capital Preservation)
     min_volume: float = 0.01
     max_volume: float = 10.0
     volume_step: float = 0.01

@@ -263,9 +263,40 @@ class TradingBotRunner:
             except (ValueError, TypeError):
                 pid_arg = pos_id
 
-            # 1. Partial TP Check (+1.5R)
             r_multiple = ((current_price - entry_price) / sl_distance) if is_long else ((entry_price - current_price) / sl_distance)
 
+            # 1. Break-Even Check (+1.0R / Risk-Free)
+            break_even_set = bool(pos_data.get("break_even_set", False))
+            be_sl = round(entry_price, digits)
+            if not break_even_set and r_multiple >= 1.0:
+                logger.info(
+                    "Moving Stop Loss to Break-Even for %s pos_id=%s (R=%.2f, entry=%.5f)",
+                    canonical_sym, pos_id, r_multiple, be_sl
+                )
+                if hasattr(self.broker, "amend_position") and callable(self.broker.amend_position):
+                    try:
+                        self.broker.amend_position(pid_arg, stop_loss=be_sl)
+                    except Exception as e:
+                        logger.error("Failed to amend SL to Break-Even for pos %s: %s", pos_id, e)
+
+                pos_data["break_even_set"] = True
+                pos_data["sl_price"] = be_sl
+                pos_data["trailing_stop_active"] = True
+                self.state_mgr.save_state()
+
+                self.evidence_collector.record_runtime_event(
+                    "BREAK_EVEN_EXECUTED",
+                    symbol=canonical_sym,
+                    position_id=str(pos_id),
+                    status="EXECUTED",
+                    payload={
+                        "r_multiple": round(r_multiple, 2),
+                        "break_even_sl": be_sl,
+                        "spot_price": current_price,
+                    },
+                )
+
+            # 2. Partial TP Check (+1.5R)
             if not partial_tp_hit and r_multiple >= 1.5:
                 half_lots = max(0.01, round(original_volume * 0.5, 2))
                 half_mcp_volume = int(round(half_lots * lot_size * 100))
@@ -280,17 +311,17 @@ class TradingBotRunner:
                     except Exception as e:
                         logger.error("Failed to execute partial close on broker for pos %s: %s", pos_id, e)
 
-                be_sl = round(entry_price, digits)
-                if hasattr(self.broker, "amend_position") and callable(self.broker.amend_position):
-                    try:
-                        self.broker.amend_position(pid_arg, stop_loss=be_sl)
-                    except Exception as e:
-                        logger.error("Failed to amend SL to Break-Even for pos %s: %s", pos_id, e)
+                if not pos_data.get("break_even_set"):
+                    if hasattr(self.broker, "amend_position") and callable(self.broker.amend_position):
+                        try:
+                            self.broker.amend_position(pid_arg, stop_loss=be_sl)
+                        except Exception as e:
+                            logger.error("Failed to amend SL to Break-Even for pos %s: %s", pos_id, e)
+                    pos_data["break_even_set"] = True
+                    pos_data["sl_price"] = be_sl
 
                 pos_data["partial_tp_hit"] = True
-                pos_data["break_even_set"] = True
                 pos_data["trailing_stop_active"] = True
-                pos_data["sl_price"] = be_sl
                 pos_data["volume_lots"] = max(0.01, round(current_volume - half_lots, 2))
                 pos_data["highest_favorable_price"] = current_price
                 self.state_mgr.save_state()
@@ -309,7 +340,7 @@ class TradingBotRunner:
                     },
                 )
 
-            # 2. Trailing ATR Stop Check (for runner)
+            # 3. Trailing ATR Stop Check (for runner)
             elif trailing_active:
                 trail_distance = atr_val * 1.5
                 current_sl = float(pos_data.get("sl_price", entry_price))
