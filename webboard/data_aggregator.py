@@ -55,7 +55,7 @@ class DataAggregator:
             + forex_state["open_positions_count"]
             + synthetic_state["open_positions_count"]
         )
-        total_cfds_usd = 28165.17
+        total_cfds_usd = round(gold_state["capital"]["current_balance"], 2)
         total_deriv_assets_usd = round(total_cfds_usd + synthetic_state["capital"]["current_balance"], 2)
 
         return {
@@ -105,9 +105,9 @@ class DataAggregator:
             except Exception:
                 pass
 
-        starting_bal = float(bot_state.get("daily_starting_balance", 10000.00))
+        starting_bal = float(bot_state.get("daily_starting_balance", 8165.17))
         daily_pnl_usd = float(bot_state.get("daily_pnl", 0.0))
-        current_bal = float(bot_state.get("current_balance", 10000.00))
+        current_bal = float(bot_state.get("current_balance", 8165.17))
         equity = current_bal + daily_pnl_usd
 
         # Gold specific positions
@@ -214,7 +214,7 @@ class DataAggregator:
             "asset_title": "Gold Spot (XAUUSD)",
             "symbol": "XAUUSD",
             "account_mode": health_data.get("mode", "DEMO"),
-            "account_id": "cTrader Demo #3492810",
+            "account_id": f"cTrader Demo #{os.getenv('CTRADER_ACCOUNT_ID', '2548625')}",
             "capital": {
                 "starting_balance": round(starting_bal, 2),
                 "current_balance": round(current_bal, 2),

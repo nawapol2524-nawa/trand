@@ -12,7 +12,7 @@ Requirements:
 
 Steps:
 1. Script opens browser to Spotware authorization URL
-2. You authorize your cTrader account (2565611)
+2. You authorize your cTrader account (2548625)
 3. Browser redirects to localhost:8080/callback with a code
 4. Script exchanges code for access token
 5. Token is saved to .env — never printed to terminal

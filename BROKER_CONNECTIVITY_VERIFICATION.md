@@ -28,7 +28,7 @@
 ### When Status Changes to "Active"
 1. Go to https://connect.spotware.com/apps/41116/playground
 2. Select **"Account info and trading"** scope
-3. Click **Get token** → Authorize account 2565611
+3. Click **Get token** → Authorize account 2548625
 4. Run: `python3 scripts/get_ctrader_token.py` (or use Sandbox token)
 5. Phase 6 UNBLOCKED → broker implementation starts
 
@@ -47,8 +47,8 @@
 | Account Type | cTrader | ✅ CONFIRMED |
 | Mode | DEMO | ✅ CONFIRMED |
 | Server | DerivSVG-Server | ✅ CONFIRMED |
-| Login ID (cTrader) | 2565611 | ✅ CONFIRMED |
-| Balance | 10,000.00 USD | ✅ CONFIRMED (Demo funds) |
+| Login ID (cTrader) | 2548625 | ✅ CONFIRMED |
+| Balance | 8,165.17 USD | ✅ CONFIRMED (Demo funds) |
 | Account Owner | Nawaphon Koedbua | ✅ CONFIRMED |
 
 ---
@@ -125,7 +125,7 @@ POST https://connect.spotware.com/apps/token
 This gives you an **Access Token** to use with cTrader Open API.
 
 ### Step 3: Verify Account Authorization
-After getting Access Token, verify that account `2565611` (DerivSVG-Server) 
+After getting Access Token, verify that account `2548625` (DerivSVG-Server) 
 is accessible and authorized for API trading.
 
 ---
@@ -179,7 +179,7 @@ Token is stored ONLY in local `.env` file (gitignored, never committed).
 | Item | Status |
 |------|--------|
 | Deriv account existence | ✅ CONFIRMED |
-| cTrader DEMO account | ✅ CONFIRMED (Login: 2565611) |
+| cTrader DEMO account | ✅ CONFIRMED (Login: 2548625) |
 | Deriv WebSocket API token | ✅ RECEIVED (security rotation recommended) |
 | cTrader Open API Client ID | ❌ NOT PROVIDED |
 | cTrader Open API Client Secret | ❌ NOT PROVIDED |
