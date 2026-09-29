@@ -43,6 +43,16 @@ class CTraderMCPBroker:
         self.timeout = timeout_seconds
         self.session_id: Optional[str] = None
         self._ssl_context: Optional[Any] = None
+        try:
+            import certifi
+            import ssl
+            self._ssl_context = ssl.create_default_context(cafile=certifi.where())
+        except Exception:
+            try:
+                import ssl
+                self._ssl_context = ssl._create_unverified_context()
+            except Exception:
+                pass
 
     def _urlopen(self, req: urllib.request.Request):
         kwargs: dict[str, Any] = {"timeout": self.timeout}

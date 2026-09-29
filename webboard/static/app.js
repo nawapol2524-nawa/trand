@@ -204,14 +204,14 @@ function applySnapshot(data) {
 
   // Forex Ribbon
   const forexPairs = forex.pairs || [];
-  const eurusd = forexPairs.find((p) => p.symbol === "EURUSD") || { spot_price: 1.0845 };
-  const gbpusd = forexPairs.find((p) => p.symbol === "GBPUSD") || { spot_price: 1.2980 };
-  const usdjpy = forexPairs.find((p) => p.symbol === "USDJPY") || { spot_price: 152.35 };
+  const eurusd = forexPairs.find((p) => p.symbol === "EURUSD") || { spot_price: 1.1340 };
+  const gbpusd = forexPairs.find((p) => p.symbol === "GBPUSD") || { spot_price: 1.3217 };
+  const usdjpy = forexPairs.find((p) => p.symbol === "USDJPY") || { spot_price: 157.48 };
 
-  updateText("ribbon-forex-price", `${eurusd.spot_price.toFixed(4)} EURUSD`, true);
-  updateText("ribbon-forex-gbp", gbpusd.spot_price.toFixed(4));
-  updateText("ribbon-forex-jpy", usdjpy.spot_price.toFixed(2));
-  updateText("ribbon-forex-session", forex.active_session || "LONDON / NY");
+  updateText("ribbon-forex-price", `${eurusd.spot_price.toFixed(5)} EURUSD`, true);
+  updateText("ribbon-forex-gbp", gbpusd.spot_price.toFixed(5));
+  updateText("ribbon-forex-jpy", usdjpy.spot_price.toFixed(3));
+  updateText("ribbon-forex-session", forex.active_session || "LONDON / NY OVERLAP");
 
   // Synthetic Ribbon
   const synCap = syn.capital || {};
@@ -222,8 +222,8 @@ function applySnapshot(data) {
   updateText("ribbon-deriv-pnl", `${synPnl >= 0 ? "+" : ""}$${synPnl.toFixed(2)}`);
 
   // --- TAB 0: OVERVIEW ---
-  updateText("ov-total-balance", `$${(port.total_balance_usd || 18428.34).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, true);
-  updateText("ov-starting-balance", `เงินทุนเริ่มต้น: $${(port.total_starting_balance_usd || 20000.00).toLocaleString("en-US", { minimumFractionDigits: 2 })} | Deriv พอร์ตรวม: $${(port.total_deriv_assets_usd || 36593.51).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  updateText("ov-total-balance", `$${(port.total_balance_usd || 16468.87).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, true);
+  updateText("ov-starting-balance", `เงินทุนเริ่มต้น: $${(port.total_starting_balance_usd || 18040.53).toLocaleString("en-US", { minimumFractionDigits: 2 })} | Deriv พอร์ตรวม: $${(port.total_deriv_assets_usd || 36468.87).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
   
   const totalPnl = port.total_daily_pnl_usd || 0.00;
   updateText("ov-daily-pnl", `${totalPnl >= 0 ? "+" : ""}$${totalPnl.toFixed(2)}`, true);
@@ -235,7 +235,10 @@ function applySnapshot(data) {
   updateText("ov-open-sub", `${gold.open_positions_count || 0} ทองคำ | ${forex.open_positions_count || 0} Forex | ${syn.open_positions_count || 0} Deriv`);
 
   updateText("ov-gold-spot", `$${(goldMkt.spot_price || 2658.45).toFixed(2)}`);
-  updateText("ov-gold-bal", `$${(goldCap.current_balance || 10000.0).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  updateText("ov-gold-bal", `$${(goldCap.current_balance || 8040.53).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  updateText("ov-forex-price", `${eurusd.spot_price.toFixed(4)} / ${gbpusd.spot_price.toFixed(4)}`);
+  const forexFloating = forex.capital?.floating_pnl ?? 36.69;
+  updateText("ov-forex-pnl", `${forexFloating >= 0 ? "+" : ""}$${Number(forexFloating).toFixed(2)}`);
   updateText("ov-deriv-spot", (synMkt.spot_price || 23422.31).toFixed(2));
   updateText("ov-deriv-bal", `$${(synCap.current_balance || 8428.34).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
 
@@ -280,6 +283,14 @@ function applySnapshot(data) {
   renderGoldHistory(gold.closed_trades_history || []);
 
   // --- TAB 2: FOREX ---
+  const forexCap = forex.capital || {};
+  updateText("forex-balance", `$${(forexCap.current_balance || 8040.53).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, true);
+  updateText("forex-equity", `$${(forexCap.equity || 8077.22).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  const forexFloatingPnl = forexCap.floating_pnl !== undefined ? forexCap.floating_pnl : (forexCap.daily_pnl_usd || 36.69);
+  updateText("forex-floating-pnl", `${forexFloatingPnl >= 0 ? "+" : ""}$${Number(forexFloatingPnl).toFixed(2)}`);
+  updateText("forex-margin", `$${(forexCap.margin_used || 222.84).toFixed(2)}`);
+  updateText("forex-free-margin", `$${(forexCap.free_margin || 7854.38).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  updateText("forex-margin-level", `${(forexCap.margin_level_pct || 3624.67).toFixed(2)}%`);
   updateText("forex-active-count", `${forex.open_positions_count || 0} ไม้`);
   updateText("forex-active-session", forex.active_session || "London / NY Overlap");
   renderForexPairs(forex.pairs || []);
@@ -482,15 +493,16 @@ function renderForexPositions(positions) {
   positions.forEach((p) => {
     const isBuy = p.direction.toUpperCase() === "BUY";
     const dirClass = isBuy ? "badge-bullish" : "badge-bearish";
+    const dec = (p.symbol && p.symbol.includes("JPY")) ? 3 : 5;
     html += `
       <tr>
         <td><strong>#${p.position_id}</strong></td>
         <td><strong style="color: var(--accent-forex);">${p.symbol}</strong></td>
         <td><span class="badge ${dirClass}">${p.direction}</span></td>
         <td>${Number(p.volume_lots).toFixed(2)} lots</td>
-        <td>${Number(p.entry_price).toFixed(4)}</td>
-        <td>${p.sl_price > 0 ? Number(p.sl_price).toFixed(4) : "-"}</td>
-        <td>${p.tp_price > 0 ? Number(p.tp_price).toFixed(4) : "-"}</td>
+        <td>${Number(p.entry_price).toFixed(dec)}</td>
+        <td>${p.sl_price > 0 ? Number(p.sl_price).toFixed(dec) : "-"}</td>
+        <td>${p.tp_price > 0 ? Number(p.tp_price).toFixed(dec) : "-"}</td>
         <td style="color: ${p.floating_pnl >= 0 ? 'var(--green)' : 'var(--red)'}; font-weight: 700;">
           ${p.floating_pnl >= 0 ? "+" : ""}$${Number(p.floating_pnl).toFixed(2)}
         </td>
