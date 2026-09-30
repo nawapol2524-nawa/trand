@@ -326,7 +326,16 @@ function applySnapshot(data) {
   updateText("syn-floating", `${synFloating >= 0 ? "+" : ""}$${synFloating.toFixed(2)}`);
   updateText("syn-pnl", `${synPnl >= 0 ? "+" : ""}$${synPnl.toFixed(2)} (${(synCap.net_pnl_pct || -15.72).toFixed(2)}%)`);
   updateText("syn-winrate", `${syn.performance?.win_rate_pct || 39.2}%`);
-  updateText("syn-spot", (synMkt.spot_price || 23422.31).toFixed(2), true);
+  updateText("syn-spot", (synMkt.spot_price || 21213.40).toFixed(2), true);
+  updateText("syn-spread", `${(synMkt.spread_pips || 3.0).toFixed(1)} pts`);
+  updateText("syn-structure", synMkt.market_structure || "BOS_LONG");
+  updateText("syn-rsi", (synMkt.rsi_14 !== undefined ? Number(synMkt.rsi_14) : 52.4).toFixed(1));
+  const synTrendBadge = document.getElementById("syn-trend-badge");
+  if (synTrendBadge) {
+    const isBull = synMkt.trend === "BULLISH";
+    synTrendBadge.textContent = synMkt.trend || "BULLISH";
+    synTrendBadge.className = isBull ? "badge badge-bullish" : "badge badge-bearish";
+  }
   renderSyntheticPositions(syn.open_positions || []);
   renderDerivTrades(syn.recent_trades || []);
 
