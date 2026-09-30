@@ -22,7 +22,10 @@ from webboard.news_service import NewsService
 try:
     from src.brokers.ctrader_mcp import CTraderMCPBroker
 except Exception:
-    CTraderMCPBroker = None
+    try:
+        from webboard.ctrader_mcp import CTraderMCPBroker
+    except Exception:
+        CTraderMCPBroker = None
 
 logger = logging.getLogger("data_aggregator")
 
@@ -39,6 +42,7 @@ class DataAggregator:
         self._broker = None
         self._quote_lock = threading.Lock()
         self._last_quote_time = 0.0
+        self._last_account_fetch_time = 0.0
         self._fetch_in_progress = False
         self._quotes: Dict[int, Dict[str, Any]] = {
             1: {"symbol": "EURUSD", "bid": 1.13397, "ask": 1.13409, "high": 1.13736, "low": 1.13319, "digits": 5},
@@ -46,9 +50,16 @@ class DataAggregator:
             4: {"symbol": "USDJPY", "bid": 157.489, "ask": 157.504, "high": 157.711, "low": 156.974, "digits": 3},
             41: {"symbol": "XAUUSD", "bid": 2658.45, "ask": 2658.75, "high": 2665.20, "low": 2645.10, "digits": 2},
         }
+        self._live_balance: Dict[str, float] = {
+            "balance": 7003.10,
+            "equity": 7003.10,
+            "free_margin": 7003.10,
+            "margin_used": 0.00,
+        }
+        self._live_broker_positions: List[Dict[str, Any]] = []
 
     def _refresh_quotes_async(self) -> None:
-        """Fetch real-time quotes asynchronously so snapshot generation never blocks."""
+        """Fetch real-time quotes and account balance asynchronously so snapshot generation never blocks."""
         now_ts = time.time()
         if now_ts - self._last_quote_time < 1.0 or self._fetch_in_progress:
             return
@@ -87,7 +98,29 @@ class DataAggregator:
                                         self._quotes[sid]["high"] = round(p["high"] / scale, self._quotes[sid]["digits"])
                                     if "low" in p:
                                         self._quotes[sid]["low"] = round(p["low"] / scale, self._quotes[sid]["digits"])
-                            self._last_quote_time = time.time()
+
+                    # Account balance & positions sync (every ~3 seconds)
+                    if time.time() - self._last_account_fetch_time > 3.0:
+                        try:
+                            bal = self._broker.get_balance()
+                            if bal and "balance" in bal:
+                                b_val = round(float(bal["balance"]), 2)
+                                eq_val = round(float(bal.get("equity", b_val)), 2)
+                                free_val = round(float(bal.get("free_margin", eq_val)), 2)
+                                with self._quote_lock:
+                                    self._live_balance["balance"] = b_val
+                                    self._live_balance["equity"] = eq_val
+                                    self._live_balance["free_margin"] = free_val
+                                    self._live_balance["margin_used"] = max(0.0, round(eq_val - free_val, 2))
+                            positions = self._broker.get_positions()
+                            if isinstance(positions, list):
+                                with self._quote_lock:
+                                    self._live_broker_positions = positions
+                            self._last_account_fetch_time = time.time()
+                        except Exception as acc_e:
+                            logger.debug("Account live sync note: %s", acc_e)
+
+                    self._last_quote_time = time.time()
             except Exception as e:
                 logger.debug("Async quote fetch note: %s", e)
             finally:
@@ -124,7 +157,7 @@ class DataAggregator:
             + forex_state["open_positions_count"]
             + synthetic_state["open_positions_count"]
         )
-        total_cfds_usd = 28040.53
+        total_cfds_usd = round(20000.0 + cTrader_balance, 2)
         total_deriv_assets_usd = round(total_cfds_usd + synthetic_state["capital"]["current_balance"], 2)
 
         return {
@@ -188,14 +221,22 @@ class DataAggregator:
             margin_used = forex_capital["margin_used"]
             free_margin = forex_capital["free_margin"]
         else:
-            starting_bal = float(bot_state.get("daily_starting_balance", 8040.53))
-            current_bal = float(bot_state.get("current_balance", 8040.53))
+            with self._quote_lock:
+                live_bal = float(self._live_balance.get("balance", 7003.10))
+                live_eq = float(self._live_balance.get("equity", 7003.10))
+                live_free = float(self._live_balance.get("free_margin", 7003.10))
+                live_margin = float(self._live_balance.get("margin_used", 0.00))
+
+            starting_bal = float(bot_state.get("daily_starting_balance") or 7003.10)
+            if starting_bal in (8040.53, 8165.17):
+                starting_bal = 7003.10
+            current_bal = live_bal
             daily_pnl_usd = float(bot_state.get("daily_pnl", 0.0))
-            equity = current_bal + daily_pnl_usd
+            equity = live_eq
             daily_pnl_pct = round((daily_pnl_usd / starting_bal * 100.0) if starting_bal > 0 else 0.0, 2)
-            margin_level_pct = 3624.67
-            margin_used = 222.84
-            free_margin = round(equity - margin_used, 2)
+            margin_used = live_margin
+            free_margin = live_free
+            margin_level_pct = round((equity / margin_used * 100.0), 2) if margin_used > 0 else 0.0
 
         # Gold specific positions (Symbol 41 / XAUUSD)
         raw_open = bot_state.get("open_positions", {})
@@ -319,9 +360,9 @@ class DataAggregator:
                 "kill_switch_active": bool(bot_state.get("kill_switch_active", False)),
             },
             "cfds_summary": {
-                "total_cfds_usd": 28040.53,
+                "total_cfds_usd": round(20000.0 + current_bal, 2),
                 "accounts": [
-                    {"name": "cTrader Demo (Active Bot)", "balance": 8040.53, "type": "cTrader #2548625", "status": "ONLINE"},
+                    {"name": "cTrader Demo (Active Bot)", "balance": round(current_bal, 2), "type": "cTrader #2548625", "status": "ONLINE"},
                     {"name": "CFDs | Standard (MT5)", "balance": 10000.00, "type": "MT5", "status": "AVAILABLE"},
                     {"name": "TradingView (cTrader)", "balance": 10000.00, "type": "TradingView", "status": "AVAILABLE"},
                 ],
@@ -482,12 +523,21 @@ class DataAggregator:
                 })
 
         # Calculate live capital matching cTrader account #2548625
-        starting_bal = float(bot_state.get("daily_starting_balance", 8040.53))
-        current_bal = float(bot_state.get("current_balance", 8040.53))
-        equity = round(current_bal + total_floating, 2)
-        margin_used = 222.84 if len(open_positions) > 0 else 0.0
-        free_margin = round(equity - margin_used, 2)
-        margin_level = round((equity / margin_used * 100.0), 2) if margin_used > 0 else 100.0
+        with self._quote_lock:
+            live_bal = float(self._live_balance.get("balance", 7003.10))
+            live_eq = float(self._live_balance.get("equity", 7003.10))
+            live_free = float(self._live_balance.get("free_margin", 7003.10))
+            live_margin = float(self._live_balance.get("margin_used", 0.00))
+
+        starting_bal = float(bot_state.get("daily_starting_balance") or 7003.10)
+        if starting_bal in (8040.53, 8165.17):
+            starting_bal = 7003.10
+
+        current_bal = live_bal
+        equity = round(current_bal + total_floating, 2) if open_positions else live_eq
+        margin_used = live_margin if len(open_positions) > 0 else 0.0
+        free_margin = round(equity - margin_used, 2) if len(open_positions) > 0 else live_free
+        margin_level = round((equity / margin_used * 100.0), 2) if margin_used > 0 else 0.0
         daily_pnl = round(total_floating, 2)
         daily_pct = round((daily_pnl / starting_bal * 100.0), 2) if starting_bal > 0 else 0.0
 

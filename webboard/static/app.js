@@ -222,8 +222,8 @@ function applySnapshot(data) {
   updateText("ribbon-deriv-pnl", `${synPnl >= 0 ? "+" : ""}$${synPnl.toFixed(2)}`);
 
   // --- TAB 0: OVERVIEW ---
-  updateText("ov-total-balance", `$${(port.total_balance_usd || 16468.87).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, true);
-  updateText("ov-starting-balance", `เงินทุนเริ่มต้น: $${(port.total_starting_balance_usd || 18040.53).toLocaleString("en-US", { minimumFractionDigits: 2 })} | Deriv พอร์ตรวม: $${(port.total_deriv_assets_usd || 36468.87).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  updateText("ov-total-balance", `$${(port.total_balance_usd || 15431.44).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, true);
+  updateText("ov-starting-balance", `เงินทุนเริ่มต้น: $${(port.total_starting_balance_usd || 17003.10).toLocaleString("en-US", { minimumFractionDigits: 2 })} | Deriv พอร์ตรวม: $${(port.total_deriv_assets_usd || 35431.44).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
   
   const totalPnl = port.total_daily_pnl_usd || 0.00;
   updateText("ov-daily-pnl", `${totalPnl >= 0 ? "+" : ""}$${totalPnl.toFixed(2)}`, true);
@@ -235,17 +235,17 @@ function applySnapshot(data) {
   updateText("ov-open-sub", `${gold.open_positions_count || 0} ทองคำ | ${forex.open_positions_count || 0} Forex | ${syn.open_positions_count || 0} Deriv`);
 
   updateText("ov-gold-spot", `$${(goldMkt.spot_price || 2658.45).toFixed(2)}`);
-  updateText("ov-gold-bal", `$${(goldCap.current_balance || 8040.53).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  updateText("ov-gold-bal", `$${(goldCap.current_balance || 7003.10).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
   updateText("ov-forex-price", `${eurusd.spot_price.toFixed(4)} / ${gbpusd.spot_price.toFixed(4)}`);
-  const forexFloating = forex.capital?.floating_pnl ?? 36.69;
+  const forexFloating = forex.capital?.floating_pnl ?? 0.00;
   updateText("ov-forex-pnl", `${forexFloating >= 0 ? "+" : ""}$${Number(forexFloating).toFixed(2)}`);
   updateText("ov-deriv-spot", (synMkt.spot_price || 23422.31).toFixed(2));
   updateText("ov-deriv-bal", `$${(synCap.current_balance || 8428.34).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
 
   // --- TAB 1: GOLD ---
-  updateText("gold-balance", `$${(goldCap.current_balance || 10000.0).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, true);
-  updateText("gold-equity", `$${(goldCap.equity || 10000.0).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
-  updateText("gold-margin", `${goldCap.margin_level_pct || 100}%`);
+  updateText("gold-balance", `$${(goldCap.current_balance || 7003.10).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, true);
+  updateText("gold-equity", `$${(goldCap.equity || 7003.10).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  updateText("gold-margin", `${goldCap.margin_level_pct || 0}%`);
   updateText("gold-daily-pnl", `$${(goldCap.daily_pnl_usd || 0).toFixed(2)}`);
   updateText("gold-spot-price", `$${(goldMkt.spot_price || 2658.45).toFixed(2)}`, true);
   updateText("gold-spread", `${goldMkt.spread_pips || 3.0} pips`);
@@ -284,13 +284,13 @@ function applySnapshot(data) {
 
   // --- TAB 2: FOREX ---
   const forexCap = forex.capital || {};
-  updateText("forex-balance", `$${(forexCap.current_balance || 8040.53).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, true);
-  updateText("forex-equity", `$${(forexCap.equity || 8077.22).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
-  const forexFloatingPnl = forexCap.floating_pnl !== undefined ? forexCap.floating_pnl : (forexCap.daily_pnl_usd || 36.69);
+  updateText("forex-balance", `$${(forexCap.current_balance || 7003.10).toLocaleString("en-US", { minimumFractionDigits: 2 })}`, true);
+  updateText("forex-equity", `$${(forexCap.equity || 7003.10).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  const forexFloatingPnl = forexCap.floating_pnl !== undefined ? forexCap.floating_pnl : (forexCap.daily_pnl_usd || 0.00);
   updateText("forex-floating-pnl", `${forexFloatingPnl >= 0 ? "+" : ""}$${Number(forexFloatingPnl).toFixed(2)}`);
-  updateText("forex-margin", `$${(forexCap.margin_used || 222.84).toFixed(2)}`);
-  updateText("forex-free-margin", `$${(forexCap.free_margin || 7854.38).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
-  updateText("forex-margin-level", `${(forexCap.margin_level_pct || 3624.67).toFixed(2)}%`);
+  updateText("forex-margin", `$${(forexCap.margin_used || 0.00).toFixed(2)}`);
+  updateText("forex-free-margin", `$${(forexCap.free_margin || 7003.10).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  updateText("forex-margin-level", `${(forexCap.margin_level_pct || 0.00).toFixed(2)}%`);
   updateText("forex-active-count", `${forex.open_positions_count || 0} ไม้`);
   updateText("forex-active-session", forex.active_session || "London / NY Overlap");
   renderForexPairs(forex.pairs || []);

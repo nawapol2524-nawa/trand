@@ -16,6 +16,11 @@ from typing import Any, Optional
 logger = logging.getLogger("CTraderMCPBroker")
 
 
+DEFAULT_CTRADER_MCP_URL = "https://mcp.ctrader.com/trading/mcp"
+DEFAULT_CTRADER_MCP_TOKEN = "Bearer eyJwbGFudCI6ImRlcml2IiwiZW52aXJvbm1lbnQiOiJkZW1vIiwidG9rZW4iOiJMYU1XdzZJclF2SHRNaTdxV09TZHBHbE9hUGhKYzRKL2dqK2h0V1gzS3pvPSJ9"
+DEFAULT_CTRADER_ACCOUNT_ID = "2548625"
+
+
 class CTraderMCPBroker:
     """Production broker adapter for cTrader Remote MCP Server."""
 
@@ -38,8 +43,8 @@ class CTraderMCPBroker:
                             k, v = line.split("=", 1)
                             os.environ.setdefault(k.strip(), v.strip())
 
-        self.endpoint_url = endpoint_url or os.environ.get("CTRADER_MCP_URL", "https://mcp.ctrader.com/trading/mcp")
-        self.bearer_token = bearer_token or os.environ.get("CTRADER_MCP_TOKEN", "")
+        self.endpoint_url = endpoint_url or os.environ.get("CTRADER_MCP_URL") or DEFAULT_CTRADER_MCP_URL
+        self.bearer_token = bearer_token or os.environ.get("CTRADER_MCP_TOKEN") or DEFAULT_CTRADER_MCP_TOKEN
         self.timeout = timeout_seconds
         self.session_id: Optional[str] = None
         self._ssl_context: Optional[Any] = None
