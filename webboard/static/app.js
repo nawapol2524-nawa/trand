@@ -190,7 +190,7 @@ function applySnapshot(data) {
   const goldMkt = gold.market_status || {};
   const goldCap = gold.capital || {};
   updateText("ribbon-gold-price", `$${(goldMkt.spot_price || 2658.45).toFixed(2)}`, true);
-  updateText("ribbon-gold-balance", `$${(goldCap.current_balance || 8705.2).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  updateText("ribbon-gold-balance", `$${(goldCap.current_balance || 7003.10).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
   updateText("ribbon-gold-spread", `${goldMkt.spread_pips || 3.0} pips`);
   
   const ribbonGoldTrend = document.getElementById("ribbon-gold-trend");
