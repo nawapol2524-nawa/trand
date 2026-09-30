@@ -14,7 +14,7 @@ from http import HTTPStatus
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from socketserver import ThreadingMixIn
-from typing import Any
+from typing import Any, Optional
 
 from webboard.data_aggregator import DataAggregator
 

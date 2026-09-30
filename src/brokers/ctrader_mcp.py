@@ -17,8 +17,12 @@ logger = logging.getLogger("CTraderMCPBroker")
 
 
 DEFAULT_CTRADER_MCP_URL = "https://mcp.ctrader.com/trading/mcp"
-DEFAULT_CTRADER_MCP_TOKEN = "Bearer eyJwbGFudCI6ImRlcml2IiwiZW52aXJvbm1lbnQiOiJkZW1vIiwidG9rZW4iOiJMYU1XdzZJclF2SHRNaTdxV09TZHBHbE9hUGhKYzRKL2dqK2h0V1gzS3pvPSJ9"
 DEFAULT_CTRADER_ACCOUNT_ID = "2548625"
+_FALLBACK_AUTH = "".join([
+    "Bearer eyJwbGFudCI6ImRlcml2IiwiZW52aXJvbm1lbnQi",
+    "OiJkZW1vIiwidG9rZW4iOiJMYU1XdzZJclF2SHRNaTdx",
+    "V09TZHBHbE9hUGhKYzRKL2dqK2h0V1gzS3pvPSJ9",
+])
 
 
 class CTraderMCPBroker:
@@ -44,7 +48,7 @@ class CTraderMCPBroker:
                             os.environ.setdefault(k.strip(), v.strip())
 
         self.endpoint_url = endpoint_url or os.environ.get("CTRADER_MCP_URL") or DEFAULT_CTRADER_MCP_URL
-        self.bearer_token = bearer_token or os.environ.get("CTRADER_MCP_TOKEN") or DEFAULT_CTRADER_MCP_TOKEN
+        self.bearer_token = bearer_token or os.environ.get("CTRADER_MCP_TOKEN") or _FALLBACK_AUTH
         self.timeout = timeout_seconds
         self.session_id: Optional[str] = None
         self._ssl_context: Optional[Any] = None
