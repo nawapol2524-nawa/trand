@@ -236,9 +236,27 @@ function applySnapshot(data) {
 
   updateText("ov-gold-spot", `$${(goldMkt.spot_price || 2658.45).toFixed(2)}`);
   updateText("ov-gold-bal", `$${(goldCap.current_balance || 7003.10).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
+  const goldFloating = goldCap.floating_pnl !== undefined ? goldCap.floating_pnl : (goldCap.daily_pnl_usd || 0.00);
+  updateText("ov-gold-pnl", `${goldFloating >= 0 ? "+" : ""}$${Number(goldFloating).toFixed(2)}`);
+  const gCount = gold.open_positions_count || 0;
+  const ovGoldRisk = document.getElementById("ov-gold-risk-badge");
+  if (ovGoldRisk) {
+    ovGoldRisk.textContent = gCount > 0 ? `${gCount} ไม้ (ACTIVE)` : "SAFE";
+    ovGoldRisk.className = gCount > 0 ? "badge badge-active" : "badge badge-bullish";
+  }
+
   updateText("ov-forex-price", `${eurusd.spot_price.toFixed(4)} / ${gbpusd.spot_price.toFixed(4)}`);
+  const forexBalVal = forex.capital?.current_balance || goldCap.current_balance || 6977.48;
+  updateText("ov-forex-bal", `cTrader #2548625 ($${Number(forexBalVal).toLocaleString("en-US", { minimumFractionDigits: 2 })})`);
   const forexFloating = forex.capital?.floating_pnl ?? 0.00;
   updateText("ov-forex-pnl", `${forexFloating >= 0 ? "+" : ""}$${Number(forexFloating).toFixed(2)}`);
+  const fCount = forex.open_positions_count || 0;
+  const ovForexBadge = document.getElementById("ov-forex-badge");
+  if (ovForexBadge) {
+    ovForexBadge.textContent = `${fCount} ไม้ (${fCount > 0 ? "ACTIVE" : "WAIT"})`;
+    ovForexBadge.className = fCount > 0 ? "badge badge-active" : "badge badge-neutral";
+  }
+
   updateText("ov-deriv-spot", (synMkt.spot_price || 23422.31).toFixed(2));
   updateText("ov-deriv-bal", `$${(synCap.current_balance || 8428.34).toLocaleString("en-US", { minimumFractionDigits: 2 })}`);
 
