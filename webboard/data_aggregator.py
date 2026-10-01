@@ -1353,7 +1353,7 @@ class DataAggregator:
 
         return {
             "service_name": "Universal AI-Brain Service",
-            "version": "2.0.0",
+            "version": "0.0.8",
             "status": "HEALTHY",
             "url": "http://ai-brain.railway.internal:8000",
             "providers": ["Groq-Llama-3.3-70b", "DeepSeek-R1", "Gemini-2.0-Flash", "LocalRuleEngine"],
