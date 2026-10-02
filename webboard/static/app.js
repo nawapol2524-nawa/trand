@@ -604,6 +604,45 @@ function renderForexTrades(trades) {
   tbody.innerHTML = html;
 }
 
+function formatContractDisplay(symbol, contractType) {
+  const sym = (symbol || "").trim();
+  const cType = (contractType || "").trim();
+
+  let combined = "";
+  if (!sym && !cType) {
+    return "Multipliers";
+  }
+  if (!sym) {
+    combined = cType;
+  } else if (!cType) {
+    combined = sym;
+  } else if (sym.toLowerCase().includes(cType.toLowerCase())) {
+    combined = sym;
+  } else if (cType.toLowerCase().includes(sym.toLowerCase())) {
+    combined = cType;
+  } else {
+    combined = `${sym} ${cType}`;
+  }
+
+  // Remove duplicate adjacent tokens/words, e.g. "Multipliers Down Multipliers Down"
+  combined = combined.replace(/\b([a-zA-Z0-9_\/]+(?:\s+[a-zA-Z0-9_\/]+)?)\s+\1\b/gi, "$1");
+  combined = combined.replace(/\b(\w+)\s+\1\b/gi, "$1");
+  return combined.trim() || "Multipliers";
+}
+
+function formatPositionPrice(price, symbol) {
+  const num = Number(price);
+  if (isNaN(num) || num <= 0) return "-";
+  const sym = (symbol || "").toUpperCase();
+  if (sym.includes("JPY")) {
+    return num.toFixed(3);
+  }
+  if (sym.includes("/") || sym.includes("USD") || sym.includes("EUR") || sym.includes("GBP") || sym.includes("AUD") || num < 10) {
+    return num.toFixed(4);
+  }
+  return num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 function renderSyntheticPositions(positions) {
   const hash = JSON.stringify(positions);
   if (hash === lastDerivPositionsHash) return;
@@ -619,19 +658,25 @@ function renderSyntheticPositions(positions) {
 
   let html = "";
   positions.forEach((p) => {
-    const isLong = p.direction.toUpperCase() === "LONG" || p.direction.toUpperCase() === "BUY";
+    // Strictly isolate data from position object (p) - never use global active tab ticker or price
+    const posSymbol = p.symbol || "EUR/USD";
+    const posContractType = p.contract_type || "Multipliers";
+    const isLong = p.direction ? (p.direction.toUpperCase() === "LONG" || p.direction.toUpperCase() === "BUY") : (!posContractType.toLowerCase().includes("down"));
     const dirClass = isLong ? "badge-bullish" : "badge-bearish";
-    const pnl = p.floating_pnl || 0;
-    const entryNum = Number(p.entry_price || 0);
-    const currNum = Number(p.current_price || p.entry_price || 0);
-    const entryStr = entryNum > 0 && entryNum < 10 ? entryNum.toFixed(4) : entryNum.toFixed(2);
-    const currStr = currNum > 0 && currNum < 10 ? currNum.toFixed(4) : currNum.toFixed(2);
-    const contractDisplay = p.symbol ? `${p.symbol} ${p.contract_type || "Multipliers"}` : (p.contract_type || "Multipliers");
+    const dirText = p.direction ? p.direction.toUpperCase() : (isLong ? "LONG" : "SHORT");
+    const pnl = Number(p.floating_pnl !== undefined ? p.floating_pnl : 0);
+
+    const entryPrice = p.entry_price !== undefined ? p.entry_price : 0;
+    const currentPrice = p.current_price !== undefined ? p.current_price : entryPrice;
+    const entryStr = formatPositionPrice(entryPrice, posSymbol);
+    const currStr = formatPositionPrice(currentPrice, posSymbol);
+    const contractDisplay = formatContractDisplay(posSymbol, posContractType);
+
     html += `
       <tr>
-        <td><strong>#${p.position_id}</strong></td>
+        <td><strong>#${p.position_id || "-"}</strong></td>
         <td><strong style="color: var(--accent-syn);">${contractDisplay}</strong></td>
-        <td><span class="badge ${dirClass}">${p.direction}</span></td>
+        <td><span class="badge ${dirClass}">${dirText}</span></td>
         <td>$${Number(p.stake || 9.5).toFixed(2)}</td>
         <td>x${p.multiplier || 100}</td>
         <td>${entryStr}</td>
@@ -663,20 +708,23 @@ function renderDerivTrades(trades) {
 
   let html = "";
   trades.slice().reverse().forEach((t) => {
-    const isLong = t.direction.toUpperCase() === "LONG";
+    const isLong = t.direction ? t.direction.toUpperCase() === "LONG" : true;
     const dirClass = isLong ? "badge-bullish" : "badge-bearish";
     const pnl = t.net_pnl || 0;
+    const contractDisplay = formatContractDisplay(t.symbol, t.contract_type || "Multipliers");
+    const entryStr = formatPositionPrice(t.entry_price, t.symbol || t.contract_type);
+    const exitStr = formatPositionPrice(t.exit_price, t.symbol || t.contract_type);
     html += `
       <tr>
         <td><strong>#${t.trade_id}</strong></td>
-        <td><strong style="color: var(--accent-syn);">${t.contract_type}</strong></td>
-        <td><span class="badge ${dirClass}">${t.direction}</span></td>
-        <td>${t.entry_price.toFixed(2)}</td>
-        <td>${t.exit_price.toFixed(2)}</td>
+        <td><strong style="color: var(--accent-syn);">${contractDisplay}</strong></td>
+        <td><span class="badge ${dirClass}">${t.direction || (isLong ? "LONG" : "SHORT")}</span></td>
+        <td>${entryStr}</td>
+        <td>${exitStr}</td>
         <td><span class="badge ${t.exit_reason === "TAKE_PROFIT" ? "badge-bullish" : "badge-bearish"}">${t.exit_reason}</span></td>
-        <td>${t.duration_bars} แท่ง (${t.duration_bars * 5}m)</td>
+        <td>${t.duration_bars || 1} แท่ง (${(t.duration_bars || 1) * 5}m)</td>
         <td style="color: ${pnl >= 0 ? "var(--green)" : "var(--red)"}; font-weight: 700;">${pnl >= 0 ? "+" : ""}$${pnl.toFixed(2)}</td>
-        <td>$${t.balance_after.toFixed(2)}</td>
+        <td>$${Number(t.balance_after || 0).toFixed(2)}</td>
       </tr>
     `;
   });

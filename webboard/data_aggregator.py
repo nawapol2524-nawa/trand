@@ -1126,16 +1126,27 @@ class DataAggregator:
                 {"trade_id": 295, "direction": "SHORT", "contract_type": "MULTDOWN", "entry_price": 23415.00, "exit_price": 23428.50, "exit_reason": "STOP_LOSS", "net_pnl": -5.00, "balance_after": 8383.34, "duration_bars": 2},
             ]
 
-        state_file = deriv_dir / "state" / "bot_state.json"
-        if not state_file.exists():
-            state_file = self.root / "state" / "deriv_state.json"
+        possible_state_files = [
+            deriv_dir / "state" / "bot_state.json",
+            self.root / "state" / "deriv_state.json",
+            self.root / "Bot-Deriv-Synthetic" / "state" / "bot_state.json",
+            self.root.parent / "Bot-Deriv-Synthetic" / "state" / "bot_state.json",
+            Path(__file__).resolve().parent.parent / "state" / "deriv_state.json",
+            Path(__file__).resolve().parent.parent.parent / "Bot-Deriv-Synthetic" / "state" / "bot_state.json",
+            Path("/app/state/deriv_state.json"),
+            Path("/app/Bot-Deriv-Synthetic/state/bot_state.json"),
+        ]
 
         bot_state = {}
-        if state_file.exists():
-            try:
-                bot_state = json.loads(state_file.read_text(encoding="utf-8"))
-            except Exception:
-                pass
+        for sf in possible_state_files:
+            if sf.exists():
+                try:
+                    data = json.loads(sf.read_text(encoding="utf-8"))
+                    if data and isinstance(data, dict):
+                        bot_state = data
+                        break
+                except Exception:
+                    pass
 
         with self._deriv_lock:
             deriv_mkt = dict(self._deriv_market)
@@ -1158,13 +1169,13 @@ class DataAggregator:
                 open_positions = [
                     {
                         "position_id": "13793268479",
-                        "symbol": "1HZ90V Multipliers Down",
+                        "symbol": "EUR/USD",
                         "contract_type": "Multipliers Down",
                         "direction": "SHORT",
                         "stake": 9.50,
                         "multiplier": 100,
-                        "entry_price": 21250.00,
-                        "current_price": deriv_mkt.get("spot_price", 21213.40),
+                        "entry_price": 1.0845,
+                        "current_price": 1.0836,
                         "sl_amount": 4.75,
                         "tp_amount": 9.50,
                         "floating_pnl": 8.75,
